@@ -1,0 +1,61 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="I (generated)" id="1631333745900-1">
+        <createTable tableName="encrypt_decrypt_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="encrypt_decrypt_entityPK"/>
+            </column>
+            <column name="private_key_ofrsa" type="MEDIUMBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="public_key_ofrsa" type="MEDIUMBLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secret_key_ofaes" type="MEDIUMBLOB">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="I (generated)" id="1631333745900-2">
+        <createTable tableName="storage_space_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="storage_space_entityPK"/>
+            </column>
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="folder_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="I (generated)" id="1631333745900-3">
+        <createTable tableName="user_email_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_email_entityPK"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_entity_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="I (generated)" id="1631333745900-4">
+        <createTable tableName="user_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_entityPK"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="I (generated)" id="1631333745900-5">
+        <addForeignKeyConstraint baseColumnNames="user_entity_id" baseTableName="user_email_entity" constraintName="FKhs4cpjii5q6pc80a5opjao0ou" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user_entity" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

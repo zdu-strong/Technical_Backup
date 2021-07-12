@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="zdu (generated)" id="1636985475747-1">
+        <addColumn tableName="encrypt_decrypt_entity">
+            <column name="private_key_ofrsaof_access_token" type="mediumblob">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-2">
+        <addColumn tableName="encrypt_decrypt_entity">
+            <column name="private_key_ofrsaof_refresh_token" type="mediumblob">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-3">
+        <addColumn tableName="encrypt_decrypt_entity">
+            <column name="public_key_ofrsaof_access_token" type="mediumblob">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-4">
+        <addColumn tableName="encrypt_decrypt_entity">
+            <column name="public_key_ofrsaof_refresh_token" type="mediumblob">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-5">
+        <addColumn tableName="user_email_entity">
+            <column name="user_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-6">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_email_entity" constraintName="FKq1njl6uveplkpgu70115gbf5o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user_entity" validate="true"/>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-7">
+        <dropForeignKeyConstraint baseTableName="user_email_entity" constraintName="FKhs4cpjii5q6pc80a5opjao0ou"/>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1636985475747-8">
+        <dropColumn columnName="user_entity_id" tableName="user_email_entity"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="zdu (generated)" id="1645272056694-1">
+        <addColumn tableName="encrypt_decrypt_entity">
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-2">
+        <addColumn tableName="user_email_entity">
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-3">
+        <addColumn tableName="user_entity">
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-4">
+        <dropColumn columnName="private_key_ofrsaof_access_token" tableName="encrypt_decrypt_entity"/>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-5">
+        <dropColumn columnName="private_key_ofrsaof_refresh_token" tableName="encrypt_decrypt_entity"/>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-6">
+        <dropColumn columnName="public_key_ofrsaof_access_token" tableName="encrypt_decrypt_entity"/>
+    </changeSet>
+    <changeSet author="zdu (generated)" id="1645272056694-7">
+        <dropColumn columnName="public_key_ofrsaof_refresh_token" tableName="encrypt_decrypt_entity"/>
+    </changeSet>
+</databaseChangeLog>

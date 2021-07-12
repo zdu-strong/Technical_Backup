@@ -1,0 +1,20 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.exclude": {
+        ".mvn": true,
+        ".settings": true,
+        ".classpath": true,
+        ".factorypath": true,
+        ".gitignore": true,
+        "diff": true,
+        ".project": true,
+        "diff.cmd": true,
+        "mvn": true,
+        "mvn.cmd": true,
+        ".vscode": true,
+        "target": true,
+    },
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+}

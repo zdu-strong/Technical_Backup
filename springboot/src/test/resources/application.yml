@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:wiki_test?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&createDatabaseIfNotExist=true;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: com.springboot.project.common.mysql.CustomH2Dialect
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  liquibase:
+    enabled: false
+    change-log: classpath:liquibase/index.xml
+  mail:
+    host: smtp.163.com
+    username: zdu_202104121637@163.com
+    password: WTMZGHSLRALWKLDY
+    default-encoding: UTF-8
+logging:
+  level:
+    org:
+      hibernate:
+          dialect:
+              function:
+                  TemplateRenderer: ERROR
+server:
+  error:
+    include-message: always
+  tomcat:
+    max-http-form-post-size: -1
+properties:
+  StorageRootPath: defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a

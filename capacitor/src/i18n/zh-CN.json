@@ -1,0 +1,6 @@
+{
+    "CurrentlyCharging": "当前正在充电",
+    "CurrentlyNotCharging": "当前没有充电",
+    "CurrentBattery": "当前电量",
+    "EditSrcAppTsxAndSaveToReload": "编辑 src/App.tsx 并保存以重新加载"
+}

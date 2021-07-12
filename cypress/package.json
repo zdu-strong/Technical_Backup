@@ -1,0 +1,50 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "npm config set registry https://registry.npmmirror.com && npm config set disturl https://npmmirror.com/mirrors/node && npm install -g typescript@4.7.4 @types/node@18.0.0 ts-node@10.8.1 cross-env@7.0.3 && cross-env TS_NODE_SKIP_PROJECT=true ts-node bin/react_test_open.ts",
+    "test": "npm config set registry https://registry.npmmirror.com && npm config set disturl https://npmmirror.com/mirrors/node && npm install -g typescript@4.7.4 @types/node@18.0.0 ts-node@10.8.1 cross-env@7.0.3 && cross-env TS_NODE_SKIP_PROJECT=true ts-node bin/react_test_run.ts"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "import/no-anonymous-default-export": [
+        "off",
+        {
+          "allowArrowFunction": true
+        }
+      ]
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "18.0.0",
+    "@types/qs": "6.9.7",
+    "@types/uuid": "8.3.4",
+    "axios": "0.27.2",
+    "cypress": "10.3.0",
+    "cypress-xpath": "2.0.0",
+    "execa": "5.1.1",
+    "get-port": "5.1.1",
+    "linq": "4.0.0",
+    "qs": "6.11.0",
+    "tree-kill": "1.2.2",
+    "typescript": "4.7.4",
+    "uuid": "8.3.2",
+    "wait-on": "6.0.1"
+  }
+}

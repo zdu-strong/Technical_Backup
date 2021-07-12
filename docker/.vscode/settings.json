@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "node_modules": true,
+        ".gitignore": true,
+        "package-lock.json": true,
+        "tsconfig.json": true,
+        ".vscode": true,
+        "bin": true,
+    },
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+}

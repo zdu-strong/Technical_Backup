@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${database.mysql.jdbc.url}/${database.mysql.name}?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${database.mysql.username}
+    password: ${database.mysql.password}
+    driver-class-name: ${database.mysql.driver}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    database-platform: ${database.mysql.platform}
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/index.xml
+  mail:
+    host: smtp.163.com
+    username: zdu_202104121637@163.com
+    password: WTMZGHSLRALWKLDY
+    default-encoding: UTF-8
+logging:
+  level:
+    org:
+      hibernate:
+          dialect:
+              function:
+                  TemplateRenderer: ERROR
+server:
+  error:
+    include-message: always
+  tomcat:
+    max-http-form-post-size: -1
+properties:
+  StorageRootPath: ${StorageRootPath}

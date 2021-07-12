@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="wolves (generated)" id="1657970370609-1">
+        <createTable tableName="user_message_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_message_entityPK"/>
+            </column>
+            <column name="content" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delete_key" type="VARCHAR(255)"/>
+            <column name="is_recall" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="wolves (generated)" id="1657970370609-2">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_message_entity" constraintName="FK23c715x0gcdv29x9l92r8dc74" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user_entity" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

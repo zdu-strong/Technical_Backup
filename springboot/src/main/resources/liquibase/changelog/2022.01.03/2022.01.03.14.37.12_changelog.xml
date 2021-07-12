@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="zdu (generated)" id="1641220649484-1">
+        <createTable tableName="long_term_task_entity">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="long_term_task_entityPK"/>
+            </column>
+            <column name="create_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_message" type="LONGTEXT"/>
+            <column name="is_done" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_success" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="result" type="LONGTEXT"/>
+            <column name="update_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
