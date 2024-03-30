@@ -45,6 +45,8 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
     time-zone: UTC
+  lifecycle:
+    timeout-per-shutdown-phase: 60s
 logging:
   level:
     org:
