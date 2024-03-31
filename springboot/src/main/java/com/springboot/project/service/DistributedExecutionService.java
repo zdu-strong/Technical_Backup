@@ -113,7 +113,7 @@ public class DistributedExecutionService extends BaseService {
 
         if (lastDistributedExecutionEntity != null && lastDistributedExecutionEntity.getPageNum() == 1
                 && lastDistributedExecutionEntity.getIsDone()
-                && !DateUtils.addHours(new Date(), -1).after(lastDistributedExecutionEntity.getUpdateDate())) {
+                && !DateUtils.addSeconds(new Date(), -10).after(lastDistributedExecutionEntity.getUpdateDate())) {
             return null;
         }
 

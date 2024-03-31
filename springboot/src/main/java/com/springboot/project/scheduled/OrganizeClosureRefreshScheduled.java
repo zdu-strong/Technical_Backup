@@ -19,7 +19,7 @@ public class OrganizeClosureRefreshScheduled {
     @Autowired
     private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
 
-    @Scheduled(initialDelay = 1000 * 60, fixedDelay = 1000)
+    @Scheduled(initialDelay = 1000 * 60, fixedDelay = 1000 * 10)
     public void scheduled() {
         this.refresh();
     }
