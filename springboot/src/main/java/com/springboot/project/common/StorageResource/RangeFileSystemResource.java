@@ -28,7 +28,7 @@ public class RangeFileSystemResource extends FileSystemResource {
                 .get();
         try {
             input.skip(startIndex);
-            return new BoundedInputStream(input, this.rangeContentLength);
+            return BoundedInputStream.builder().setInputStream(input).setMaxCount(this.rangeContentLength).get();
         } catch (Throwable e) {
             input.close();
             throw e;

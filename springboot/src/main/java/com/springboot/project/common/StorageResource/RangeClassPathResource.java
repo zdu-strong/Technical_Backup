@@ -26,7 +26,7 @@ public class RangeClassPathResource extends ClassPathResource {
         try {
             input = super.getInputStream();
             input.skip(this.startIndex);
-            return new BoundedInputStream(input, this.rangeContentLength);
+            return BoundedInputStream.builder().setInputStream(input).setMaxCount(this.rangeContentLength).get();
         } catch (Throwable e) {
             if (input != null) {
                 input.close();
