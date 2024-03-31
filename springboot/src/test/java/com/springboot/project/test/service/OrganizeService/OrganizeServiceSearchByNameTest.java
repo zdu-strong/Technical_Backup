@@ -34,10 +34,11 @@ public class OrganizeServiceSearchByNameTest extends BaseTest {
     public void beforeEach() {
         var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
         var parentOrganize = this.organizeService.create(parentOrganizeModel);
+        this.organizeUtil.refresh(parentOrganize.getId());
         var childOrganizeModel = new OrganizeModel().setName("Son Gohan").setParent(parentOrganize);
-        this.organizeService.create(childOrganizeModel);
+        var childOrganize = this.organizeService.create(childOrganizeModel);
+        this.organizeUtil.refresh(childOrganize.getId());
         this.organizeId = parentOrganize.getId();
-        this.organizeClosureRefreshScheduled.refresh();
     }
 
 }

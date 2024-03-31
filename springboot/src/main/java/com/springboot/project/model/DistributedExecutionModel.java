@@ -8,13 +8,18 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionModel {
+public class DistributedExecutionModel<T> {
 
     private String id;
     private String name;
     private String version;
-    private Long pageNum;
-    private Long pageSize;
+    private Boolean isLastOfExtraExecuteContent;
+    private String extraExecuteContent;
+    private String uniqueCodeOfExtraExecuteContent;
     private Date createDate;
     private Date updateDate;
+    private Boolean isDone;
+    private Boolean hasError;
+    private PaginationModel<T> pagination;
+
 }

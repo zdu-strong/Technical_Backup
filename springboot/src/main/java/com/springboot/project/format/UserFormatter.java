@@ -2,7 +2,7 @@ package com.springboot.project.format;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserEntity;
 import com.springboot.project.model.UserModel;

@@ -3,10 +3,9 @@ package com.springboot.project.scheduled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import com.springboot.project.common.DistributedExecutionTask.DistributedExecutionTaskUtil;
 import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.OrganizeClosureService;
-import com.springboot.project.service.OrganizeService;
-import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class OrganizeClosureRefreshScheduled {
@@ -15,12 +14,10 @@ public class OrganizeClosureRefreshScheduled {
     private OrganizeClosureService organizeClosureService;
 
     @Autowired
-    private OrganizeService organizeService;
-
-    @Autowired
     private DistributedExecutionService distributedExecutionService;
 
-    private Long pageSize = 1L;
+    @Autowired
+    private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
 
     @Scheduled(initialDelay = 1000 * 60, fixedDelay = 1000)
     public void scheduled() {
@@ -28,36 +25,21 @@ public class OrganizeClosureRefreshScheduled {
     }
 
     public void refresh() {
-        Long pageNumOfGlobal = null;
         while (true) {
-            var pageNumOfThis = Flowable.just("")
-                    .concatMap(s -> {
-                        var pageNum = this.distributedExecutionService.getDistributedExecutionOfOrganize(pageSize)
-                                .getPageNum();
-                        var list = this.organizeService
-                                .getOrganizeListThatContainsDeleted(pageNum, pageSize)
-                                .getList();
-                        for (var organizeModel : list) {
-                            while (true) {
-                                var hasNext = this.organizeClosureService.refresh(organizeModel.getId());
-                                if (!hasNext) {
-                                    break;
-                                }
-                            }
+            var distributedExecutionModel = this.distributedExecutionService.getDistributedExecutionOfOrganize();
+            if (distributedExecutionModel == null) {
+                return;
+            }
+            this.distributedExecutionTaskUtil.run(distributedExecutionModel.getId(), () -> {
+                for (var organizeModel : distributedExecutionModel.getPagination().getList()) {
+                    while (true) {
+                        var hasNext = this.organizeClosureService.refresh(organizeModel.getId());
+                        if (!hasNext) {
+                            break;
                         }
-                        return Flowable.just(pageNum);
-                    })
-                    .retry(1000)
-                    .blockingLast();
-            if (pageNumOfGlobal == null || pageNumOfThis < pageNumOfGlobal) {
-                pageNumOfGlobal = pageNumOfThis;
-            }
-            if (pageNumOfThis > pageNumOfGlobal) {
-                break;
-            }
-            if (pageNumOfThis == 1) {
-                break;
-            }
+                    }
+                }
+            });
         }
     }
 }

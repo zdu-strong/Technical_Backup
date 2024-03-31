@@ -25,7 +25,7 @@ public class OrganizeServiceSearchByNameShouldZeroResultTest extends BaseTest {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
         var parentOrganize = this.organizeService.create(organizeModel);
         this.organizeId = parentOrganize.getId();
-        this.organizeClosureRefreshScheduled.refresh();
+        this.organizeUtil.refresh(organizeId);
     }
 
 }

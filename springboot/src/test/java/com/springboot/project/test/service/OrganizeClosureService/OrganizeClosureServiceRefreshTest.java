@@ -3,7 +3,6 @@ package com.springboot.project.test.service.OrganizeClosureService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.jinq.orm.stream.JinqStream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
@@ -60,11 +59,6 @@ public class OrganizeClosureServiceRefreshTest extends BaseTest {
         this.organizeService.move(this.childOrganizeId, this.parentOrganizeId);
         var pagination = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.parentOrganizeId);
         assertEquals(0, pagination.getTotalRecord());
-    }
-
-    @AfterEach
-    public void afterEach() {
-        this.organizeClosureRefreshScheduled.refresh();
     }
 
 }

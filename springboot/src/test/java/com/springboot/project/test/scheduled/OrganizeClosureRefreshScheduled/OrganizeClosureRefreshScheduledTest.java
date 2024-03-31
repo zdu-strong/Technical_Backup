@@ -25,7 +25,7 @@ public class OrganizeClosureRefreshScheduledTest extends BaseTest {
             var childOrganizeModel = new OrganizeModel().setName("Son Gohan").setParent(parentOrganize);
             var childOrganize = this.organizeService.create(childOrganizeModel);
             this.organizeId = childOrganize.getId();
-            this.organizeClosureRefreshScheduled.refresh();
+            this.organizeUtil.refresh(parentOrganize.getId());
             var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
             assertEquals(1, result.getTotalRecord());
         }

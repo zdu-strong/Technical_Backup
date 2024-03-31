@@ -119,12 +119,6 @@ public class OrganizeService extends BaseService {
         }
     }
 
-    public PaginationModel<OrganizeModel> getOrganizeListThatContainsDeleted(Long pageNum, Long pageSize) {
-        var stream = this.OrganizeEntity().sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
-    }
-
     public PaginationModel<OrganizeModel> getChildOrganizeListThatContainsDeleted(Long pageNum, Long pageSize,
             String organizeId) {
         var stream = this.OrganizeEntity().where(s -> s.getParent().getId().equals(organizeId))

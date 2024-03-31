@@ -9,18 +9,9 @@ import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
 import com.springboot.project.enumerate.StorageSpaceEnum;
-import com.springboot.project.model.PaginationModel;
-import com.springboot.project.model.StorageSpaceModel;
 
 @Service
 public class StorageSpaceService extends BaseService {
-
-    public PaginationModel<StorageSpaceModel> getStorageSpaceListByPagination(Long pageNum, Long pageSize) {
-        var stream = this.StorageSpaceEntity().sortedBy(s -> s.getId()).sortedBy(s -> s.getCreateDate());
-        var storageSpacePaginationModel = new PaginationModel<>(pageNum, pageSize, stream,
-                (s) -> this.storageSpaceFormatter.format(s));
-        return storageSpacePaginationModel;
-    }
 
     public void refresh(String folderName) {
         this.checkIsValidFolderName(folderName);

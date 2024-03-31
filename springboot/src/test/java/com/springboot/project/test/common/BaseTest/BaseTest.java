@@ -44,6 +44,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
@@ -165,6 +166,9 @@ public class BaseTest {
 
     @Autowired
     protected LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    protected OrganizeUtil organizeUtil;
 
     @Autowired
     protected GitProperties gitProperties;

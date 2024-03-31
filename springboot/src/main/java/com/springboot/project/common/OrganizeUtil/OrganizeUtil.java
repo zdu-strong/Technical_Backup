@@ -59,7 +59,7 @@ public class OrganizeUtil {
     }
 
     public void refresh(String organizeId, Date deadline, Long maxDeep) {
-        if (!deadline.before(new Date())) {
+        if (new Date().after(deadline)) {
             return;
         }
         if (maxDeep <= 0) {
@@ -67,7 +67,7 @@ public class OrganizeUtil {
         }
 
         while (true) {
-            if (!deadline.before(new Date())) {
+            if (new Date().after(deadline)) {
                 return;
             }
             var hasNext = this.organizeClosureService.refresh(organizeId);
@@ -76,18 +76,19 @@ public class OrganizeUtil {
             }
         }
 
-        while (true) {
-            if (!deadline.before(new Date())) {
+        var totalPage = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
+                .getTotalPage();
+        for (var pageNum = totalPage; pageNum > 0; pageNum--) {
+            if (new Date().after(deadline)) {
                 return;
             }
-            var totalPage = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
-                    .getTotalPage();
-            for (var pageNum = totalPage; pageNum > 0; pageNum--) {
-                var list = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
-                        .getList();
-                for (var organize : list) {
-                    this.refresh(organize.getId(), deadline, maxDeep - 1);
+            var list = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
+                    .getList();
+            for (var organize : list) {
+                if (new Date().after(deadline)) {
+                    return;
                 }
+                this.refresh(organize.getId(), deadline, maxDeep - 1);
             }
         }
     }
