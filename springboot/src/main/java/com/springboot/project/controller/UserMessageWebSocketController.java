@@ -16,7 +16,6 @@ import jakarta.websocket.server.ServerEndpoint;
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +25,7 @@ import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketReceiveModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.service.UserMessageService;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 
 /**
@@ -37,21 +37,6 @@ import lombok.Getter;
 @ServerEndpoint("/user_message/websocket")
 @Component
 public class UserMessageWebSocketController {
-
-    /**
-     * Autowired
-     */
-    private static UserMessageService _userMessageService;
-
-    /**
-     * Autowired
-     */
-    private static PermissionUtil _permissionUtil;
-
-    /**
-     * Autowired
-     */
-    private static ObjectMapper _objectMapper;
 
     /**
      * Public accessible properties
@@ -70,19 +55,95 @@ public class UserMessageWebSocketController {
     private ConcurrentMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private boolean ready = false;
 
-    @Autowired
-    public void setUserMessageService(UserMessageService userMessageService) {
-        _userMessageService = userMessageService;
-    }
+    @SuppressWarnings("resource")
+    public synchronized void sendMessage() {
+        try {
+            if (!this.getPermissionUtil().isSignIn(accessToken)) {
+                this.session
+                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
+                                CloseCodes.UNEXPECTED_CONDITION.name()));
+                return;
+            }
 
-    @Autowired
-    public void setPermissionUtil(PermissionUtil permissionUtil) {
-        _permissionUtil = permissionUtil;
-    }
+            var messageList = this.getUserMessageService().getMessageListByLastTwentyMessages(userId);
+            {
+                var newMessageList = JinqStream.from(messageList)
+                        .where(s -> !JinqStream.from(this.lastMessage).anyMatch(t -> {
+                            try {
+                                var objectOne = new UserMessageModel();
+                                var objectTwo = new UserMessageModel();
+                                BeanUtils.copyProperties(s, objectOne, "totalPage");
+                                BeanUtils.copyProperties(t, objectTwo, "totalPage");
+                                return this.getObjectMapper().writeValueAsString(objectOne).equals(
+                                        this.getObjectMapper().writeValueAsString(objectTwo));
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e.getMessage(), e);
+                            }
+                        })).toList();
+                if (!this.ready || !newMessageList.isEmpty()
+                        || (messageList.size() == 0 && this.lastMessage.size() != 0)) {
+                    this.session.getBasicRemote()
+                            .sendText(this.getObjectMapper()
+                                    .writeValueAsString(new UserMessageWebSocketSendModel().setList(newMessageList)
+                                            .setTotalPage(JinqStream.from(newMessageList).select(s -> s.getTotalPage())
+                                                    .findFirst().orElse(0L))));
+                    this.lastMessage.clear();
+                    this.lastMessage.addAll(messageList);
+                    this.ready = true;
+                }
+            }
 
-    @Autowired
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        _objectMapper = objectMapper;
+            {
+                for (var pageNum : this.onlineMessageMap.keySet()) {
+                    if (messageList.stream().anyMatch(message -> message.getPageNum() == pageNum)) {
+                        continue;
+                    }
+
+                    if (!this.onlineMessageMap.containsKey(pageNum)) {
+                        continue;
+                    }
+                    var userMessageList = this.getUserMessageService().getMessageListOnlyContainsOneByPageNum(pageNum,
+                            this.userId);
+                    if (userMessageList.isEmpty()) {
+                        continue;
+                    }
+                    if (!this.onlineMessageMap.containsKey(pageNum)) {
+                        continue;
+                    }
+                    var newMessageList = userMessageList.stream().filter(
+                            s -> !Lists.newArrayList(this.onlineMessageMap.get(pageNum)).stream()
+                                    .anyMatch(t -> {
+                                        try {
+                                            var objectOne = new UserMessageModel();
+                                            var objectTwo = new UserMessageModel();
+                                            BeanUtils.copyProperties(s, objectOne, "totalPage");
+                                            BeanUtils.copyProperties(t, objectTwo, "totalPage");
+                                            return this.getObjectMapper().writeValueAsString(objectOne)
+                                                    .equals(this.getObjectMapper().writeValueAsString(objectTwo));
+                                        } catch (JsonProcessingException e) {
+                                            throw new RuntimeException(e.getMessage(), e);
+                                        }
+                                    }))
+                            .toList();
+                    if (newMessageList.isEmpty()) {
+                        continue;
+                    }
+                    this.onlineMessageMap.put(pageNum, JinqStream.from(userMessageList).getOnlyValue());
+                    this.session.getBasicRemote()
+                            .sendText(this.getObjectMapper().writeValueAsString(new UserMessageWebSocketSendModel()
+                                    .setList(newMessageList).setTotalPage(null)));
+                }
+            }
+        } catch (Throwable e) {
+            try {
+                this.session
+                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
+                                CloseCodes.UNEXPECTED_CONDITION.name()));
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (IOException e1) {
+                throw new RuntimeException(e1.getMessage(), e1);
+            }
+        }
     }
 
     /**
@@ -97,8 +158,8 @@ public class UserMessageWebSocketController {
          */
         var accessToken = JinqStream.from(new URIBuilder(session.getRequestURI()).getQueryParams())
                 .where(s -> s.getName().equals("accessToken")).select(s -> s.getValue()).getOnlyValue();
-        _permissionUtil.checkIsSignIn(accessToken);
-        var userId = _permissionUtil.getUserId(accessToken);
+        this.getPermissionUtil().checkIsSignIn(accessToken);
+        var userId = this.getPermissionUtil().getUserId(accessToken);
         /**
          * Save properties to member variables
          */
@@ -127,7 +188,7 @@ public class UserMessageWebSocketController {
     @OnMessage
     public void OnMessage(String userMessageWebSocketReceiveModelString)
             throws IOException, InterruptedException {
-        var userMessageWebSocketReceiveModel = _objectMapper.readValue(userMessageWebSocketReceiveModelString,
+        var userMessageWebSocketReceiveModel = this.getObjectMapper().readValue(userMessageWebSocketReceiveModelString,
                 UserMessageWebSocketReceiveModel.class);
         if (userMessageWebSocketReceiveModel.getIsCancel()) {
             this.onlineMessageMap.remove(userMessageWebSocketReceiveModel.getPageNum());
@@ -136,95 +197,15 @@ public class UserMessageWebSocketController {
         }
     }
 
-    @SuppressWarnings("resource")
-    public synchronized void sendMessage() {
-        try {
-            if (!_permissionUtil.isSignIn(accessToken)) {
-                this.session
-                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                                CloseCodes.UNEXPECTED_CONDITION.name()));
-                return;
-            }
+    private UserMessageService getUserMessageService() {
+        return SpringUtil.getBean(UserMessageService.class);
+    }
 
-            var messageList = _userMessageService.getMessageListByLastTwentyMessages(userId);
-            {
-                var newMessageList = JinqStream.from(messageList)
-                        .where(s -> !JinqStream.from(this.lastMessage).anyMatch(t -> {
-                            try {
-                                var objectOne = new UserMessageModel();
-                                var objectTwo = new UserMessageModel();
-                                BeanUtils.copyProperties(s, objectOne, "totalPage");
-                                BeanUtils.copyProperties(t, objectTwo, "totalPage");
-                                return _objectMapper.writeValueAsString(objectOne).equals(
-                                        _objectMapper.writeValueAsString(objectTwo));
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e.getMessage(), e);
-                            }
-                        })).toList();
-                if (!this.ready || !newMessageList.isEmpty()
-                        || (messageList.size() == 0 && this.lastMessage.size() != 0)) {
-                    this.session.getBasicRemote()
-                            .sendText(_objectMapper
-                                    .writeValueAsString(new UserMessageWebSocketSendModel().setList(newMessageList)
-                                            .setTotalPage(JinqStream.from(newMessageList).select(s -> s.getTotalPage())
-                                                    .findFirst().orElse(0L))));
-                    this.lastMessage.clear();
-                    this.lastMessage.addAll(messageList);
-                    this.ready = true;
-                }
-            }
+    private PermissionUtil getPermissionUtil() {
+        return SpringUtil.getBean(PermissionUtil.class);
+    }
 
-            {
-                for (var pageNum : this.onlineMessageMap.keySet()) {
-                    if (messageList.stream().anyMatch(message -> message.getPageNum() == pageNum)) {
-                        continue;
-                    }
-
-                    if (!this.onlineMessageMap.containsKey(pageNum)) {
-                        continue;
-                    }
-                    var userMessageList = _userMessageService.getMessageListOnlyContainsOneByPageNum(pageNum,
-                            this.userId);
-                    if (userMessageList.isEmpty()) {
-                        continue;
-                    }
-                    if (!this.onlineMessageMap.containsKey(pageNum)) {
-                        continue;
-                    }
-                    var newMessageList = userMessageList.stream().filter(
-                            s -> !Lists.newArrayList(this.onlineMessageMap.get(pageNum)).stream()
-                                    .anyMatch(t -> {
-                                        try {
-                                            var objectOne = new UserMessageModel();
-                                            var objectTwo = new UserMessageModel();
-                                            BeanUtils.copyProperties(s, objectOne, "totalPage");
-                                            BeanUtils.copyProperties(t, objectTwo, "totalPage");
-                                            return _objectMapper.writeValueAsString(objectOne)
-                                                    .equals(_objectMapper.writeValueAsString(objectTwo));
-                                        } catch (JsonProcessingException e) {
-                                            throw new RuntimeException(e.getMessage(), e);
-                                        }
-                                    }))
-                            .toList();
-                    if (newMessageList.isEmpty()) {
-                        continue;
-                    }
-                    this.onlineMessageMap.put(pageNum, JinqStream.from(userMessageList).getOnlyValue());
-                    this.session.getBasicRemote()
-                            .sendText(_objectMapper.writeValueAsString(new UserMessageWebSocketSendModel()
-                                    .setList(newMessageList).setTotalPage(null)));
-                }
-            }
-
-        } catch (Throwable e) {
-            try {
-                this.session
-                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                                CloseCodes.UNEXPECTED_CONDITION.name()));
-                throw new RuntimeException(e.getMessage(), e);
-            } catch (IOException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
-        }
+    private ObjectMapper getObjectMapper() {
+        return SpringUtil.getBean(ObjectMapper.class);
     }
 }
