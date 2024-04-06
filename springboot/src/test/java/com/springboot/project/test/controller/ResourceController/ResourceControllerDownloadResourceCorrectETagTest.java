@@ -61,7 +61,7 @@ public class ResourceControllerDownloadResourceCorrectETagTest extends BaseTest 
         assertEquals(this.etag, response.getHeaders().getETag());
         assertTrue(response.getHeaders().getETag().startsWith("\""));
         assertTrue(response.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=3600, no-transform, public", response.getHeaders().getCacheControl());
+        assertEquals("max-age=0, no-transform, public", response.getHeaders().getCacheControl());
         assertNotEquals(1, response.getHeaders().getContentLength());
         assertEquals("bytes 0-0/9287", response.getHeaders().get("Content-Range").stream().findFirst().get());
     }

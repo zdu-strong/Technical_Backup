@@ -15,7 +15,7 @@ public class ResourceUtilSetCacheControlTest extends BaseTest {
     @Test
     public void test() throws IOException {
         this.resourceHttpHeadersUtil.setCacheControl(httpHeaders, request);
-        assertEquals("max-age=3600, no-transform, public", this.httpHeaders.getCacheControl());
+        assertEquals("max-age=0, no-transform, public", this.httpHeaders.getCacheControl());
     }
 
     @BeforeEach

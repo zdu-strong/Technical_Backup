@@ -58,7 +58,7 @@ public class ResourceHttpHeadersUtil {
     }
 
     public void setCacheControl(HttpHeaders httpHeaders, HttpServletRequest request) {
-        httpHeaders.setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic().noTransform());
+        httpHeaders.setCacheControl(CacheControl.maxAge(0, TimeUnit.HOURS).cachePublic().noTransform());
     }
 
     public void setContentType(HttpHeaders httpHeaders, Resource resource, HttpServletRequest request) {
