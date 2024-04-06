@@ -48,7 +48,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
         assertNotNull(result.getHeaders().getETag());
         assertTrue(result.getHeaders().getETag().startsWith("\""));
         assertTrue(result.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=604800, no-transform, public", result.getHeaders().getCacheControl());
+        assertEquals("max-age=3600, no-transform, public", result.getHeaders().getCacheControl());
         assertEquals(9287, result.getHeaders().getContentLength());
     }
 
