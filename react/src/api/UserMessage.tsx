@@ -1,4 +1,4 @@
-import { ServerAddress, WebSocketServerAddress, getAccessToken } from "@/common/Server";
+import { ServerAddress, getWebSocketServerAddress } from "@/common/Server";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { UserMessageWebSocketReceiveModel } from "@/model/UserMessageWebSocketReceiveModel";
 import axios from "axios";
@@ -20,9 +20,7 @@ export function getUserMessageWebsocket(websocketInput$: Subject<{
   pageNum: number,
   isCancel: boolean,
 }>) {
-  const url = `${WebSocketServerAddress}/user_message/websocket?${qs.stringify({
-    accessToken: getAccessToken(),
-  })}`;
+  const url = getWebSocketServerAddress(`/user_message/websocket`);
   const websocketOutput$ = makeWebSocketObservable(url).pipe(
     switchMap((getResponses: GetWebSocketResponses) => {
       return getResponses(websocketInput$.pipe(map(data => JSON.stringify(data))));

@@ -54,7 +54,7 @@ export async function signOut() {
     } catch {
       // do nothing
     }
-    await removeGlobalUserInfo();
+    removeGlobalUserInfo();
   }
 }
 
@@ -66,7 +66,7 @@ export async function isSignIn() {
     await axios.get("/get_user_info");
   } catch (e) {
     if (e && (e as any).status === 401) {
-      await removeGlobalUserInfo();
+      removeGlobalUserInfo();
       return false;
     }
   }
