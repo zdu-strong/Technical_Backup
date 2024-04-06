@@ -2,11 +2,11 @@ import registerWebworker from 'webworker-promise/lib/register'
 import JSEncrypt from 'jsencrypt'
 
 registerWebworker(async ({
+  data,
   publicKeyOfRSA,
-  data
 }: {
+  data: string,
   publicKeyOfRSA: string,
-  data: string
 }) => {
   return await encrypt(publicKeyOfRSA, data);
 });

@@ -2,7 +2,7 @@ import 'tailwindcss/utilities.css';
 import '@/common/app-base-css/index.css';
 import '@fontsource/roboto';
 import 'reflect-metadata';
-import '@/common/axios-config/AxiosConfig';
+import '@/common/Server';
 import { CssBaseline } from '@mui/material';
 import Router from '@/router';
 import I18nComponent from '@/common/i18n/I18nComponent';

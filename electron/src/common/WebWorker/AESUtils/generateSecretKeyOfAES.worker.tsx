@@ -14,6 +14,7 @@ registerWebworker(async ({
   const key256Bits = CryptoJS.PBKDF2(password, salt, {
     keySize: 256 / 32,
     hasher: CryptoJS.algo.SHA256,
+    iterations: 65536
   });
   return key256Bits.toString(CryptoJS.enc.Base64);
 });

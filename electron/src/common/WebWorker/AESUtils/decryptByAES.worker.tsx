@@ -2,11 +2,11 @@ import registerWebworker from 'webworker-promise/lib/register'
 import CryptoJS from 'crypto-js';
 
 registerWebworker(async ({
+  data,
   secretKeyOfAES,
-  data
 }: {
+  data: string,
   secretKeyOfAES: string,
-  data: string
 }) => {
   const salt = data.slice(0, 24);
   data = data.slice(24);

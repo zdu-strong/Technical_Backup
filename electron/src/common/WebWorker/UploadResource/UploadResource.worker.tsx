@@ -1,4 +1,4 @@
-import '@/common/axios-config/AxiosConfig'
+import '@/common/Server';
 import registerWebworker from 'webworker-promise/lib/register'
 import axios from "axios";
 import { catchError, concatMap, from, map, of, range, toArray } from "rxjs";
