@@ -92,7 +92,7 @@
     "dexie": "4.0.1",
     "electron": "29.2.0",
     "electron-builder": "24.13.3",
-    "eslint": "9.0.0",
+    "eslint": "8.57.0",
     "execa": "5.1.1",
     "get-port": "5.1.1",
     "is-mobile": "4.0.0",
