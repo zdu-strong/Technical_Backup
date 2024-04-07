@@ -12,5 +12,5 @@ export async function getUserById(userId: string) {
   response.data.decryptByPublicKeyOfRSA = async (data: string) => {
     return await decryptByPublicKeyOfRSA(data, response.data!.publicKeyOfRSA);
   }
-  return response;
+  return response.data;
 }

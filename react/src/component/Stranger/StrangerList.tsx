@@ -24,7 +24,7 @@ export default observer(() => {
   })
 
   async function getFriendshipList() {
-    const { data: { list } } = await api.Friendship.getStrangerList();
+    const { list } = await api.Friendship.getStrangerList();
     state.friendshipList = list;
   }
 

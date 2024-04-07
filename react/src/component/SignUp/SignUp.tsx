@@ -302,7 +302,7 @@ export default observer(() => {
                       }
                       state.submitted = false;
                       state.loading.sendVerificationCode[s.id!] = true;
-                      const { data } = await api.Authorization.sendVerificationCode(s.email);
+                      const data = await api.Authorization.sendVerificationCode(s.email);
                       s.verificationCodeEmail.id = data.id;
                       if (data.verificationCode && !s.verificationCodeEmail.verificationCode) {
                         s.verificationCodeEmail.verificationCode = data.verificationCode;

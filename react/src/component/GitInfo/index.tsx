@@ -26,8 +26,7 @@ export default observer(() => {
   })
 
   async function loadServerGitInfo() {
-    const { data } = await api.Git.getServerGitInfo();
-    state.serverGitInfo = data;
+    state.serverGitInfo = await api.Git.getServerGitInfo();
   }
 
   return <LoadingOrErrorComponent ready={state.ready} error={state.error}>

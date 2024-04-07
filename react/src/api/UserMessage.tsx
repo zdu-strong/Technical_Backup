@@ -2,7 +2,6 @@ import { ServerAddress, getWebSocketServerAddress } from "@/common/Server";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { UserMessageWebSocketReceiveModel } from "@/model/UserMessageWebSocketReceiveModel";
 import axios from "axios";
-import qs from "qs";
 import { map, Observable, Subject, switchMap } from "rxjs";
 import makeWebSocketObservable, { GetWebSocketResponses } from "rxjs-websockets";
 import { TypedJSON } from "typedjson";

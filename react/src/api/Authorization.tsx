@@ -27,14 +27,15 @@ export async function signUp(password: string, nickname: string, userEmailList: 
 }
 
 export async function sendVerificationCode(email: string) {
-  return await axios.post<VerificationCodeEmailModel>("/email/send_verification_code", null, { params: { email } });
+  const { data } = await axios.post<VerificationCodeEmailModel>("/email/send_verification_code", null, { params: { email } });
+  return data;
 }
 
 export async function signIn(username: string, password: string): Promise<void> {
   await signOut();
   const passwordPartList = [new Date(), v1(), await generateSecretKeyOfAES(password)];
   const passwordJsonString = JSON.stringify(passwordPartList);
-  const { data: publicKey } = await getKeyOfRSAPublicKey();
+  const publicKey = await getKeyOfRSAPublicKey();
   const passwordParameter = await encryptByPublicKeyOfRSA(passwordJsonString, publicKey);
   let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
     params: {
