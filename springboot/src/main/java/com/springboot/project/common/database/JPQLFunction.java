@@ -52,9 +52,8 @@ public class JPQLFunction {
     }
 
     /**
-     * This method is only available in mysql, not in the h2 database. In order to
-     * obtain the total number of entries during paging, compatibility processing
-     * has been done at the place of call. Please do not call it.
+     * In order to obtain the total number of entries during paging, compatibility
+     * processing has been done at the place of call. Please do not call it.
      * 
      * @return
      */
