@@ -1,18 +1,18 @@
-import 'tailwindcss/utilities.css';
-import '@/common/app-base-css/index.css';
-import '@fontsource/roboto';
-import '@/common/Server';
-import 'reflect-metadata';
-import { CssBaseline } from '@mui/material';
-import Router from '@/router';
-import I18nComponent from '@/common/i18n/I18nComponent';
 import GlobalMessageComponent from '@/common/MessageService/GlobalMessageComponent';
+import '@/common/Server';
+import '@/common/app-base-css/index.css';
+import { I18nEnum, useI18nLocale } from '@/common/i18n';
+import I18nComponent from '@/common/i18n/I18nComponent';
+import Router from '@/router';
+import '@fontsource/roboto';
+import { CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import vhCheck from 'vh-check'
-import { stylesheet } from 'typestyle';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
-import { useI18nLocale, I18nEnum } from '@/common/i18n';
+import 'reflect-metadata';
+import 'tailwindcss/utilities.css';
+import { stylesheet } from 'typestyle';
+import vhCheck from 'vh-check';
 
 vhCheck();
 

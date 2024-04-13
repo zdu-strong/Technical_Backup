@@ -1,18 +1,18 @@
-import 'tailwindcss/utilities.css';
-import '@/common/app-base-css/index.css';
-import '@fontsource/roboto';
-import '@/common/axios-config/AxiosConfig';
-import 'reflect-metadata';
-import { CssBaseline } from '@mui/material';
-import Router from '@/router';
-import I18nComponent from '@/common/i18n/I18nComponent';
 import GlobalMessageComponent from '@/common/MessageService/GlobalMessageComponent';
+import '@/common/ScreenOrentation';
+import '@/common/Server';
+import '@/common/StorageManage/StorageManageRun';
+import '@/common/app-base-css/index.css';
+import I18nComponent from '@/common/i18n/I18nComponent';
+import Router from '@/router';
+import '@fontsource/roboto';
+import { CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import '@/common/ScreenOrentation';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
-import { useI18nLocale, I18nEnum } from './common/i18n';
-import '@/common/StorageManage/StorageManageRun';
+import 'reflect-metadata';
+import 'tailwindcss/utilities.css';
+import { I18nEnum, useI18nLocale } from './common/i18n';
 
 export default observer(() => {
 
