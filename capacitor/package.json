@@ -90,6 +90,7 @@
     "execa": "5.1.1",
     "get-port": "5.1.1",
     "inquirer": "8.2.4",
+    "is-mobile": "4.0.0",
     "linq": "3.2.4",
     "mathjs": "12.4.1",
     "mobx-react-use-autorun": "4.0.23",
