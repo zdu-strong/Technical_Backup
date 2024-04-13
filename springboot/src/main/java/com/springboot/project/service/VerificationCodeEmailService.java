@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.TimeZone;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
@@ -148,62 +148,6 @@ public class VerificationCodeEmailService extends BaseService {
         }
 
         return isFirstOnTheSecond;
-    }
-
-    public void checkVerificationCodeEmailHasBeenUsed(VerificationCodeEmailModel verificationCodeEmailModel) {
-        var id = verificationCodeEmailModel.getId();
-
-        var verificationCodeEmailEntityOptional = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
-                .findOne();
-        if (!verificationCodeEmailEntityOptional.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
-        }
-
-        var verificationCodeEmailEntity = verificationCodeEmailEntityOptional.get();
-
-        if (!this.isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailEntity.getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailEntity.getEmail() + " is wrong");
-        }
-
-        if (verificationCodeEmailEntity.getHasUsed()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailEntity.getEmail() + " is wrong");
-        }
-
-        if (!verificationCodeEmailEntity.getEmail().equals(verificationCodeEmailModel.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
-        }
-
-        {
-            var expiredDate = DateUtils.addMinutes(new Date(), 5);
-
-            if (!verificationCodeEmailEntity.getCreateDate().before(expiredDate)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
-            }
-
-        }
-
-        verificationCodeEmailEntity.setHasUsed(true);
-        this.merge(verificationCodeEmailEntity);
-    }
-
-    public void checkVerificationCodeEmailIsPassed(VerificationCodeEmailModel verificationCodeEmailModel) {
-        var id = verificationCodeEmailModel.getId();
-        var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
-                .getOnlyValue();
-
-        if (!verificationCodeEmailEntity.getVerificationCode()
-                .equals(verificationCodeEmailModel.getVerificationCode())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
-        }
-
-        verificationCodeEmailEntity.setIsPassed(true);
-        this.merge(verificationCodeEmailEntity);
     }
 
 }

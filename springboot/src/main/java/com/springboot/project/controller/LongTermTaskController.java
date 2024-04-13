@@ -1,12 +1,14 @@
 package com.springboot.project.controller;
 
 import java.util.Date;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -37,7 +39,7 @@ public class LongTermTaskController extends BaseController {
     public ResponseEntity<?> getLongTermTask(@RequestParam String id)
             throws InterruptedException, JsonMappingException, JsonProcessingException {
 
-        this.longTermTaskService
+        this.longTermTaskCheckService
                 .checkIsExistLongTermTaskById(this.encryptDecryptService.decryptByAES(id));
 
         var expireDate = DateUtils.addMilliseconds(new Date(),

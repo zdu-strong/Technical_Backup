@@ -1,24 +1,24 @@
 package com.springboot.project.test.service.VerificationCodeEmailService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class VerificationCodeEmailServiceCheckVerificationCodeEmailIsPassedTest extends BaseTest {
+public class VerificationCodeEmailCheckServiceCheckVerificationCodeEmailIsPassedTest extends BaseTest {
     private VerificationCodeEmailModel verificationCodeEmailModel;
 
     @Test
     public void test() throws URISyntaxException {
-        this.verificationCodeEmailService
+        this.verificationCodeEmailCheckService
                 .checkVerificationCodeEmailIsPassed(this.verificationCodeEmailModel);
     }
 
@@ -37,7 +37,7 @@ public class VerificationCodeEmailServiceCheckVerificationCodeEmailIsPassedTest 
         assertNotNull(result.getCreateDate());
         assertNotNull(result.getUpdateDate());
         this.verificationCodeEmailModel = result;
-        this.verificationCodeEmailService.checkVerificationCodeEmailHasBeenUsed(this.verificationCodeEmailModel);
+        this.verificationCodeEmailCheckService.checkVerificationCodeEmailHasBeenUsed(this.verificationCodeEmailModel);
     }
 
 }

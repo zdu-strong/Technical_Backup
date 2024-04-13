@@ -1,12 +1,12 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
 
@@ -69,13 +69,6 @@ public class LongTermTaskService extends BaseService {
         LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.longTermTaskFormatter.format(longTermTaskEntity);
-    }
-
-    public void checkIsExistLongTermTaskById(String id) {
-        var isExistLongTermTask = this.LongTermTaskEntity().where(s -> s.getId().equals(id)).exists();
-        if (!isExistLongTermTask) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified task does not exist");
-        }
     }
 
 }

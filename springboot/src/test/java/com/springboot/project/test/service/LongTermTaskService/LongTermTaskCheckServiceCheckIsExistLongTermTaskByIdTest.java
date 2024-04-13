@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class LongTermTaskServiceCheckIsExistLongTermTaskByIdTest extends BaseTest {
+public class LongTermTaskCheckServiceCheckIsExistLongTermTaskByIdTest extends BaseTest {
 
     private String longTermtaskId;
 
     @Test
     public void test() {
-        this.longTermTaskService.checkIsExistLongTermTaskById(this.longTermtaskId);
+        this.longTermTaskCheckService.checkIsExistLongTermTaskById(this.longTermtaskId);
     }
 
     @BeforeEach

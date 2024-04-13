@@ -1,18 +1,32 @@
 package com.springboot.project.common.baseService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.storage.Storage;
-import com.springboot.project.entity.*;
+import com.springboot.project.entity.DistributedExecutionEntity;
+import com.springboot.project.entity.EncryptDecryptEntity;
+import com.springboot.project.entity.FriendshipEntity;
+import com.springboot.project.entity.LoggerEntity;
+import com.springboot.project.entity.LongTermTaskEntity;
+import com.springboot.project.entity.OrganizeClosureEntity;
+import com.springboot.project.entity.OrganizeEntity;
+import com.springboot.project.entity.OrganizeMoveTopEntity;
+import com.springboot.project.entity.StorageSpaceEntity;
+import com.springboot.project.entity.TokenEntity;
+import com.springboot.project.entity.UserBlackOrganizeClosureEntity;
+import com.springboot.project.entity.UserBlackOrganizeEntity;
+import com.springboot.project.entity.UserEmailEntity;
+import com.springboot.project.entity.UserEntity;
+import com.springboot.project.entity.UserMessageEntity;
+import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
@@ -27,6 +41,14 @@ import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
 import com.springboot.project.properties.DateFormatProperties;
+import com.springboot.project.service.EncryptDecryptService;
+import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.UserEmailService;
+import com.springboot.project.service.UserService;
+import com.springboot.project.service.VerificationCodeEmailService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -84,7 +106,22 @@ public abstract class BaseService {
     protected OrganizeMoveTopFormatter organizeMoveTopFormatter;
 
     @Autowired
+    protected OrganizeService organizeService;
+
+    @Autowired
     protected TokenFormatter tokenFormatter;
+
+    @Autowired
+    protected UserService userService;
+
+    @Autowired
+    protected UserEmailService userEmailService;
+
+    @Autowired
+    protected EncryptDecryptService encryptDecryptService;
+
+    @Autowired
+    protected VerificationCodeEmailService verificationCodeEmailService;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);

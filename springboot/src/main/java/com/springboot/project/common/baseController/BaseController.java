@@ -1,10 +1,9 @@
 package com.springboot.project.common.baseController;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
@@ -17,13 +16,21 @@ import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
+import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
+import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.TokenService;
+import com.springboot.project.service.UserCheckService;
+import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
+import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Base class for all controllers, providing all service variables
@@ -57,6 +64,9 @@ public class BaseController {
 
     @Autowired
     protected UserService userService;
+
+    @Autowired
+    protected UserCheckService userCheckService;
 
     @Autowired
     protected LongTermTaskService longTermTaskService;
@@ -99,5 +109,17 @@ public class BaseController {
 
     @Autowired
     protected DateFormatProperties dateFormatProperties;
+
+    @Autowired
+    protected OrganizeCheckService organizeCheckService;
+
+    @Autowired
+    protected LongTermTaskCheckService longTermTaskCheckService;
+
+    @Autowired
+    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
+
+    @Autowired
+    protected UserEmailCheckService userEmailCheckService;
 
 }

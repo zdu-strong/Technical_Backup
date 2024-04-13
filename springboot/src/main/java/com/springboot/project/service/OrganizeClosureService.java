@@ -1,16 +1,14 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
+
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.*;
+import com.springboot.project.entity.OrganizeClosureEntity;
 
 @Service
 public class OrganizeClosureService extends BaseService {
-
-    @Autowired
-    private OrganizeService organizeService;
 
     public boolean refresh(String organizeId) {
         var organizeEntity = this.OrganizeEntity()

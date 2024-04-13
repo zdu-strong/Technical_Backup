@@ -3,6 +3,7 @@ package com.springboot.project.controller;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseController.BaseController;
@@ -57,13 +59,13 @@ public class AuthorizationController extends BaseController {
 
                 userEmail.getVerificationCodeEmail().setEmail(userEmail.getEmail());
 
-                this.verificationCodeEmailService
+                this.verificationCodeEmailCheckService
                         .checkVerificationCodeEmailHasBeenUsed(userEmail.getVerificationCodeEmail());
 
-                this.verificationCodeEmailService
+                this.verificationCodeEmailCheckService
                         .checkVerificationCodeEmailIsPassed(userEmail.getVerificationCodeEmail());
 
-                this.userEmailService.checkEmailIsNotUsed(userEmail.getEmail());
+                this.userEmailCheckService.checkEmailIsNotUsed(userEmail.getEmail());
             }
         }
 
@@ -89,7 +91,7 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_in")
     public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
             throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
-        this.userService.checkExistAccount(username);
+        this.userCheckService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
         var accessToken = this.tokenService.generateAccessToken(userId, password);
         var user = this.userService.getUserWithMoreInformation(userId);

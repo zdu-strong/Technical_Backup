@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.OrganizeModel;
 
@@ -21,7 +22,7 @@ public class OrganizeController extends BaseController {
         if (organizeModel.getParent() != null) {
             var parentOrganizeId = organizeModel.getParent().getId();
             if (StringUtils.isNotBlank(parentOrganizeId)) {
-                this.organizeService.checkExistOrganize(parentOrganizeId);
+                this.organizeCheckService.checkExistOrganize(parentOrganizeId);
             }
         }
 
@@ -31,7 +32,7 @@ public class OrganizeController extends BaseController {
 
     @PutMapping("/organize/update")
     public ResponseEntity<?> update(@RequestBody OrganizeModel organizeModel) {
-        this.organizeService.checkExistOrganize(organizeModel.getId());
+        this.organizeCheckService.checkExistOrganize(organizeModel.getId());
 
         this.organizeService.update(organizeModel);
         return ResponseEntity.ok().build();
@@ -39,7 +40,7 @@ public class OrganizeController extends BaseController {
 
     @DeleteMapping("/organize/delete")
     public ResponseEntity<?> delete(@RequestParam String id) {
-        this.organizeService.checkExistOrganize(id);
+        this.organizeCheckService.checkExistOrganize(id);
 
         this.organizeService.delete(id);
         this.organizeUtil.refresh(id);
@@ -49,11 +50,9 @@ public class OrganizeController extends BaseController {
     @PutMapping("/organize/move")
     public ResponseEntity<?> move(@RequestParam String id, @RequestParam(required = false) String parentId)
             throws InterruptedException {
-        this.organizeService.checkExistOrganize(id);
-        if (StringUtils.isNotBlank(parentId)) {
-            this.organizeService.checkExistOrganize(parentId);
-        }
-        this.organizeService.checkOrganizeCanBeMove(id, parentId);
+        this.organizeCheckService.checkExistOrganize(id);
+        this.organizeCheckService.checkExistOrganizeWithIdCanBeBlank(parentId);
+        this.organizeCheckService.checkOrganizeCanBeMove(id, parentId);
 
         this.organizeUtil.move(id, parentId);
 
@@ -63,7 +62,7 @@ public class OrganizeController extends BaseController {
     @GetMapping("/organize")
     public ResponseEntity<?> getOrganizeById(@RequestParam String id) {
 
-        this.organizeService.checkExistOrganize(id);
+        this.organizeCheckService.checkExistOrganize(id);
 
         var organizeModel = this.organizeService.getById(id);
         return ResponseEntity.ok(organizeModel);

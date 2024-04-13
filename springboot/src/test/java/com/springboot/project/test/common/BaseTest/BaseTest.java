@@ -1,6 +1,7 @@
 package com.springboot.project.test.common.BaseTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
@@ -39,6 +41,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,15 +70,21 @@ import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
+import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
+import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeClosureService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import com.springboot.project.service.TokenService;
+import com.springboot.project.service.UserCheckService;
+import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
+import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
+
 import io.reactivex.rxjava3.core.Flowable;
 
 /**
@@ -181,6 +190,21 @@ public class BaseTest {
 
     @SpyBean
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
+
+    @Autowired
+    protected OrganizeCheckService organizeCheckService;
+
+    @Autowired
+    protected UserCheckService userCheckService;
+
+    @Autowired
+    protected LongTermTaskCheckService longTermTaskCheckService;
+
+    @Autowired
+    protected UserEmailCheckService userEmailCheckService;
+
+    @Autowired
+    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
 
     @BeforeEach
     public void beforeEachOfBaseTest() throws InterruptedException, ExecutionException {

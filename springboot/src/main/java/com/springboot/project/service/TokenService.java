@@ -5,15 +5,16 @@ import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.jinq.orm.stream.JinqStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.*;
+import com.springboot.project.entity.TokenEntity;
 import com.springboot.project.model.TokenModel;
 
 import cn.hutool.crypto.CryptoException;
@@ -29,12 +30,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class TokenService extends BaseService {
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EncryptDecryptService encryptDecryptService;
 
     public void deleteTokenEntity(String id) {
         var tokenEntity = this.TokenEntity().where(s -> s.getId().equals(id)).getOnlyValue();

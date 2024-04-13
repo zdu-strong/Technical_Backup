@@ -2,15 +2,15 @@ package com.springboot.project.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.model.PaginationModel;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.OrganizeEntity;
+import com.springboot.project.model.OrganizeModel;
+import com.springboot.project.model.PaginationModel;
 
 @Service
 public class OrganizeService extends BaseService {
@@ -57,18 +57,6 @@ public class OrganizeService extends BaseService {
         return this.organizeFormatter.format(organizeEntity);
     }
 
-    public void checkExistOrganize(String id) {
-        var exists = this.OrganizeEntity()
-                .where(s -> s.getId().equals(id))
-                .map(s -> this.organizeFormatter.format(s))
-                .filter(s -> !s.getIsDeleted())
-                .findFirst()
-                .isPresent();
-        if (!exists) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
-        }
-    }
-
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeClosureEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
@@ -87,6 +75,14 @@ public class OrganizeService extends BaseService {
         organizeEntity.setParent(parentOrganizeEntity);
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
+    }
+
+    public PaginationModel<OrganizeModel> getChildOrganizeListThatContainsDeleted(Long pageNum, Long pageSize,
+            String organizeId) {
+        var stream = this.OrganizeEntity().where(s -> s.getParent().getId().equals(organizeId))
+                .sortedDescendingBy(s -> s.getId())
+                .sortedDescendingBy(s -> s.getCreateDate());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 
     public boolean isChildOfOrganize(String id, String parentId) {
@@ -111,20 +107,6 @@ public class OrganizeService extends BaseService {
             organizeEntity = organizeEntity.getParent();
         }
         return isChild;
-    }
-
-    public void checkOrganizeCanBeMove(String id, String parentId) {
-        if (this.isChildOfOrganize(id, parentId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize cannot be moved");
-        }
-    }
-
-    public PaginationModel<OrganizeModel> getChildOrganizeListThatContainsDeleted(Long pageNum, Long pageSize,
-            String organizeId) {
-        var stream = this.OrganizeEntity().where(s -> s.getParent().getId().equals(organizeId))
-                .sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 
     private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
