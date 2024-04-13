@@ -1,12 +1,12 @@
-import { UserModel } from "@/model/UserModel";
-import axios from "axios";
-import { UserEmailModel } from "@/model/UserEmailModel";
-import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
-import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
-import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
-import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
-import { TypedJSON } from "typedjson";
 import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
+import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
+import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
+import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
+import { UserEmailModel } from "@/model/UserEmailModel";
+import { UserModel } from "@/model/UserModel";
+import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
+import axios from "axios";
+import { TypedJSON } from "typedjson";
 import { v1 } from "uuid";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
@@ -28,7 +28,7 @@ export async function signUp(password: string, nickname: string, userEmailList: 
 
 export async function sendVerificationCode(email: string) {
   const { data } = await axios.post<VerificationCodeEmailModel>("/email/send_verification_code", null, { params: { email } });
-  return data;
+  return new TypedJSON(VerificationCodeEmailModel).parse(data)!;
 }
 
 export async function signIn(username: string, password: string): Promise<void> {
