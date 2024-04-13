@@ -1,6 +1,6 @@
-import * as BABYLON from '@babylonjs/core'
+import * as BABYLON from '@babylonjs/core';
 
-async function createScene(engine: BABYLON.Engine, canvasRef: React.MutableRefObject<any>) {
+async function createScene(engine: BABYLON.Engine, canvasRef: React.RefObject<HTMLCanvasElement>) {
 
   const scene = new BABYLON.Scene(engine);
   // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
@@ -21,7 +21,7 @@ async function createScene(engine: BABYLON.Engine, canvasRef: React.MutableRefOb
   return scene;
 };
 
-export async function initGameEngine(canvasRef: React.MutableRefObject<any>) {
+export async function initGameEngine(canvasRef: React.RefObject<HTMLCanvasElement>) {
   const engine = new BABYLON.Engine(canvasRef.current, true, { preserveDrawingBuffer: true, stencil: true });
   engine.resize();
 

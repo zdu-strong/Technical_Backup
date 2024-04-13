@@ -1,14 +1,13 @@
-import { stylesheet } from 'typestyle';
-import { observer, useMobxState } from 'mobx-react-use-autorun';
-import { useRef } from 'react';
-import { useMount } from "mobx-react-use-autorun"
-import { concat, concatMap, delay, EMPTY, fromEvent, interval, of, retry, Subscription, take, tap, timer } from 'rxjs';
-import { initGameEngine } from '@/component/Game/js/initGameEngine';
-import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing'
 import LoadingOrErrorComponent from '@/common/LoadingOrErrorComponent/LoadingOrErrorComponent';
-import * as BABYLON from '@babylonjs/core'
-import { Capacitor } from '@capacitor/core';
+import { initGameEngine } from '@/component/Game/js/initGameEngine';
 import { AndroidNotch } from '@awesome-cordova-plugins/android-notch';
+import * as BABYLON from '@babylonjs/core';
+import { Capacitor } from '@capacitor/core';
+import { observer, useMobxState, useMount } from 'mobx-react-use-autorun';
+import { useRef } from 'react';
+import { EMPTY, Subscription, concat, concatMap, delay, fromEvent, interval, of, retry, take, tap, timer } from 'rxjs';
+import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing';
+import { stylesheet } from 'typestyle';
 
 const css = stylesheet({
   div: {
@@ -42,7 +41,7 @@ export default observer(() => {
     error: null as any,
     leftOrRight: 10,
   }, {
-    canvasRef: useRef<HTMLCanvasElement>(),
+    canvasRef: useRef<HTMLCanvasElement>(null),
   })
 
   useMount(async (subscription) => {
@@ -104,7 +103,7 @@ export default observer(() => {
 
   return <>
     <div className={css.div} style={state.ready ? {} : { position: "relative" }}>
-      <canvas ref={state.canvasRef as any} style={{ outlineStyle: "none" }} />
+      <canvas ref={state.canvasRef} style={{ outlineStyle: "none" }} />
       {!state.ready && <div
         className='flex flex-col flex-auto'
         style={{

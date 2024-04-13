@@ -1,22 +1,22 @@
-import { observer, useMobxState } from "mobx-react-use-autorun";
+import api from '@/api';
 import { MessageService } from "@/common/MessageService";
-import api from '@/api'
-import { Button, TextField } from "@mui/material";
-import { FormattedMessage } from "react-intl";
-import { v1 } from 'uuid'
 import { isMobilePhone } from "@/common/is-mobile-phone";
-import { concatMap, from, map, timer, toArray } from "rxjs";
-import { useRef } from "react";
 import MessageMoreActionDialog from "@/component/MessageMoreAction/MessageMoreActionDialog";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp, faPaperPlane, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, TextField } from "@mui/material";
+import { observer, useMobxState } from "mobx-react-use-autorun";
+import { useRef } from "react";
+import { FormattedMessage } from "react-intl";
+import { concatMap, from, map, timer, toArray } from "rxjs";
+import { v1 } from 'uuid';
 
 export default observer((props: {
   username: string,
   userId: string,
-  variableSizeListRef: React.MutableRefObject<{
+  variableSizeListRef: React.RefObject<{
     scrollToItemByLast: () => Promise<void>;
-  } | undefined>,
+  }>,
 }) => {
   const state = useMobxState({
     /* Pending send message */
@@ -25,13 +25,13 @@ export default observer((props: {
     loadingOfSend: false,
     inputFileId: v1(),
     messageInputId: v1(),
-    textareaRef: useRef<HTMLTextAreaElement>(),
+    textareaRef: useRef<HTMLTextAreaElement>(null),
     moreActionDialog: {
       open: false,
     },
   }, {
     ...props,
-    inputFileRef: useRef<any>(),
+    inputFileRef: useRef<HTMLInputElement>(null),
   })
 
   async function sendMessage() {
@@ -147,7 +147,7 @@ export default observer((props: {
             if (state.messageContent.trim()) {
               sendMessage();
             } else {
-              state.inputFileRef.current.click();
+              state.inputFileRef.current!.click();
             }
           }}
         >
@@ -202,7 +202,7 @@ export default observer((props: {
         state.moreActionDialog.open = false;
         state.textareaRef.current?.focus();
       }}
-      uploadFile={() => state.inputFileRef.current.click()}
+      uploadFile={() => state.inputFileRef.current!.click()}
     />}
   </>;
 })

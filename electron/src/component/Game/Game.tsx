@@ -1,11 +1,10 @@
-import { stylesheet } from 'typestyle';
-import { observer, useMobxState } from 'mobx-react-use-autorun';
-import { useMount } from "mobx-react-use-autorun"
-import { concat, concatMap, delay, EMPTY, fromEvent, interval, of, retry, Subscription, take, tap, timer } from 'rxjs';
-import { initGameEngine } from '@/component/Game/js/initGameEngine';
-import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing'
 import LoadingOrErrorComponent from '@/common/LoadingOrErrorComponent/LoadingOrErrorComponent';
-import * as BABYLON from '@babylonjs/core'
+import { initGameEngine } from '@/component/Game/js/initGameEngine';
+import * as BABYLON from '@babylonjs/core';
+import { observer, useMobxState, useMount } from 'mobx-react-use-autorun';
+import { EMPTY, Subscription, concat, concatMap, delay, fromEvent, interval, of, retry, take, tap, timer } from 'rxjs';
+import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing';
+import { stylesheet } from 'typestyle';
 
 const css = stylesheet({
   div: {
@@ -32,7 +31,7 @@ const css = stylesheet({
 })
 
 export default observer((props: {
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | undefined>,
+  canvasRef: React.RefObject<HTMLCanvasElement>,
 }) => {
 
   const state = useMobxState({

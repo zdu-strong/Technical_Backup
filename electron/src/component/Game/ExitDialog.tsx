@@ -1,14 +1,14 @@
+import remote from "@/remote";
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Dialog, DialogActions, DialogTitle, Fab } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { FormattedMessage } from "react-intl";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import remote from "@/remote";
 
 export default observer((props: {
   closeDialog: () => void,
   exit: () => void,
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | undefined>
+  canvasRef: React.RefObject<HTMLCanvasElement>
 }) => {
 
   const state = useMobxState({}, {

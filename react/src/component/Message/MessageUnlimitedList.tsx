@@ -1,14 +1,13 @@
-import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
-import { observer, useMobxEffect, useMobxState } from "mobx-react-use-autorun";
-import { stylesheet } from "typestyle";
-import api from '@/api'
-import { useMount } from "mobx-react-use-autorun";
-import { concatMap, from, catchError, switchMap, timer, repeat, ReplaySubject, tap, Subscription, EMPTY, interval, take, delay } from 'rxjs'
+import api from '@/api';
 import MessageUnlimitedListChild from "@/component/Message/MessageUnlimitedListChild";
-import { Alert, CircularProgress } from "@mui/material";
-import { FormattedMessage } from "react-intl";
 import { UserMessageModel } from "@/model/UserMessageModel";
+import { Alert, CircularProgress } from "@mui/material";
+import { observer, useMobxEffect, useMobxState, useMount } from "mobx-react-use-autorun";
 import { useImperativeHandle, useRef } from 'react';
+import { FormattedMessage } from "react-intl";
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso';
+import { EMPTY, ReplaySubject, Subscription, catchError, concatMap, delay, from, interval, repeat, switchMap, take, tap, timer } from 'rxjs';
+import { stylesheet } from "typestyle";
 import { v1 } from 'uuid';
 
 const css = stylesheet({
@@ -28,9 +27,9 @@ export default observer((props: {
   username: string,
   setReadyForMessageEntry: (readyForMessageList: boolean) => Promise<void>,
   setErrorForMessageEntry: (error: boolean) => Promise<void>,
-  variableSizeListRef: React.MutableRefObject<{
+  variableSizeListRef: React.RefObject<{
     scrollToItemByLast: () => Promise<void>;
-  } | undefined>
+  }>
 }) => {
 
   const state = useMobxState({
@@ -55,8 +54,8 @@ export default observer((props: {
     child,
   }, {
     ...props,
-    virtuosoRef: useRef<VirtuosoHandle>(),
-    containerRef: useRef<HTMLDivElement>(),
+    virtuosoRef: useRef<VirtuosoHandle>(null),
+    containerRef: useRef<HTMLDivElement>(null),
   })
 
   useMount((subscription) => {
@@ -224,7 +223,7 @@ export default observer((props: {
     ).subscribe());
   }
 
-  return <div className={css.messsageListContainer} ref={state.containerRef as any}>
+  return <div className={css.messsageListContainer} ref={state.containerRef}>
     {!state.error && !state.ready && <CircularProgress style={{ width: "40px", height: "40px" }} />}
     {state.error && <Alert severity="error">
       <FormattedMessage id="ServerAccessError" defaultMessage="Server access error" />
@@ -234,7 +233,7 @@ export default observer((props: {
       totalCount={state.totalPage}
       style={(state.ready && !state.error) ? {} : { visibility: "hidden" }}
       itemContent={state.child}
-      ref={state.virtuosoRef as any}
+      ref={state.virtuosoRef}
     />
   </div>;
 })

@@ -1,16 +1,15 @@
-import { observer, useMobxState } from "mobx-react-use-autorun";
-import { stylesheet } from "typestyle";
-import { useNavigate } from "react-router-dom";
-import MessageChat from "@/component/Message/MessageChat";
-import { useMount } from "mobx-react-use-autorun";
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
-import { v1 } from "uuid";
+import { GlobalUserInfo } from "@/common/Server";
+import MessageChat from "@/component/Message/MessageChat";
 import MessageMenu from "@/component/Message/MessageMenu";
 import MessageUnlimitedList from "@/component/Message/MessageUnlimitedList";
+import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { concatMap, from, timer } from "rxjs";
-import { GlobalUserInfo } from "@/common/Server";
+import { stylesheet } from "typestyle";
+import { v1 } from "uuid";
 
 const css = stylesheet({
   container: {
@@ -42,7 +41,7 @@ export default observer(() => {
     navigate: useNavigate(),
     variableSizeListRef: useRef<{
       scrollToItemByLast: () => Promise<void>,
-    }>(),
+    }>(null),
   })
 
   useMount(async (subscription) => {

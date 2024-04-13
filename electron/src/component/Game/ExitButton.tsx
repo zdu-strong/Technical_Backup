@@ -1,10 +1,9 @@
-import { Fab } from "@mui/material";
-import { observer, useMobxState } from "mobx-react-use-autorun";
-import { stylesheet } from "typestyle";
 import ExitDialog from "@/component/Game/ExitDialog";
-import { useMount } from "mobx-react-use-autorun";
+import { faGear } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear } from '@fortawesome/free-solid-svg-icons'
+import { Fab } from "@mui/material";
+import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
+import { stylesheet } from "typestyle";
 
 const css = stylesheet({
   container: {
@@ -22,7 +21,7 @@ const css = stylesheet({
 
 export default observer((props: {
   exit: () => void,
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | undefined>
+  canvasRef: React.RefObject<HTMLCanvasElement>
 }) => {
 
   const state = useMobxState({

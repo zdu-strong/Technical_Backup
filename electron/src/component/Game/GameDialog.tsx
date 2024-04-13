@@ -1,8 +1,8 @@
-import { observer, useMobxState } from 'mobx-react-use-autorun';
-import { Dialog } from '@mui/material';
-import Game from './Game';
 import ExitButton from '@/component/Game/ExitButton';
+import { Dialog } from '@mui/material';
+import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { useRef } from 'react';
+import Game from './Game';
 
 export default observer((props: {
   closeDialog: () => void
@@ -10,7 +10,7 @@ export default observer((props: {
 
   const state = useMobxState({}, {
     ...props,
-    canvasRef: useRef<HTMLCanvasElement>(),
+    canvasRef: useRef<HTMLCanvasElement>(null),
   })
 
   return <>
