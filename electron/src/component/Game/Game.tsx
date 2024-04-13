@@ -86,7 +86,7 @@ export default observer((props: {
 
   return <>
     <div className={css.div} style={state.ready ? {} : { position: "relative" }}>
-      <canvas ref={state.canvasRef as any} style={{ outlineStyle: "none" }} />
+      <canvas ref={state.canvasRef} style={{ outlineStyle: "none" }} />
       {!state.ready && <LoadingOrErrorComponent ready={state.ready} error={state.error} />}
     </div>
   </>
