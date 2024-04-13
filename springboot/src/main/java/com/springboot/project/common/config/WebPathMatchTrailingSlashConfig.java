@@ -1,22 +1,16 @@
 package com.springboot.project.common.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebPathMatchTrailingSlashConfig {
+public class WebPathMatchTrailingSlashConfig implements WebMvcConfigurer {
 
-    @Autowired
-    private TrailingSlashRedirectFilter trailingSlashRedirectFilter;
-
-    @Bean
-    public FilterRegistrationBean<Filter> trailingSlashFilter() {
-        FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(trailingSlashRedirectFilter);
-        registrationBean.addUrlPatterns("/*");
-        return registrationBean;
+    @SuppressWarnings("deprecation")
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.setUseTrailingSlashMatch(true);
     }
+
 }
