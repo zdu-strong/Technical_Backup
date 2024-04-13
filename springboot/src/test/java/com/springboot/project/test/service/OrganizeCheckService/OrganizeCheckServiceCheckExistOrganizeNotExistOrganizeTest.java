@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.OrganizeService;
+package com.springboot.project.test.service.OrganizeCheckService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.LongTermTaskService;
+package com.springboot.project.test.service.LongTermTaskCheckService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

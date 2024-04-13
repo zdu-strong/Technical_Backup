@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.VerificationCodeEmailService;
+package com.springboot.project.test.service.VerificationCodeEmailCheckService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,13 +13,13 @@ import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class VerificationCodeEmailCheckServiceCheckVerificationCodeEmailIsPassedTest extends BaseTest {
+public class VerificationCodeEmailCheckServiceCheckVerificationCodeEmailHasBeenUsedTest extends BaseTest {
     private VerificationCodeEmailModel verificationCodeEmailModel;
 
     @Test
     public void test() throws URISyntaxException {
         this.verificationCodeEmailCheckService
-                .checkVerificationCodeEmailIsPassed(this.verificationCodeEmailModel);
+                .checkVerificationCodeEmailHasBeenUsed(this.verificationCodeEmailModel);
     }
 
     @BeforeEach
@@ -37,7 +37,6 @@ public class VerificationCodeEmailCheckServiceCheckVerificationCodeEmailIsPassed
         assertNotNull(result.getCreateDate());
         assertNotNull(result.getUpdateDate());
         this.verificationCodeEmailModel = result;
-        this.verificationCodeEmailCheckService.checkVerificationCodeEmailHasBeenUsed(this.verificationCodeEmailModel);
     }
 
 }

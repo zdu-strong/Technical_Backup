@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.UserService;
+package com.springboot.project.test.service.UserCheckService;
 
 import java.net.URISyntaxException;
 
