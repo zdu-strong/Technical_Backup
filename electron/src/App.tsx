@@ -1,17 +1,17 @@
-import GlobalMessageComponent from '@/common/MessageService/GlobalMessageComponent';
+import 'tailwindcss/utilities.css';
+import '@/common/app-base-css/index.css';
+import '@fontsource/roboto';
+import 'reflect-metadata';
 import '@/common/Server';
 import '@/common/StorageManage/StorageManageRun';
-import '@/common/app-base-css/index.css';
+import GlobalMessageComponent from '@/common/MessageService/GlobalMessageComponent';
 import { I18nEnum, useI18nLocale } from '@/common/i18n';
 import I18nComponent from '@/common/i18n/I18nComponent';
 import Router from '@/router';
-import '@fontsource/roboto';
 import { CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
-import 'reflect-metadata';
-import 'tailwindcss/utilities.css';
 
 export default observer(() => {
 
