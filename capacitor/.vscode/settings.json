@@ -21,5 +21,8 @@
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "extensions.ignoreRecommendations": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
   "java.configuration.updateBuildConfiguration": "disabled",
 }

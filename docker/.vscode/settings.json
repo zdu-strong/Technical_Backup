@@ -10,5 +10,8 @@
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
   "extensions.ignoreRecommendations": true,
 }
