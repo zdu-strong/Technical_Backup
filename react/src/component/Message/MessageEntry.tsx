@@ -1,15 +1,16 @@
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
+import { MessageService } from "@/common/MessageService";
 import { GlobalUserInfo } from "@/common/Server";
 import MessageChat from "@/component/Message/MessageChat";
 import MessageMenu from "@/component/Message/MessageMenu";
-import MessageUnlimitedList from "@/component/Message/MessageUnlimitedList";
 import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { concatMap, from, timer } from "rxjs";
 import { stylesheet } from "typestyle";
 import { v1 } from "uuid";
+import MessageUnlimitedAutoSizer from "./MessageUnlimitedAutoSizer";
 
 const css = stylesheet({
   container: {
@@ -28,15 +29,7 @@ const css = stylesheet({
 export default observer(() => {
 
   const state = useMobxState({
-    readyForStart: false,
-    readyForMessageEntry: false,
-    async setReadyForMessageEntry(readyForMessageEntry: boolean) {
-      state.readyForMessageEntry = readyForMessageEntry;
-    },
-    async setErrorForMessageEntry(error: any) {
-      state.error = error;
-    },
-    error: null as any,
+    ready: false,
   }, {
     navigate: useNavigate(),
     variableSizeListRef: useRef<{
@@ -51,26 +44,20 @@ export default observer(() => {
           if (!(await api.Authorization.isSignIn())) {
             await api.Authorization.signUp(v1(), "visitor", []);
           }
-          state.readyForStart = true;
+          state.ready = true;
         } catch (error) {
-          state.error = error;
+          MessageService.error(error)
         }
       })()))
     ).subscribe());
   })
 
   return <>
-    <LoadingOrErrorComponent ready={state.readyForStart && state.readyForMessageEntry} error={state.error} />
+    <LoadingOrErrorComponent ready={state.ready} error={null} />
     {
-      state.readyForStart && <div className={css.container} style={state.readyForMessageEntry ? {} : { position: "absolute", visibility: "hidden" }} >
+      state.ready && <div className={css.container} style={state.ready ? {} : { position: "absolute", visibility: "hidden" }} >
         <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
-        <MessageUnlimitedList
-          userId={GlobalUserInfo.id!}
-          username={GlobalUserInfo.username!}
-          setReadyForMessageEntry={state.setReadyForMessageEntry}
-          setErrorForMessageEntry={state.setErrorForMessageEntry}
-          variableSizeListRef={state.variableSizeListRef}
-          key={GlobalUserInfo.id}
+        <MessageUnlimitedAutoSizer
         />
         <MessageChat
           userId={GlobalUserInfo.id!}
