@@ -32,4 +32,5 @@
     "java.debug.settings.stepping.skipStaticInitializers": true,
     "extensions.ignoreRecommendations": true,
     "java.silentNotification": true,
+    "spring-boot.ls.problem.application-yaml.YAML_UNKNOWN_PROPERTY": "IGNORE",
 }

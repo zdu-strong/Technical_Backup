@@ -64,7 +64,7 @@ server:
     include-stacktrace: never
   tomcat:
     max-http-form-post-size: -1
-  max-http-header-size: 40KB
+  max-http-request-header-size: 1MB
 properties:
   storage:
     root:
