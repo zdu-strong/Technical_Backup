@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,9 @@ public class UserMessageService extends BaseService {
     }
 
     public List<UserMessageModel> getMessageListOnlyContainsOneByPageNum(Long pageNum, String userId) {
-        var stream = this.UserMessageEntity().sortedBy(s -> s.getId())
+        var stream = this.UserMessageEntity()
+                .where(s -> !s.getIsRecall())
+                .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         var userMessageList = new PaginationModel<>(pageNum, 1L, stream,
                 (s) -> this.userMessageFormatter.formatForUserId(s, userId)).getList();
@@ -57,6 +60,7 @@ public class UserMessageService extends BaseService {
 
     public List<UserMessageModel> getMessageListByLastTwentyMessages(String userId) {
         var userMessageList = this.UserMessageEntity()
+                .where(s -> !s.getIsRecall())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
                 .limit(20)

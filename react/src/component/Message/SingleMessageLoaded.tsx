@@ -24,7 +24,6 @@ export default observer((props: {
     try {
       state.loading = true;
       await api.UserMessage.recallMessage(state.message.id);
-      state.message.isRecall = true
     } catch (error) {
       MessageService.error(error);
       state.loading = false;
@@ -38,10 +37,15 @@ export default observer((props: {
       overflowWrap: "break-word",
     }}
   >
-    <div>
+    <div className="flex flex-row justify-between">
+      <div className="flex flex-row">
+        {state.message.pageNum}
+        {":"}
+      </div>
       <Button
         variant="contained"
         onClick={withdrawn}
+        style={{ marginRight: "1em" }}
         startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faEyeSlash} spin={state.loading} style={{ fontSize: "small" }} />}
       >
         <FormattedMessage id="Withdrawn" defaultMessage="Withdrawn" />

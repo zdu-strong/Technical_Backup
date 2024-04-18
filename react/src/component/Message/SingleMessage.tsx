@@ -1,8 +1,7 @@
 import { observer, useMobxState } from "mobx-react-use-autorun";
-import { useGlobalSingleMessage } from "./js/Global_Chat";
+import { useGlobalSingleMessage } from "@/component/Message/js/Global_Chat";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
-import SingleMessageAlreadyWithdrawn from "./SingleMessageAlreadyWithdrawn";
-import SingleMessageLoaded from "./SingleMessageLoaded";
+import SingleMessageLoaded from "@/component/Message/SingleMessageLoaded";
 
 export default observer((props: {
   pageNum: number
@@ -14,6 +13,6 @@ export default observer((props: {
   })
 
   return <LoadingOrErrorComponent ready={state.ready} error={null}>
-    {state.message.isDelete || state.message.isRecall ? <SingleMessageAlreadyWithdrawn /> : <SingleMessageLoaded message={state.message} />}
+    <SingleMessageLoaded message={state.message} key={state.message.id} />
   </LoadingOrErrorComponent>
 })

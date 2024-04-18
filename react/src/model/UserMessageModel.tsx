@@ -9,7 +9,7 @@ export class UserMessageModel {
   id!: string;
 
   @jsonMember(Boolean)
-  isDelete!: boolean;
+  isDeleted!: boolean;
 
   @jsonMember(Boolean)
   isRecall!: boolean;

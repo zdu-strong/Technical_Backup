@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { concatMap, from, timer } from "rxjs";
 import { stylesheet } from "typestyle";
 import { v1 } from "uuid";
-import MessageUnlimitedAutoSizer from "./MessageUnlimitedAutoSizer";
+import MessageUnlimitedAutoSizer from "@/component/Message/MessageUnlimitedAutoSizer";
 
 const css = stylesheet({
   container: {

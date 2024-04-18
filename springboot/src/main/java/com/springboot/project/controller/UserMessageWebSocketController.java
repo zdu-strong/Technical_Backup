@@ -5,18 +5,12 @@ import java.net.URISyntaxException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
-import jakarta.websocket.CloseReason.CloseCodes;
-import jakarta.websocket.server.ServerEndpoint;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -25,7 +19,16 @@ import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketReceiveModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.service.UserMessageService;
+
 import cn.hutool.extra.spring.SpringUtil;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.CloseReason.CloseCodes;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
 
 /**
@@ -70,12 +73,8 @@ public class UserMessageWebSocketController {
                 var newMessageList = JinqStream.from(messageList)
                         .where(s -> !JinqStream.from(this.lastMessage).anyMatch(t -> {
                             try {
-                                var objectOne = new UserMessageModel();
-                                var objectTwo = new UserMessageModel();
-                                BeanUtils.copyProperties(s, objectOne, "totalPage");
-                                BeanUtils.copyProperties(t, objectTwo, "totalPage");
-                                return this.getObjectMapper().writeValueAsString(objectOne).equals(
-                                        this.getObjectMapper().writeValueAsString(objectTwo));
+                                return this.getObjectMapper().writeValueAsString(s).equals(
+                                        this.getObjectMapper().writeValueAsString(t));
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e.getMessage(), e);
                             }
