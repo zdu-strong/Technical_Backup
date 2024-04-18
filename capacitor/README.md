@@ -6,9 +6,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. From https://code.visualstudio.com install Visual Studio Code.<br/>
 2. From https://nodejs.org install nodejs v20.<br/>
 3. For Android:<br/>
-From https://adoptium.net install java v17, and choose Entire feature.<br/>
+From https://adoptium.net install java v21, and choose Entire feature.<br/>
 4. For Android:<br/>
-From https://developer.android.com/studio install Android Studio. Next, create virtual device (Phone - Pixel 7 - Android API 34).<br/>
+From https://developer.android.com/studio install Android Studio. Next, create virtual device (Phone - Pixel 8 - Android API 34).<br/>
 5. For IOS:<br/>
 Follow this document (https://capacitorjs.com/docs/getting-started/environment-setup) to install Xcode.<br/>
 
