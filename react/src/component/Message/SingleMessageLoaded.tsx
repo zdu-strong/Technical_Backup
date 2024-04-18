@@ -43,9 +43,10 @@ export default observer((props: {
         {":"}
       </div>
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={withdrawn}
         style={{ marginRight: "1em" }}
+        size="small"
         startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faEyeSlash} spin={state.loading} style={{ fontSize: "small" }} />}
       >
         <FormattedMessage id="Withdrawn" defaultMessage="Withdrawn" />
