@@ -1,4 +1,4 @@
-import { runWoker } from "@/common/WebWorkerUtils";
+import { runWoker } from "@/common/WebWorker/WebWorkerUtils";
 
 export async function generateKeyPairOfRSA(): Promise<{ privateKey: string, publicKey: string }> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/generateKeyPairOfRSA.worker', import.meta.url), { type: "module" }));
