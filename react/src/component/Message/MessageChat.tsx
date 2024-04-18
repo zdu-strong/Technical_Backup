@@ -138,6 +138,7 @@ export default observer((props: {
             marginLeft: "1em",
             textTransform: "none",
             whiteSpace: "nowrap",
+            minWidth: "9em"
           }}
           startIcon={<FontAwesomeIcon icon={state.loadingOfSend ? faSpinner : (state.messageContent.trim() ? faPaperPlane : faCloudArrowUp)} spin={state.loadingOfSend} />}
           onClick={() => {
