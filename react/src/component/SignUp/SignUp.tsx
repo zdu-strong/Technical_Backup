@@ -43,7 +43,6 @@ export default observer(() => {
       sendVerificationCode: {} as Record<string, boolean>,
     },
     ready: false,
-    errorOfInit: null as any,
     error: {
       nickname() {
         if (state.nickname) {
@@ -106,12 +105,8 @@ export default observer(() => {
   })
 
   useMount(async () => {
-    try {
       await initSteps();
       state.ready = true;
-    } catch (e) {
-      state.errorOfInit = e;
-    }
   })
 
   async function initSteps() {
@@ -174,7 +169,7 @@ export default observer(() => {
     }
   }
 
-  return <LoadingOrErrorComponent error={state.errorOfInit} ready={state.ready}>
+  return <LoadingOrErrorComponent error={null} ready={state.ready}>
     <div className={css.container}>
       <div className="flex flex-col flex-auto w-full">
         <div className="flex flex-col flex-auto w-full">
