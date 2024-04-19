@@ -37,6 +37,7 @@ After upgrading the dependencies, please make sure that the project runs normall
 After upgrading the dependencies, please make sure that the dependent versions in package.json are all accurate versions.<br/>
 
 The following dependencies are currently unable to continue to be upgraded:<br/>
+eslint<br/>
 execa (Current project not support ES module)<br/>
 get-port (Current project not support ES module)<br/>
 

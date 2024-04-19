@@ -62,6 +62,11 @@ The following dependencies are currently unable to continue to be upgraded:<br/>
         <artifactId>liquibase-core</artifactId>
     </dependency>
 
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+    </dependency>
+
 ## Notes - How to use vscode
 
 1. Press "F5" to start.<br/>
