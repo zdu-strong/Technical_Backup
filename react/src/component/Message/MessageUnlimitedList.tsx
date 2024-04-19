@@ -3,7 +3,8 @@ import { GlobalChatMessage, GlobalScrollToLastItemSubject } from '@/component/Me
 import { List, Size } from 'react-virtualized';
 import SingleMessage from "@/component/Message/SingleMessage";
 import { useRef } from "react";
-import { delay, tap } from "rxjs";
+import { EMPTY, concatMap, interval, of, take } from "rxjs";
+import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing'
 
 
 export default observer((props: Size) => {
@@ -14,12 +15,21 @@ export default observer((props: Size) => {
 
   useMount(sub => {
     sub.add(GlobalScrollToLastItemSubject.pipe(
-      delay(10),
-      tap((s) => {
-        if (GlobalChatMessage.totalRecord > 0) {
-          state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
-        }
-      })
+      exhaustMapWithTrailing(() => {
+        return interval(1).pipe(
+          concatMap(() => {
+            if (GlobalChatMessage.totalRecord === 0) {
+              return of(null);
+            }
+            if (!state.listRef.current) {
+              return EMPTY;
+            }
+            state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
+            return of(null);
+          }),
+          take(1)
+        );
+      }),
     ).subscribe())
   })
 

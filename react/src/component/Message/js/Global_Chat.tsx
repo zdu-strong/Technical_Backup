@@ -61,6 +61,7 @@ export function useGlobalSingleMessage(pageNum: number) {
 }
 
 export const GlobalScrollToLastItemSubject = new ReplaySubject<void>(1);
+GlobalScrollToLastItemSubject.next();
 
 export async function scrollToLastItem() {
   GlobalScrollToLastItemSubject.next();
