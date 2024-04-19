@@ -7,7 +7,8 @@ import { App } from '@capacitor/app'
 
 export default observer((props: { closeDialog: () => void, exit: () => void }) => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     ...props
   })
 

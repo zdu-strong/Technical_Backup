@@ -4,7 +4,8 @@ import { useI18nJson, useI18nLocale } from '.';
 import { useMobxState, useMobxEffect, observer } from 'mobx-react-use-autorun';
 
 export default observer((props: { children: ReactNode }) => {
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     I18nLocale: useI18nLocale(),
     I18nJson: useI18nJson(),
     ...props

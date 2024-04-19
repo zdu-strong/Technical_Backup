@@ -11,7 +11,8 @@ export default observer((props: {
   canvasRef: React.RefObject<HTMLCanvasElement>
 }) => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     ...props
   })
 

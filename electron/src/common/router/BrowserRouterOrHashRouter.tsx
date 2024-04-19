@@ -4,7 +4,8 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 
 export default observer((props: { children: React.ReactNode }) => {
 
-  const state = useMobxState({},{
+  const state = useMobxState({
+  }, {
     ...props
   })
 

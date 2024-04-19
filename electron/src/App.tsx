@@ -15,7 +15,8 @@ import { observer, useMobxState } from 'mobx-react-use-autorun';
 
 export default observer(() => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     i18nLocale: useI18nLocale(),
   })
 
