@@ -11,18 +11,22 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.enumerate.EncryptDecryptEnum;
 import com.springboot.project.model.EncryptDecryptModel;
+
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.asymmetric.KeyType;
@@ -199,7 +203,7 @@ public class EncryptDecryptService extends BaseService {
             if (!this.ready) {
                 synchronized (getClass()) {
                     if (!this.ready) {
-                        String id = EncryptDecryptEnum.KEY_ID;
+                        String id = EncryptDecryptEnum.getId();
                         if (!this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
 
                             EncryptDecryptEntity encryptDecryptEntity = new EncryptDecryptEntity();

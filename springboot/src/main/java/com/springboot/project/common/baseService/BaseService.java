@@ -41,6 +41,7 @@ import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
 import com.springboot.project.properties.DateFormatProperties;
+import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.UserEmailService;
@@ -122,6 +123,9 @@ public abstract class BaseService {
 
     @Autowired
     protected VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    private HibernateDialectProperties HibernateDialectProperties;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
@@ -208,7 +212,12 @@ public abstract class BaseService {
     }
 
     protected String newId() {
-        return Generators.timeBasedReorderedGenerator().generate().toString();
+        if (this.HibernateDialectProperties.getIsMysql()) {
+            return Generators.timeBasedReorderedGenerator().generate().toString();
+        } else {
+            return new StringBuilder(Generators.timeBasedReorderedGenerator().generate().toString()).reverse()
+                    .toString();
+        }
     }
 
 }

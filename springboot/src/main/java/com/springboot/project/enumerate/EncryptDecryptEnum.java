@@ -1,7 +1,18 @@
 package com.springboot.project.enumerate;
 
+import com.springboot.project.properties.HibernateDialectProperties;
+
+import cn.hutool.extra.spring.SpringUtil;
+
 public class EncryptDecryptEnum {
 
-    public final static String KEY_ID = "1eebc4ea-34b3-64fd-bdc4-47396785f5dd";
+    public static String getId() {
+        var isMysql = SpringUtil.getBean(HibernateDialectProperties.class).getIsMysql();
+        if (isMysql) {
+            return "1eebc4ea-34b3-64fd-bdc4-47396785f5dd";
+        } else {
+            return "bb8bb726f916-eb99-f706-5a0e-2f4cbee1";
+        }
+    }
 
 }
