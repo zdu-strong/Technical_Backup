@@ -25,4 +25,5 @@
     "source.organizeImports": "never"
   },
   "java.configuration.updateBuildConfiguration": "disabled",
+  "git.enabled": false,
 }

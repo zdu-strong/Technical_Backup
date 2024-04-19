@@ -28,4 +28,5 @@
     "source.organizeImports": "never"
   },
   "extensions.ignoreRecommendations": true,
+  "git.enabled": false,
 }
