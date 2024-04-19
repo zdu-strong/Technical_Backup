@@ -7,7 +7,6 @@ import MessageMenu from "@/component/Message/MessageMenu";
 import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { concatMap, from, timer } from "rxjs";
 import { stylesheet } from "typestyle";
 import { v1 } from "uuid";
 import MessageUnlimitedAutoSizer from "@/component/Message/MessageUnlimitedAutoSizer";
@@ -37,19 +36,15 @@ export default observer(() => {
     }>(null),
   })
 
-  useMount(async (subscription) => {
-    subscription.add(timer(1).pipe(
-      concatMap(() => from((async () => {
-        try {
-          if (!(await api.Authorization.isSignIn())) {
-            await api.Authorization.signUp(v1(), "visitor", []);
-          }
-          state.ready = true;
-        } catch (error) {
-          MessageService.error(error)
-        }
-      })()))
-    ).subscribe());
+  useMount(async () => {
+    try {
+      if (!(await api.Authorization.isSignIn())) {
+        await api.Authorization.signUp(v1(), "visitor", []);
+      }
+      state.ready = true;
+    } catch (error) {
+      MessageService.error(error)
+    }
   })
 
   return <>
