@@ -8,7 +8,8 @@ export default observer((props: {
   closeDialog: () => void,
 }) => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     ...props
   })
 

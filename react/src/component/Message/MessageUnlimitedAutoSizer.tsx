@@ -16,7 +16,8 @@ const css = stylesheet({
 
 export default observer(() => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     ...useGlobalSingleMessage(1)
   })
 

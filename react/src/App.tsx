@@ -24,7 +24,8 @@ const css = stylesheet({
 
 export default observer(() => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     i18nLocale: useI18nLocale(),
   })
 

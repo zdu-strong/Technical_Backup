@@ -9,7 +9,8 @@ import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing'
 
 export default observer((props: Size) => {
 
-  const state = useMobxState({}, {
+  const state = useMobxState({
+  }, {
     listRef: useRef<List>(null),
   })
 

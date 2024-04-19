@@ -18,7 +18,8 @@ export default observer((props: {
   uploadFile: () => void,
 }) => {
 
-  const state = useMobxState({}, props);
+  const state = useMobxState({
+  }, props);
 
   return (
     <Dialog
