@@ -5,6 +5,7 @@ import { ReplaySubject, Subscription, of, retry, share, switchMap, tap } from "r
 
 export const GlobalChatMessage = observable({
   totalRecord: 0,
+  lastMessageId: "",
   messageMap: {
 
   } as Record<number, { ready: boolean, message: UserMessageModel }>
@@ -25,6 +26,12 @@ const GlobalShareMessageSubject = of(null).pipe(
         ready: true,
         message
       };
+      if (message.pageNum === GlobalChatMessage.totalRecord) {
+        if (message.id !== GlobalChatMessage.lastMessageId) {
+          GlobalChatMessage.lastMessageId = message.id;
+          hasNewMessage = true;
+        }
+      }
     }
     if (hasNewMessage) {
       scrollToLastItem();
