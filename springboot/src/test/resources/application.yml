@@ -13,6 +13,8 @@ spring:
       hibernate:
         jdbc:
           "[time_zone]": UTC
+          lob:
+            "[non_contextual_creation]": true
   servlet:
     multipart:
       max-file-size: -1
@@ -58,6 +60,10 @@ logging:
         orm:
           jdbc:
             bind: TRACE
+        engine:
+          jdbc:
+            spi:
+              SqlExceptionHelper: OFF
 server:
   error:
     include-message: always
