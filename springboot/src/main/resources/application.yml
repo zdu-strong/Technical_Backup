@@ -58,6 +58,10 @@ logging:
         orm:
           jdbc:
             bind: OFF
+        engine:
+          jdbc:
+            spi:
+              SqlExceptionHelper: OFF
 server:
   error:
     include-message: always
