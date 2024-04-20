@@ -1,11 +1,12 @@
 package com.springboot.project.common.database;
 
 import org.hibernate.boot.model.FunctionContributions;
-import org.hibernate.dialect.SpannerDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.type.BasicTypeRegistry;
 import org.hibernate.type.StandardBasicTypes;
+
+import com.google.cloud.spanner.hibernate.SpannerDialect;
 
 public class CustomSpannerDialect extends SpannerDialect {
 
