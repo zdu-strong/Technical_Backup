@@ -1,4 +1,4 @@
-import { Button, Paper, Link as LinkAlias } from '@mui/material';
+import { Button, Paper, Link as MaterialLink } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import { Link } from "react-router-dom";
 
@@ -9,11 +9,11 @@ export default (<div className="flex flex-col flex-auto justify-center items-cen
     </div>
     <div>
       <Link to="/" className="no-underline" replace={true}>
-        <LinkAlias underline="hover" component="div">
+        <MaterialLink underline="hover" component="div">
           <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
             <FormattedMessage id="backHomePage" defaultMessage="返回主页" />
           </Button>
-        </LinkAlias>
+        </MaterialLink>
       </Link>
     </div>
   </Paper>

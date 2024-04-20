@@ -1,7 +1,7 @@
 import logo from './image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import BootLoadingComponent from "./BootLoadingComponent";
-import { Button, Link as LinkAlias } from "@mui/material";
+import { Button, Link as MaterialLink } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { useRandomNumber } from './js/useRandomNumber';
@@ -88,7 +88,7 @@ export default observer(() => {
             )
           }
           <div>
-            <LinkAlias underline="hover" component="div" onClick={async () => {
+            <MaterialLink underline="hover" component="div" onClick={async () => {
               state.gameDialog.open = true;
               remote.getCurrentWindow().setMenuBarVisibility(false)
               remote.getCurrentWindow().setFullScreen(true)
@@ -96,7 +96,7 @@ export default observer(() => {
               <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                 <FormattedMessage id="EnterTheGameIfYouWantToExitJustPressTheESCKey" defaultMessage="Enter the game, if you want to exit, just press the ESC key" />
               </Button>
-            </LinkAlias>
+            </MaterialLink>
           </div>
         </div>
       </header>

@@ -1,7 +1,7 @@
 import logo from '@/component/HomePageComponent/image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
-import { Button, Link as LinkAlias } from "@mui/material";
+import { Button, Link as MaterialLink } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { useBatteryInfo } from '@/component/HomePageComponent/js/useBatteryInfo';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -95,19 +95,19 @@ export default observer(() => {
           }
           <div className={css.divContainer}>
             <Link to="/not_found" replace={true} className="no-underline" >
-              <LinkAlias underline="hover" component="div" >
+              <MaterialLink underline="hover" component="div" >
                 <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                   <FormattedMessage id="toUnknownArea" defaultMessage="去未知地区" />
                 </Button>
-              </LinkAlias>
+              </MaterialLink>
             </Link>
-            <LinkAlias underline="hover" component="div" onClick={async () => {
+            <MaterialLink underline="hover" component="div" onClick={async () => {
               state.gameDialog.open = true;
             }} >
               <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                 <FormattedMessage id="EnterTheGameRightNowWithoutDoingTheExitButton" defaultMessage="Enter the game, right now, without doing the exit button" />
               </Button>
-            </LinkAlias>
+            </MaterialLink>
             <Button
               variant="contained"
               style={{
