@@ -27,6 +27,7 @@ public class OrganizeController extends BaseController {
         }
 
         var organize = this.organizeService.create(organizeModel);
+        this.organizeUtil.refresh(organize.getId());
         return ResponseEntity.ok(organize);
     }
 

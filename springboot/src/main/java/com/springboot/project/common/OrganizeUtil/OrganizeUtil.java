@@ -40,7 +40,7 @@ public class OrganizeUtil {
                 organizeMoveTopList = this.organizeMoveTopService.createOrganizeMoveTop(id, parentId);
                 break;
             } catch (DataIntegrityViolationException e) {
-                if (!initStartDate.before(DateUtils.addSeconds(new Date(), -5))) {
+                if (!initStartDate.before(DateUtils.addSeconds(new Date(), -10))) {
                     Thread.sleep(1);
                     continue;
                 }
@@ -64,7 +64,7 @@ public class OrganizeUtil {
         this.refresh(organizeId, deadline, maxDeep);
     }
 
-    public void refresh(String organizeId, Date deadline, Long maxDeep) {
+    private void refresh(String organizeId, Date deadline, Long maxDeep) {
         if (new Date().after(deadline)) {
             return;
         }
