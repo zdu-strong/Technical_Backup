@@ -4,9 +4,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
+
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
+
 import com.springboot.project.common.database.JPQLFunction;
+import com.springboot.project.properties.DatabaseJdbcProperties;
+
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +38,7 @@ public class PaginationModel<T> {
 
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream) {
+        if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
             this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                     .orElse(0L);
             this.setList(
@@ -58,7 +63,7 @@ public class PaginationModel<T> {
 
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream) {
+        if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
             this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                     .orElse(0L);
             this.setList(
@@ -72,6 +77,11 @@ public class PaginationModel<T> {
         }
         this.totalPage = new BigDecimal(this.totalRecord).divide(new BigDecimal(pageSize), 100, RoundingMode.FLOOR)
                 .setScale(0, RoundingMode.CEILING).longValue();
+    }
+
+    private boolean isSpannerEmulator() {
+        var isSpannerEmulator = SpringUtil.getBean(DatabaseJdbcProperties.class).getIsSpannerEmulator();
+        return isSpannerEmulator;
     }
 
 }
