@@ -22,6 +22,51 @@ import com.springboot.project.model.UserModel;
 @RestController
 public class AuthorizationController extends BaseController {
 
+    /**
+     * username: email, userId
+     * 
+     * @param username
+     * @param password
+     * @return
+     * @throws InvalidKeySpecException
+     * @throws NoSuchAlgorithmException
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     */
+    @PostMapping("/sign_in")
+    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
+            throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
+        this.userCheckService.checkExistAccount(username);
+        var userId = this.userService.getUserId(username);
+        var accessToken = this.tokenService.generateAccessToken(userId, password);
+        var user = this.userService.getUserWithMoreInformation(userId);
+        user.setAccessToken(accessToken);
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/sign_out")
+    public ResponseEntity<?> signOut() {
+        if (this.permissionUtil.isSignIn(request)) {
+            var id = this.tokenService.getDecodedJWTOfAccessToken(this.tokenService.getAccessToken(request)).getId();
+            if (this.tokenService.hasExistTokenEntity(id)) {
+                this.tokenService.deleteTokenEntity(id);
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/get_user_info")
+    public ResponseEntity<?> getUserInfo() {
+        this.permissionUtil.checkIsSignIn(request);
+
+        var userId = this.permissionUtil.getUserId(request);
+        var user = this.userService.getUserWithMoreInformation(userId);
+        user.setPassword(null);
+        user.setPrivateKeyOfRSA(null);
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
@@ -74,51 +119,6 @@ public class AuthorizationController extends BaseController {
         user.setPassword(null);
         var accessToken = this.tokenService.generateAccessToken(user.getId());
         user.setAccessToken(accessToken);
-        return ResponseEntity.ok(user);
-    }
-
-    /**
-     * username: email, userId
-     * 
-     * @param username
-     * @param password
-     * @return
-     * @throws InvalidKeySpecException
-     * @throws NoSuchAlgorithmException
-     * @throws JsonMappingException
-     * @throws JsonProcessingException
-     */
-    @PostMapping("/sign_in")
-    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
-        this.userCheckService.checkExistAccount(username);
-        var userId = this.userService.getUserId(username);
-        var accessToken = this.tokenService.generateAccessToken(userId, password);
-        var user = this.userService.getUserWithMoreInformation(userId);
-        user.setAccessToken(accessToken);
-        user.setPassword(null);
-        return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/sign_out")
-    public ResponseEntity<?> signOut() {
-        if (this.permissionUtil.isSignIn(request)) {
-            var id = this.tokenService.getDecodedJWTOfAccessToken(this.tokenService.getAccessToken(request)).getId();
-            if (this.tokenService.hasExistTokenEntity(id)) {
-                this.tokenService.deleteTokenEntity(id);
-            }
-        }
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/get_user_info")
-    public ResponseEntity<?> getUserInfo() {
-        this.permissionUtil.checkIsSignIn(request);
-
-        var userId = this.permissionUtil.getUserId(request);
-        var user = this.userService.getUserWithMoreInformation(userId);
-        user.setPassword(null);
-        user.setPrivateKeyOfRSA(null);
         return ResponseEntity.ok(user);
     }
 

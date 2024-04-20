@@ -67,6 +67,7 @@ import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.OrganizeClosureRefreshScheduled;
 import com.springboot.project.scheduled.StorageSpaceScheduled;
+import com.springboot.project.scheduled.SystemInitScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
@@ -205,6 +206,9 @@ public class BaseTest {
 
     @Autowired
     protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
+
+    @Autowired
+    protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
     public void beforeEachOfBaseTest() throws InterruptedException, ExecutionException {

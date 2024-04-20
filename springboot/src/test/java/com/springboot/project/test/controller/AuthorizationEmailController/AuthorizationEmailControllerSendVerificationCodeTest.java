@@ -1,9 +1,11 @@
-package com.springboot.project.test.controller.AuthorizationController;
+package com.springboot.project.test.controller.AuthorizationEmailController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +14,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class AuthorizationControllerSendVerificationCodeTest extends BaseTest {
+public class AuthorizationEmailControllerSendVerificationCodeTest extends BaseTest {
     private String email;
     private String verificationCode;
 
