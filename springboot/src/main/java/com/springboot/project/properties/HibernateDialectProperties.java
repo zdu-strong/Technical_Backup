@@ -19,4 +19,11 @@ public class HibernateDialectProperties {
         return false;
     }
 
+    public boolean getIsSpanner(){
+        if (this.hibernateDialect.contains("CustomSpannerDialect")) {
+            return true;
+        }
+        return false;
+    }
+
 }
