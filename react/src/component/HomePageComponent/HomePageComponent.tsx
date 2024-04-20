@@ -1,4 +1,4 @@
-import logo from '@/component/Home/image/logo.svg';
+import logo from '@/component/HomePageComponent/image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -9,6 +9,9 @@ import { concatMap, from, of, repeat, timer } from 'rxjs';
 const css = stylesheet({
   container: {
     textAlign: "center",
+    display: "flex",
+    flex: "1 1 auto",
+    flexDirection: "column",
   },
   header: {
     backgroundColor: "#282c34",
@@ -79,7 +82,7 @@ export default observer(() => {
       className={css.container}
     >
       <header
-        className={css.container}
+        className={css.header}
       >
         <img
           src={logo}
