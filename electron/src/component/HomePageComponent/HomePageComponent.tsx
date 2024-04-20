@@ -1,7 +1,7 @@
 import logo from './image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import BootLoadingComponent from "./BootLoadingComponent";
-import { Button, Link as MaterialLink } from "@mui/material";
+import { Button } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { useRandomNumber } from './js/useRandomNumber';
@@ -43,7 +43,7 @@ const css = stylesheet({
     color: "#61dafb",
     display: "flex",
     flexDirection: "column",
-  }
+  },
 })
 
 export default observer(() => {
@@ -88,15 +88,19 @@ export default observer(() => {
             )
           }
           <div>
-            <MaterialLink underline="hover" component="div" onClick={async () => {
-              state.gameDialog.open = true;
-              remote.getCurrentWindow().setMenuBarVisibility(false)
-              remote.getCurrentWindow().setFullScreen(true)
-            }} >
-              <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
-                <FormattedMessage id="EnterTheGameIfYouWantToExitJustPressTheESCKey" defaultMessage="Enter the game, if you want to exit, just press the ESC key" />
-              </Button>
-            </MaterialLink>
+            <Button
+              className={`no-underline hover:underline`}
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}
+              onClick={() => {
+                state.gameDialog.open = true;
+                remote.getCurrentWindow().setMenuBarVisibility(false)
+                remote.getCurrentWindow().setFullScreen(true)
+              }}
+            >
+              <FormattedMessage id="EnterTheGameIfYouWantToExitJustPressTheESCKey" defaultMessage="Enter the game, if you want to exit, just press the ESC key" />
+            </Button>
           </div>
         </div>
       </header>

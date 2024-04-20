@@ -1,7 +1,7 @@
 import logo from '@/component/Home/image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
-import { Button, Link as MaterialLink, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { useMobxState, observer, useMount } from 'mobx-react-use-autorun';
 import { concatMap, from, of, repeat, timer } from 'rxjs';
@@ -39,7 +39,13 @@ const css = stylesheet({
     color: "#61dafb",
     display: "flex",
     flexDirection: "column",
-  }
+  },
+  homeLink: {
+    marginTop: "1em",
+    fontSize: "large",
+    paddingTop: "0",
+    paddingBottom: "0"
+  },
 })
 
 export default observer(() => {
@@ -96,12 +102,8 @@ export default observer(() => {
             )
           }
           <div>
-            <Link to="/not_found" className="no-underline" >
-              <MaterialLink underline="hover" component="div" >
-                <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
-                  <FormattedMessage id="GoToTheUnknownArea" defaultMessage="Go to the unknown area" />
-                </Button>
-              </MaterialLink>
+            <Link to="/not_found" className={`no-underline hover:underline ${css.homeLink}`} >
+              <FormattedMessage id="GoToTheUnknownArea" defaultMessage="Go to the unknown area" />
             </Link>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import logo from '@/component/HomePageComponent/image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
-import { Button, Link as MaterialLink } from "@mui/material";
+import { Button } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { useBatteryInfo } from '@/component/HomePageComponent/js/useBatteryInfo';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -46,7 +46,13 @@ const css = stylesheet({
   divContainer: {
     display: "flex",
     flexDirection: "column",
-  }
+  },
+  homeLink: {
+    marginTop: "1em",
+    fontSize: "large",
+    paddingTop: "0",
+    paddingBottom: "0"
+  },
 })
 
 export default observer(() => {
@@ -94,20 +100,21 @@ export default observer(() => {
             )
           }
           <div className={css.divContainer}>
-            <Link to="/not_found" replace={true} className="no-underline" >
-              <MaterialLink underline="hover" component="div" >
-                <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
-                  <FormattedMessage id="toUnknownArea" defaultMessage="去未知地区" />
-                </Button>
-              </MaterialLink>
+            <Link to="/not_found" replace={true} className={`no-underline hover:underline ${css.homeLink}`} >
+              <FormattedMessage id="toUnknownArea" defaultMessage="Go to the unknown area" />
             </Link>
-            <MaterialLink underline="hover" component="div" onClick={async () => {
-              state.gameDialog.open = true;
-            }} >
-              <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
-                <FormattedMessage id="EnterTheGameRightNowWithoutDoingTheExitButton" defaultMessage="Enter the game, right now, without doing the exit button" />
-              </Button>
-            </MaterialLink>
+
+            <Button
+              className={`no-underline hover:underline`}
+              variant="text"
+              color="primary"
+              style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}
+              onClick={() => {
+                state.gameDialog.open = true;
+              }}
+            >
+              <FormattedMessage id="EnterTheGameRightNowWithoutDoingTheExitButton" defaultMessage="Enter the game, right now, without doing the exit button" />
+            </Button>
             <Button
               variant="contained"
               style={{
