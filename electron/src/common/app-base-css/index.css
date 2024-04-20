@@ -8,3 +8,11 @@ body {
 code {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
+
+a.css-sghohy-MuiButtonBase-root-MuiButton-root {
+  text-transform: none;
+}
+
+button.css-sghohy-MuiButtonBase-root-MuiButton-root  {
+  text-transform: none;
+}

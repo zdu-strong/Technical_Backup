@@ -136,7 +136,6 @@ export default observer((props: {
           size="large"
           style={{
             marginLeft: "1em",
-            textTransform: "none",
             whiteSpace: "nowrap",
             minWidth: "9em"
           }}
@@ -164,7 +163,6 @@ export default observer((props: {
           variant="contained"
           style={{
             marginLeft: "0.5em",
-            textTransform: "none",
             whiteSpace: "nowrap",
           }}
           startIcon={<FontAwesomeIcon icon={state.loadingOfSend ? faSpinner : (state.messageContent.trim() ? faPaperPlane : faPlus)} spin={state.loadingOfSend} />}

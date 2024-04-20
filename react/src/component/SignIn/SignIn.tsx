@@ -164,9 +164,6 @@ export default observer(() => {
         onClick={() => {
           state.showPasswordInput = true
         }}
-        style={{
-          textTransform: "none"
-        }}
       >
         <FormattedMessage id="ThePasswordHasBeenFilledInClickEdit" defaultMessage="The password has been filled in, click Edit" />
       </Button>}
@@ -177,9 +174,6 @@ export default observer(() => {
         className="normal-case"
         startIcon={<FontAwesomeIcon icon={state.loading.signIn ? faSpinner : faArrowRightToBracket} spin={state.loading.signIn} />}
         onClick={signIn}
-        style={{
-          textTransform: "none"
-        }}
       >
         <FormattedMessage id="SignIn" defaultMessage="SignIn" />
       </Button>

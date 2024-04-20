@@ -40,14 +40,14 @@ export default observer((props: { closeDialog: () => void, exit: () => void }) =
           state.exit();
         }}
         variant="contained"
-        style={{ textTransform: "none", marginLeft: "1em" }}
+        style={{ marginLeft: "1em" }}
         color="primary"
       >
         <FormattedMessage id="EndTheGame" defaultMessage="End Game" />
       </Button>
       <Button
         variant="contained"
-        style={{ textTransform: "none", marginRight: "1em" }}
+        style={{ marginRight: "1em" }}
         onClick={() => {
           App.exitApp()
         }}

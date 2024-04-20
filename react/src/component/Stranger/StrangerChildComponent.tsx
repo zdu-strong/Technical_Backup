@@ -38,7 +38,6 @@ export default observer((props: { friendship: FriendshipModel, refreshFriendship
       variant="contained"
       style={{
         marginRight: "1em",
-        textTransform: "none"
       }}
       startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faPlus} spin={state.loading} />}
       onClick={addToFriendList}

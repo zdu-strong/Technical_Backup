@@ -93,7 +93,7 @@ export default observer(() => {
               remote.getCurrentWindow().setMenuBarVisibility(false)
               remote.getCurrentWindow().setFullScreen(true)
             }} >
-              <Button variant="text" color="primary" style={{ textTransform: "none", marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
+              <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                 <FormattedMessage id="EnterTheGameIfYouWantToExitJustPressTheESCKey" defaultMessage="Enter the game, if you want to exit, just press the ESC key" />
               </Button>
             </LinkAlias>

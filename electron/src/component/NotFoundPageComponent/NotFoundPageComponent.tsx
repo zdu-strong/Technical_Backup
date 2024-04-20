@@ -10,7 +10,7 @@ export default (<div className="flex flex-col flex-auto justify-center items-cen
     <div>
       <Link to="/" className="no-underline" >
         <LinkAlias underline="hover" component="div">
-          <Button variant="text" color="primary" style={{ textTransform: "none", marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
+          <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
             <FormattedMessage id="ReturnToHomePage" defaultMessage="To home" />
           </Button>
         </LinkAlias>

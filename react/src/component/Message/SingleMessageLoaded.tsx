@@ -3,9 +3,11 @@ import { Button } from "@mui/material";
 import api from "@/api";
 import { MessageService } from "@/common/MessageService";
 import { FormattedMessage } from "react-intl";
-import { faSpinner, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faEyeSlash, faDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserMessageModel } from "@/model/UserMessageModel";
+import path from "path";
+
 
 export default observer((props: {
   message: UserMessageModel
@@ -52,8 +54,18 @@ export default observer((props: {
         <FormattedMessage id="Withdrawn" defaultMessage="Withdrawn" />
       </Button>
     </div>
-    <div>
+    {!!state.message.url && <div>
+      <Button
+        variant="contained"
+        startIcon={<FontAwesomeIcon icon={faDownload} />}
+        href={state.message.url}
+        download={true}
+      >
+        {decodeURIComponent(path.basename(state.message.url))}
+      </Button>
+    </div>}
+    {!state.message.url && <div>
       {state.message.content}
-    </div>
+    </div>}
   </div>
 })

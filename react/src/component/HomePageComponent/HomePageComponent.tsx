@@ -1,7 +1,7 @@
 import logo from '@/component/Home/image/logo.svg';
 import { FormattedMessage } from "react-intl";
 import { Link } from "react-router-dom";
-import { Button, Link as LinkAlias, CircularProgress } from "@mui/material";
+import { Button, Link as MaterialLink, CircularProgress } from "@mui/material";
 import { keyframes, stylesheet } from 'typestyle';
 import { useMobxState, observer, useMount } from 'mobx-react-use-autorun';
 import { concatMap, from, of, repeat, timer } from 'rxjs';
@@ -97,11 +97,11 @@ export default observer(() => {
           }
           <div>
             <Link to="/not_found" className="no-underline" >
-              <LinkAlias underline="hover" component="div" >
-                <Button variant="text" color="primary" style={{ textTransform: "none", marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
+              <MaterialLink underline="hover" component="div" >
+                <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                   <FormattedMessage id="GoToTheUnknownArea" defaultMessage="Go to the unknown area" />
                 </Button>
-              </LinkAlias>
+              </MaterialLink>
             </Link>
           </div>
         </div>

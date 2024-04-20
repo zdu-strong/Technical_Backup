@@ -47,7 +47,6 @@ export default observer((props: { username: string, userId: string }) => {
             onClick={signOut}
             style={{
               marginLeft: "1em",
-              textTransform: "none"
             }}
           >
             <FormattedMessage id="SignOut" defaultMessage="Sign out" />

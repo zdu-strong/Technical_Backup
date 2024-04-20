@@ -39,7 +39,6 @@ export default observer((props: { friendship: FriendshipModel, refreshFriendList
       variant="contained"
       style={{
         marginRight: "1em",
-        textTransform: "none"
       }}
       startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faTrash} spin={state.loading} />}
       onClick={deleteFromFriendList}

@@ -96,7 +96,7 @@ export default observer(() => {
           <div className={css.divContainer}>
             <Link to="/not_found" replace={true} className="no-underline" >
               <LinkAlias underline="hover" component="div" >
-                <Button variant="text" color="primary" style={{ textTransform: "none", marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
+                <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                   <FormattedMessage id="toUnknownArea" defaultMessage="去未知地区" />
                 </Button>
               </LinkAlias>
@@ -104,14 +104,13 @@ export default observer(() => {
             <LinkAlias underline="hover" component="div" onClick={async () => {
               state.gameDialog.open = true;
             }} >
-              <Button variant="text" color="primary" style={{ textTransform: "none", marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
+              <Button variant="text" color="primary" style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}>
                 <FormattedMessage id="EnterTheGameRightNowWithoutDoingTheExitButton" defaultMessage="Enter the game, right now, without doing the exit button" />
               </Button>
             </LinkAlias>
             <Button
               variant="contained"
               style={{
-                textTransform: "none",
                 marginTop: "1em"
               }}
               onClick={async () => {

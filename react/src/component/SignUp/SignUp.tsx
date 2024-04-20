@@ -286,7 +286,6 @@ export default observer(() => {
                 <Button
                   style={{
                     marginLeft: "1em",
-                    textTransform: "none",
                   }}
                   variant="contained"
                   onClick={async () => {
@@ -383,9 +382,6 @@ export default observer(() => {
           <div className="flex justify-between" style={{ marginTop: "1em", marginBottom: "1em" }}>
             {state.activeStep === 0 && <div></div>}
             {state.activeStep > 0 && <Button
-              style={{
-                textTransform: "none"
-              }}
               variant="contained"
               startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
               onClick={() => {
@@ -403,9 +399,6 @@ export default observer(() => {
               variant="contained"
               startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
               onClick={nextStep}
-              style={{
-                textTransform: "none"
-              }}
             >
               <FormattedMessage id="Next" defaultMessage="Next" />
             </Button>}
@@ -413,9 +406,6 @@ export default observer(() => {
               variant="contained"
               startIcon={<FontAwesomeIcon icon={state.loading.signUp ? faSpinner : faFloppyDisk} spin={state.loading.signUp} />}
               onClick={signUp}
-              style={{
-                textTransform: "none"
-              }}
             >
               <FormattedMessage id="SignUp" defaultMessage="SignUp" />
             </Button>}
