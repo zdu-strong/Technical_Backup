@@ -5,9 +5,9 @@ spring:
     password: ${database.password}
     driver-class-name: ${database.driver}
   jpa:
+    database-platform: ${database.platform}
     hibernate:
       ddl-auto: validate
-    database-platform: ${database.platform}
     open-in-view: false
     properties:
       hibernate:

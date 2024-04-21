@@ -5,9 +5,9 @@ spring:
     password: sa
     driver-class-name: org.h2.Driver
   jpa:
+    database-platform: com.springboot.project.common.database.CustomH2Dialect
     hibernate:
       ddl-auto: create-drop
-    database-platform: com.springboot.project.common.database.CustomH2Dialect
     open-in-view: false
     properties:
       hibernate:
