@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
+import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.entity.DistributedExecutionEntity;
 import com.springboot.project.entity.EncryptDecryptEntity;
@@ -126,6 +127,9 @@ public abstract class BaseService {
 
     @Autowired
     private HibernateDialectProperties HibernateDialectProperties;
+
+    @Autowired
+    protected PermissionUtil permissionUtil;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);

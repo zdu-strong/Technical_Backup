@@ -1,6 +1,7 @@
 package com.springboot.project.controller;
 
 import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,8 @@ public class UserMessageController extends BaseController {
     @PutMapping("/user_message/recall")
     public ResponseEntity<?> recallMessage(@RequestParam String id) throws IOException {
         this.permissionUtil.checkIsSignIn(request);
+        this.userMessageCheckService.checkExistsUserMessage(id);
+        this.userMessageCheckService.checkCanRecallUserMessage(id, request);
 
         this.userMessageService.recallMessage(id);
         return ResponseEntity.ok().build();

@@ -24,6 +24,7 @@ import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserCheckService;
 import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
+import com.springboot.project.service.UserMessageCheckService;
 import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailCheckService;
@@ -121,5 +122,8 @@ public class BaseController {
 
     @Autowired
     protected UserEmailCheckService userEmailCheckService;
+
+    @Autowired
+    protected UserMessageCheckService userMessageCheckService;
 
 }

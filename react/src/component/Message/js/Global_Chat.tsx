@@ -58,7 +58,7 @@ export function useGlobalSingleMessage(pageNum: number) {
     loadMessage(pageNum);
   })
 
-  let ready = true;
+  let ready = false;
   let message = new UserMessageModel();
   if (GlobalChatMessage.messageMap[pageNum]) {
     message = GlobalChatMessage.messageMap[pageNum].message;

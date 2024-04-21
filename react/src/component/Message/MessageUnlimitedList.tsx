@@ -36,7 +36,8 @@ export default observer((props: Size) => {
 
   return <List
     ref={state.listRef}
-    {...props}
+    width={props.width}
+    height={props.height}
     rowCount={GlobalChatMessage.totalRecord}
     rowHeight={100}
     rowRenderer={(s) => <div style={s.style} key={s.key}>

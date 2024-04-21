@@ -7,6 +7,7 @@ import { faSpinner, faEyeSlash, faDownload } from "@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import path from "path";
+import { GlobalUserInfo } from "@/common/Server";
 
 
 export default observer((props: {
@@ -44,7 +45,7 @@ export default observer((props: {
         {state.message.pageNum}
         {":"}
       </div>
-      <Button
+      {state.message.user.id === GlobalUserInfo.id && <Button
         variant="outlined"
         onClick={withdrawn}
         style={{ marginRight: "1em" }}
@@ -52,7 +53,7 @@ export default observer((props: {
         startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faEyeSlash} spin={state.loading} style={{ fontSize: "small" }} />}
       >
         <FormattedMessage id="Withdrawn" defaultMessage="Withdrawn" />
-      </Button>
+      </Button>}
     </div>
     {!!state.message.url && <div>
       <Button
