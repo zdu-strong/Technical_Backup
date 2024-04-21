@@ -1,12 +1,13 @@
 package com.springboot.project.test.service.UserMessageService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
-import com.fasterxml.uuid.Generators;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -32,7 +33,6 @@ public class UserMessageServiceRecallMessageTest extends BaseTest {
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }

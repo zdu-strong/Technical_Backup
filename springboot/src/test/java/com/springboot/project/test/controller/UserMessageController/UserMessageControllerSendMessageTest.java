@@ -1,15 +1,15 @@
 package com.springboot.project.test.controller.UserMessageController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -31,7 +31,6 @@ public class UserMessageControllerSendMessageTest extends BaseTest {
         assertEquals("Hello, World!", response.getBody().getContent());
         assertTrue(StringUtils.isNotBlank(response.getBody().getUser().getId()));
         assertEquals("zdu.strong@gmail.com", response.getBody().getUser().getUsername());
-        assertFalse(response.getBody().getIsDeleted());
         assertFalse(response.getBody().getIsRecall());
     }
 

@@ -1,16 +1,15 @@
 package com.springboot.project.test.service.UserMessageService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
-import com.fasterxml.uuid.Generators;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -26,9 +25,7 @@ public class UserMessageServiceGetMessageListOnlyContainsOneByPageNumTest extend
         assertEquals(1, messageList.size());
         assertTrue(StringUtils.isNotBlank(message.getId()));
         assertNotNull(message.getCreateDate());
-        assertFalse(message.getIsDeleted());
         assertEquals(1, message.getPageNum());
-        assertTrue(message.getTotalPage() >= 1);
         assertNotNull(message.getUpdateDate());
         assertNull(message.getUrl());
         assertTrue(StringUtils.isNotBlank(message.getUser().getId()));
@@ -44,7 +41,6 @@ public class UserMessageServiceGetMessageListOnlyContainsOneByPageNumTest extend
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }

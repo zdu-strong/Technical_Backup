@@ -9,9 +9,6 @@ export class UserMessageModel {
   id!: string;
 
   @jsonMember(Boolean)
-  isDeleted!: boolean;
-
-  @jsonMember(Boolean)
   isRecall!: boolean;
 
   @jsonMember(Date)
@@ -25,9 +22,6 @@ export class UserMessageModel {
 
   @jsonMember(String)
   url!: string;
-
-  @jsonMember(Number)
-  totalPage!: number;
 
   @jsonMember(Number)
   pageNum!: number;

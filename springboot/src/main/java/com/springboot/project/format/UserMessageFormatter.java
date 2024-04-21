@@ -17,7 +17,6 @@ public class UserMessageFormatter extends BaseService {
     public UserMessageModel format(UserMessageEntity userMessageEntity) {
         var userMessageModel = new UserMessageModel();
         BeanUtils.copyProperties(userMessageEntity, userMessageModel);
-        userMessageModel.setIsDeleted(false);
         userMessageModel.setUser(this.userFormatter.format(userMessageEntity.getUser()));
         if (!userMessageModel.getIsRecall() && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
             userMessageModel
@@ -32,7 +31,6 @@ public class UserMessageFormatter extends BaseService {
 
     public UserMessageModel formatForUserId(UserMessageEntity userMessageEntity, String userId) {
         var userMessage = this.format(userMessageEntity);
-        userMessage.setTotalPage(this.UserMessageEntity().where(s -> !s.getIsRecall()).count());
         var crateDate = userMessage.getCreateDate();
         var id = userMessage.getId();
         var pageNum = this.UserMessageEntity()
@@ -42,9 +40,6 @@ public class UserMessageFormatter extends BaseService {
                                 && JPQLFunction.isSortAtBefore(s.getId(), id)))
                 .count();
         userMessage.setPageNum(pageNum + 1);
-        if (!userMessage.getUser().getId().equals(userId)) {
-            userMessage.setIsDeleted(false);
-        }
         return userMessage;
     }
 }

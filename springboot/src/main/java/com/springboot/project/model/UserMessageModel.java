@@ -1,6 +1,7 @@
 package com.springboot.project.model;
 
 import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,8 +12,6 @@ import lombok.experimental.Accessors;
 public class UserMessageModel {
     private String id;
 
-    private Boolean isDeleted;
-
     private Boolean isRecall;
 
     private Date createDate;
@@ -22,8 +21,6 @@ public class UserMessageModel {
     private String content;
 
     private UserModel user;
-
-    private Long totalPage;
 
     private Long pageNum;
 

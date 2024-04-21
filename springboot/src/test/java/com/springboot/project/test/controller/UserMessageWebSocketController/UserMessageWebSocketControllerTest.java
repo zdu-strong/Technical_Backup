@@ -1,16 +1,13 @@
 package com.springboot.project.test.controller.UserMessageWebSocketController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import jakarta.websocket.CloseReason.CloseCodes;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -18,13 +15,16 @@ import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import io.reactivex.rxjava3.subjects.ReplaySubject;
+import jakarta.websocket.CloseReason.CloseCodes;
 
 public class UserMessageWebSocketControllerTest extends BaseTest {
 
@@ -79,12 +79,10 @@ public class UserMessageWebSocketControllerTest extends BaseTest {
         assertEquals(1, result.getTotalPage());
         assertEquals("Hello, World!", userMessage.getContent());
         assertFalse(userMessage.getIsRecall());
-        assertFalse(userMessage.getIsDeleted());
         assertNull(userMessage.getUrl());
         assertEquals(this.user.getId(), userMessage.getUser().getId());
         assertNotNull(userMessage.getCreateDate());
         assertNotNull(userMessage.getCreateDate());
-        assertEquals(1, userMessage.getTotalPage());
         assertEquals(1, userMessage.getPageNum());
     }
 

@@ -2,13 +2,13 @@ package com.springboot.project.controller;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,11 +54,11 @@ public class UserMessageWebSocketController {
     private String userId;
     private String accessToken;
     private Session session;
-    private CopyOnWriteArrayList<UserMessageModel> lastMessage = new CopyOnWriteArrayList<>();
+    private UserMessageWebSocketSendModel lastMessage = new UserMessageWebSocketSendModel().setTotalPage(0L)
+            .setList(Lists.newArrayList());
     private ConcurrentMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private boolean ready = false;
 
-    @SuppressWarnings("resource")
     public synchronized void sendMessage() {
         try {
             if (!this.getPermissionUtil().isSignIn(accessToken)) {
@@ -67,72 +67,8 @@ public class UserMessageWebSocketController {
                                 CloseCodes.UNEXPECTED_CONDITION.name()));
                 return;
             }
-
-            var messageList = this.getUserMessageService().getMessageListByLastTwentyMessages(userId);
-            {
-                var newMessageList = JinqStream.from(messageList)
-                        .where(s -> !JinqStream.from(this.lastMessage).anyMatch(t -> {
-                            try {
-                                return this.getObjectMapper().writeValueAsString(s).equals(
-                                        this.getObjectMapper().writeValueAsString(t));
-                            } catch (JsonProcessingException e) {
-                                throw new RuntimeException(e.getMessage(), e);
-                            }
-                        })).toList();
-                if (!this.ready || !newMessageList.isEmpty()
-                        || (messageList.size() == 0 && this.lastMessage.size() != 0)) {
-                    this.session.getBasicRemote()
-                            .sendText(this.getObjectMapper()
-                                    .writeValueAsString(new UserMessageWebSocketSendModel().setList(newMessageList)
-                                            .setTotalPage(JinqStream.from(newMessageList).select(s -> s.getTotalPage())
-                                                    .findFirst().orElse(0L))));
-                    this.lastMessage.clear();
-                    this.lastMessage.addAll(messageList);
-                    this.ready = true;
-                }
-            }
-
-            {
-                for (var pageNum : this.onlineMessageMap.keySet()) {
-                    if (messageList.stream().anyMatch(message -> message.getPageNum() == pageNum)) {
-                        continue;
-                    }
-
-                    if (!this.onlineMessageMap.containsKey(pageNum)) {
-                        continue;
-                    }
-                    var userMessageList = this.getUserMessageService().getMessageListOnlyContainsOneByPageNum(pageNum,
-                            this.userId);
-                    if (userMessageList.isEmpty()) {
-                        continue;
-                    }
-                    if (!this.onlineMessageMap.containsKey(pageNum)) {
-                        continue;
-                    }
-                    var newMessageList = userMessageList.stream().filter(
-                            s -> !Lists.newArrayList(this.onlineMessageMap.get(pageNum)).stream()
-                                    .anyMatch(t -> {
-                                        try {
-                                            var objectOne = new UserMessageModel();
-                                            var objectTwo = new UserMessageModel();
-                                            BeanUtils.copyProperties(s, objectOne, "totalPage");
-                                            BeanUtils.copyProperties(t, objectTwo, "totalPage");
-                                            return this.getObjectMapper().writeValueAsString(objectOne)
-                                                    .equals(this.getObjectMapper().writeValueAsString(objectTwo));
-                                        } catch (JsonProcessingException e) {
-                                            throw new RuntimeException(e.getMessage(), e);
-                                        }
-                                    }))
-                            .toList();
-                    if (newMessageList.isEmpty()) {
-                        continue;
-                    }
-                    this.onlineMessageMap.put(pageNum, JinqStream.from(userMessageList).getOnlyValue());
-                    this.session.getBasicRemote()
-                            .sendText(this.getObjectMapper().writeValueAsString(new UserMessageWebSocketSendModel()
-                                    .setList(newMessageList).setTotalPage(null)));
-                }
-            }
+            this.sendMessageForLastMessage();
+            this.sendMessageForOnlineMessage();
         } catch (Throwable e) {
             try {
                 this.session
@@ -142,6 +78,62 @@ public class UserMessageWebSocketController {
             } catch (IOException e1) {
                 throw new RuntimeException(e1.getMessage(), e1);
             }
+        }
+    }
+
+    @SuppressWarnings("resource")
+    private void sendMessageForLastMessage() throws IOException {
+        var lastTwentyMessage = this.getUserMessageService().getMessageListByLastTwentyMessage(userId);
+        var hasChange = !this.getObjectMapper().writeValueAsString(lastTwentyMessage).equals(
+                this.getObjectMapper().writeValueAsString(this.lastMessage));
+        if (!this.ready || hasChange) {
+            var newUserMessageWebSocketSendModel = new UserMessageWebSocketSendModel()
+                    .setTotalPage(lastTwentyMessage.getTotalPage());
+            var list = JinqStream.from(lastTwentyMessage.getList())
+                    .where(s -> !JinqStream.from(this.lastMessage.getList()).anyMatch(t -> {
+                        try {
+                            return this.getObjectMapper().writeValueAsString(s)
+                                    .equals(this.getObjectMapper().writeValueAsString(t));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e.getMessage(), e);
+                        }
+                    }))
+                    .toList();
+            newUserMessageWebSocketSendModel.setList(list);
+            this.session.getBasicRemote()
+                    .sendText(this.getObjectMapper()
+                            .writeValueAsString(newUserMessageWebSocketSendModel));
+            this.lastMessage = lastTwentyMessage;
+            this.ready = true;
+        }
+    }
+
+    private void sendMessageForOnlineMessage() throws IOException {
+        for (var pageNum : this.onlineMessageMap.keySet()) {
+            var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
+            if (this.lastMessage.getList().stream().anyMatch(s -> s.getPageNum() == pageNum)) {
+                continue;
+            }
+
+            var userMessageList = this.getUserMessageService().getMessageListOnlyContainsOneByPageNum(pageNum,
+                    this.userId);
+            if (userMessageList.isEmpty()) {
+                continue;
+            }
+            var userMessage = JinqStream.from(userMessageList).getOnlyValue();
+            var hasChange = !this.getObjectMapper().writeValueAsString(oldUserMessage)
+                    .equals(this.getObjectMapper().writeValueAsString(userMessage));
+            if (!hasChange) {
+                continue;
+            }
+
+            if (!this.onlineMessageMap.containsKey(pageNum)) {
+                continue;
+            }
+            this.session.getBasicRemote()
+                    .sendText(this.getObjectMapper().writeValueAsString(new UserMessageWebSocketSendModel()
+                            .setList(List.of(userMessage)).setTotalPage(null)));
+            this.onlineMessageMap.replace(pageNum, userMessage);
         }
     }
 

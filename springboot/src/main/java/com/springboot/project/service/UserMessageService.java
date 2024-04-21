@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserMessageEntity;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserMessageModel;
+import com.springboot.project.model.UserMessageWebSocketSendModel;
 
 @Service
 public class UserMessageService extends BaseService {
@@ -58,13 +60,17 @@ public class UserMessageService extends BaseService {
         return userMessageList;
     }
 
-    public List<UserMessageModel> getMessageListByLastTwentyMessages(String userId) {
+    public UserMessageWebSocketSendModel getMessageListByLastTwentyMessage(String userId) {
         var userMessageList = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
                 .limit(20)
                 .map(s -> this.userMessageFormatter.formatForUserId(s, userId)).toList();
-        return userMessageList;
+        var totalPage = JinqStream.from(userMessageList).select(s -> s.getPageNum()).sortedDescendingBy(s -> s)
+                .findFirst().orElse(0L);
+        var userMessageWebSocketSendModel = new UserMessageWebSocketSendModel().setTotalPage(totalPage)
+                .setList(userMessageList);
+        return userMessageWebSocketSendModel;
     }
 }
