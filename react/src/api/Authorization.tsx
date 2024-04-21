@@ -2,6 +2,7 @@ import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
 import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
+import { reinitializeOfGlobalChat } from '@/component/Message/js/Global_Chat';
 import { UserEmailModel } from "@/model/UserEmailModel";
 import { UserModel } from "@/model/UserModel";
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
@@ -56,6 +57,7 @@ export async function signOut() {
       // do nothing
     }
     removeGlobalUserInfo();
+    reinitializeOfGlobalChat();
   }
 }
 

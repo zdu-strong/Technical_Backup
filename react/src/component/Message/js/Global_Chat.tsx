@@ -6,6 +6,7 @@ import { ReplaySubject, Subscription, of, retry, share, switchMap, tap } from "r
 export const GlobalChatMessage = observable({
   totalRecord: 0,
   lastMessageId: "",
+  ready: false,
   messageMap: {
 
   } as Record<number, { ready: boolean, message: UserMessageModel }>
@@ -36,6 +37,7 @@ const GlobalShareMessageSubject = of(null).pipe(
     if (hasNewMessage) {
       scrollToLastItem();
     }
+    GlobalChatMessage.ready = true;
   }),
   retry({ delay: 2000 }),
   share(),
@@ -64,6 +66,9 @@ export function useGlobalSingleMessage(pageNum: number) {
     message = GlobalChatMessage.messageMap[pageNum].message;
     ready = GlobalChatMessage.messageMap[pageNum].ready;
   }
+  if (GlobalChatMessage.ready && GlobalChatMessage.totalRecord === 0 && pageNum === 1) {
+    ready = true;
+  }
   return { ready, message };
 }
 
@@ -74,4 +79,10 @@ export async function scrollToLastItem() {
   GlobalScrollToLastItemSubject.next();
 }
 
-
+export function reinitializeOfGlobalChat() {
+  GlobalChatMessage.totalRecord = 0;
+  GlobalChatMessage.lastMessageId = "";
+  GlobalChatMessage.ready = false;
+  GlobalChatMessage.messageMap = {
+  };
+}
