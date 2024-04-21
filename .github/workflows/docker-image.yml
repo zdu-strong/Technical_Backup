@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master", "database/cockroachdb" ]
+    branches: [ "master", "database/cockroachdb", "database/spanner" ]
   pull_request:
     branches: [ "master" ]
 
