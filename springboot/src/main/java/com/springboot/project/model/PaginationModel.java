@@ -44,7 +44,7 @@ public class PaginationModel<T> {
             this.setList(
                     stream.skip((pageNum - 1) * pageSize).limit(pageSize).toList());
         } else {
-            var dataList = stream.toList();
+            var dataList = stream.select(s -> s).toList();
             this.totalRecord = Long.valueOf(dataList.size());
             this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize)
                     .toList());
@@ -70,7 +70,7 @@ public class PaginationModel<T> {
                     stream.skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                             .toList());
         } else {
-            var dataList = stream.toList();
+            var dataList = stream.select(s -> s).toList();
             this.totalRecord = Long.valueOf(dataList.size());
             this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
