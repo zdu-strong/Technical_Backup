@@ -8,9 +8,6 @@ export class UserMessageModel {
   @jsonMember(String)
   id!: string;
 
-  @jsonMember(Boolean)
-  isRecall!: boolean;
-
   @jsonMember(Date)
   createDate!: Date;
 

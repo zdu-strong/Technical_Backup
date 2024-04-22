@@ -2,6 +2,7 @@ package com.springboot.project.entity;
 
 import java.util.Date;
 import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,5 +68,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserMessageRelevanceEntity> userMessageRelevanceList;
 
 }

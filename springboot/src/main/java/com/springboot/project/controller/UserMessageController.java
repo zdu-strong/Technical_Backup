@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,13 +32,23 @@ public class UserMessageController extends BaseController {
         return ResponseEntity.ok(userMessage);
     }
 
-    @PutMapping("/user_message/recall")
+    @PostMapping("/user_message/recall")
     public ResponseEntity<?> recallMessage(@RequestParam String id) throws IOException {
         this.permissionUtil.checkIsSignIn(request);
         this.userMessageCheckService.checkExistsUserMessage(id);
         this.userMessageCheckService.checkCanRecallUserMessage(id, request);
 
         this.userMessageService.recallMessage(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/user_message/delete")
+    public ResponseEntity<?> deleteMessage(@RequestParam String id) throws IOException {
+        this.permissionUtil.checkIsSignIn(request);
+        this.userMessageCheckService.checkExistsUserMessage(id);
+        this.userMessageCheckService.checkCanDeleteUserMessage(id, request);
+
+        this.userMessageService.deleteMessage(id, request);
         return ResponseEntity.ok().build();
     }
 

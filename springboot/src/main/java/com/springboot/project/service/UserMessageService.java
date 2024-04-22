@@ -13,6 +13,8 @@ import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class UserMessageService extends BaseService {
 
@@ -45,14 +47,25 @@ public class UserMessageService extends BaseService {
         this.merge(userMessageEntity);
     }
 
-    public UserMessageModel getUserMessageById(String id, String userId) {
-        var userMessageEntity = this.UserMessageEntity().where(s -> s.getId().equals(id)).getOnlyValue();
-        return this.userMessageFormatter.format(userMessageEntity);
+    public void deleteMessage(String id, HttpServletRequest request) {
+        var userId = this.permissionUtil.getUserId(request);
+        var userMessageId = id;
+        this.userMessageRelevanceService.create(userMessageId, userId, true);
     }
 
+    public UserMessageModel getUserMessageById(String id, String userId) {
+        var userMessageEntity = this.UserMessageEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        return this.userMessageFormatter.formatForUserId(userMessageEntity, userId);
+    }
+
+    @SuppressWarnings("resource")
     public List<UserMessageModel> getMessageListOnlyContainsOneByPageNum(Long pageNum, String userId) {
         var stream = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                        (s, t) -> t.getUser().getId().equals(userId))
+                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .select(s -> s.getOne())
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         var userMessageList = new PaginationModel<>(pageNum, 1L, stream,
@@ -60,9 +73,14 @@ public class UserMessageService extends BaseService {
         return userMessageList;
     }
 
+    @SuppressWarnings("resource")
     public UserMessageWebSocketSendModel getMessageListByLastTwentyMessage(String userId) {
         var userMessageList = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                        (s, t) -> t.getUser().getId().equals(userId))
+                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .select(s -> s.getOne())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
                 .limit(20)

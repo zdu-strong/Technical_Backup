@@ -15,17 +15,17 @@ import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class UserMessageControllerRecallMessageTest extends BaseTest {
+public class UserMessageControllerDeleteMessageTest extends BaseTest {
     private String id;
     private String userId;
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/user_message/recall").setParameter("id", id).build();
-        var response = this.testRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(null), Void.class);
+        var url = new URIBuilder("/user_message/delete").setParameter("id", id).build();
+        var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         var userMessage = this.userMessageService.getUserMessageById(id, userId);
-        assertTrue(userMessage.getIsRecall());
+        assertTrue(userMessage.getIsDeleted());
     }
 
     @BeforeEach

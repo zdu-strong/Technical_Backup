@@ -25,7 +25,7 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         assertEquals("Hello, World!", result.getContent());
         assertNotNull(result.getCreateDate());
         assertFalse(result.getIsRecall());
-        assertNull(result.getPageNum());
+        assertEquals(1, result.getPageNum());
         assertNotNull(result.getUpdateDate());
         assertNull(result.getUrl());
         assertTrue(StringUtils.isNotBlank(result.getUser().getId()));
@@ -33,7 +33,8 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        var userId = this.createAccount(Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com")
+        var userId = this
+                .createAccount(Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com")
                 .getId();
         var userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
         var message = this.userMessageService.sendMessage(userMessage);

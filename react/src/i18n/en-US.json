@@ -89,5 +89,6 @@
   "PleaseFillInNickname": "Please fill in nickname",
   "ThereShouldBeNoSpacesAtTheBeginningOfTheNickname": "There should be no spaces at the beginning of the nickname",
   "TheNicknameCannotHaveASpaceAtTheEnd": "The nickname cannot have a space at the end",
-  "NetworkError": "Network Error"
+  "NetworkError": "Network Error",
+  "Delete": "Delete"
 }

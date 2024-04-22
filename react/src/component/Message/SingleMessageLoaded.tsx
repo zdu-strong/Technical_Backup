@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import api from "@/api";
 import { MessageService } from "@/common/MessageService";
 import { FormattedMessage } from "react-intl";
-import { faSpinner, faEyeSlash, faDownload } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faDownload, faTrashCan, faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import path from "path";
@@ -33,6 +33,19 @@ export default observer((props: {
     }
   }
 
+  async function deleteMessage() {
+    if (state.loading) {
+      return;
+    }
+    try {
+      state.loading = true;
+      await api.UserMessage.deleteMessage(state.message.id);
+    } catch (error) {
+      MessageService.error(error);
+      state.loading = false;
+    }
+  }
+
   return <div className="flex flex-col"
     style={{
       whiteSpace: "pre-wrap",
@@ -50,9 +63,18 @@ export default observer((props: {
         onClick={withdrawn}
         style={{ marginRight: "1em" }}
         size="small"
-        startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faEyeSlash} spin={state.loading} style={{ fontSize: "small" }} />}
+        startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faArrowRotateLeft} spin={state.loading} style={{ fontSize: "small" }} />}
       >
         <FormattedMessage id="Withdrawn" defaultMessage="Withdrawn" />
+      </Button>}
+      {state.message.user.id !== GlobalUserInfo.id && <Button
+        variant="outlined"
+        onClick={deleteMessage}
+        style={{ marginRight: "1em" }}
+        size="small"
+        startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faTrashCan} spin={state.loading} style={{ fontSize: "small" }} />}
+      >
+        <FormattedMessage id="Delete" defaultMessage="Delete" />
       </Button>}
     </div>
     {!!state.message.url && <div>

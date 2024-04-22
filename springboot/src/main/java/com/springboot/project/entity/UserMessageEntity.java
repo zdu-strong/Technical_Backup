@@ -1,6 +1,8 @@
 package com.springboot.project.entity;
 
 import java.util.Date;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,5 +52,8 @@ public class UserMessageEntity {
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "userMessage", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserMessageRelevanceEntity> userMessageRelevanceList;
 
 }

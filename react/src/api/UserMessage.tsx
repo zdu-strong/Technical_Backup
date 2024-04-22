@@ -37,5 +37,9 @@ export function getUserMessageWebsocket(websocketInput$: Subject<{
 }
 
 export async function recallMessage(id: string) {
-  await axios.put<void>("/user_message/recall", null, { params: { id } })
+  await axios.post<void>("/user_message/recall", null, { params: { id } })
+}
+
+export async function deleteMessage(id: string) {
+  await axios.delete<void>("/user_message/delete", { params: { id } })
 }

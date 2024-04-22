@@ -14,6 +14,8 @@ public class UserMessageModel {
 
     private Boolean isRecall;
 
+    private Boolean isDeleted;
+
     private Date createDate;
 
     private Date updateDate;

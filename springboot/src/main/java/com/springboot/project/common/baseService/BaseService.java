@@ -27,6 +27,7 @@ import com.springboot.project.entity.UserBlackOrganizeEntity;
 import com.springboot.project.entity.UserEmailEntity;
 import com.springboot.project.entity.UserEntity;
 import com.springboot.project.entity.UserMessageEntity;
+import com.springboot.project.entity.UserMessageRelevanceEntity;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.FriendshipFormatter;
@@ -46,6 +47,7 @@ import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.UserEmailService;
+import com.springboot.project.service.UserMessageRelevanceService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 
@@ -129,6 +131,9 @@ public abstract class BaseService {
     private HibernateDialectProperties HibernateDialectProperties;
 
     @Autowired
+    protected UserMessageRelevanceService userMessageRelevanceService;
+
+    @Autowired
     protected PermissionUtil permissionUtil;
 
     protected void persist(Object entity) {
@@ -205,6 +210,10 @@ public abstract class BaseService {
 
     protected JPAJinqStream<OrganizeMoveTopEntity> OrganizeMoveTopEntity() {
         return this.streamAll(OrganizeMoveTopEntity.class);
+    }
+
+    protected JPAJinqStream<UserMessageRelevanceEntity> UserMessageRelevanceEntity() {
+        return this.streamAll(UserMessageRelevanceEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

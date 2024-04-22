@@ -89,5 +89,6 @@
   "PleaseFillInNickname": "请填写昵称",
   "ThereShouldBeNoSpacesAtTheBeginningOfTheNickname": "呢称的开头不能有空格",
   "TheNicknameCannotHaveASpaceAtTheEnd": "呢称的结尾不能有空格",
-  "NetworkError": "无网络连接"
+  "NetworkError": "无网络连接",
+  "Delete": "删除"
 }
