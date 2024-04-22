@@ -9,9 +9,6 @@ import java.security.spec.InvalidKeySpecException;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 
@@ -21,7 +18,6 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class AuthorizationEmailControllerSendVerificationCodeTest extends BaseTest {
     private String email;
-    private String verificationCode;
 
     @Test
     public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
@@ -29,18 +25,11 @@ public class AuthorizationEmailControllerSendVerificationCodeTest extends BaseTe
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(verificationCode.length(), response.getBody().getVerificationCodeLength());
+        assertEquals(6, response.getBody().getVerificationCodeLength());
     }
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                verificationCode = String.valueOf(args[1]);
-                return null;
-            }
-        }).when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(), Mockito.anyString());
         this.email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
     }
 
