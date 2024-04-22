@@ -20,7 +20,7 @@ public class StorageSpaceScheduled {
     @Autowired
     private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
 
-    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = 60 * 60 * 1000)
+    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 24 * 60 * 60 * 1000)
     public void scheduled() {
         this.cleanDatabaseStorage();
     }
