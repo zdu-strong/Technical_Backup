@@ -1,11 +1,13 @@
 package com.springboot.project.test.scheduled.MessageScheduled;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -13,12 +15,14 @@ import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import jakarta.websocket.CloseReason.CloseCodes;
 
@@ -29,8 +33,8 @@ public class MessageScheduledTest extends BaseTest {
     private WebSocketClient webSocketClient;
 
     @Test
-    public void test() throws InterruptedException, ExecutionException, TimeoutException {
-        this.messageScheduled.scheduled();
+    public void test() throws Throwable {
+        this.messageScheduled.sendMessage();
         var result = this.subject.take(1).toList().toFuture().get(10, TimeUnit.SECONDS);
         assertEquals(1, result.size());
         assertEquals(1, JinqStream.from(result).selectAllList(s -> s.getList()).count());

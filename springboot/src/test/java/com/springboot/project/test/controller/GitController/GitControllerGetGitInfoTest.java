@@ -1,13 +1,15 @@
 package com.springboot.project.test.controller.GitController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import com.springboot.project.model.GitPropertiesModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 

@@ -11,23 +11,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
-import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.devtools.remote.client.HttpHeaderInterceptor;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
@@ -171,7 +167,7 @@ public class BaseTest {
     @Autowired
     protected AuthorizationEmailProperties authorizationEmailProperties;
 
-    @SpyBean
+    @Spy
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
@@ -186,10 +182,10 @@ public class BaseTest {
     @Autowired
     protected MessageScheduled messageScheduled;
 
-    @SpyBean
+    @Spy
     protected StorageSpaceScheduled storageSpaceScheduled;
 
-    @SpyBean
+    @Spy
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
 
     @Autowired
@@ -211,7 +207,7 @@ public class BaseTest {
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
-    public void beforeEachOfBaseTest() throws InterruptedException, ExecutionException {
+    public void beforeEachOfBaseTest() throws Throwable {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
@@ -246,20 +242,10 @@ public class BaseTest {
     }
 
     private VerificationCodeEmailModel sendVerificationCode(String email) throws URISyntaxException {
-        List<String> verificationCodeList = Lists.newArrayList();
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                var verificationCode = String.valueOf(args[1]);
-                verificationCodeList.add(verificationCode);
-                return null;
-            }
-        }).when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(), Mockito.anyString());
         var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        response.getBody().setVerificationCode(JinqStream.from(verificationCodeList).getOnlyValue());
         return response.getBody();
     }
 
