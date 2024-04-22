@@ -22,7 +22,7 @@ public class OrganizeClosureRefreshScheduledTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doCallRealMethod().when(this.organizeClosureRefreshScheduled).refresh();
+        Mockito.doCallRealMethod().when(this.organizeClosureRefreshScheduled).scheduled();
         {
             var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);

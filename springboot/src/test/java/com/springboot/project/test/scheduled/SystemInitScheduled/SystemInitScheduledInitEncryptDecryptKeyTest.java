@@ -20,7 +20,7 @@ public class SystemInitScheduledInitEncryptDecryptKeyTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doCallRealMethod().when(this.systemInitScheduled).initEncryptDecryptKey();
+        Mockito.doCallRealMethod().when(this.systemInitScheduled).scheduled();
     }
 
 }

@@ -14,7 +14,7 @@ public class MessageScheduled {
         sendMessage();
     }
 
-    public void sendMessage() throws Throwable {
+    private void sendMessage() throws Throwable {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
         Throwable error = null;

@@ -34,7 +34,7 @@ public class MessageScheduledTest extends BaseTest {
 
     @Test
     public void test() throws Throwable {
-        this.messageScheduled.sendMessage();
+        this.messageScheduled.scheduled();
         var result = this.subject.take(1).toList().toFuture().get(10, TimeUnit.SECONDS);
         assertEquals(1, result.size());
         assertEquals(1, JinqStream.from(result).selectAllList(s -> s.getList()).count());

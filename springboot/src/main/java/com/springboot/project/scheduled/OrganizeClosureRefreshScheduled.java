@@ -25,7 +25,7 @@ public class OrganizeClosureRefreshScheduled {
         this.refresh();
     }
 
-    public void refresh() {
+    private void refresh() {
         while (true) {
             var distributedExecutionModel = this.distributedExecutionService.getDistributedExecutionOfOrganize();
             if (distributedExecutionModel == null) {

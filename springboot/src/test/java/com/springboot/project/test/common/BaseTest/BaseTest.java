@@ -19,11 +19,11 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.devtools.remote.client.HttpHeaderInterceptor;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
@@ -110,7 +110,7 @@ public class BaseTest {
     @Autowired
     protected TimeZoneUtil timeZoneUtil;
 
-    @Spy
+    @SpyBean
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
@@ -197,13 +197,13 @@ public class BaseTest {
     @Autowired
     protected MessageScheduled messageScheduled;
 
-    @Spy
+    @SpyBean
     protected StorageSpaceScheduled storageSpaceScheduled;
 
-    @Spy
+    @SpyBean
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
 
-    @Spy
+    @SpyBean
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
@@ -212,9 +212,9 @@ public class BaseTest {
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
-        Mockito.doNothing().when(this.systemInitScheduled).initEncryptDecryptKey();
-        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).refresh();
-        Mockito.doNothing().when(this.storageSpaceScheduled).cleanDatabaseStorage();
+        Mockito.doNothing().when(this.systemInitScheduled).scheduled();
+        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
+        Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
 
     protected UserModel createAccount(String email) {

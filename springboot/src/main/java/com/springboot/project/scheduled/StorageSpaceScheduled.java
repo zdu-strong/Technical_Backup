@@ -1,7 +1,5 @@
 package com.springboot.project.scheduled;
 
-import java.util.concurrent.ExecutionException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,11 +21,11 @@ public class StorageSpaceScheduled {
     private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
 
     @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = 60 * 60 * 1000)
-    public void scheduled() throws InterruptedException, ExecutionException {
+    public void scheduled() {
         this.cleanDatabaseStorage();
     }
 
-    public void cleanDatabaseStorage() {
+    private void cleanDatabaseStorage() {
         while (true) {
             var distributedExecutionModel = this.distributedExecutionService.getDistributedExecutionOfStorageSpace();
             if (distributedExecutionModel == null) {

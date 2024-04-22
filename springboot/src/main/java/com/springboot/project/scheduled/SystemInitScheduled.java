@@ -17,7 +17,7 @@ public class SystemInitScheduled {
         this.initEncryptDecryptKey();
     }
 
-    public void initEncryptDecryptKey() {
+    private void initEncryptDecryptKey() {
         this.encryptDecryptService.getKeyOfAESSecretKey();
         this.encryptDecryptService.getKeyOfRSAPrivateKey();
         this.encryptDecryptService.getKeyOfRSAPublicKey();
