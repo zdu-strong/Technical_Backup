@@ -182,10 +182,10 @@ public class BaseTest {
     @Autowired
     protected MessageScheduled messageScheduled;
 
-    @Spy
+    @Autowired
     protected StorageSpaceScheduled storageSpaceScheduled;
 
-    @Spy
+    @Autowired
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
 
     @Autowired
@@ -203,7 +203,7 @@ public class BaseTest {
     @Autowired
     protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
 
-    @Autowired
+    @Spy
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
@@ -212,8 +212,7 @@ public class BaseTest {
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
-        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
-        Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
+        Mockito.doNothing().when(this.systemInitScheduled).initEncryptDecryptKey();
     }
 
     protected UserModel createAccount(String email) {
