@@ -99,16 +99,28 @@ public class BaseTest {
     protected MockHttpServletRequest request = new MockHttpServletRequest();
 
     @Autowired
-    protected StorageSpaceService storageSpaceService;
+    protected Storage storage;
 
     @Autowired
-    protected Storage storage;
+    protected ObjectMapper objectMapper;
 
     @Autowired
     protected ResourceHttpHeadersUtil resourceHttpHeadersUtil;
 
     @Autowired
     protected TimeZoneUtil timeZoneUtil;
+
+    @Spy
+    protected AuthorizationEmailUtil authorizationEmailUtil;
+
+    @Autowired
+    protected LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    protected OrganizeUtil organizeUtil;
+
+    @Autowired
+    protected PermissionUtil permissionUtil;
 
     @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
@@ -126,7 +138,13 @@ public class BaseTest {
     protected DateFormatProperties dateFormatProperties;
 
     @Autowired
-    protected ObjectMapper objectMapper;
+    protected AuthorizationEmailProperties authorizationEmailProperties;
+
+    @Autowired
+    protected GitProperties gitProperties;
+
+    @Autowired
+    protected StorageSpaceService storageSpaceService;
 
     @Autowired
     protected EncryptDecryptService encryptDecryptService;
@@ -162,33 +180,6 @@ public class BaseTest {
     protected OrganizeClosureService organizeClosureService;
 
     @Autowired
-    protected PermissionUtil permissionUtil;
-
-    @Autowired
-    protected AuthorizationEmailProperties authorizationEmailProperties;
-
-    @Spy
-    protected AuthorizationEmailUtil authorizationEmailUtil;
-
-    @Autowired
-    protected LongTermTaskUtil longTermTaskUtil;
-
-    @Autowired
-    protected OrganizeUtil organizeUtil;
-
-    @Autowired
-    protected GitProperties gitProperties;
-
-    @Autowired
-    protected MessageScheduled messageScheduled;
-
-    @Autowired
-    protected StorageSpaceScheduled storageSpaceScheduled;
-
-    @Autowired
-    protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
-
-    @Autowired
     protected OrganizeCheckService organizeCheckService;
 
     @Autowired
@@ -203,6 +194,15 @@ public class BaseTest {
     @Autowired
     protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
 
+    @Autowired
+    protected MessageScheduled messageScheduled;
+
+    @Spy
+    protected StorageSpaceScheduled storageSpaceScheduled;
+
+    @Spy
+    protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
+
     @Spy
     protected SystemInitScheduled systemInitScheduled;
 
@@ -213,6 +213,8 @@ public class BaseTest {
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
         Mockito.doNothing().when(this.systemInitScheduled).initEncryptDecryptKey();
+        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).refresh();
+        Mockito.doNothing().when(this.storageSpaceScheduled).cleanDatabaseStorage();
     }
 
     protected UserModel createAccount(String email) {
