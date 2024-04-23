@@ -59,7 +59,7 @@ public class UserMessageWebSocketController {
     private ConcurrentMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private boolean ready = false;
 
-    public synchronized void sendMessage() {
+    public synchronized void sendMessage() throws IOException {
         try {
             if (!this.getPermissionUtil().isSignIn(accessToken)) {
                 this.session
@@ -70,14 +70,10 @@ public class UserMessageWebSocketController {
             this.sendMessageForLastMessage();
             this.sendMessageForOnlineMessage();
         } catch (Throwable e) {
-            try {
-                this.session
-                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                                CloseCodes.UNEXPECTED_CONDITION.name()));
-                throw new RuntimeException(e.getMessage(), e);
-            } catch (IOException e1) {
-                throw new RuntimeException(e1.getMessage(), e1);
-            }
+            this.session
+                    .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
+                            CloseCodes.UNEXPECTED_CONDITION.name()));
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

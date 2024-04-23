@@ -44,6 +44,9 @@ spring:
     scheduling:
       pool:
         size: 50
+  threads:
+    virtual:
+      enabled: true
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
     time-zone: UTC
