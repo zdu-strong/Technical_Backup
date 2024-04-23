@@ -69,11 +69,15 @@ public class UserMessageWebSocketController {
             }
             this.sendMessageForLastMessage();
             this.sendMessageForOnlineMessage();
+        } catch (IllegalStateException e) {
+            this.session
+                    .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
+                            CloseCodes.UNEXPECTED_CONDITION.name()));
         } catch (Throwable e) {
             this.session
                     .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
                             CloseCodes.UNEXPECTED_CONDITION.name()));
-            throw new RuntimeException(e.getMessage(), e);
+            throw e;
         }
     }
 
