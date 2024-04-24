@@ -24,7 +24,7 @@ public class MessageScheduled {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
+            var semaphore = new Semaphore(2);
             var futureList = new ArrayList<Future<?>>();
             for (var websocket : websocketList) {
                 futureList.add(executor.submit(() -> {
