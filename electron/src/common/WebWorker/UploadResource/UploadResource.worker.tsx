@@ -1,7 +1,7 @@
 import '@/common/Server';
 import registerWebworker from 'webworker-promise/lib/register'
 import axios from "axios";
-import { catchError, concatMap, from, map, of, range, toArray } from "rxjs";
+import { catchError, concatMap, from, map, of, range, timer, toArray } from "rxjs";
 import * as mathjs from 'mathjs'
 import { ErrorMessageOfTheTaskFailedBecauseItStopped, getLongTermTask } from '@/api/LongTermTask';
 import { addMilliseconds } from 'date-fns'
@@ -16,6 +16,9 @@ registerWebworker(async ({
 }, emit) => {
   if (!ServerAddress) {
     throw new Error("Server Address cannot be empty");
+  }
+  for (let i = 10; i > 0; i--) {
+    await timer(1).toPromise();
   }
   /* Each piece is 10MB */
   const everySize = 1024 * 1024 * 10;
@@ -86,9 +89,6 @@ registerWebworker(async ({
       }),
     )),
   ).toPromise();
-  return {
-    url: `${ServerAddress}${url!}`,
-    downloadUrl: `${ServerAddress}/download${url}`,
-  };
+  return url;
 });
 

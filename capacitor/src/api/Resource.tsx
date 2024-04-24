@@ -1,30 +1,11 @@
-import { ServerAddress } from "@/common/Server";
-import { runWoker } from '@/common/WebWorkerUtils';
-import { isMobilePhone } from "@/common/is-mobile-phone";
-import axios from "axios";
-import { Subject, timer } from "rxjs";
+import { Subject } from "rxjs";
+import { ServerAddress, getDownloadResourceUrl, getResourceUrl } from "@/common/Server";
+import { runWoker } from '@/common/WebWorker/WebWorkerUtils';
 
 export async function upload(
   file: File,
   uploadProgressSubject?: UploadProgressSubjectType,
 ): Promise<{ url: string, downloadUrl: string }> {
-  if (isMobilePhone) {
-    for (let i = 10; i > 0; i--) {
-      await timer(1).toPromise();
-    }
-  }
-  /* Each piece is 10MB */
-  const everySize = 1024 * 1024 * 10;
-  if (file.size <= everySize) {
-    const formData = new FormData();
-    formData.set("file", file);
-    const { data: url } = await axios.post(`/upload/resource`, formData);
-    return {
-      url: url,
-      downloadUrl: `/download${url}`,
-    };
-  }
-
   const worker = new Worker(new URL('../common/WebWorker/UploadResource/UploadResource.worker', import.meta.url), { type: "module" });
   if (uploadProgressSubject) {
     worker.addEventListener("message", (e) => {
@@ -34,12 +15,16 @@ export async function upload(
       uploadProgressSubject.next(e.data[3]);
     });
   }
-  return await runWoker(worker,
+  const url = await runWoker(worker,
     {
       ServerAddress,
       file: file
     }
   );
+  return {
+    url: getResourceUrl(url),
+    downloadUrl: getDownloadResourceUrl(url),
+  }
 }
 
 export type UploadProgressSubjectType = Subject<{

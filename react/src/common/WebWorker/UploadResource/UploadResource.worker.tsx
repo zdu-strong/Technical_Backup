@@ -89,9 +89,6 @@ registerWebworker(async ({
       }),
     )),
   ).toPromise();
-  return {
-    url: `${ServerAddress}${url!}`,
-    downloadUrl: `${ServerAddress}/download${url}`,
-  };
+  return url;
 });
 

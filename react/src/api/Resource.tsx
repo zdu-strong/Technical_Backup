@@ -1,5 +1,5 @@
 import { Subject } from "rxjs";
-import { ServerAddress } from "@/common/Server";
+import { ServerAddress, getDownloadResourceUrl, getResourceUrl } from "@/common/Server";
 import { runWoker } from '@/common/WebWorker/WebWorkerUtils';
 
 export async function upload(
@@ -15,12 +15,16 @@ export async function upload(
       uploadProgressSubject.next(e.data[3]);
     });
   }
-  return await runWoker(worker,
+  const url = await runWoker(worker,
     {
       ServerAddress,
       file: file
     }
   );
+  return {
+    url: getResourceUrl(url),
+    downloadUrl: getDownloadResourceUrl(url),
+  }
 }
 
 export type UploadProgressSubjectType = Subject<{

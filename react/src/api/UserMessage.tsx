@@ -1,4 +1,4 @@
-import { ServerAddress, getWebSocketServerAddress } from "@/common/Server";
+import { getDownloadResourceUrl, getWebSocketServerAddress } from "@/common/Server";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { UserMessageWebSocketReceiveModel } from "@/model/UserMessageWebSocketReceiveModel";
 import axios from "axios";
@@ -27,7 +27,7 @@ export function getUserMessageWebsocket(websocketInput$: Subject<{
     map((data) => {
       for (const message of data.list) {
         if (message.url) {
-          message.url = `${ServerAddress}/download${message.url}`;
+          message.url = getDownloadResourceUrl(message.url);
         }
       }
       return data;
