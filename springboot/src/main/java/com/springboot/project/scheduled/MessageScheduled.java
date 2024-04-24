@@ -1,5 +1,11 @@
 package com.springboot.project.scheduled;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,16 +23,24 @@ public class MessageScheduled {
     private void sendMessage() throws Throwable {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
-        Throwable error = null;
-        for (var websocket : websocketList) {
-            try {
-                websocket.sendMessage();
-            } catch (Throwable e) {
-                error = e;
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
+            var futureList = new ArrayList<Future<?>>();
+            for (var websocket : websocketList) {
+                futureList.add(executor.submit(() -> {
+                    try {
+                        semaphore.acquire();
+                        websocket.sendMessage();
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    } finally {
+                        semaphore.release();
+                    }
+                }));
             }
-        }
-        if (error != null) {
-            throw error;
+            for (var future : futureList) {
+                future.get();
+            }
         }
     }
 
