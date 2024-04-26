@@ -31,7 +31,6 @@ public class UserMessageCheckService extends BaseService {
         }
     }
 
-    @SuppressWarnings("resource")
     public void checkCanDeleteUserMessage(String id, HttpServletRequest request) {
         var userId = this.permissionUtil.getUserId(request);
         var exists = this.UserMessageEntity()

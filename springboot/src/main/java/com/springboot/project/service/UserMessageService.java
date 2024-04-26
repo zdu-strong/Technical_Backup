@@ -58,7 +58,6 @@ public class UserMessageService extends BaseService {
         return this.userMessageFormatter.formatForUserId(userMessageEntity, userId);
     }
 
-    @SuppressWarnings("resource")
     public List<UserMessageModel> getMessageListOnlyContainsOneByPageNum(Long pageNum, String userId) {
         var stream = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
@@ -73,7 +72,6 @@ public class UserMessageService extends BaseService {
         return userMessageList;
     }
 
-    @SuppressWarnings("resource")
     public UserMessageWebSocketSendModel getMessageListByLastTwentyMessage(String userId) {
         var userMessageList = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())

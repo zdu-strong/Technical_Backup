@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
 
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,18 +22,14 @@ public class MessageScheduled {
     private void sendMessage() throws Throwable {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var semaphore = new Semaphore(2);
+        try (var executor = Executors.newSingleThreadExecutor()) {
             var futureList = new ArrayList<Future<?>>();
             for (var websocket : websocketList) {
                 futureList.add(executor.submit(() -> {
                     try {
-                        semaphore.acquire();
                         websocket.sendMessage();
-                    } catch (IOException | InterruptedException e) {
+                    } catch (IOException e) {
                         throw new RuntimeException(e.getMessage(), e);
-                    } finally {
-                        semaphore.release();
                     }
                 }));
             }

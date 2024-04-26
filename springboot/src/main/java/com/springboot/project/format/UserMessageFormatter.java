@@ -22,7 +22,6 @@ public class UserMessageFormatter extends BaseService {
         return userMessageModel;
     }
 
-    @SuppressWarnings("resource")
     public UserMessageModel formatForUserId(UserMessageEntity userMessageEntity, String userId) {
         var userMessage = this.format(userMessageEntity);
         var crateDate = userMessage.getCreateDate();
