@@ -270,9 +270,7 @@
                     <execution>
                         <id>create</id>
                         <configuration>
-                            <sqlCommand>DROP
-                                DATABASE IF EXISTS ${database.name};
-                                CREATE
+                            <sqlCommand>CREATE
                                 DATABASE ${database.name};</sqlCommand>
                         </configuration>
                     </execution>
