@@ -6,7 +6,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.springboot.diff.SpringbootProjectApplication",
-            "projectName": "diff",
+            "projectName": "database_diff",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
