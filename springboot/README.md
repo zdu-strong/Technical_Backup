@@ -32,7 +32,7 @@ Run unit tests
 
 Generate database version upgrade sql.<br/>
 
-Its source code is in the ".mvn/diff" folder.<br/>
+Its source code is in the ".mvn/database_diff" folder.<br/>
 
 ### `./mvn clean compile sql:execute@create clean compile`
 
