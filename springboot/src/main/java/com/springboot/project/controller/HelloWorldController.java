@@ -8,8 +8,10 @@ import com.springboot.project.common.baseController.BaseController;
 
 @RestController
 public class HelloWorldController extends BaseController {
+
 	@GetMapping("/")
 	public ResponseEntity<?> helloWorld() {
 		return ResponseEntity.ok("Hello, World!");
 	}
+
 }

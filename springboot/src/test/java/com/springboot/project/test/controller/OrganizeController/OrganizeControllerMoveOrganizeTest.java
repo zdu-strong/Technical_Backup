@@ -1,14 +1,15 @@
 package com.springboot.project.test.controller.OrganizeController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URISyntaxException;
+
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -22,7 +23,7 @@ public class OrganizeControllerMoveOrganizeTest extends BaseTest {
         var url = new URIBuilder("/organize/move").setParameter("id", organizeId)
                 .setParameter("parentId", parentOrganizeId)
                 .build();
-        var response = this.testRestTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(null), Void.class);
+        var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         var result = this.organizeService.getById(organizeId);
         assertEquals(this.parentOrganizeId, result.getParent().getId());

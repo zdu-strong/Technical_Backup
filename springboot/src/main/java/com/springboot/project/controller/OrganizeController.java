@@ -48,7 +48,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/organize/move")
+    @PostMapping("/organize/move")
     public ResponseEntity<?> move(@RequestParam String id, @RequestParam(required = false) String parentId)
             throws InterruptedException {
         this.organizeCheckService.checkExistOrganize(id);

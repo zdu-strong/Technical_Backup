@@ -3,7 +3,6 @@ package com.springboot.project.controller;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,16 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskModel;
 
 @RestController
 public class LongTermTaskController extends BaseController {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * Because some requests take a long time to execute, so provide this
