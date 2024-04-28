@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
+import com.google.cloud.spanner.InstanceId;
+import com.google.cloud.spanner.InstanceInfo;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 
@@ -277,6 +279,20 @@ public class SpringbootProjectApplication {
 
     private static void deleteDatabaseOfSpanner(String databaseName)
             throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException {
+        if (!existsDatabaseOfSpanner(databaseName)) {
+            return;
+        }
+        var project = getSpannerProject();
+        var instance = getSpannerInstance();
+        var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
+                .build();
+        var spanner = spannerOptions.getService();
+        var databaseAdminClient = spanner.getDatabaseAdminClient();
+        databaseAdminClient.dropDatabase(instance, databaseName);
+    }
+
+    private static boolean existsDatabaseOfSpanner(String databaseName)
+            throws JsonMappingException, JsonProcessingException, IOException {
         var project = getSpannerProject();
         var instance = getSpannerInstance();
         var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
@@ -284,14 +300,16 @@ public class SpringbootProjectApplication {
         var spanner = spannerOptions.getService();
         var databaseAdminClient = spanner.getDatabaseAdminClient();
         try {
-            databaseAdminClient.dropDatabase(instance, databaseName);
+            var exists = databaseAdminClient.getDatabase(instance, databaseName).exists();
+            return exists;
         } catch (Throwable e) {
-            // do nothing
+            return false;
         }
     }
 
     private static void createDatabaseOfSpanner(String databaseName) throws JsonMappingException,
             JsonProcessingException, IOException, SpannerException, InterruptedException, ExecutionException {
+        createInstanceOfSpanner();
         var project = getSpannerProject();
         var instance = getSpannerInstance();
         var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
@@ -299,6 +317,21 @@ public class SpringbootProjectApplication {
         var spanner = spannerOptions.getService();
         var databaseAdminClient = spanner.getDatabaseAdminClient();
         databaseAdminClient.createDatabase(instance, databaseName, new ArrayList<String>()).get();
+    }
+
+    private static void createInstanceOfSpanner() throws JsonMappingException, JsonProcessingException, IOException,
+            SpannerException, InterruptedException, ExecutionException {
+        var project = getSpannerProject();
+        var instance = getSpannerInstance();
+        var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
+                .build();
+        var spanner = spannerOptions.getService();
+        try {
+            spanner.getInstanceAdminClient()
+                    .createInstance(InstanceInfo.newBuilder(InstanceId.of(project, instance)).build()).get();
+        } catch (Throwable e) {
+            // do nothing
+        }
     }
 
     public static void createDatabase(String databaseName)
