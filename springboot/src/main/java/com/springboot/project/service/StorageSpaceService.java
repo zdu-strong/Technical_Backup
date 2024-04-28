@@ -3,9 +3,11 @@ package com.springboot.project.service;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
+
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
 import com.springboot.project.enumerate.StorageSpaceEnum;
@@ -17,16 +19,26 @@ public class StorageSpaceService extends BaseService {
         this.checkIsValidFolderName(folderName);
         this.refreshStorageSpaceEntity(folderName);
 
-        var expireDate = DateUtils.addMilliseconds(new Date(),
-                Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
-        var isUsed = !this.StorageSpaceEntity()
-                .where(s -> s.getFolderName().equals(folderName))
-                .where(s -> s.getUpdateDate().before(expireDate))
-                .exists();
-
-        if (isUsed) {
+        if (isUsed(folderName)) {
             return;
         }
+
+        this.delete(folderName);
+    }
+
+    private boolean isUsedByProgramData(String folderName) {
+        if (isUsedByUserMessageEntity(folderName)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isUsedByUserMessageEntity(String folderName) {
+        var isUsed = this.UserMessageEntity().where(s -> s.getFolderName().equals(folderName)).exists();
+        return isUsed;
+    }
+
+    private void delete(String folderName) {
         this.storage.delete(folderName);
         if (new File(this.storage.getRootPath(), folderName).exists()) {
             throw new RuntimeException("Folder deletion failed. FolderName:" + folderName);
@@ -56,11 +68,18 @@ public class StorageSpaceService extends BaseService {
         this.persist(storageSpaceEntity);
     }
 
-    private boolean isUsedByProgramData(String folderName) {
-        if (this.UserMessageEntity().where(s -> s.getFolderName().equals(folderName)).exists()) {
-            return true;
-        }
-        return false;
+    private boolean isUsed(String folderName) {
+        return isUsedByProgramData(folderName) || isUsedByTempFile(folderName);
+    }
+
+    private boolean isUsedByTempFile(String folderName) {
+        var expireDate = DateUtils.addMilliseconds(new Date(),
+                Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
+        var isUsed = !this.StorageSpaceEntity()
+                .where(s -> s.getFolderName().equals(folderName))
+                .where(s -> s.getUpdateDate().before(expireDate))
+                .exists();
+        return isUsed;
     }
 
     private void checkIsValidFolderName(String folderName) {
