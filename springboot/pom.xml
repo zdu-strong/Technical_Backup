@@ -276,7 +276,7 @@
                         <id>create</id>
                         <configuration>
                             <sqlCommand>CREATE
-                                DATABASE ${database.name};</sqlCommand>
+                                DATABASE IF NOT EXISTS ${database.name};</sqlCommand>
                         </configuration>
                     </execution>
                 </executions>
