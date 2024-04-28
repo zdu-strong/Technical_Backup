@@ -415,18 +415,21 @@ public class SpringbootProjectApplication {
 
     private static String getSpannerProject() throws JsonMappingException, JsonProcessingException, IOException {
         var databaseJdbcUrl = getDatabaseJdbcUrl();
-        var pattern = Pattern.compile(Pattern.quote("/projects/") + "[^/]+" + Pattern.quote("/instances/"));
-        if (pattern.matcher(databaseJdbcUrl).find()) {
-            return pattern.matcher(databaseJdbcUrl).group();
+        var pattern = Pattern
+                .compile("(?<=" + Pattern.quote("/projects/") + ")[^/]+(?=" + Pattern.quote("/instances/") + ")");
+        var matcher = pattern.matcher(databaseJdbcUrl);
+        if (matcher.find()) {
+            return matcher.group();
         }
         throw new RuntimeException("Not found spanner project");
     }
 
     private static String getSpannerInstance() throws JsonMappingException, JsonProcessingException, IOException {
         var databaseJdbcUrl = getDatabaseJdbcUrl();
-        var pattern = Pattern.compile(Pattern.quote("/instances/" + "[^/]+$"));
-        if (pattern.matcher(databaseJdbcUrl).find()) {
-            return pattern.matcher(databaseJdbcUrl).group();
+        var pattern = Pattern.compile("(?<=" + Pattern.quote("/instances/") + ")[^/]+$");
+        var matcher = pattern.matcher(databaseJdbcUrl);
+        if (matcher.find()) {
+            return matcher.group();
         }
         throw new RuntimeException("Not found spanner instance");
     }
