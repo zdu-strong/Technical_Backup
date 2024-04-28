@@ -7,7 +7,9 @@ public enum SupportDatabaseTypeEnum {
 
     MYSQL("mysql", "com.mysql.cj.jdbc.Driver", "CustomMySQLDialect"),
 
-    COCKROACH_DB("cockroachdb", "org.postgresql.Driver", "CustomCockroachdbDialect");
+    COCKROACH_DB("cockroachdb", "org.postgresql.Driver", "CustomCockroachdbDialect"),
+
+    SPANNER("spanner", "com.google.cloud.spanner.jdbc.JdbcDriver", "CustomSpannerDialect");
 
     private String name;
     private String driver;

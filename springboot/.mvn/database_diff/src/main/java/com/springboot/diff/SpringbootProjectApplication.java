@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,11 +22,13 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
+import com.google.cloud.spanner.SpannerOptions;
 
 @SpringBootApplication
 public class SpringbootProjectApplication {
@@ -215,6 +218,10 @@ public class SpringbootProjectApplication {
     }
 
     public static void deleteDatabase(String databaseName) throws IOException, InterruptedException {
+        if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
+            deleteDatabaseOfSpanner(databaseName);
+            return;
+        }
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -238,6 +245,17 @@ public class SpringbootProjectApplication {
         if (exitValue != 0) {
             throw new RuntimeException("Failed!");
         }
+    }
+
+    private static void deleteDatabaseOfSpanner(String databaseName)
+            throws JsonMappingException, JsonProcessingException, IOException {
+        var project = getSpannerProject();
+        var instance = getSpannerInstance();
+        var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
+                .build();
+        var spanner = spannerOptions.getService();
+        var databaseAdminClient = spanner.getDatabaseAdminClient();
+        databaseAdminClient.dropDatabase(instance, databaseName);
     }
 
     public static void createDatabase(String databaseName) throws IOException, InterruptedException {
@@ -359,6 +377,36 @@ public class SpringbootProjectApplication {
                     .asText();
             return platform;
         }
+    }
+
+    private static String getDatabaseJdbcUrl() throws JsonMappingException, JsonProcessingException, IOException {
+        var file = new File("pom.xml");
+        try (var input = new FileInputStream(file)) {
+            var databaseJdbcUrl = new XmlMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .get("properties")
+                    .get("database.jdbc.url")
+                    .asText();
+            return databaseJdbcUrl;
+        }
+    }
+
+    private static String getSpannerProject() throws JsonMappingException, JsonProcessingException, IOException {
+        var databaseJdbcUrl = getDatabaseJdbcUrl();
+        var pattern = Pattern.compile(Pattern.quote("/projects/") + "[^/]+" + Pattern.quote("/instances/"));
+        if (pattern.matcher(databaseJdbcUrl).matches()) {
+            return pattern.matcher(databaseJdbcUrl).group();
+        }
+        throw new RuntimeException("Not found spanner project");
+    }
+
+    private static String getSpannerInstance() throws JsonMappingException, JsonProcessingException, IOException {
+        var databaseJdbcUrl = getDatabaseJdbcUrl();
+        var pattern = Pattern.compile(Pattern.quote("/instances/" + "[^/]+$"));
+        if (pattern.matcher(databaseJdbcUrl).matches()) {
+            return pattern.matcher(databaseJdbcUrl).group();
+        }
+        throw new RuntimeException("Not found spanner instance");
     }
 
 }
