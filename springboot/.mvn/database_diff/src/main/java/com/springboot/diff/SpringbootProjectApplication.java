@@ -43,6 +43,10 @@ public class SpringbootProjectApplication {
             return;
         }
 
+        if (isOnlyResetDatabase(args)) {
+            return;
+        }
+
         checkSupportDatabase();
 
         var isCreateChangeLogFile = false;
@@ -69,6 +73,24 @@ public class SpringbootProjectApplication {
         } else {
             System.out.println("\nAn changelog file was generated!");
         }
+    }
+
+    public static boolean isOnlyResetDatabase(String[] args) throws IOException, InterruptedException {
+        checkSupportDatabase();
+        if (args != null && Arrays.asList(args).contains("--onlyResetDatabase")) {
+            resetDatabase();
+            clean();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static void resetDatabase()
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+        var databaseName = getDatabaseName();
+        deleteDatabase(databaseName);
+        createDatabase(databaseName);
     }
 
     public static void buildNewDatabase(String newDatabaseName)
@@ -407,6 +429,18 @@ public class SpringbootProjectApplication {
             return pattern.matcher(databaseJdbcUrl).group();
         }
         throw new RuntimeException("Not found spanner instance");
+    }
+
+    private static String getDatabaseName() throws JsonMappingException, JsonProcessingException, IOException {
+        var file = new File("pom.xml");
+        try (var input = new FileInputStream(file)) {
+            var databaseName = new XmlMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .get("properties")
+                    .get("database.name")
+                    .asText();
+            return databaseName;
+        }
     }
 
 }

@@ -34,7 +34,7 @@ Generate database version upgrade sql.<br/>
 
 Its source code is in the ".mvn/database_diff" folder.<br/>
 
-### `./mvn clean compile sql:execute@create clean compile`
+### `java -jar diff.jar --onlyResetDatabase`
 
 Delete all tables in the development database<br/>
 
