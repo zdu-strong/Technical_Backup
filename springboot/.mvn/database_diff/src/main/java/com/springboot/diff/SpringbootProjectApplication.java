@@ -2,6 +2,7 @@ package com.springboot.diff;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URISyntaxException;
@@ -193,11 +194,7 @@ public class SpringbootProjectApplication {
             throw new RuntimeException("Failed!");
         }
 
-        String textContentOfDiffChangeLogFile;
-        try (var input = new FileInputStream(new File(filePathOfDiffChangeLogFile))) {
-            textContentOfDiffChangeLogFile = IOUtils.toString(input, StandardCharsets.UTF_8);
-        }
-        var isEmptyOfDiffChangeLogFile = !textContentOfDiffChangeLogFile.contains("-- changeset ");
+        var isEmptyOfDiffChangeLogFile = isEmptyOfDiffChangeLogFile(filePathOfDiffChangeLogFile);
 
         if (isEmptyOfDiffChangeLogFile) {
             if (isCreateFolder) {
@@ -213,6 +210,19 @@ public class SpringbootProjectApplication {
             replaceDatetimeColumnType(new File(filePathOfDiffChangeLogFile));
         }
         return isCreateChangeLogFile;
+    }
+
+    private static boolean isEmptyOfDiffChangeLogFile(String filePathOfDiffChangeLogFile)
+            throws FileNotFoundException, IOException {
+        String textContentOfDiffChangeLogFile;
+        try (var input = new FileInputStream(new File(filePathOfDiffChangeLogFile))) {
+            textContentOfDiffChangeLogFile = IOUtils.toString(input, StandardCharsets.UTF_8);
+        }
+        var isEmptyOfDiffChangeLogFile = !textContentOfDiffChangeLogFile.contains("-- changeset ");
+        if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
+            isEmptyOfDiffChangeLogFile = !textContentOfDiffChangeLogFile.contains("<changeSet ");
+        }
+        return isEmptyOfDiffChangeLogFile;
     }
 
     public static void destroy(ProcessHandle hanlde) {
