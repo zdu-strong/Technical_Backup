@@ -30,7 +30,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
-import com.google.cloud.spanner.InstanceNotFoundException;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 
@@ -287,13 +286,8 @@ public class SpringbootProjectApplication {
         try {
             databaseAdminClient.dropDatabase(instance, databaseName);
         } catch (Throwable e) {
-            if (e.getCause() != null && e.getCause().getCause() != null
-                    && e.getCause().getCause() instanceof InstanceNotFoundException) {
-                // do nothing
-            }
-            throw e;
+            // do nothing
         }
-
     }
 
     private static void createDatabaseOfSpanner(String databaseName) throws JsonMappingException,
