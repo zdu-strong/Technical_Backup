@@ -5,6 +5,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.VerificationCodeEmailModel;
 
@@ -28,7 +30,7 @@ public class AuthorizationEmailController extends BaseController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
         }
 
-        if (!Pattern.matches("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", email)) {
+        if (!Pattern.compile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$").matcher(email).find()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
         }
 

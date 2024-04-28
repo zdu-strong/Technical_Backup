@@ -93,7 +93,8 @@ public class AuthorizationController extends BaseController {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
                 }
 
-                if (!Pattern.matches("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", userEmail.getEmail())) {
+                if (!Pattern.compile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
+                        .matcher(userEmail.getEmail()).find()) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
                 }
 
