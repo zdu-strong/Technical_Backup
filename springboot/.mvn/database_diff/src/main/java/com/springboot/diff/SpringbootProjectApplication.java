@@ -353,9 +353,15 @@ public class SpringbootProjectApplication {
         return existFolder;
     }
 
-    public static String getANewDatabaseName() {
+    public static String getANewDatabaseName()
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
         var newDatabaseName = "database_"
                 + Generators.timeBasedReorderedGenerator().generate().toString().replaceAll(Pattern.quote("-"), "_");
+        if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
+            Thread.sleep(1);
+            newDatabaseName = "database_"
+                    + FastDateFormat.getInstance("yyyyMMddHHmmssSSS", TimeZone.getTimeZone("UTC")).format(new Date());
+        }
         return newDatabaseName;
     }
 
