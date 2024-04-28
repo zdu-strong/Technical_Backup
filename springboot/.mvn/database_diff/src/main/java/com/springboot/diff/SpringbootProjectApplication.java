@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,7 +30,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
-import com.google.cloud.spanner.InstanceNotFoundException;
 import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 
@@ -286,9 +286,12 @@ public class SpringbootProjectApplication {
         var databaseAdminClient = spanner.getDatabaseAdminClient();
         try {
             databaseAdminClient.dropDatabase(instance, databaseName);
-        } catch (InstanceNotFoundException e) {
-            // do nothing
+        } catch (Throwable e) {
+            if (!e.getMessage().contains("Instance not found")) {
+                throw e;
+            }
         }
+
     }
 
     private static void createDatabaseOfSpanner(String databaseName) throws JsonMappingException,
@@ -363,9 +366,10 @@ public class SpringbootProjectApplication {
         var newDatabaseName = "database_"
                 + Generators.timeBasedReorderedGenerator().generate().toString().replaceAll(Pattern.quote("-"), "_");
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
-            Thread.sleep(1);
+            Thread.sleep(2);
             newDatabaseName = "database_"
-                    + FastDateFormat.getInstance("yyyyMMddHHmmssSSS", TimeZone.getTimeZone("UTC")).format(new Date());
+                    + FastDateFormat.getInstance("yyyyMMddHHmmssSSS", TimeZone.getTimeZone(ZoneId.of("UTC")))
+                            .format(new Date());
         }
         return newDatabaseName;
     }
