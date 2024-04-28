@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
+import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 
 @SpringBootApplication
@@ -75,7 +77,7 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static boolean isOnlyResetDatabase(String[] args) throws IOException, InterruptedException {
+    public static boolean isOnlyResetDatabase(String[] args) throws IOException, InterruptedException, SpannerException, ExecutionException {
         checkSupportDatabase();
         if (args != null && Arrays.asList(args).contains("--onlyResetDatabase")) {
             resetDatabase();
@@ -87,7 +89,7 @@ public class SpringbootProjectApplication {
     }
 
     private static void resetDatabase()
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException, ExecutionException {
         var databaseName = getDatabaseName();
         deleteDatabase(databaseName);
         createDatabase(databaseName);
@@ -239,7 +241,7 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static void deleteDatabase(String databaseName) throws IOException, InterruptedException {
+    public static void deleteDatabase(String databaseName) throws IOException, InterruptedException, SpannerException, ExecutionException {
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             deleteDatabaseOfSpanner(databaseName);
             return;
@@ -270,7 +272,7 @@ public class SpringbootProjectApplication {
     }
 
     private static void deleteDatabaseOfSpanner(String databaseName)
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException, ExecutionException {
         createDatabase(databaseName);
         var project = getSpannerProject();
         var instance = getSpannerInstance();
@@ -281,7 +283,24 @@ public class SpringbootProjectApplication {
         databaseAdminClient.dropDatabase(instance, databaseName);
     }
 
-    public static void createDatabase(String databaseName) throws IOException, InterruptedException {
+    private static void createDatabaseOfSpanner(String databaseName) throws JsonMappingException,
+            JsonProcessingException, IOException, SpannerException, InterruptedException, ExecutionException {
+        var project = getSpannerProject();
+        var instance = getSpannerInstance();
+        var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
+                .build();
+        var spanner = spannerOptions.getService();
+        var databaseAdminClient = spanner.getDatabaseAdminClient();
+        databaseAdminClient.createDatabase(instance, databaseName, new ArrayList<String>()).get();
+    }
+
+    public static void createDatabase(String databaseName)
+            throws IOException, InterruptedException, SpannerException, ExecutionException {
+        if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
+            createDatabaseOfSpanner(databaseName);
+            return;
+        }
+
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");

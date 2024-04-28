@@ -255,11 +255,6 @@
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
                     </dependency>
-                    <dependency>
-                        <groupId>com.google.cloud</groupId>
-                        <artifactId>google-cloud-spanner-jdbc</artifactId>
-                        <version>2.16.1</version>
-                    </dependency>
                 </dependencies>
                 <configuration>
                     <url>
@@ -281,7 +276,7 @@
                         <id>create</id>
                         <configuration>
                             <sqlCommand>CREATE
-                                DATABASE IF NOT EXISTS ${database.name};</sqlCommand>
+                                DATABASE ${database.name};</sqlCommand>
                         </configuration>
                     </execution>
                 </executions>
