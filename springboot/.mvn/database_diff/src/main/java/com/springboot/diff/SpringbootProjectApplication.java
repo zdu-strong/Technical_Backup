@@ -270,7 +270,8 @@ public class SpringbootProjectApplication {
     }
 
     private static void deleteDatabaseOfSpanner(String databaseName)
-            throws JsonMappingException, JsonProcessingException, IOException {
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+        createDatabase(databaseName);
         var project = getSpannerProject();
         var instance = getSpannerInstance();
         var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
