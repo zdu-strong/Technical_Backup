@@ -150,6 +150,14 @@ public class SpringbootProjectApplication {
         destroy(process.toHandle());
     }
 
+    public static String getFilenameExtensionOfChangeLog()
+            throws JsonMappingException, JsonProcessingException, IOException {
+        if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
+            return ".xml";
+        }
+        return ".sql";
+    }
+
     public static boolean diffDatabase(String newDatabaseName, String oldDatabaseName)
             throws IOException, InterruptedException {
         var today = FastDateFormat.getInstance("yyyy.MM.dd.HH.mm.ss", TimeZone.getTimeZone("UTC"))
@@ -157,7 +165,7 @@ public class SpringbootProjectApplication {
         var filePathOfDiffChangeLogFile = Paths
                 .get(getBaseFolderPath(), "src/main/resources", "liquibase/changelog",
                         today.substring(0, 10),
-                        today + "_changelog." + getDatabaseType().getName() + ".sql")
+                        today + "_changelog." + getDatabaseType().getName() + getFilenameExtensionOfChangeLog())
                 .normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         var isCreateFolder = !existFolder(Paths.get(filePathOfDiffChangeLogFile, "..").normalize().toString());
 
