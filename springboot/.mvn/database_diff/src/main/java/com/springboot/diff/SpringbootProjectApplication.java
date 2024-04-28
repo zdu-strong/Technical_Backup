@@ -77,7 +77,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static boolean isOnlyResetDatabase(String[] args) throws IOException, InterruptedException, SpannerException, ExecutionException {
+    public static boolean isOnlyResetDatabase(String[] args)
+            throws IOException, InterruptedException, SpannerException, ExecutionException {
         checkSupportDatabase();
         if (args != null && Arrays.asList(args).contains("--onlyResetDatabase")) {
             resetDatabase();
@@ -89,7 +90,8 @@ public class SpringbootProjectApplication {
     }
 
     private static void resetDatabase()
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException, ExecutionException {
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException,
+            ExecutionException {
         var databaseName = getDatabaseName();
         deleteDatabase(databaseName);
         createDatabase(databaseName);
@@ -241,7 +243,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static void deleteDatabase(String databaseName) throws IOException, InterruptedException, SpannerException, ExecutionException {
+    public static void deleteDatabase(String databaseName)
+            throws IOException, InterruptedException, SpannerException, ExecutionException {
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             deleteDatabaseOfSpanner(databaseName);
             return;
@@ -272,8 +275,8 @@ public class SpringbootProjectApplication {
     }
 
     private static void deleteDatabaseOfSpanner(String databaseName)
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException, ExecutionException {
-        createDatabase(databaseName);
+            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException,
+            ExecutionException {
         var project = getSpannerProject();
         var instance = getSpannerInstance();
         var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
