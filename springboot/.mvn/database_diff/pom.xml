@@ -12,6 +12,11 @@
     <properties>
         <java.version>21</java.version>
         <resource.delimiter>${}</resource.delimiter>
+        <commons.io.version>2.16.1</commons.io.version>
+        <java.uuid.generator.version>5.0.0</java.uuid.generator.version>
+        <jinq.jpa.version>2.0.2</jinq.jpa.version>
+        <google.cloud.spanner.jdbc.version>2.17.0</google.cloud.spanner.jdbc.version>
+        <gax.httpjson.version>2.47.0</gax.httpjson.version>
     </properties>
 
     <dependencies>
@@ -46,27 +51,27 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.16.1</version>
+            <version>${commons.io.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
-            <version>5.0.0</version>
+            <version>${java.uuid.generator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jinq</groupId>
             <artifactId>jinq-jpa</artifactId>
-            <version>2.0.2</version>
+            <version>${jinq.jpa.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner-jdbc</artifactId>
-            <version>2.17.0</version>
+            <version>${google.cloud.spanner.jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gax-httpjson</artifactId>
-            <version>2.47.0</version>
+            <version>${gax.httpjson.version}</version>
         </dependency>
     </dependencies>
 
@@ -74,7 +79,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath />
     </parent>
 
     <build>
@@ -85,5 +89,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
