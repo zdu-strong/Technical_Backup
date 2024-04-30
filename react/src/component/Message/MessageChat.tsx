@@ -83,7 +83,7 @@ export default observer((props: {
           });
         }
       } catch (error) {
-        MessageService.error("Failed to send")
+        MessageService.error(error)
       } finally {
         state.loadingOfSend = false;
       }

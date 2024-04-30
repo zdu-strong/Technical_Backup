@@ -57,7 +57,8 @@ public class LongTermTaskService extends BaseService {
             var responseEntity = e instanceof ResponseStatusException
                     ? ResponseEntity.status(((ResponseStatusException) e).getStatusCode())
                     : ResponseEntity.internalServerError();
-            var text = this.objectMapper.writeValueAsString(responseEntity.body(body));
+            var response = responseEntity.body(body);
+            var text = this.objectMapper.writeValueAsString(response);
             longTermTaskEntity.setResult(text);
             this.merge(longTermTaskEntity);
         } catch (JsonProcessingException e1) {

@@ -3,12 +3,15 @@ package com.springboot.project.common.longtermtask;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
+
 import io.reactivex.rxjava3.core.Flowable;
 
 @Component
@@ -31,7 +34,7 @@ public class LongTermTaskUtil {
     public ResponseEntity<String> run(Supplier<ResponseEntity<?>> supplier) {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
         Thread.startVirtualThread(() -> {
-            var subscription = Flowable.timer(1, TimeUnit.SECONDS).concatMap((a) -> {
+            var subscription = Flowable.timer(10, TimeUnit.SECONDS).concatMap((a) -> {
                 Thread.startVirtualThread(() -> {
                     synchronized (idOfLongTermTask) {
                         this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
