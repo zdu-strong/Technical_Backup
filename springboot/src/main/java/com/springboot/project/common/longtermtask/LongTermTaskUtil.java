@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 
@@ -34,15 +35,17 @@ public class LongTermTaskUtil {
     public ResponseEntity<String> run(Supplier<ResponseEntity<?>> supplier) {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
         Thread.startVirtualThread(() -> {
-            var subscription = Flowable.timer(10, TimeUnit.SECONDS).concatMap((a) -> {
-                Thread.startVirtualThread(() -> {
-                    synchronized (idOfLongTermTask) {
-                        this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
-                    }
-                }).join();
+            var subscription = Flowable
+                    .timer(LongTermTaskTempWaitDurationEnum.REFRESH_INTERVAL_SECOND, TimeUnit.SECONDS)
+                    .concatMap((a) -> {
+                        Thread.startVirtualThread(() -> {
+                            synchronized (idOfLongTermTask) {
+                                this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
+                            }
+                        }).join();
 
-                return Flowable.empty();
-            }).repeat().retry().subscribe();
+                        return Flowable.empty();
+                    }).repeat().retry().subscribe();
             try {
                 var result = supplier.get();
                 subscription.dispose();

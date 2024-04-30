@@ -1,6 +1,5 @@
 package com.springboot.project.format;
 
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +19,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
+import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskModel;
 
 import ch.qos.logback.classic.spi.ThrowableProxy;
 
 @Service
 public class LongTermTaskFormatter extends BaseService {
-
-    private Duration tempTaskSurvivalDuration = Duration.ofMinutes(1);
 
     public String formatThrowable(Throwable e) {
         try {
@@ -59,7 +57,8 @@ public class LongTermTaskFormatter extends BaseService {
     public ResponseEntity<?> format(LongTermTaskEntity longTermTaskEntity) {
         try {
             var expireDate = DateUtils.addMilliseconds(new Date(),
-                    Long.valueOf(0 - this.tempTaskSurvivalDuration.toMillis()).intValue());
+                    Long.valueOf(0 - LongTermTaskTempWaitDurationEnum.TEMP_TASK_SURVIVAL_DURATION.toMillis())
+                            .intValue());
             if (!longTermTaskEntity.getIsDone() && longTermTaskEntity.getUpdateDate().before(expireDate)) {
                 throw new RuntimeException("The task failed because it stopped");
             }
