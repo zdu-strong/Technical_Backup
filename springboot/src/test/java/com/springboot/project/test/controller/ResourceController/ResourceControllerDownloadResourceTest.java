@@ -1,11 +1,11 @@
 package com.springboot.project.test.controller.ResourceController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class ResourceControllerDownloadResourceTest extends BaseTest {
         assertNotNull(response.getHeaders().getETag());
         assertTrue(response.getHeaders().getETag().startsWith("\""));
         assertTrue(response.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=0, no-transform, public", response.getHeaders().getCacheControl());
+        assertEquals("max-age=86400, no-transform, public", response.getHeaders().getCacheControl());
         assertEquals(9287, response.getHeaders().getContentLength());
     }
 

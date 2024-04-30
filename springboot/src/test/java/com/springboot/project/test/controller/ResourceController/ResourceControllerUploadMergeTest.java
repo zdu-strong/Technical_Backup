@@ -1,14 +1,14 @@
 package com.springboot.project.test.controller.ResourceController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
+
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -48,7 +49,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
         assertNotNull(result.getHeaders().getETag());
         assertTrue(result.getHeaders().getETag().startsWith("\""));
         assertTrue(result.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=0, no-transform, public", result.getHeaders().getCacheControl());
+        assertEquals("max-age=86400, no-transform, public", result.getHeaders().getCacheControl());
         assertEquals(9287, result.getHeaders().getContentLength());
     }
 

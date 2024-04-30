@@ -1,12 +1,11 @@
 package com.springboot.project.test.controller.ResourceController;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
 import com.google.common.collect.Lists;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -58,7 +58,7 @@ public class ResourceControllerDownloadResourceIncorrectETagTest extends BaseTes
         assertNotNull(response.getHeaders().getETag());
         assertTrue(response.getHeaders().getETag().startsWith("\""));
         assertTrue(response.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=0, no-transform, public", response.getHeaders().getCacheControl());
+        assertEquals("max-age=86400, no-transform, public", response.getHeaders().getCacheControl());
         assertEquals(1, response.getHeaders().getContentLength());
         assertEquals("bytes 0-0/9287", response.getHeaders().get("Content-Range").stream().findFirst().get());
     }

@@ -4,13 +4,16 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -18,10 +21,12 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.model.LongTermTaskModel;
+
 import ch.qos.logback.classic.spi.ThrowableProxy;
 
 @Service
 public class LongTermTaskFormatter extends BaseService {
+
     private Duration tempTaskSurvivalDuration = Duration.ofMinutes(1);
 
     public String formatThrowable(Throwable e) {
@@ -43,6 +48,7 @@ public class LongTermTaskFormatter extends BaseService {
             traceList.add(stackTraceElement.getClassName() + ": " + map.get("message"));
             traceList.addAll(JinqStream.from(Lists.newArrayList(new ThrowableProxy(e).getStackTraceElementProxyArray()))
                     .select(s -> "\t" + s.getSTEAsString()).toList());
+            map.put("trace", traceList);
             var text = this.objectMapper.writeValueAsString(map);
             return text;
         } catch (JsonProcessingException e1) {
@@ -58,9 +64,8 @@ public class LongTermTaskFormatter extends BaseService {
                 throw new RuntimeException("The task failed because it stopped");
             }
 
-            var longTermTaskModel = new LongTermTaskModel<Object>().setId(longTermTaskEntity.getId())
-                    .setCreateDate(longTermTaskEntity.getCreateDate()).setUpdateDate(longTermTaskEntity.getUpdateDate())
-                    .setIsDone(longTermTaskEntity.getIsDone());
+            var longTermTaskModel = new LongTermTaskModel<Object>();
+            BeanUtils.copyProperties(longTermTaskEntity, longTermTaskModel);
 
             if (longTermTaskEntity.getIsDone()) {
                 var result = this.objectMapper.readTree(longTermTaskEntity.getResult());

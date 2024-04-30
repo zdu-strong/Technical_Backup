@@ -8,7 +8,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
 import org.jinq.orm.stream.JinqStream;
@@ -25,9 +25,12 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.server.ResponseStatusException;
+
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.common.storage.Storage;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class ResourceHttpHeadersUtil {
@@ -58,7 +61,7 @@ public class ResourceHttpHeadersUtil {
     }
 
     public void setCacheControl(HttpHeaders httpHeaders, HttpServletRequest request) {
-        httpHeaders.setCacheControl(CacheControl.maxAge(0, TimeUnit.HOURS).cachePublic().noTransform());
+        httpHeaders.setCacheControl(CacheControl.maxAge(1, TimeUnit.DAYS).cachePublic().noTransform());
     }
 
     public void setContentType(HttpHeaders httpHeaders, Resource resource, HttpServletRequest request) {

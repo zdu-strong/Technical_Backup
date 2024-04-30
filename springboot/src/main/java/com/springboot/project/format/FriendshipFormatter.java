@@ -1,8 +1,11 @@
 package com.springboot.project.format;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.*;
+import com.springboot.project.entity.FriendshipEntity;
+import com.springboot.project.entity.UserEntity;
 import com.springboot.project.model.FriendshipModel;
 import com.springboot.project.model.UserModel;
 
@@ -14,14 +17,12 @@ public class FriendshipFormatter extends BaseService {
         var friendId = friendshipEntity.getFriend().getId();
         var friendshipEntityOfFriend = this.FriendshipEntity().where(s -> s.getUser().getId().equals(friendId))
                 .where(s -> s.getFriend().getId().equals(userId)).getOnlyValue();
-        var friendshipModel = new FriendshipModel().setId(friendshipEntity.getId())
-                .setIsInBlacklist(friendshipEntity.getIsInBlacklist())
+        var friendshipModel = new FriendshipModel();
+        BeanUtils.copyProperties(friendshipEntity, friendshipModel);
+        friendshipModel
                 .setIsFriend(!friendshipEntity.getIsInBlacklist() && friendshipEntity.getIsFriend())
-                .setCreateDate(friendshipEntity.getCreateDate())
-                .setUpdateDate(friendshipEntity.getUpdateDate())
                 .setUser(new UserModel().setId(friendshipEntity.getUser().getId()))
                 .setFriend(this.userFormatter.format(friendshipEntity.getFriend()))
-                .setHasInitiative(friendshipEntity.getHasInitiative())
                 .setAesOfUser(friendshipEntity.getSecretKeyOfAES())
                 .setIsFriendOfFriend(
                         !friendshipEntityOfFriend.getIsInBlacklist() && friendshipEntityOfFriend.getIsFriend())

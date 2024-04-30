@@ -44,6 +44,7 @@ import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
 import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.HibernateDialectProperties;
+import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.UserEmailService;
@@ -65,13 +66,43 @@ public abstract class BaseService {
     protected Storage storage;
 
     @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected PermissionUtil permissionUtil;
+
+    @Autowired
     protected TimeZoneUtil timeZoneUtil;
 
     @Autowired
     protected DateFormatProperties dateFormatProperties;
 
     @Autowired
-    protected ObjectMapper objectMapper;
+    private HibernateDialectProperties HibernateDialectProperties;
+
+    @Autowired
+    protected IsTestOrDevModeProperties isTestOrDevModeProperties;
+
+    @Autowired
+    protected OrganizeService organizeService;
+
+    @Autowired
+    protected UserService userService;
+
+    @Autowired
+    protected UserEmailService userEmailService;
+
+    @Autowired
+    protected EncryptDecryptService encryptDecryptService;
+
+    @Autowired
+    protected VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    protected UserMessageRelevanceService userMessageRelevanceService;
+
+    @Autowired
+    protected TokenFormatter tokenFormatter;
 
     @Autowired
     protected StorageSpaceFormatter storageSpaceFormatter;
@@ -108,33 +139,6 @@ public abstract class BaseService {
 
     @Autowired
     protected OrganizeMoveTopFormatter organizeMoveTopFormatter;
-
-    @Autowired
-    protected OrganizeService organizeService;
-
-    @Autowired
-    protected TokenFormatter tokenFormatter;
-
-    @Autowired
-    protected UserService userService;
-
-    @Autowired
-    protected UserEmailService userEmailService;
-
-    @Autowired
-    protected EncryptDecryptService encryptDecryptService;
-
-    @Autowired
-    protected VerificationCodeEmailService verificationCodeEmailService;
-
-    @Autowired
-    private HibernateDialectProperties HibernateDialectProperties;
-
-    @Autowired
-    protected UserMessageRelevanceService userMessageRelevanceService;
-
-    @Autowired
-    protected PermissionUtil permissionUtil;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);

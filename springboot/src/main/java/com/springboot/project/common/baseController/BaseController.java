@@ -49,19 +49,37 @@ public class BaseController {
     protected HttpServletResponse response;
 
     @Autowired
-    protected GitProperties gitProperties;
-
-    @Autowired
-    protected ResourceHttpHeadersUtil resourceHttpHeadersUtil;
+    protected ObjectMapper objectMapper;
 
     @Autowired
     protected Storage storage;
+
+    @Autowired
+    protected ResourceHttpHeadersUtil resourceHttpHeadersUtil;
 
     @Autowired
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
     protected TimeZoneUtil timeZoneUtil;
+
+    @Autowired
+    protected PermissionUtil permissionUtil;
+
+    @Autowired
+    protected LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    protected OrganizeUtil organizeUtil;
+
+    @Autowired
+    protected GitProperties gitProperties;
+
+    @Autowired
+    protected DateFormatProperties dateFormatProperties;
+
+    @Autowired
+    protected AuthorizationEmailProperties authorizationEmailProperties;
 
     @Autowired
     protected UserService userService;
@@ -92,24 +110,6 @@ public class BaseController {
 
     @Autowired
     protected VerificationCodeEmailService verificationCodeEmailService;
-
-    @Autowired
-    protected AuthorizationEmailProperties authorizationEmailProperties;
-
-    @Autowired
-    protected PermissionUtil permissionUtil;
-
-    @Autowired
-    protected LongTermTaskUtil longTermTaskUtil;
-
-    @Autowired
-    protected OrganizeUtil organizeUtil;
-
-    @Autowired
-    protected ObjectMapper objectMapper;
-
-    @Autowired
-    protected DateFormatProperties dateFormatProperties;
 
     @Autowired
     protected OrganizeCheckService organizeCheckService;
