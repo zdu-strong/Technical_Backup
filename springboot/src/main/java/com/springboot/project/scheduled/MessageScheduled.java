@@ -22,6 +22,9 @@ public class MessageScheduled {
     private void sendMessage() throws Throwable {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
+        if (websocketList.isEmpty()) {
+            return;
+        }
         try (var executor = Executors.newSingleThreadExecutor()) {
             var futureList = new ArrayList<Future<?>>();
             for (var websocket : websocketList) {
