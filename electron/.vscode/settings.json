@@ -18,6 +18,7 @@
     "electron.eslintrc.js": true,
     "nest-cli.json": true,
     "tsconfig.build.json": true,
+    "tsconfig.electron.main.json": true,
   },
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
