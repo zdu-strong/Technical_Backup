@@ -72,6 +72,14 @@ export function useGlobalSingleMessage(pageNum: number) {
   return { ready, message };
 }
 
+export function useGlobalMessageReady() {
+  useMount((subjectSingle) => {
+    subjectSingle.add(GlobalShareMessageSubject.subscribe());
+  })
+
+  return { ready: GlobalChatMessage.ready };
+}
+
 export const GlobalScrollToLastItemSubject = new ReplaySubject<void>(1);
 GlobalScrollToLastItemSubject.next();
 

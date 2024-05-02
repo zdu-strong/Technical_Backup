@@ -2,7 +2,7 @@ import { observer, useMobxState } from "mobx-react-use-autorun";
 import { stylesheet } from "typestyle";
 import { AutoSizer } from 'react-virtualized';
 import MessageUnlimitedList from '@/component/Message/MessageUnlimitedList';
-import { useGlobalSingleMessage } from "@/component/Message/js/Global_Chat";
+import { useGlobalMessageReady } from "@/component/Message/js/Global_Chat";
 
 const css = stylesheet({
   containerAutoSizer: {
@@ -18,7 +18,7 @@ export default observer(() => {
 
   const state = useMobxState({
   }, {
-    ...useGlobalSingleMessage(1)
+    ...useGlobalMessageReady()
   })
 
   return <div className={css.containerAutoSizer}>

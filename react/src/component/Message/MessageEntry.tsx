@@ -48,18 +48,16 @@ export default observer(() => {
   })
 
   return <>
-    <LoadingOrErrorComponent ready={state.ready} error={null} />
-    {
-      state.ready && <div className={css.container} style={state.ready ? {} : { position: "absolute", visibility: "hidden" }} >
+    <LoadingOrErrorComponent ready={state.ready} error={null} >
+      <div className={css.container} >
         <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
-        <MessageUnlimitedAutoSizer
-        />
+        <MessageUnlimitedAutoSizer />
         <MessageChat
           userId={GlobalUserInfo.id!}
           username={GlobalUserInfo.username!}
           variableSizeListRef={state.variableSizeListRef}
         />
       </div>
-    }
+    </LoadingOrErrorComponent>
   </>
 })
