@@ -27,7 +27,7 @@ to package in a distributable format (e.g. dmg, windows installer, deb package).
 
 ## Install new dependencies
 
-    npm install react --save-dev
+    npx -y -p npm-check npm-check --update
 
 After installing new dependencies, please make sure that the project runs normally.<br/>
 After installing new dependencies, please make sure that the dependent versions in package.json are all accurate versions.<br/>

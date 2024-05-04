@@ -39,7 +39,7 @@ After installing new dependencies, please make sure that the dependent versions 
 
 You can use this command to check if a new version is available:<br/>
 
-    npx npm-check --update
+    npx -y -p npm-check npm-check --update
 
 After upgrading the dependencies, please make sure that the project runs normally.<br/>
 After upgrading the dependencies, please make sure that the dependent versions in package.json are all accurate versions.<br/>
