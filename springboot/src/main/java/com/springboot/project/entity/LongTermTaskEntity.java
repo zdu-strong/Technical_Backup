@@ -1,6 +1,7 @@
 package com.springboot.project.entity;
 
 import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,7 +35,7 @@ public class LongTermTaskEntity {
     /**
      * Stored is the json string
      */
-    @Column(nullable = true, length = 1024 * 1024 * 1024)
+    @Column(nullable = false, length = 1024 * 1024 * 1024)
     @Lob
     private String result;
 

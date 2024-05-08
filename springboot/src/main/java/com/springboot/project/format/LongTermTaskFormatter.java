@@ -1,5 +1,7 @@
 package com.springboot.project.format;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,15 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 @Service
 public class LongTermTaskFormatter extends BaseService {
 
+    public String formatResult(Object result) {
+        try {
+            return Base64.getEncoder()
+                    .encodeToString(this.objectMapper.writeValueAsString(result).getBytes(StandardCharsets.UTF_8));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     public String formatThrowable(Throwable e) {
         try {
             var map = new HashMap<String, Object>();
@@ -48,7 +59,12 @@ public class LongTermTaskFormatter extends BaseService {
                     .select(s -> "\t" + s.getSTEAsString()).toList());
             map.put("trace", traceList);
             var text = this.objectMapper.writeValueAsString(map);
-            return text;
+            var body = this.objectMapper.readValue(text, Object.class);
+            var responseEntity = e instanceof ResponseStatusException
+                    ? ResponseEntity.status(((ResponseStatusException) e).getStatusCode())
+                    : ResponseEntity.internalServerError();
+            var response = responseEntity.body(body);
+            return this.formatResult(response);
         } catch (JsonProcessingException e1) {
             throw new RuntimeException(e1.getMessage(), e1);
         }
@@ -67,7 +83,8 @@ public class LongTermTaskFormatter extends BaseService {
             BeanUtils.copyProperties(longTermTaskEntity, longTermTaskModel);
 
             if (longTermTaskEntity.getIsDone()) {
-                var result = this.objectMapper.readTree(longTermTaskEntity.getResult());
+                var result = this.objectMapper.readTree(
+                        new String(Base64.getDecoder().decode(longTermTaskEntity.getResult()), StandardCharsets.UTF_8));
                 longTermTaskModel.setResult(this.objectMapper
                         .readValue(this.objectMapper.writeValueAsString(result.get("body")), Object.class));
                 HttpHeaders httpHeaders = new HttpHeaders();
