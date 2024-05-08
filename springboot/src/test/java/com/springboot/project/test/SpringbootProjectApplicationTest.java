@@ -1,7 +1,9 @@
-package com.springboot.project.test.common.SpringbootProjectApplicationTest;
+package com.springboot.project.test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
+
 import com.springboot.project.SpringbootProjectApplication;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
