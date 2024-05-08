@@ -28,12 +28,16 @@ public class UserMessageService extends BaseService {
         userMessageEntity.setContent(userMessageModel.getContent());
         userMessageEntity.setIsRecall(false);
         userMessageEntity.setUser(userEntity);
+        userMessageEntity.setFolderName("");
+        userMessageEntity.setFileName("");
+        userMessageEntity.setFolderSize(0L);
 
         if (StringUtils.isNotBlank(userMessageModel.getUrl())) {
             var storageFileModel = this.storage.storageUrl(userMessageModel.getUrl());
             userMessageEntity.setFolderName(storageFileModel.getFolderName())
                     .setFolderSize(storageFileModel.getFolderSize())
-                    .setFileName(storageFileModel.getFileName()).setContent("");
+                    .setFileName(storageFileModel.getFileName())
+                    .setContent("");
         }
         this.persist(userMessageEntity);
 

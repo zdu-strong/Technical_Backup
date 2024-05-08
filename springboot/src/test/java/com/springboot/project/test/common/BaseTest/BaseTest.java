@@ -240,7 +240,7 @@ public class BaseTest {
         }
     }
 
-    private VerificationCodeEmailModel sendVerificationCode(String email) throws URISyntaxException {
+    protected VerificationCodeEmailModel sendVerificationCode(String email) throws URISyntaxException {
         var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);

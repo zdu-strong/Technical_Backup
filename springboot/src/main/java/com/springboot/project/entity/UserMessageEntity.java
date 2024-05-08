@@ -40,13 +40,13 @@ public class UserMessageEntity {
     @Column(nullable = false)
     private Boolean isRecall;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String folderName;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Long folderSize;
 
-    @Column(nullable = true, length = 1024 * 1024 * 1024)
+    @Column(nullable = false, length = 1024 * 1024 * 1024)
     @Lob
     private String fileName;
 
