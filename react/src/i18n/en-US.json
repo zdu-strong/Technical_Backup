@@ -90,5 +90,6 @@
   "ThereShouldBeNoSpacesAtTheBeginningOfTheNickname": "There should be no spaces at the beginning of the nickname",
   "TheNicknameCannotHaveASpaceAtTheEnd": "The nickname cannot have a space at the end",
   "NetworkError": "Network Error",
-  "Delete": "Delete"
+  "Delete": "Delete",
+  "PleaseLoginFirstAndThenVisit": "Please login first and then visit"
 }

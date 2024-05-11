@@ -50,19 +50,6 @@ export async function setGlobalUserInfo(user?: UserModel): Promise<void> {
   }
 }
 
-export function getAccessToken() {
-  if (GlobalUserInfo.accessToken) {
-    return GlobalUserInfo.accessToken;
-  }
-  if (existsWindow) {
-    const jsonStringOfLocalStorage = window.localStorage.getItem(keyOfGlobalUserInfoOfLocalStorage);
-    if (jsonStringOfLocalStorage) {
-      return new TypedJSON(UserModel).parse(jsonStringOfLocalStorage)!.accessToken;
-    }
-  }
-  return '';
-}
-
 export function removeGlobalUserInfo() {
   GlobalUserInfo.id = '';
   GlobalUserInfo.username = '';

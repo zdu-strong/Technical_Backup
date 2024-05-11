@@ -1,7 +1,7 @@
 import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
-import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
+import { GlobalUserInfo, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
 import { reinitializeOfGlobalChat } from '@/component/Message/js/Global_Chat';
 import { UserEmailModel } from "@/model/UserEmailModel";
 import { UserModel } from "@/model/UserModel";
@@ -62,7 +62,7 @@ export async function signOut() {
 }
 
 export async function isSignIn() {
-  if (!getAccessToken()) {
+  if (!GlobalUserInfo.accessToken) {
     return false;
   }
   try {

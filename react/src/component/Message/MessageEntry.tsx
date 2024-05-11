@@ -1,14 +1,8 @@
-import api from "@/api";
-import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
-import { MessageService } from "@/common/MessageService";
 import { GlobalUserInfo } from "@/common/Server";
 import MessageChat from "@/component/Message/MessageChat";
 import MessageMenu from "@/component/Message/MessageMenu";
-import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-use-autorun";
 import { stylesheet } from "typestyle";
-import { v1 } from "uuid";
 import MessageUnlimitedAutoSizer from "@/component/Message/MessageUnlimitedAutoSizer";
 
 const css = stylesheet({
@@ -27,37 +21,12 @@ const css = stylesheet({
 
 export default observer(() => {
 
-  const state = useMobxState({
-    ready: false,
-  }, {
-    navigate: useNavigate(),
-    variableSizeListRef: useRef<{
-      scrollToItemByLast: () => Promise<void>,
-    }>(null),
-  })
-
-  useMount(async () => {
-    try {
-      if (!(await api.Authorization.isSignIn())) {
-        await api.Authorization.signUp(v1(), "visitor", []);
-      }
-      state.ready = true;
-    } catch (error) {
-      MessageService.error(error)
-    }
-  })
-
-  return <>
-    <LoadingOrErrorComponent ready={state.ready} error={null} >
-      <div className={css.container} >
-        <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
-        <MessageUnlimitedAutoSizer />
-        <MessageChat
-          userId={GlobalUserInfo.id!}
-          username={GlobalUserInfo.username!}
-          variableSizeListRef={state.variableSizeListRef}
-        />
-      </div>
-    </LoadingOrErrorComponent>
-  </>
+  return <div className={css.container} >
+    <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
+    <MessageUnlimitedAutoSizer />
+    <MessageChat
+      userId={GlobalUserInfo.id!}
+      username={GlobalUserInfo.username!}
+    />
+  </div>
 })

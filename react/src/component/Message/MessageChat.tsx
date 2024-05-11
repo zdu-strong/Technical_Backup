@@ -14,9 +14,6 @@ import { v1 } from 'uuid';
 export default observer((props: {
   username: string,
   userId: string,
-  variableSizeListRef: React.RefObject<{
-    scrollToItemByLast: () => Promise<void>;
-  }>,
 }) => {
   const state = useMobxState({
     /* Pending send message */
@@ -32,6 +29,9 @@ export default observer((props: {
   }, {
     ...props,
     inputFileRef: useRef<HTMLInputElement>(null),
+    variableSizeListRef: useRef<{
+      scrollToItemByLast: () => Promise<void>,
+    }>(null),
   })
 
   async function sendMessage() {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 import { ServerAddress } from '@/common/Server/get_server_address'
-import { getAccessToken } from '@/common/Server/get_global_user_info'
+import { GlobalUserInfo } from './get_global_user_info';
 
 axios.defaults.baseURL = ServerAddress;
 
@@ -28,9 +28,9 @@ axios.interceptors.response.use(undefined, async (error) => {
 
 axios.interceptors.request.use((config) => {
   if (config.url?.startsWith("/") || config.url?.startsWith(ServerAddress + "/") || config.url === ServerAddress) {
-    const accessToken = getAccessToken();
+    const accessToken = GlobalUserInfo.accessToken;
     if (accessToken) {
-      config.headers!["Authorization"] = 'Bearer ' + accessToken
+      config.headers!["Authorization"] = 'Bearer ' + accessToken;
     }
   }
   return config;

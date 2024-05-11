@@ -1,16 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import GitInfo from '@/component/GitInfo';
 import NotFoundPageComponent from '@/component/NotFoundPageComponent/NotFoundPageComponent';
 import SignIn from '@/component/SignIn/SignIn';
 import SignUp from '@/component/SignUp/SignUp';
-import MessageEntry from '@/component/Message/MessageEntry';
 import HomePageComponent from '@/component/HomePageComponent/HomePageComponent';
+import MessageEntryPage from './page/MessageEntryPage';
+import GitInfo from '@/component/GitInfo';
 
 export default (
   <BrowserRouter>
     <Routes>
-      <Route index element={<MessageEntry />} />
-      <Route path="/chat" element={<MessageEntry />} />
+      <Route index element={MessageEntryPage} />
+      <Route path="/chat" element={MessageEntryPage} />
       <Route path="/sign_in" element={<SignIn />} />
       <Route path="/sign_up" element={<SignUp />} />
       <Route path="/git" element={<GitInfo />} />

@@ -90,5 +90,6 @@
   "ThereShouldBeNoSpacesAtTheBeginningOfTheNickname": "呢称的开头不能有空格",
   "TheNicknameCannotHaveASpaceAtTheEnd": "呢称的结尾不能有空格",
   "NetworkError": "无网络连接",
-  "Delete": "删除"
+  "Delete": "删除",
+  "PleaseLoginFirstAndThenVisit": "请先登录再访问"
 }
