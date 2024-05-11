@@ -3,7 +3,7 @@ import NotFoundPageComponent from '@/component/NotFoundPageComponent/NotFoundPag
 import SignIn from '@/component/SignIn/SignIn';
 import SignUp from '@/component/SignUp/SignUp';
 import HomePageComponent from '@/component/HomePageComponent/HomePageComponent';
-import MessageEntryPage from './page/MessageEntryPage';
+import MessageEntryPage from '@/router/page/MessageEntryPage';
 import GitInfo from '@/component/GitInfo';
 
 export default (
