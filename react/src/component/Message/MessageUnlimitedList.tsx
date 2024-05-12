@@ -3,7 +3,7 @@ import { GlobalChatMessage, GlobalScrollToLastItemSubject } from '@/component/Me
 import { List, Size } from 'react-virtualized';
 import SingleMessage from "@/component/Message/SingleMessage";
 import { useRef } from "react";
-import { EMPTY, concatMap, interval, of, take } from "rxjs";
+import { EMPTY, concatMap, delay, interval, of, take, tap } from "rxjs";
 import { exhaustMapWithTrailing } from 'rxjs-exhaustmap-with-trailing'
 
 
@@ -25,8 +25,15 @@ export default observer((props: Size) => {
             if (!state.listRef.current) {
               return EMPTY;
             }
-            state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
-            return of(null);
+            return of(null).pipe(
+              tap(() => {
+                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
+              }),
+              delay(1),
+              tap(() => {
+                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
+              }),
+            );
           }),
           take(1)
         );
@@ -39,7 +46,7 @@ export default observer((props: Size) => {
     width={props.width}
     height={props.height}
     rowCount={GlobalChatMessage.totalRecord}
-    rowHeight={100}
+    rowHeight={150}
     rowRenderer={(s) => <div style={s.style} key={s.key}>
       <SingleMessage pageNum={s.index + 1} />
     </div>}

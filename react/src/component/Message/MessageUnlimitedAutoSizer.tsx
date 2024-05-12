@@ -3,6 +3,7 @@ import { stylesheet } from "typestyle";
 import { AutoSizer } from 'react-virtualized';
 import MessageUnlimitedList from '@/component/Message/MessageUnlimitedList';
 import { useGlobalMessageReady } from "@/component/Message/js/Global_Chat";
+import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
 
 const css = stylesheet({
   containerAutoSizer: {
@@ -22,8 +23,10 @@ export default observer(() => {
   })
 
   return <div className={css.containerAutoSizer}>
-    {state.ready && <AutoSizer>
-      {(size) => <MessageUnlimitedList {...size} />}
-    </AutoSizer>}
+    <LoadingOrErrorComponent ready={state.ready} error={null}>
+      <AutoSizer>
+        {(size) => <MessageUnlimitedList {...size} />}
+      </AutoSizer>
+    </LoadingOrErrorComponent>
   </div>
 })

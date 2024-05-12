@@ -12,7 +12,7 @@ export const GlobalChatMessage = observable({
   } as Record<number, { ready: boolean, message: UserMessageModel }>
 })
 
-const subject = new ReplaySubject<{ pageNum: number, isCancel: boolean }>(100);
+let subject = new ReplaySubject<{ pageNum: number, isCancel: boolean }>(100);
 
 const GlobalShareMessageSubject = of(null).pipe(
   switchMap(() => api.UserMessage.getUserMessageWebsocket(subject)),
@@ -93,4 +93,5 @@ export function reinitializeOfGlobalChat() {
   GlobalChatMessage.ready = false;
   GlobalChatMessage.messageMap = {
   };
+  subject = new ReplaySubject<{ pageNum: number, isCancel: boolean }>(100);
 }
