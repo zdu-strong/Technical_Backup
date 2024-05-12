@@ -1,7 +1,7 @@
 import { FriendshipModel } from "@/model/FriendshipModel";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { useMount } from "mobx-react-use-autorun";
-import FriendChildComponent from "@/component/Friend/FriendChildComponent";
+import FriendChildComponent from "@/component/Friend/FriendChild";
 import api from '@/api'
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
 import { FormattedMessage } from "react-intl";

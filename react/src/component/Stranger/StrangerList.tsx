@@ -1,7 +1,7 @@
 import { FriendshipModel } from "@/model/FriendshipModel";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { useMount } from "mobx-react-use-autorun";
-import StrangerChildComponent from "@/component/Stranger/StrangerChildComponent";
+import StrangerChild from "@/component/Stranger/StrangerChild";
 import api from '@/api'
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
 import { FormattedMessage } from "react-intl";
@@ -33,7 +33,7 @@ export default observer(() => {
       <div>
         <FormattedMessage id="Stranger" defaultMessage="Stranger" />
       </div>
-      {state.friendshipList.map(item => <StrangerChildComponent
+      {state.friendshipList.map(item => <StrangerChild
         friendship={item}
         key={item.id}
         refreshFriendshipList={getFriendshipList}
