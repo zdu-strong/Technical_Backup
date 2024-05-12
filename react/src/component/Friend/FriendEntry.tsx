@@ -2,7 +2,7 @@ import { BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import FriendList from "@/component/Friend/FriendList";
 import StrangerList from "@/component/Stranger/StrangerList";
-import { NavigationEnum } from "@/component/Home/js/NavigationEnum";
+import { NavigationEnum } from "@/component/Friend/js/NavigationEnum";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

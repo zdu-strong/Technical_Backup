@@ -1,7 +1,7 @@
 import api from '@/api';
 import { MessageService } from "@/common/MessageService";
 import { isMobilePhone } from "@/common/is-mobile-phone";
-import MessageMoreActionDialog from "@/component/MessageMoreAction/MessageMoreActionDialog";
+import MessageMoreActionDialog from "@/component/Message/MessageMoreActionDialog";
 import { faCloudArrowUp, faPaperPlane, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, TextField } from "@mui/material";

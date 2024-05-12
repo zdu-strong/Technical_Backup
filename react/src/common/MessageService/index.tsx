@@ -1,9 +1,9 @@
 import { v1 } from 'uuid';
 import { observable } from 'mobx-react-use-autorun'
 import { FormattedMessage } from 'react-intl';
-import { GlobalExactMessageMatch } from '@/common/MessageMatch/GlobalExactMessageMatch'
+import { GlobalExactMessageMatch } from '@/common/MessageService/js/GlobalExactMessageMatch'
 import { ReactNode } from 'react';
-import { getFuzzyMessageMatch } from '@/common/MessageMatch/GlobalFuzzyMessageMatch';
+import { getFuzzyMessageMatch } from '@/common/MessageService/js/GlobalFuzzyMessageMatch';
 
 export const MessageService = {
   error: (message: string | string[] | Error | Error[] | any) => {

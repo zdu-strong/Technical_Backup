@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { MessageMoreActionTranslation } from '@/component/MessageMoreAction/MessageMoreActionTranslation'
+import { MessageMoreActionTranslation } from '@/component/Message/MessageMoreActionTranslation'
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { FormattedMessage } from 'react-intl';
 

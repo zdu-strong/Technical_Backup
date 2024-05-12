@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import NotFoundPageComponent from '@/component/NotFoundPageComponent/NotFoundPageComponent';
+import NotFoundPageComponent from '@/component/NotFound/NotFoundPageComponent';
 import SignIn from '@/component/SignIn/SignIn';
 import SignUp from '@/component/SignUp/SignUp';
-import HomePageComponent from '@/component/HomePageComponent/HomePageComponent';
+import HomePageComponent from '@/component/Home/HomePageComponent';
 import MessageEntryPage from '@/router/page/MessageEntryPage';
 import GitInfo from '@/component/GitInfo';
 
