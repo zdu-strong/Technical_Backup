@@ -2,7 +2,8 @@ import api from "@/api";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
 import { GlobalUserInfo } from "@/common/Server";
 import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { ReplaySubject, concatMap, from } from "rxjs";
 import { v1 } from "uuid";
 
 export default observer((props: {
@@ -12,33 +13,37 @@ export default observer((props: {
 }) => {
 
   const state = useMobxState({
-    isCheckFailed: false as any,
+    subject: new ReplaySubject<void>(),
     ready: false,
     error: null as any,
   })
 
-  useMount(async () => {
-    if (!props.isAutoLogin) {
-      check();
-      state.ready = true;
-      return;
-    }
-    try {
-      if (!(await api.Authorization.isSignIn())) {
-        await api.Authorization.signUp(v1(), "visitor", []);
-      }
-      check();
-      state.ready = true;
-    } catch (error) {
-      state.error = error;
-    }
+  useMount(async (subscription) => {
+    subscription.add(state.subject.pipe(
+      concatMap(() => from((async () => {
+        state.ready = false;
+        state.error = null;
+        try {
+          if (props.isAutoLogin) {
+            if (!(await api.Authorization.isSignIn())) {
+              await api.Authorization.signUp(v1(), "visitor", []);
+            }
+          }
+          check();
+          state.ready = true;
+        } catch (error) {
+          state.error = error;
+        }
+      })()))
+    ).subscribe());
   })
 
+  useEffect(() => {
+    state.subject.next();
+  }, [props.isAutoLogin, props.checkIsSignIn, state.subject])
+
   function check() {
-    if (checkIsSignIn()) {
-      state.error = checkIsSignIn();
-      state.isCheckFailed = true;
-    }
+    checkIsSignIn();
   }
 
   function checkIsSignIn() {
@@ -46,11 +51,11 @@ export default observer((props: {
       return;
     }
     if (!GlobalUserInfo.accessToken) {
-      return "Please login first and then visit";
+      throw new Error("Please login first and then visit")
     }
   }
 
-  return <LoadingOrErrorComponent ready={state.ready && !state.isCheckFailed} error={state.error} >
+  return <LoadingOrErrorComponent ready={state.ready} error={state.error} >
     {props.children}
   </LoadingOrErrorComponent>
 })
