@@ -13,7 +13,7 @@ From https://dbeaver.io install DBeaver.
 
 In the project directory, you can run:
 
-### `./mvn clean compile spring-boot:run`
+### `./mvn clean spring-boot:run`
 
 Let’s build and run the program. Open a command line (or terminal) and navigate to the folder where you have the project files. We can build and run the application by issuing the command.
 
