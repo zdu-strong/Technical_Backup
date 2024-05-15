@@ -4,7 +4,7 @@ Projects created by start.spring.io contain Spring Boot, a framework that makes 
 
 ## Development environment setup
 1. From https://adoptium.net install java v21, and choose Entire feature.<br/>
-2. From https://code.visualstudio.com install Visual Studio Code. Next, install extension "Extension Pack for Java Auto Config".<br/>
+2. From https://code.visualstudio.com install Visual Studio Code. Next, install extension "Extension Pack for Java" and "XML".<br/>
 3. From https://dev.mysql.com/downloads/installer install MySQL, the password of the root user is set to 123456.
 4. Optional.<br/>
 From https://dbeaver.io install DBeaver.
