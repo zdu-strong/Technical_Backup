@@ -3,6 +3,8 @@ package com.springboot.project.common.baseService;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +60,7 @@ import jakarta.persistence.PersistenceContext;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@Retryable(retryFor = { CannotAcquireLockException.class }, maxAttempts = 1000)
 public abstract class BaseService {
 
     @PersistenceContext
