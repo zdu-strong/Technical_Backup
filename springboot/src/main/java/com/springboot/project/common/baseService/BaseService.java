@@ -3,10 +3,12 @@ package com.springboot.project.common.baseService;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
+import com.google.cloud.spanner.AbortedException;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -58,6 +60,7 @@ import jakarta.persistence.PersistenceContext;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@Retryable(retryFor = { AbortedException.class }, maxAttempts = 1000)
 public abstract class BaseService {
 
     @PersistenceContext
