@@ -12,11 +12,11 @@
     <properties>
         <java.version>21</java.version>
         <resource.delimiter>${}</resource.delimiter>
-        <commons.io.version>2.16.1</commons.io.version>
-        <java.uuid.generator.version>5.0.0</java.uuid.generator.version>
-        <jinq.jpa.version>2.0.2</jinq.jpa.version>
-        <google.cloud.spanner.jdbc.version>2.18.0</google.cloud.spanner.jdbc.version>
-        <gax.httpjson.version>2.47.0</gax.httpjson.version>
+        <commons-io.version>2.16.1</commons-io.version>
+        <java-uuid-generator.version>5.0.0</java-uuid-generator.version>
+        <jinq-jpa.version>2.0.2</jinq-jpa.version>
+        <google-cloud-spanner-jdbc.version>2.18.0</google-cloud-spanner-jdbc.version>
+        <gax-httpjson.version>2.48.1</gax-httpjson.version>
     </properties>
 
     <dependencies>
@@ -51,27 +51,27 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
-            <version>${java.uuid.generator.version}</version>
+            <version>${java-uuid-generator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jinq</groupId>
             <artifactId>jinq-jpa</artifactId>
-            <version>${jinq.jpa.version}</version>
+            <version>${jinq-jpa.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner-jdbc</artifactId>
-            <version>${google.cloud.spanner.jdbc.version}</version>
+            <version>${google-cloud-spanner-jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gax-httpjson</artifactId>
-            <version>${gax.httpjson.version}</version>
+            <version>${gax-httpjson.version}</version>
         </dependency>
     </dependencies>
 

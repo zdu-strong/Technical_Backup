@@ -14,7 +14,7 @@ In the project directory, you can run:
 
 To generate executable jar package
 
-### `./mvn versions:display-dependency-updates`
+### `./mvn versions:update-properties versions:update-parent --define generateBackupPoms=false`
 
 Check that a new version of the dependency is available<br/>
 

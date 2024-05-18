@@ -33,24 +33,24 @@
         <database.liquibase.maven.plugin.reference.url>
             jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
         </database.liquibase.maven.plugin.reference.url>
-        <google.cloud.spanner.jdbc.version>2.18.0</google.cloud.spanner.jdbc.version>
-        <sql.maven.plugin.version>3.0.0</sql.maven.plugin.version>
-        <jinq.jpa.version>2.0.2</jinq.jpa.version>
-        <commons.io.version>2.16.1</commons.io.version>
-        <tika.core.version>2.9.1</tika.core.version>
-        <java.web.socket.version>1.5.6</java.web.socket.version>
-        <java.jwt.version>4.4.0</java.jwt.version>
+        <google-cloud-spanner-jdbc.version>2.18.0</google-cloud-spanner-jdbc.version>
+        <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
+        <jinq-jpa.version>2.0.2</jinq-jpa.version>
+        <commons-io.version>2.16.1</commons-io.version>
+        <tika-core.version>3.0.0-BETA</tika-core.version>
+        <Java-WebSocket.version>1.5.6</Java-WebSocket.version>
+        <java-jwt.version>4.4.0</java-jwt.version>
         <guava.version>33.2.0-jre</guava.version>
-        <com.google.zxing.core.version>3.5.3</com.google.zxing.core.version>
-        <com.google.zxing.javase.version>3.5.3</com.google.zxing.javase.version>
-        <hutool.crypto.version>5.8.27</hutool.crypto.version>
-        <hutool.extra.version>5.8.27</hutool.extra.version>
-        <java.uuid.generator.version>5.0.0</java.uuid.generator.version>
-        <j3d.core.utils.version>1.3.1</j3d.core.utils.version>
-        <gdx.bullet.version>1.12.1</gdx.bullet.version>
-        <aliyun.sdk.oss.version>3.17.4</aliyun.sdk.oss.version>
-        <google.cloud.spanner.hibernate.dialect.version>3.4.0</google.cloud.spanner.hibernate.dialect.version>
-        <liquibase.spanner.version>4.25.1</liquibase.spanner.version>
+        <com-google-zxing-core.version>3.5.3</com-google-zxing-core.version>
+        <com-google-zxing-javase.version>3.5.3</com-google-zxing-javase.version>
+        <hutool-crypto.version>5.8.27</hutool-crypto.version>
+        <hutool-extra.version>5.8.27</hutool-extra.version>
+        <java-uuid-generator.version>5.0.0</java-uuid-generator.version>
+        <j3d-core-utils.version>1.3.1</j3d-core-utils.version>
+        <gdx-bullet.version>1.12.1</gdx-bullet.version>
+        <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
+        <google-cloud-spanner-hibernate-dialect.version>3.4.0</google-cloud-spanner-hibernate-dialect.version>
+        <liquibase-spanner.version>4.25.1</liquibase-spanner.version>
     </properties>
 
     <dependencies>
@@ -117,27 +117,27 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons.io.version}</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>${tika.core.version}</version>
+            <version>${tika-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jinq</groupId>
             <artifactId>jinq-jpa</artifactId>
-            <version>${jinq.jpa.version}</version>
+            <version>${jinq-jpa.version}</version>
         </dependency>
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>${java.web.socket.version}</version>
+            <version>${Java-WebSocket.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>${java.jwt.version}</version>
+            <version>${java-jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -147,57 +147,57 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
-            <version>${com.google.zxing.core.version}</version>
+            <version>${com-google-zxing-core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
-            <version>${com.google.zxing.javase.version}</version>
+            <version>${com-google-zxing-javase.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
-            <version>${hutool.crypto.version}</version>
+            <version>${hutool-crypto.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-extra</artifactId>
-            <version>${hutool.extra.version}</version>
+            <version>${hutool-extra.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
-            <version>${java.uuid.generator.version}</version>
+            <version>${java-uuid-generator.version}</version>
         </dependency>
         <dependency>
             <groupId>java3d</groupId>
             <artifactId>j3d-core-utils</artifactId>
-            <version>${j3d.core.utils.version}</version>
+            <version>${j3d-core-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-bullet</artifactId>
-            <version>${gdx.bullet.version}</version>
+            <version>${gdx-bullet.version}</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
-            <version>${aliyun.sdk.oss.version}</version>
+            <version>${aliyun-sdk-oss.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
-            <version>${google.cloud.spanner.hibernate.dialect.version}</version>
+            <version>${google-cloud-spanner-hibernate-dialect.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloudspannerecosystem</groupId>
             <artifactId>liquibase-spanner</artifactId>
-            <version>${liquibase.spanner.version}</version>
+            <version>${liquibase-spanner.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner-jdbc</artifactId>
-            <version>${google.cloud.spanner.jdbc.version}</version>
+            <version>${google-cloud-spanner-jdbc.version}</version>
         </dependency>
     </dependencies>
 
@@ -250,7 +250,7 @@
                     <dependency>
                         <groupId>com.google.cloud</groupId>
                         <artifactId>google-cloud-spanner-jdbc</artifactId>
-                        <version>${google.cloud.spanner.jdbc.version}</version>
+                        <version>${google-cloud-spanner-jdbc.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -261,7 +261,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
-                <version>${sql.maven.plugin.version}</version>
+                <version>${sql-maven-plugin.version}</version>
                 <configuration>
                     <url>${database.sql.maven.plugin.url}</url>
                     <username>${database.username}</username>
