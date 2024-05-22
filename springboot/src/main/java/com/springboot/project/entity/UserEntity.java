@@ -70,6 +70,6 @@ public class UserEntity {
     private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserMessageRelevanceEntity> userMessageRelevanceList;
+    private List<UserMessageDeactivateEntity> userMessageDeactivateList;
 
 }

@@ -54,7 +54,7 @@ public class UserMessageService extends BaseService {
     public void deleteMessage(String id, HttpServletRequest request) {
         var userId = this.permissionUtil.getUserId(request);
         var userMessageId = id;
-        this.userMessageRelevanceService.create(userMessageId, userId, true);
+        this.userMessageDeactivateService.create(userMessageId, userId);
     }
 
     public UserMessageModel getUserMessageById(String id, String userId) {
@@ -65,9 +65,9 @@ public class UserMessageService extends BaseService {
     public List<UserMessageModel> getMessageListOnlyContainsOneByPageNum(Long pageNum, String userId) {
         var stream = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .where(s -> s.getTwo() == null)
                 .select(s -> s.getOne())
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
@@ -79,9 +79,9 @@ public class UserMessageService extends BaseService {
     public UserMessageWebSocketSendModel getMessageListByLastTwentyMessage(String userId) {
         var userMessageList = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .where(s -> s.getTwo() == null)
                 .select(s -> s.getOne())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())

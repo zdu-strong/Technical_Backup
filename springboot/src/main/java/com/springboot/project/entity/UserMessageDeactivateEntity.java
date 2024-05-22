@@ -1,7 +1,6 @@
 package com.springboot.project.entity;
 
 import java.util.Date;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,13 +20,10 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class UserMessageRelevanceEntity {
+public class UserMessageDeactivateEntity {
 
     @Id
     private String id;
-
-    @Column(nullable = false)
-    private Boolean isDeleted;
 
     @Column(nullable = false)
     private Date createDate;

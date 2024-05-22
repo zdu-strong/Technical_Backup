@@ -223,7 +223,7 @@ All data can be obtained and set to the model, support any structure
         var userId = userEntity.getId();
         var email = this.UserEmailEntity()
                 .where(s -> s.getUser().getId().equals(userId))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getUpdateDate())
                 .select(s -> s.getEmail())

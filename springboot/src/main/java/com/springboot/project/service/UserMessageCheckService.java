@@ -36,9 +36,9 @@ public class UserMessageCheckService extends BaseService {
         var exists = this.UserMessageEntity()
                 .where(s -> s.getId().equals(id))
                 .where(s -> !s.getIsRecall())
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .where(s -> s.getTwo() == null)
                 .exists();
         if (!exists) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete again");

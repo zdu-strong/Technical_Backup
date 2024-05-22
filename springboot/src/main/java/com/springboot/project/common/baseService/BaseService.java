@@ -5,13 +5,13 @@ import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.storage.Storage;
+import com.springboot.project.entity.UserMessageDeactivateEntity;
 import com.springboot.project.entity.DistributedExecutionEntity;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.entity.FriendshipEntity;
@@ -27,7 +27,6 @@ import com.springboot.project.entity.UserBlackOrganizeEntity;
 import com.springboot.project.entity.UserEmailEntity;
 import com.springboot.project.entity.UserEntity;
 import com.springboot.project.entity.UserMessageEntity;
-import com.springboot.project.entity.UserMessageRelevanceEntity;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.FriendshipFormatter;
@@ -48,7 +47,7 @@ import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.UserEmailService;
-import com.springboot.project.service.UserMessageRelevanceService;
+import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 
@@ -99,7 +98,7 @@ public abstract class BaseService {
     protected VerificationCodeEmailService verificationCodeEmailService;
 
     @Autowired
-    protected UserMessageRelevanceService userMessageRelevanceService;
+    protected UserMessageDeactivateService userMessageDeactivateService;
 
     @Autowired
     protected TokenFormatter tokenFormatter;
@@ -216,8 +215,8 @@ public abstract class BaseService {
         return this.streamAll(OrganizeMoveTopEntity.class);
     }
 
-    protected JPAJinqStream<UserMessageRelevanceEntity> UserMessageRelevanceEntity() {
-        return this.streamAll(UserMessageRelevanceEntity.class);
+    protected JPAJinqStream<UserMessageDeactivateEntity> UserMessageDeactivateEntity() {
+        return this.streamAll(UserMessageDeactivateEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

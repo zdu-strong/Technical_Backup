@@ -28,9 +28,9 @@ public class UserMessageFormatter extends BaseService {
         var id = userMessage.getId();
         var pageNum = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .where(s -> s.getTwo() == null)
                 .select(s -> s.getOne())
                 .where(s -> crateDate.after(s.getCreateDate())
                         || (crateDate.equals(s.getCreateDate())
@@ -39,9 +39,9 @@ public class UserMessageFormatter extends BaseService {
         userMessage.setPageNum(pageNum + 1);
         var isDeleted = !this.UserMessageEntity()
                 .where(s -> s.getId().equals(id))
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageRelevanceList()),
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
+                .where(s -> s.getTwo() == null)
                 .exists();
 
         if (!userMessageEntity.getIsRecall() && !isDeleted
