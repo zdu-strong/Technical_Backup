@@ -10,16 +10,26 @@ import com.springboot.project.common.baseService.BaseService;
 public class UserCheckService extends BaseService {
 
     public void checkExistAccount(String account) {
-        var userId = account;
-        var email = account;
-        var stream = this.UserEntity().leftOuterJoinList(s -> s.getUserEmailList())
-                .where(s -> s.getOne().getId().equals(userId)
-                        || (s.getTwo().getEmail().equals(email) && !s.getTwo().getIsDeleted()))
-                .where(s -> !s.getOne().getIsDeleted())
-                .group(s -> s.getOne().getId(), (s, t) -> t.count());
-        if (!stream.exists()) {
+        if (!hasExistsUserId(account) || !hasExistEmail(account)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect username or password");
         }
+    }
+
+    private boolean hasExistsUserId(String userId) {
+        var exists = this.UserEntity()
+                .where(s -> s.getId().equals(userId))
+                .where(s -> s.getIsActive())
+                .exists();
+        return exists;
+    }
+
+    private boolean hasExistEmail(String email) {
+        var exists = this.UserEmailEntity()
+                .where(s -> s.getEmail().equals(email))
+                .where(s -> s.getIsActive())
+                .where(s -> s.getUser().getIsActive())
+                .exists();
+        return exists;
     }
 
 }

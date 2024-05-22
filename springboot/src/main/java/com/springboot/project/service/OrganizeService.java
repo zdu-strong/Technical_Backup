@@ -20,9 +20,9 @@ public class OrganizeService extends BaseService {
         var organizeEntity = new OrganizeEntity();
         organizeEntity.setId(newId());
         organizeEntity.setName(organizeModel.getName());
-        organizeEntity.setIsDeleted(false);
+        organizeEntity.setIsActive(true);
         organizeEntity
-                .setDeletedKey("");
+                .setDeactiveKey("");
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
@@ -45,8 +45,8 @@ public class OrganizeService extends BaseService {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
-        organizeEntity.setIsDeleted(true);
-        organizeEntity.setDeletedKey(Generators.timeBasedReorderedGenerator().generate().toString());
+        organizeEntity.setIsActive(false);
+        organizeEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
         this.merge(organizeEntity);
     }
 
@@ -60,7 +60,7 @@ public class OrganizeService extends BaseService {
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeClosureEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
                 .where(s -> s.getDescendant().getName().contains(name))
                 .select(s -> s.getDescendant());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));

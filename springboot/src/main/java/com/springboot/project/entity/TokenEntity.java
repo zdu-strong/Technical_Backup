@@ -35,7 +35,7 @@ public class TokenEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isDeleted;
+    private Boolean isActive;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;

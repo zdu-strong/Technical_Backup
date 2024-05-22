@@ -26,7 +26,7 @@ public class UserFormatter extends BaseService {
         var id = userEntity.getId();
         var userEmailList = this.UserEmailEntity()
                 .where(s -> s.getUser().getId().equals(id))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
                 .map(s -> this.userEmailFormatter.format(s))
                 .toList();
         userModel.setUserEmailList(userEmailList);

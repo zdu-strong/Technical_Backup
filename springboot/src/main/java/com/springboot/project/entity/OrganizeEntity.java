@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "parentId", "name", "deletedKey" })
+        @UniqueConstraint(columnNames = { "parentId", "name", "deactiveKey" })
 })
 public class OrganizeEntity {
 
@@ -37,10 +37,10 @@ public class OrganizeEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isDeleted;
+    private Boolean isActive;
 
     @Column(nullable = false)
-    private String deletedKey;
+    private String deactiveKey;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity parent;

@@ -37,20 +37,20 @@ public class UserMessageFormatter extends BaseService {
                                 && JPQLFunction.isSortAtBefore(s.getId(), id)))
                 .count();
         userMessage.setPageNum(pageNum + 1);
-        var isDeleted = !this.UserMessageEntity()
+        var isActive = this.UserMessageEntity()
                 .where(s -> s.getId().equals(id))
                 .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
                 .where(s -> s.getTwo() == null)
                 .exists();
 
-        if (!userMessageEntity.getIsRecall() && !isDeleted
+        if (isActive && !userMessageEntity.getIsRecall()
                 && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
             userMessage
                     .setUrl(this.storage.getResoureUrlFromResourcePath(
                             Paths.get(userMessageEntity.getFolderName(), userMessageEntity.getFileName()).toString()));
         }
-        if (userMessageEntity.getIsRecall() || isDeleted
+        if (!isActive || userMessageEntity.getIsRecall()
                 || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
             userMessage.setContent("");
         }

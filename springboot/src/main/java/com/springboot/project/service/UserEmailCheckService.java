@@ -12,7 +12,8 @@ public class UserEmailCheckService extends BaseService {
     public void checkEmailIsNotUsed(String email) {
         var isPresent = this.UserEmailEntity()
                 .where(s -> s.getEmail().equals(email))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getUser().getIsActive())
                 .exists();
         if (isPresent) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail " + email + " has bound account");

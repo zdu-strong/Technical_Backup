@@ -21,7 +21,7 @@ public class OrganizeClosureEntity {
     private String id;
 
     @Column(nullable = false)
-    private Boolean isDeleted;
+    private Boolean isActive;
 
     @Column(nullable = false)
     private Date createDate;

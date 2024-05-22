@@ -33,7 +33,7 @@ public class TokenService extends BaseService {
 
     public void deleteTokenEntity(String id) {
         var tokenEntity = this.TokenEntity().where(s -> s.getId().equals(id)).getOnlyValue();
-        tokenEntity.setIsDeleted(true);
+        tokenEntity.setIsActive(false);
         this.merge(tokenEntity);
     }
 
@@ -99,7 +99,7 @@ public class TokenService extends BaseService {
     public boolean hasExistTokenEntity(String id) {
         var exists = this.TokenEntity()
                 .where(s -> s.getId().equals(id))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
                 .exists();
         return exists;
     }
@@ -174,7 +174,7 @@ public class TokenService extends BaseService {
         tokenEntity.setId(newId());
         tokenEntity.setUniqueOneTimePasswordLogo(uniqueOneTimePasswordLogo);
         tokenEntity.setUser(user);
-        tokenEntity.setIsDeleted(false);
+        tokenEntity.setIsActive(true);
         tokenEntity.setCreateDate(new Date());
         tokenEntity.setUpdateDate(new Date());
         this.persist(tokenEntity);

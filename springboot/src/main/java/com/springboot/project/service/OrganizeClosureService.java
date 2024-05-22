@@ -54,11 +54,11 @@ public class OrganizeClosureService extends BaseService {
         {
             var organizeClosureEntity = this.OrganizeClosureEntity()
                     .where(s -> s.getDescendant().getId().equals(organizeId))
-                    .filter(s -> s.getIsDeleted() == isActive)
+                    .filter(s -> s.getIsActive() != isActive)
                     .findFirst()
                     .orElse(null);
             if (organizeClosureEntity != null) {
-                organizeClosureEntity.setIsDeleted(!isActive);
+                organizeClosureEntity.setIsActive(isActive);
                 organizeClosureEntity.setUpdateDate(new Date());
                 this.merge(organizeClosureEntity);
                 return true;
@@ -73,7 +73,7 @@ public class OrganizeClosureService extends BaseService {
         var descendant = this.OrganizeEntity().where(s -> s.getId().equals(descendantOrganizeId)).getOnlyValue();
         var organizeClosureEntity = new OrganizeClosureEntity();
         organizeClosureEntity.setId(newId());
-        organizeClosureEntity.setIsDeleted(false);
+        organizeClosureEntity.setIsActive(true);
         organizeClosureEntity.setCreateDate(new Date());
         organizeClosureEntity.setUpdateDate(new Date());
         organizeClosureEntity.setAncestor(ancestor);

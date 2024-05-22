@@ -18,7 +18,7 @@ public class UserService extends BaseService {
         userEntity.setPrivateKeyOfRSA(userModel.getPrivateKeyOfRSA());
         userEntity.setPublicKeyOfRSA(userModel.getPublicKeyOfRSA());
         userEntity.setPassword(userModel.getPassword());
-        userEntity.setIsDeleted(false);
+        userEntity.setIsActive(true);
         userEntity.setCreateDate(new Date());
         userEntity.setUpdateDate(new Date());
         this.persist(userEntity);
@@ -31,13 +31,13 @@ public class UserService extends BaseService {
     }
 
     public UserModel getUserWithMoreInformation(String id) {
-        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> !s.getIsDeleted())
+        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.formatWithMoreInformation(user);
     }
 
     public UserModel getUser(String id) {
-        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> !s.getIsDeleted())
+        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
@@ -47,7 +47,7 @@ public class UserService extends BaseService {
             var userId = account;
             var userEntity = this.UserEntity()
                     .where(s -> s.getId().equals(userId))
-                    .where(s -> !s.getIsDeleted())
+                    .where(s -> s.getIsActive())
                     .findOne()
                     .orElse(null);
             if (userEntity != null) {
@@ -57,8 +57,8 @@ public class UserService extends BaseService {
         {
             var email = account;
             var userEntity = this.UserEmailEntity().where(s -> s.getEmail().equals(email))
-                    .where(s -> !s.getIsDeleted())
-                    .where(s -> !s.getUser().getIsDeleted())
+                    .where(s -> s.getIsActive())
+                    .where(s -> s.getUser().getIsActive())
                     .select(s -> s.getUser())
                     .getOnlyValue();
             return userEntity.getId();

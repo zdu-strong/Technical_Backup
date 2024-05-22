@@ -30,11 +30,12 @@ public class OrganizeFormatter extends BaseService {
         if (this.isActive(organizeEntity)) {
             var childOrganizeCount = this.OrganizeEntity()
                     .where(s -> s.getParent().getId().equals(id))
-                    .where(s -> !s.getIsDeleted())
+                    .where(s -> s.getIsActive())
                     .count();
             organizeModel.setChildCount(childOrganizeCount);
-            var descendantCount = this.OrganizeClosureEntity().where(s -> s.getAncestor().getId().equals(id))
-                    .where(s -> !s.getIsDeleted())
+            var descendantCount = this.OrganizeClosureEntity()
+                    .where(s -> s.getAncestor().getId().equals(id))
+                    .where(s -> s.getIsActive())
                     .where(s -> !s.getDescendant().getId().equals(id))
                     .count();
             organizeModel.setDescendantCount(descendantCount);
@@ -52,7 +53,7 @@ public class OrganizeFormatter extends BaseService {
             if (organizeIdList.contains(organizeEntity.getId())) {
                 break;
             }
-            if (organizeEntity.getIsDeleted()) {
+            if (!organizeEntity.getIsActive()) {
                 isActive = false;
                 break;
             }

@@ -12,7 +12,7 @@ public class UserBlackOrganizeService extends BaseService {
     public UserBlackOrganizeModel create(String userId, String organizeId) {
         var user = this.UserEntity()
                 .where(s -> s.getId().equals(userId))
-                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getIsActive())
                 .getOnlyValue();
         var organize = this.OrganizeEntity()
                 .where(s -> s.getId().equals(organizeId))
