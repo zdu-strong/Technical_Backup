@@ -10,7 +10,7 @@ import com.springboot.project.common.baseService.BaseService;
 public class UserCheckService extends BaseService {
 
     public void checkExistAccount(String account) {
-        if (!hasExistsUserId(account) || !hasExistEmail(account)) {
+        if (!hasExistsUserId(account) && !hasExistEmail(account)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect username or password");
         }
     }
