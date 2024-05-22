@@ -27,8 +27,7 @@ public class OrganizeFormatter extends BaseService {
             organizeModel.setParent(new OrganizeModel().setId(organizeEntity.getParent().getId()));
         }
 
-        organizeModel.setIsDeleted(this.isDeleted(organizeEntity));
-        if (!organizeModel.getIsDeleted()) {
+        if (this.isActive(organizeEntity)) {
             var childOrganizeCount = this.OrganizeEntity()
                     .where(s -> s.getParent().getId().equals(id))
                     .where(s -> !s.getIsDeleted())
@@ -43,8 +42,8 @@ public class OrganizeFormatter extends BaseService {
         return organizeModel;
     }
 
-    private boolean isDeleted(OrganizeEntity organizeEntity) {
-        var isDeleted = false;
+    public boolean isActive(OrganizeEntity organizeEntity) {
+        var isActive = true;
         var organizeIdList = new ArrayList<String>();
         while (true) {
             if (organizeEntity == null) {
@@ -54,13 +53,13 @@ public class OrganizeFormatter extends BaseService {
                 break;
             }
             if (organizeEntity.getIsDeleted()) {
-                isDeleted = true;
+                isActive = false;
                 break;
             }
             organizeIdList.add(organizeEntity.getId());
             organizeEntity = organizeEntity.getParent();
         }
-        return isDeleted;
+        return isActive;
     }
 
     private long getLevel(OrganizeEntity organizeEntity) {

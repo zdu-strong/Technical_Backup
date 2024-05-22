@@ -22,7 +22,6 @@ public class OrganizeModel {
     private Date updateDate;
     private Long childCount;
     private Long descendantCount;
-    private Boolean isDeleted;
 
     private OrganizeModel parent;
     private List<OrganizeModel> childList;

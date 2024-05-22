@@ -20,7 +20,6 @@ public class UserMessageServiceSendMessageTest extends BaseTest {
         assertEquals(36, result.getId().length());
         assertEquals("Hello, World!", result.getContent());
         assertEquals(this.userMessage.getUser().getId(), result.getUser().getId());
-        assertFalse(result.getIsRecall());
     }
 
     @BeforeEach

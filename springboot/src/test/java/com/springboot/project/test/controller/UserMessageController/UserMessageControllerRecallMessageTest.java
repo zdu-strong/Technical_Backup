@@ -24,8 +24,6 @@ public class UserMessageControllerRecallMessageTest extends BaseTest {
         var url = new URIBuilder("/user_message/recall").setParameter("id", id).build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        var userMessage = this.userMessageService.getUserMessageById(id, userId);
-        assertTrue(userMessage.getIsRecall());
     }
 
     @BeforeEach

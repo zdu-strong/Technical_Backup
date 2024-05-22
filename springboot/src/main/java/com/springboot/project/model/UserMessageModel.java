@@ -12,10 +12,6 @@ import lombok.experimental.Accessors;
 public class UserMessageModel {
     private String id;
 
-    private Boolean isRecall;
-
-    private Boolean isDeleted;
-
     private Date createDate;
 
     private Date updateDate;

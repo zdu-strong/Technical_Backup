@@ -15,7 +15,6 @@ public class TokenModel {
     private String uniqueOneTimePasswordLogo;
     private Date createDate;
     private Date updateDate;
-    private Boolean isDeleted;
     private UserModel user;
 
 }

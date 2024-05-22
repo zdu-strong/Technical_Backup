@@ -13,8 +13,8 @@ public class OrganizeCheckService extends BaseService {
     public void checkExistOrganize(String id) {
         var exists = this.OrganizeEntity()
                 .where(s -> s.getId().equals(id))
+                .filter(s -> this.organizeFormatter.isActive(s))
                 .map(s -> this.organizeFormatter.format(s))
-                .filter(s -> !s.getIsDeleted())
                 .findFirst()
                 .isPresent();
         if (!exists) {
@@ -28,8 +28,8 @@ public class OrganizeCheckService extends BaseService {
         }
     }
 
-    public void checkExistOrganizeWithIdCanBeBlank(String id){
-        if(StringUtils.isBlank(id)){
+    public void checkExistOrganizeWithIdCanBeBlank(String id) {
+        if (StringUtils.isBlank(id)) {
             return;
         }
         this.checkExistOrganize(id);

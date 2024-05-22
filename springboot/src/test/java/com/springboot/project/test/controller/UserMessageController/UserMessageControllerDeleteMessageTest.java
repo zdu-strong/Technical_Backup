@@ -24,8 +24,6 @@ public class UserMessageControllerDeleteMessageTest extends BaseTest {
         var url = new URIBuilder("/user_message/delete").setParameter("id", id).build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        var userMessage = this.userMessageService.getUserMessageById(id, userId);
-        assertTrue(userMessage.getIsDeleted());
     }
 
     @BeforeEach

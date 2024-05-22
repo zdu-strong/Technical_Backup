@@ -1,9 +1,9 @@
 package com.springboot.project.test.service.OrganizeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
@@ -23,7 +23,6 @@ public class OrganizeServiceGetByIdTest extends BaseTest {
         assertEquals(0, result.getChildCount());
         assertNull(result.getParent());
         assertEquals(0, result.getLevel());
-        assertFalse(result.getIsDeleted());
     }
 
     @BeforeEach

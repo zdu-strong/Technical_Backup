@@ -24,7 +24,6 @@ public class UserMessageServiceGetMessageListByLastTwentyMessageTest extends Bas
         assertEquals(1, result.getTotalPage());
         var message = JinqStream.from(result.getList()).getOnlyValue();
         assertTrue(StringUtils.isNotBlank(message.getId()));
-        assertFalse(message.getIsRecall());
         assertTrue(StringUtils.isNotBlank(message.getContent()));
         assertNotNull(message.getCreateDate());
         assertTrue(message.getPageNum() >= 1);
@@ -43,7 +42,6 @@ public class UserMessageServiceGetMessageListByLastTwentyMessageTest extends Bas
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
-        assertFalse(message.getIsRecall());
         this.userMessage = message;
     }
 }

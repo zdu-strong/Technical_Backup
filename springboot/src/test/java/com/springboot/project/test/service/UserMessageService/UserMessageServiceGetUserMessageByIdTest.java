@@ -21,10 +21,8 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         var result = this.userMessageService.getUserMessageById(this.userMessage.getId(),
                 this.userMessage.getUser().getId());
         assertEquals(this.userMessage.getId(), result.getId());
-        assertFalse(result.getIsRecall());
         assertEquals("Hello, World!", result.getContent());
         assertNotNull(result.getCreateDate());
-        assertFalse(result.getIsRecall());
         assertEquals(1, result.getPageNum());
         assertNotNull(result.getUpdateDate());
         assertNull(result.getUrl());
@@ -41,7 +39,6 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
-        assertFalse(message.getIsRecall());
         this.userMessage = message;
     }
 }

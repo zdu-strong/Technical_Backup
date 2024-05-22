@@ -40,7 +40,6 @@ public class UserMessageServiceGetMessageListOnlyContainsOneByPageNumTest extend
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
-        assertFalse(message.getIsRecall());
         this.userMessage = message;
     }
 }

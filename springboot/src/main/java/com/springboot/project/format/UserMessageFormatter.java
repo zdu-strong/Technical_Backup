@@ -43,15 +43,14 @@ public class UserMessageFormatter extends BaseService {
                         (s, t) -> t.getUser().getId().equals(userId))
                 .where(s -> s.getTwo() == null || !s.getTwo().getIsDeleted())
                 .exists();
-        userMessage.setIsDeleted(isDeleted);
 
-        if (!userMessage.getIsRecall() && !userMessage.getIsDeleted()
+        if (!userMessageEntity.getIsRecall() && !isDeleted
                 && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
             userMessage
                     .setUrl(this.storage.getResoureUrlFromResourcePath(
                             Paths.get(userMessageEntity.getFolderName(), userMessageEntity.getFileName()).toString()));
         }
-        if (userMessage.getIsRecall() || userMessage.getIsDeleted()
+        if (userMessageEntity.getIsRecall() || isDeleted
                 || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
             userMessage.setContent("");
         }

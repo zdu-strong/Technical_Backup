@@ -18,9 +18,6 @@ public class UserMessageServiceRecallMessageTest extends BaseTest {
     @Test
     public void test() throws URISyntaxException {
         this.userMessageService.recallMessage(this.userMessage.getId());
-        var message = this.userMessageService.getUserMessageById(this.userMessage.getId(),
-                this.userMessage.getUser().getId());
-        assertTrue(message.getIsRecall());
     }
 
     @BeforeEach
@@ -32,7 +29,6 @@ public class UserMessageServiceRecallMessageTest extends BaseTest {
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
-        assertFalse(message.getIsRecall());
         this.userMessage = message;
     }
 }

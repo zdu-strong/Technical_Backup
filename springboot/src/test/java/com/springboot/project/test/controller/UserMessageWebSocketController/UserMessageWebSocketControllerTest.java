@@ -78,7 +78,6 @@ public class UserMessageWebSocketControllerTest extends BaseTest {
         assertEquals(1, result.getList().size());
         assertEquals(1, result.getTotalPage());
         assertEquals("Hello, World!", userMessage.getContent());
-        assertFalse(userMessage.getIsRecall());
         assertNull(userMessage.getUrl());
         assertEquals(this.user.getId(), userMessage.getUser().getId());
         assertNotNull(userMessage.getCreateDate());

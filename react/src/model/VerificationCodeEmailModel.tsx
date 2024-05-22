@@ -16,9 +16,6 @@ export class VerificationCodeEmailModel {
   @jsonMember(Number)
   verificationCodeLength!: number;
 
-  @jsonMember(Boolean)
-  isDeleted?: boolean;
-
   @jsonMember(Date)
   createDate?: Date;
 

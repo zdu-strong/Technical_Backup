@@ -21,7 +21,6 @@ public class UserMessageServiceSendMessageRandomEmailTest extends BaseTest {
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(this.userMessage.getUser().getId(), message.getUser().getId());
-        assertFalse(message.getIsRecall());
     }
 
     @BeforeEach
