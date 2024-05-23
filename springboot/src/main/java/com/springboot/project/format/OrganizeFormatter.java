@@ -36,8 +36,7 @@ public class OrganizeFormatter extends BaseService {
             var descendantCount = this.OrganizeClosureEntity()
                     .where(s -> s.getAncestor().getId().equals(id))
                     .where(s -> s.getIsActive())
-                    .where(s -> !s.getDescendant().getId().equals(id))
-                    .count();
+                    .count() - 1;
             organizeModel.setDescendantCount(descendantCount);
         }
         return organizeModel;

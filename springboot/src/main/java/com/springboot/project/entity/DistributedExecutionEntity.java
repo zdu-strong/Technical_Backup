@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "version", "pageSize", "pageNum", "uniqueCodeOfExtraExecuteContent" }) })
+        @UniqueConstraint(columnNames = { "version", "pageNum", "pageSize", "uniqueCodeOfExtraExecuteContent" }) })
 @Getter
 @Setter
 @Accessors(chain = true)
