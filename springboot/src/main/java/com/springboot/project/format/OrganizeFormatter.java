@@ -37,6 +37,9 @@ public class OrganizeFormatter extends BaseService {
                     .where(s -> s.getAncestor().getId().equals(id))
                     .where(s -> s.getIsActive())
                     .count() - 1;
+            if (descendantCount < 0) {
+                descendantCount = 0;
+            }
             organizeModel.setDescendantCount(descendantCount);
         }
         return organizeModel;
