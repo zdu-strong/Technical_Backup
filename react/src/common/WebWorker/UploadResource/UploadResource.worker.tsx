@@ -3,7 +3,7 @@ import registerWebworker from 'webworker-promise/lib/register'
 import axios from "axios";
 import { concatMap, from, lastValueFrom, map, range, timer, toArray } from "rxjs";
 import * as mathjs from 'mathjs'
-import { getLongTermTask, getLongTermTaskByServerAddress } from '@/api/LongTermTask';
+import { getLongTermTaskByServerAddress } from '@/api/LongTermTask';
 import { addMilliseconds } from 'date-fns'
 import linq from 'linq'
 
