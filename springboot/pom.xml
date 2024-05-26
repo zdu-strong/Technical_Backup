@@ -33,7 +33,7 @@
         <database.liquibase.maven.plugin.reference.url>
             jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
         </database.liquibase.maven.plugin.reference.url>
-        <google-cloud-spanner-jdbc.version>2.18.0</google-cloud-spanner-jdbc.version>
+        <google-cloud-spanner-jdbc.version>2.18.1</google-cloud-spanner-jdbc.version>
         <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
         <commons-io.version>2.16.1</commons-io.version>
@@ -204,7 +204,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.0</version>
     </parent>
 
     <build>
