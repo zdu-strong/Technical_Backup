@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.net.URISyntaxException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
-import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class LongTermTaskControllerGetLongTermTaskThrowErrorTest extends BaseTest {
@@ -14,7 +13,7 @@ public class LongTermTaskControllerGetLongTermTaskThrowErrorTest extends BaseTes
         assertThrows(RuntimeException.class, () -> {
             this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
                 throw new RuntimeException("Failed due to insufficient funds");
-            }), new ParameterizedTypeReference<LongTermTaskModel<String>>() {
+            }), new ParameterizedTypeReference<String>() {
             });
         });
     }

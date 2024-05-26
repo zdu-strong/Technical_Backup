@@ -1,18 +1,13 @@
 package com.springboot.project.common.longtermtask;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
 import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
-
 import io.reactivex.rxjava3.core.Flowable;
 
 @Component
@@ -59,12 +54,6 @@ public class LongTermTaskUtil {
                 }
             }
         });
-        try {
-            var url = new URIBuilder("/long_term_task").setParameter("id",
-                    this.encryptDecryptService.encryptByAES(idOfLongTermTask)).build();
-            return ResponseEntity.ok(url.toString());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return ResponseEntity.ok(this.encryptDecryptService.encryptByAES(idOfLongTermTask));
     }
 }

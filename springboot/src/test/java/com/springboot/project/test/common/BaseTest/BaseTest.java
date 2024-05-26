@@ -50,7 +50,6 @@ import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.storage.Storage;
-import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
@@ -307,38 +306,38 @@ public class BaseTest {
         return user;
     }
 
-    protected <T> ResponseEntity<LongTermTaskModel<T>> fromLongTermTask(Supplier<ResponseEntity<String>> supplier,
-            ParameterizedTypeReference<LongTermTaskModel<T>> responseType) {
-        var relativeUrl = Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrlResponse) -> {
-            assertEquals(HttpStatus.OK, relativeUrlResponse.getStatusCode());
-            while (true) {
-                var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrlResponse.getBody()).build();
-                var result = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
-                        new ParameterizedTypeReference<LongTermTaskModel<Object>>() {
-                        });
-                if (result.getBody().getIsDone()) {
-                    break;
-                }
-                Thread.sleep(1);
-            }
-            return Flowable.just(relativeUrlResponse.getBody());
-        }).retry(s -> {
-            if (s.getMessage().contains("The task failed because it stopped")) {
-                return true;
-            } else if (s instanceof InterruptedException) {
-                return true;
-            } else {
-                return false;
-            }
-        }).blockingSingle();
-        try {
-            var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrl).build();
-            var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
-                    responseType);
-            return response;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+    protected <T> ResponseEntity<T> fromLongTermTask(Supplier<ResponseEntity<String>> supplier,
+            ParameterizedTypeReference<T> responseType) {
+        return Flowable.fromSupplier(() -> supplier.get())
+                .concatMap((response) -> {
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    return Flowable.just(response.getBody());
+                }).concatMap((id) -> {
+                    while (true) {
+                        var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task/is_done")
+                                .setParameter("id", id).build();
+                        var isDone = new RestTemplate().getForObject(url, Boolean.class);
+                        if (isDone) {
+                            break;
+                        }
+                        Thread.sleep(1);
+                    }
+                    return Flowable.just(id);
+                }).concatMap(id -> {
+                    var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
+                            .setParameter("id", id).build();
+                    var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
+                            responseType);
+                    return Flowable.just(response);
+                }).retry(s -> {
+                    if (s.getMessage().contains("The task failed because it stopped")) {
+                        return true;
+                    } else if (s instanceof InterruptedException) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).blockingSingle();
     }
 
 }
