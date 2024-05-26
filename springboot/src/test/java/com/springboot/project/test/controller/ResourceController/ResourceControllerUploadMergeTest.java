@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
-import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -36,8 +35,8 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
-        }, new ParameterizedTypeReference<LongTermTaskModel<String>>() {
-        }).getBody().getResult();
+        }, new ParameterizedTypeReference<String>() {
+        }).getBody();
         assertTrue(urlOfResource.startsWith("/resource/"));
         var result = this.testRestTemplate.getForEntity(new URIBuilder(urlOfResource).build(), byte[].class);
         assertEquals(HttpStatus.OK, result.getStatusCode());

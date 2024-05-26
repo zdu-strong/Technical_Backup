@@ -12,6 +12,9 @@ public class UserController extends BaseController {
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserById(@RequestParam String id) throws IOException {
+        this.permissionUtil.checkIsSignIn(request);
+        this.userCheckService.checkExistUserById(id);
+
         var userModel = this.userService.getUser(id);
         return ResponseEntity.ok(userModel);
     }
