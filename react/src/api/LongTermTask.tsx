@@ -1,13 +1,12 @@
 import { ServerAddress } from "@/common/Server";
 import axios, { AxiosResponse } from "axios";
 import { EMPTY, concat, concatMap, from, interval, map, of, take, lastValueFrom, catchError } from "rxjs";
-import { Serializable, TypedJSON } from "typedjson";
 
-export async function getLongTermTask<T>(callback: () => Promise<AxiosResponse<string>>, rootConstructor?: Serializable<T>): Promise<T> {
-  return await getLongTermTaskByServerAddress(callback, ServerAddress, rootConstructor);
+export async function getLongTermTask(callback: () => Promise<AxiosResponse<string>>): Promise<any> {
+  return await getLongTermTaskByServerAddress(callback, ServerAddress);
 }
 
-export async function getLongTermTaskByServerAddress<T>(callback: () => Promise<AxiosResponse<string>>, serverAddress: string, rootConstructor?: Serializable<T>): Promise<T> {
+export async function getLongTermTaskByServerAddress(callback: () => Promise<AxiosResponse<string>>, serverAddress: string): Promise<any> {
   return await lastValueFrom(of(null).pipe(
     concatMap(() => from(callback())),
     map((response) => response.data),
@@ -24,11 +23,8 @@ export async function getLongTermTaskByServerAddress<T>(callback: () => Promise<
         take(1)
       );
     }),
-    concatMap((id) => from(axios.get<T>(`${serverAddress}/long_term_task`, { params: { id } }))),
+    concatMap((id) => from(axios.get(`${serverAddress}/long_term_task`, { params: { id } }))),
     map((response) => {
-      if (rootConstructor) {
-        return new TypedJSON(rootConstructor).parse(response.data)!;
-      }
       return response.data!;
     }),
     catchError((error, caught) => {

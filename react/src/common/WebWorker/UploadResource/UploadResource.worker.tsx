@@ -6,6 +6,7 @@ import * as mathjs from 'mathjs'
 import { getLongTermTaskByServerAddress } from '@/api/LongTermTask';
 import { addMilliseconds } from 'date-fns'
 import linq from 'linq'
+import { TypedJSON } from 'typedjson';
 
 registerWebworker(async ({
   ServerAddress,
@@ -77,7 +78,8 @@ registerWebworker(async ({
     }),
     map((response) => response.data),
     toArray(),
-    concatMap((urlList) => from(getLongTermTaskByServerAddress(async () => axios.post<string>(`${ServerAddress}/upload/merge`, urlList), ServerAddress, String)))
+    concatMap((urlList) => from(getLongTermTaskByServerAddress(async () => axios.post<string>(`${ServerAddress}/upload/merge`, urlList), ServerAddress))),
+    map((result) => new TypedJSON(String).parse(result)!)
   ));
   return url;
 });
