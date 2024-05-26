@@ -1,7 +1,6 @@
 package com.springboot.project.test.controller.LongTermTaskController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class LongTermTaskControllerGetLongTermTaskNotExistsTaskTest extends Base
                 .build();
         var result = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-        assertTrue(result.getBody().getMessage().contains("The specified task does not exist"));
+        assertEquals("The specified task does not exist", result.getBody().getMessage());
     }
 
 }
