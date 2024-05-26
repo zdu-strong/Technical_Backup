@@ -228,7 +228,7 @@ public abstract class BaseService {
     }
 
     protected String newId() {
-        if (this.HibernateDialectProperties.getIsMysql()) {
+        if (!this.HibernateDialectProperties.getIsNewSqlDatabase()) {
             return Generators.timeBasedReorderedGenerator().generate().toString();
         } else {
             return new StringBuilder(Generators.timeBasedReorderedGenerator().generate().toString()).reverse()

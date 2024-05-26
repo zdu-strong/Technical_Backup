@@ -12,15 +12,26 @@ public class HibernateDialectProperties {
     @Value("${spring.jpa.database-platform}")
     private String hibernateDialect;
 
-    public boolean getIsMysql() {
+    public boolean getIsSpanner() {
+        if (this.hibernateDialect.contains("CustomSpannerDialect")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getIsNewSqlDatabase() {
+        return !this.getIsMysql() && !this.getIsH2();
+    }
+
+    private boolean getIsMysql() {
         if (this.hibernateDialect.contains("CustomMySQLDialect")) {
             return true;
         }
         return false;
     }
 
-    public boolean getIsSpanner(){
-        if (this.hibernateDialect.contains("CustomSpannerDialect")) {
+    private boolean getIsH2() {
+        if (this.hibernateDialect.contains("CustomH2Dialect")) {
             return true;
         }
         return false;
