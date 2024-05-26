@@ -36,7 +36,7 @@ registerWebworker(async ({
     loaded: 0,
     total: file.size,
   }];
-  const url = lastValueFrom(range(1, mathjs.max(mathjs.ceil(mathjs.divide(file.size, everySize)), 1)).pipe(
+  const url = await lastValueFrom(range(1, mathjs.max(mathjs.ceil(mathjs.divide(file.size, everySize)), 1)).pipe(
     concatMap((pageNum) => {
       const formData = new FormData();
       formData.set("file", new File([file.slice((pageNum - 1) * everySize, pageNum * everySize)], file.name, file));
