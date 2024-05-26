@@ -45,6 +45,11 @@ Check that a new version of the dependency is available<br/>
 The following dependencies are currently unable to continue to be upgraded:<br/>
 
     <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+    </dependency>
+
+    <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
     </dependency>
