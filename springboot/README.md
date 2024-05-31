@@ -49,31 +49,6 @@ The following dependencies are currently unable to continue to be upgraded:<br/>
         <artifactId>spring-boot-starter-parent</artifactId>
     </dependency>
 
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.httpcomponents.client5</groupId>
-        <artifactId>httpclient5</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.tika</groupId>
-        <artifactId>tika-core</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-core</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-    </dependency>
-
 ## Notes - How to use vscode
 
 1. Press "F5" to start.<br/>

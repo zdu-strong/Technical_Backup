@@ -43,8 +43,8 @@
         <guava.version>33.2.0-jre</guava.version>
         <com-google-zxing-core.version>3.5.3</com-google-zxing-core.version>
         <com-google-zxing-javase.version>3.5.3</com-google-zxing-javase.version>
-        <hutool-crypto.version>5.8.27</hutool-crypto.version>
-        <hutool-extra.version>5.8.27</hutool-extra.version>
+        <hutool-crypto.version>5.8.28</hutool-crypto.version>
+        <hutool-extra.version>5.8.28</hutool-extra.version>
         <java-uuid-generator.version>5.0.0</java-uuid-generator.version>
         <j3d-core-utils.version>1.3.1</j3d-core-utils.version>
         <gdx-bullet.version>1.12.1</gdx-bullet.version>
