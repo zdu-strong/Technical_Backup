@@ -72,7 +72,6 @@ public class VerificationCodeEmailService extends BaseService {
         return this.verificationCodeEmailFormatter.format(verificationCodeEmailEntity);
     }
 
-    @SuppressWarnings("resource")
     public boolean isFirstOnTheDurationOfVerificationCodeEmail(String id) {
         var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();

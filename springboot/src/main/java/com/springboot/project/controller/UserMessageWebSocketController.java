@@ -81,7 +81,6 @@ public class UserMessageWebSocketController {
         }
     }
 
-    @SuppressWarnings("resource")
     private void sendMessageForLastMessage() throws IOException {
         var lastTwentyMessage = this.getUserMessageService().getMessageListByLastTwentyMessage(userId);
         var hasChange = !this.getObjectMapper().writeValueAsString(lastTwentyMessage).equals(

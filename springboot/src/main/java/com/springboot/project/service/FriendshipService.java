@@ -78,7 +78,6 @@ public class FriendshipService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.friendshipFormatter.format(s));
     }
 
-    @SuppressWarnings("resource")
     public PaginationModel<FriendshipModel> getStrangerList(Long pageNum, Long pageSize, String userId) {
         var userEntity = this.UserEntity().where(s -> s.getId().equals(userId)).where(s -> s.getIsActive())
                 .getOnlyValue();
