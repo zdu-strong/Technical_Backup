@@ -38,7 +38,7 @@ Its source code is in the ".mvn/database_diff" folder.<br/>
 
 Delete all tables in the development database<br/>
 
-### `./mvn versions:update-properties versions:update-parent --define generateBackupPoms=false`
+### `./mvn versions:update-properties versions:update-parent`
 
 Check that a new version of the dependency is available<br/>
 
