@@ -21,37 +21,56 @@ public class UserMessageFormatter extends BaseService {
 
     public UserMessageModel formatForUserId(UserMessageEntity userMessageEntity, String userId) {
         var userMessage = this.format(userMessageEntity);
-        var crateDate = userMessage.getCreateDate();
-        var id = userMessage.getId();
-        var pageNum = this.UserMessageEntity()
-                .where(s -> !s.getIsRecall())
-                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
-                        (s, t) -> t.getUser().getId().equals(userId))
-                .where(s -> s.getTwo() == null)
-                .select(s -> s.getOne())
-                .where(s -> crateDate.after(s.getCreateDate())
-                        || (crateDate.equals(s.getCreateDate())
-                                && s.getId().compareTo(id) < 0))
-                .count();
-        userMessage.setPageNum(pageNum + 1);
+        userMessage.setPageNum(getPageNumOfUserMessageEntity(userMessageEntity, userId));
+        var isActive = getIsActiveOfUserMessageEntity(userMessageEntity, userId);
+        userMessage.setUrl(getUrlOfUserMessageEntity(userMessageEntity, isActive));
+        userMessage.setContent(getContentOfUserMessageEntity(userMessageEntity, isActive));
+        return userMessage;
+    }
+
+    private String getContentOfUserMessageEntity(UserMessageEntity userMessageEntity, boolean isActive) {
+        if (!isActive || userMessageEntity.getIsRecall()
+                || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
+            return "";
+        } else {
+            return userMessageEntity.getContent();
+        }
+    }
+
+    private boolean getIsActiveOfUserMessageEntity(UserMessageEntity userMessageEntity, String userId) {
+        var id = userMessageEntity.getId();
         var isActive = this.UserMessageEntity()
                 .where(s -> s.getId().equals(id))
                 .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))
                 .where(s -> s.getTwo() == null)
                 .exists();
+        return isActive;
+    }
 
+    private String getUrlOfUserMessageEntity(UserMessageEntity userMessageEntity, boolean isActive) {
         if (isActive && !userMessageEntity.getIsRecall()
                 && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
-            userMessage
-                    .setUrl(this.storage.getResoureUrlFromResourcePath(
-                            Paths.get(userMessageEntity.getFolderName(), userMessageEntity.getFileName()).toString()));
+            return this.storage.getResoureUrlFromResourcePath(
+                    Paths.get(userMessageEntity.getFolderName(), userMessageEntity.getFileName()).toString());
+        } else {
+            return null;
         }
-        if (!isActive || userMessageEntity.getIsRecall()
-                || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
-            userMessage.setContent("");
-        }
+    }
 
-        return userMessage;
+    private Long getPageNumOfUserMessageEntity(UserMessageEntity userMessageEntity, String userId) {
+        var crateDate = userMessageEntity.getCreateDate();
+        var id = userMessageEntity.getId();
+        var stream = this.UserMessageEntity()
+                .where(s -> !s.getIsRecall())
+                .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
+                        (s, t) -> t.getUser().getId().equals(userId))
+                .where(s -> s.getTwo() == null)
+                .select(s -> s.getOne());
+        var pageNum = stream.where(s -> s.getCreateDate().before(crateDate)).count()
+                + stream.where(s -> crateDate.equals(s.getCreateDate())
+                        && s.getId().compareTo(id) < 0).count()
+                + 1;
+        return pageNum;
     }
 }

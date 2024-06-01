@@ -44,6 +44,11 @@ Check that a new version of the dependency is available<br/>
 
 The following dependencies are currently unable to continue to be upgraded:<br/>
 
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+    </dependency>
+
 ## Notes - How to use vscode
 
 1. Press "F5" to start.<br/>
