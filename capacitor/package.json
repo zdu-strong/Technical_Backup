@@ -120,7 +120,7 @@
     "typestyle": "2.4.0",
     "uuid": "9.0.1",
     "wait-on": "7.2.0",
-    "web-vitals": "3.5.2",
+    "web-vitals": "4.0.1",
     "webworker-promise": "0.5.1",
     "windows-locale": "1.1.3"
   }
