@@ -15,8 +15,8 @@
         <commons-io.version>2.16.1</commons-io.version>
         <java-uuid-generator.version>5.0.0</java-uuid-generator.version>
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
-        <google-cloud-spanner-jdbc.version>2.18.1</google-cloud-spanner-jdbc.version>
-        <gax-httpjson.version>2.48.1</gax-httpjson.version>
+        <google-cloud-spanner-jdbc.version>2.19.0</google-cloud-spanner-jdbc.version>
+        <gax-httpjson.version>2.49.0</gax-httpjson.version>
     </properties>
 
     <dependencies>

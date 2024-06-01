@@ -17,3 +17,5 @@ To generate executable jar package
 ### `./mvn versions:update-properties versions:update-parent`
 
 Check that a new version of the dependency is available<br/>
+
+The following dependencies are currently unable to continue to be upgraded:<br/>
