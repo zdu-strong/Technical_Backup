@@ -13,6 +13,12 @@ RUN dnf module install -y nodejs:20
 # install serve
 RUN npm install --location=global serve
 
+# install ts-node
+RUN npm install --location=global typescript
+
+# install ts-node
+RUN npm install --location=global ts-node
+
 # run test
 FROM first_docker as second_docker
 RUN dnf install -y git
@@ -41,4 +47,4 @@ COPY --from=second_docker /all_code/react/build /build
 EXPOSE 443
 
 # start server
-ENTRYPOINT ["serve", "--single", "--cors", "--no-clipboard", "--no-port-switching", "--no-request-logging", "--listen=443", "build"]
+ENTRYPOINT ts-node --skipProject build/read_react_app_env.ts && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build
