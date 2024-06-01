@@ -132,17 +132,6 @@ public class JPQLFunction {
     }
 
     /**
-     * Whether textOne is sorted before textTwo
-     * 
-     * @param textOne
-     * @param textTwo
-     * @return
-     */
-    public static Boolean isSortAtBefore(String textOne, String textTwo) {
-        throw new RuntimeException();
-    }
-
-    /**
      * Convert int to a string
      * 
      * @param value
@@ -215,10 +204,6 @@ public class JPQLFunction {
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
                 .filter(s -> s.getName().equals("foundTotalRowsForGroupBy")).toList()) {
             jinqJPAStreamProvider.registerCustomSqlFunction(method, "FOUND_ROWS");
-        }
-        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("isSortAtBefore")).toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method, "IS_SORT_AT_BEFORE");
         }
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
                 .filter(s -> s.getName().equals("formatDateAsYearMonthDayHourMinuteSecondMillisecond"))

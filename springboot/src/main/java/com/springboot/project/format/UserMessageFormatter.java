@@ -1,14 +1,11 @@
 package com.springboot.project.format;
 
 import java.nio.file.Paths;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.UserMessageEntity;
 import com.springboot.project.model.UserMessageModel;
 
@@ -34,7 +31,7 @@ public class UserMessageFormatter extends BaseService {
                 .select(s -> s.getOne())
                 .where(s -> crateDate.after(s.getCreateDate())
                         || (crateDate.equals(s.getCreateDate())
-                                && JPQLFunction.isSortAtBefore(s.getId(), id)))
+                                && s.getId().compareTo(id) < 0))
                 .count();
         userMessage.setPageNum(pageNum + 1);
         var isActive = this.UserMessageEntity()

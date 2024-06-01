@@ -18,8 +18,6 @@ public class CustomSpannerDialect extends SpannerDialect {
         functionRegistry.register("IFNULL", new StandardSQLFunction("IFNULL", StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER()",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
-        functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
-                basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern("LOCATE", "STRPOS(?2, ?1)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",

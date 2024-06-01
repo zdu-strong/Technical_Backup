@@ -25,8 +25,6 @@ public class CustomH2Dialect extends H2Dialect {
         functionRegistry.register("IFNULL", new StandardSQLFunction("IFNULL", StandardBasicTypes.BIG_DECIMAL));
         functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER()",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
-        functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
-                basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern("LOCATE", "LOCATE(?1, ?2)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",
