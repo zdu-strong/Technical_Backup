@@ -13,7 +13,7 @@ RUN dnf module install -y nodejs:20
 # install serve
 RUN npm install --location=global serve
 
-# install ts-node
+# install typescript
 RUN npm install --location=global typescript
 
 # install ts-node

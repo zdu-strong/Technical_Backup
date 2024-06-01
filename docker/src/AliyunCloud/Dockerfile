@@ -19,6 +19,12 @@ RUN npm install --location=global wait-on
 # install concurrently
 RUN npm install --location=global concurrently
 
+# install typescript
+RUN npm install --location=global typescript
+
+# install ts-node
+RUN npm install --location=global ts-node
+
 # Install java
 RUN dnf install -y java-21-openjdk-devel
 ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk
@@ -75,4 +81,4 @@ EXPOSE 8080
 EXPOSE 443
 
 # start server
-ENTRYPOINT ["concurrently", "wait-on http://localhost:8080 && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build", "java -jar server.jar"]
+ENTRYPOINT ["concurrently", "wait-on http://localhost:8080 && ts-node --skipProject build/read_react_app_env.ts && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build", "java -jar server.jar"]
