@@ -29,6 +29,15 @@ function getStringOfReactAPPEnv() {
     if (!envName.startsWith("REACT_APP_")) {
       continue;
     }
+    if (envName.includes("__")) {
+      continue;
+    }
+    if (envName.endsWith("_")) {
+      continue;
+    }
+    if (!new RegExp("^[A-Z_]+$", "g").test(envName)) {
+      continue;
+    }
     let envValue = process.env[envName];
     if (!envValue) {
       continue;
@@ -42,7 +51,7 @@ function getStringOfReactAPPEnv() {
     if (envValue.endsWith("/")) {
       envValue = envValue.slice(0, envValue.length - 1);
     }
-    text += `${envName}:"${envValue}",`
+    text += `${envName}:${JSON.stringify(envValue)},`
   }
   return getStringOfNodeEnvProduction() + text;
 }
