@@ -51,6 +51,7 @@
         <aliyun-sdk-oss.version>3.17.4</aliyun-sdk-oss.version>
         <google-cloud-spanner-hibernate-dialect.version>3.4.1</google-cloud-spanner-hibernate-dialect.version>
         <liquibase-spanner.version>4.25.1</liquibase-spanner.version>
+        <opentelemetry-api.version>1.38.0</opentelemetry-api.version>
     </properties>
 
     <dependencies>
@@ -198,6 +199,11 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-spanner-jdbc</artifactId>
             <version>${google-cloud-spanner-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+            <version>${opentelemetry-api.version}</version>
         </dependency>
     </dependencies>
 
