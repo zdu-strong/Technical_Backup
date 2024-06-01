@@ -55,6 +55,7 @@ get-port (Current project not support ES module)<br/>
 inquirer (Current project not support ES module)<br/>
 linq (Current project not support ES module)<br/>
 typescript (Dependency incompatibility)<br/>
+node-polyfill-webpack-plugin<br/>
 
 ## Learn More
 

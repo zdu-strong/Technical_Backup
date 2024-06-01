@@ -47,6 +47,7 @@ After upgrading the dependencies, please make sure that the dependent versions i
 The following dependencies are currently unable to continue to be upgraded:<br/>
 execa (Current project not support ES module)<br/>
 typescript (Dependency incompatibility)<br/>
+node-polyfill-webpack-plugin<br/>
 
 ## Learn More
 
