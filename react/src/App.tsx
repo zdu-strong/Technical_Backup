@@ -13,7 +13,9 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { stylesheet } from 'typestyle';
 import vhCheck from 'vh-check';
+import { reportWebVitals } from '@/reportWebVitals';
 
+reportWebVitals();
 vhCheck();
 
 const css = stylesheet({
