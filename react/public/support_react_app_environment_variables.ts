@@ -70,15 +70,15 @@ async function deleteFileOfReadReactAppEnvJs() {
 }
 
 function getFilePathOfReadReactAppEnvJs() {
-  return path.join(__dirname, "read_react_app_environment_variables.ts");
+  return path.join(__dirname, "support_react_app_environment_variables.ts");
 }
 
 function getStringOfNodeEnvProduction() {
-  return `NODE_ENV:"production",`;
+  return `{NODE_ENV:"production",`;
 }
 
 function getRegexOfNodeEnvProduction() {
-  return new RegExp(`NODE_ENV:"production",`, "g");
+  return new RegExp(`\\{NODE_ENV:"production",`, "g");
 }
 
 export default main();

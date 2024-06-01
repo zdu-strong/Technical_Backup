@@ -47,4 +47,4 @@ COPY --from=second_docker /all_code/react/build /build
 EXPOSE 443
 
 # start server
-ENTRYPOINT ts-node --skipProject build/read_react_app_environment_variables.ts && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build
+ENTRYPOINT ts-node --skipProject build/support_react_app_environment_variables.ts && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build
