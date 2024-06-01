@@ -9,4 +9,14 @@ if (process.env.NODE_ENV === "development") {
   }
 }
 
+if (process.env.NODE_ENV === "production") {
+  if (process.env.REACT_APP_SERVER_ADDRESS) {
+    if (process.env.REACT_APP_SERVER_ADDRESS.endsWith("/")) {
+      ServerAddress = process.env.REACT_APP_SERVER_ADDRESS.slice(0, process.env.REACT_APP_SERVER_ADDRESS.length - 1);
+    } else {
+      ServerAddress = process.env.REACT_APP_SERVER_ADDRESS;
+    }
+  }
+}
+
 export { ServerAddress }
