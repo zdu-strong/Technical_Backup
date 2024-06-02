@@ -1,16 +1,24 @@
 package com.springboot.project.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.model.UserMessageModel;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserMessageCheckService extends BaseService {
+
+    public void checkEmptyUserMessageContent(UserMessageModel userMessageModel) {
+        if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
+        }
+    }
 
     public void checkExistsUserMessage(String id) {
         var exists = this.UserMessageEntity().where(s -> s.getId().equals(id)).exists();

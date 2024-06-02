@@ -1,17 +1,12 @@
 package com.springboot.project.controller;
 
 import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
@@ -22,10 +17,7 @@ public class UserMessageController extends BaseController {
     @PostMapping("/user_message/send")
     public ResponseEntity<?> sendMessage(@RequestBody UserMessageModel userMessageModel) throws IOException {
         this.permissionUtil.checkIsSignIn(request);
-
-        if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
-        }
+        this.userMessageCheckService.checkEmptyUserMessageContent(userMessageModel);
 
         userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
         var userMessage = this.userMessageService.sendMessage(userMessageModel);
