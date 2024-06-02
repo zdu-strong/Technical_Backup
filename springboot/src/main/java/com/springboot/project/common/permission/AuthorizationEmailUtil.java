@@ -3,17 +3,25 @@ package com.springboot.project.common.permission;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.regex.Pattern;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
+import com.springboot.project.service.VerificationCodeEmailService;
 
 @Component
 public class AuthorizationEmailUtil {
@@ -27,12 +35,39 @@ public class AuthorizationEmailUtil {
     @Autowired
     private IsTestOrDevModeProperties isTestOrDevModeProperties;
 
-    public void sendVerificationCode(String email, String verificationCode) {
-        if (this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
-            return;
+    @Autowired
+    private VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    private DateFormatProperties dateFormatProperties;
+
+    public VerificationCodeEmailModel sendVerificationCode(String email) throws InterruptedException, ParseException {
+        VerificationCodeEmailModel verificationCodeEmailModel = null;
+        for (var i = 10; i > 0; i--) {
+            var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
+
+            var fastDateFormat = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond());
+            var createDate = fastDateFormat.parse(
+                    fastDateFormat.format(DateUtils.addSeconds(verificationCodeEmailModelTwo.getCreateDate(), 1)));
+            Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());
+
+            if (this.verificationCodeEmailService
+                    .isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailModelTwo.getId())) {
+                verificationCodeEmailModel = verificationCodeEmailModelTwo;
+                break;
+            }
         }
 
-        this.sendEmail(email, verificationCode);
+        if (verificationCodeEmailModel == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Too many verification code requests in a short period of time");
+        }
+
+        if (!this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
+            this.sendEmail(email, verificationCodeEmailModel.getVerificationCode());
+        }
+
+        return verificationCodeEmailModel;
     }
 
     private void sendEmail(String email, String verificationCode) {
