@@ -6,9 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.model.OrganizeModel;
 
 @Service
 public class OrganizeCheckService extends BaseService {
+
+    public void checkExistParentOrganizeForCreateOrganize(OrganizeModel organizeModel) {
+        if (organizeModel.getParent() != null) {
+            var parentOrganizeId = organizeModel.getParent().getId();
+            if (StringUtils.isNotBlank(parentOrganizeId)) {
+                this.checkExistOrganize(parentOrganizeId);
+            }
+        }
+    }
 
     public void checkExistOrganize(String id) {
         var exists = this.OrganizeEntity()
