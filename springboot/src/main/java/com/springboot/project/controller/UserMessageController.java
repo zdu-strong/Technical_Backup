@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserMessageModel;
-import com.springboot.project.model.UserModel;
 
 @RestController
 public class UserMessageController extends BaseController {
@@ -17,9 +16,9 @@ public class UserMessageController extends BaseController {
     @PostMapping("/user_message/send")
     public ResponseEntity<?> sendMessage(@RequestBody UserMessageModel userMessageModel) throws IOException {
         this.permissionUtil.checkIsSignIn(request);
-        this.userMessageCheckService.checkEmptyUserMessageContent(userMessageModel);
+        this.userMessageCheckService.checkCannotEmptyUserMessageContent(userMessageModel);
+        this.userMessageCheckService.checkNotNullOfUserOfUserMessage(userMessageModel, request);
 
-        userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
         var userMessage = this.userMessageService.sendMessage(userMessageModel);
         return ResponseEntity.ok(userMessage);
     }

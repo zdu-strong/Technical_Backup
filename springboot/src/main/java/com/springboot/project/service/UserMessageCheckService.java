@@ -8,13 +8,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.model.UserMessageModel;
+import com.springboot.project.model.UserModel;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserMessageCheckService extends BaseService {
 
-    public void checkEmptyUserMessageContent(UserMessageModel userMessageModel) {
+    public void checkNotNullOfUserOfUserMessage(UserMessageModel userMessageModel, HttpServletRequest request) {
+        userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
+    }
+
+    public void checkCannotEmptyUserMessageContent(UserMessageModel userMessageModel) {
         if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
         }
