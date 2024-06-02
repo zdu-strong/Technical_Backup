@@ -2,18 +2,12 @@ package com.springboot.project.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseController.BaseController;
@@ -70,50 +64,10 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
-
-        if (StringUtils.isBlank(userModel.getPublicKeyOfRSA())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please set the public key of RSA");
-        }
-
-        if (StringUtils.isBlank(userModel.getPrivateKeyOfRSA())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please set the public key of RSA");
-        }
-
-        if (StringUtils.isBlank(userModel.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in nickname");
-        }
-
-        if (userModel.getUsername().trim().length() != userModel.getUsername().length()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot start or end with a space");
-        }
-
-        {
-            for (var userEmail : userModel.getUserEmailList()) {
-                if (StringUtils.isBlank(userEmail.getEmail())) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
-                }
-
-                if (!Pattern.compile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
-                        .matcher(userEmail.getEmail()).find()) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
-                }
-
-                if (StringUtils.isBlank(userEmail.getVerificationCodeEmail().getVerificationCode())) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "The verification code of email " + userEmail.getEmail() + " cannot be empty");
-                }
-
-                userEmail.getVerificationCodeEmail().setEmail(userEmail.getEmail());
-
-                this.verificationCodeEmailCheckService
-                        .checkVerificationCodeEmailHasBeenUsed(userEmail.getVerificationCodeEmail());
-
-                this.verificationCodeEmailCheckService
-                        .checkVerificationCodeEmailIsPassed(userEmail.getVerificationCodeEmail());
-
-                this.userEmailCheckService.checkEmailIsNotUsed(userEmail.getEmail());
-            }
-        }
+        this.userCheckService.checkCannotEmptyOfPublicKey(userModel);
+        this.userCheckService.checkCannotEmptyOfPrivateKey(userModel);
+        this.userCheckService.checkCannotEmptyOfUsername(userModel);
+        this.userCheckService.checkValidEmailForSignUp(userModel);
 
         var user = this.userService.signUp(userModel);
         user = this.userService.getUserWithMoreInformation(user.getId());

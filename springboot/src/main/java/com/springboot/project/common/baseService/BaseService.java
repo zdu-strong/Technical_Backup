@@ -46,9 +46,11 @@ import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserService;
+import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
 
 import jakarta.persistence.EntityManager;
@@ -99,6 +101,12 @@ public abstract class BaseService {
 
     @Autowired
     protected UserMessageDeactivateService userMessageDeactivateService;
+
+    @Autowired
+    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
+
+    @Autowired
+    protected UserEmailCheckService userEmailCheckService;
 
     @Autowired
     protected TokenFormatter tokenFormatter;

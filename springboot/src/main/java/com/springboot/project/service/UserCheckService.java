@@ -1,13 +1,67 @@
 package com.springboot.project.service;
 
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.model.UserModel;
 
 @Service
 public class UserCheckService extends BaseService {
+
+    public void checkValidEmailForSignUp(UserModel userModel) {
+        for (var userEmail : userModel.getUserEmailList()) {
+            if (StringUtils.isBlank(userEmail.getEmail())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
+            }
+
+            if (!Pattern.compile("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
+                    .matcher(userEmail.getEmail()).find()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
+            }
+
+            if (StringUtils.isBlank(userEmail.getVerificationCodeEmail().getVerificationCode())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "The verification code of email " + userEmail.getEmail() + " cannot be empty");
+            }
+
+            userEmail.getVerificationCodeEmail().setEmail(userEmail.getEmail());
+
+            this.verificationCodeEmailCheckService
+                    .checkVerificationCodeEmailHasBeenUsed(userEmail.getVerificationCodeEmail());
+
+            this.verificationCodeEmailCheckService
+                    .checkVerificationCodeEmailIsPassed(userEmail.getVerificationCodeEmail());
+
+            this.userEmailCheckService.checkEmailIsNotUsed(userEmail.getEmail());
+        }
+    }
+
+    public void checkCannotEmptyOfUsername(UserModel userModel) {
+        if (StringUtils.isBlank(userModel.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in nickname");
+        }
+
+        if (userModel.getUsername().trim().length() != userModel.getUsername().length()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot start or end with a space");
+        }
+    }
+
+    public void checkCannotEmptyOfPrivateKey(UserModel userModel) {
+        if (StringUtils.isBlank(userModel.getPrivateKeyOfRSA())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please set the public key of RSA");
+        }
+    }
+
+    public void checkCannotEmptyOfPublicKey(UserModel userModel) {
+        if (StringUtils.isBlank(userModel.getPublicKeyOfRSA())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please set the public key of RSA");
+        }
+    }
 
     public void checkExistUserById(String id) {
         if (!hasExistsUserId(id)) {
