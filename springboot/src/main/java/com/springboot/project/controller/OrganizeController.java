@@ -54,7 +54,6 @@ public class OrganizeController extends BaseController {
 
     @GetMapping("/organize")
     public ResponseEntity<?> getOrganizeById(@RequestParam String id) {
-
         this.organizeCheckService.checkExistOrganize(id);
 
         var organizeModel = this.organizeService.getById(id);
