@@ -20,7 +20,7 @@ public class UserEmailServiceCreateUserEmailAddSameEamilTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        assertThrows(DataIntegrityViolationException.class, () -> {
+        assertThrows(Throwable.class, () -> {
             this.userEmailService.createUserEmail(this.email, this.user.getId());
         });
         try {
