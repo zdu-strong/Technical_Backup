@@ -1,8 +1,7 @@
 package com.springboot.project.common.TimeZoneUtil;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
@@ -19,19 +18,8 @@ public class TimeZoneUtil {
      * @return
      */
     public String getUtcOffset(String timeZone) {
-        ZoneId zoneId = ZoneId.of(timeZone);
-        ZonedDateTime zonedDateTime = Instant.now().atZone(zoneId);
-        timeZone = String.format("%tz", zonedDateTime);
-        timeZone = timeZone.substring(0, 3) + ":" + timeZone.substring(3, 5);
-        if (timeZone.length() != 6) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
-        }
-        if (!Pattern.compile(
-                "^[" + Pattern.quote("+") + Pattern.quote("-") + "]{1}" + "[0-9]{2}" + Pattern.quote(":") + "[0-9]{2}$")
-                .matcher(timeZone).find()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
-        }
-        return timeZone;
+        checkTimeZoneString(timeZone);
+        return getUtcOffset(TimeZone.getTimeZone(timeZone));
     }
 
     /**
@@ -42,11 +30,32 @@ public class TimeZoneUtil {
      */
     public String getUtcOffset(TimeZone timeZone) {
         var zoneId = timeZone.toZoneId();
-        return this.getUtcOffset(zoneId.getId());
+        var zonedDateTime = Instant.now().atZone(zoneId);
+        var utcOffset = String.format("%tz", zonedDateTime);
+        utcOffset = utcOffset.substring(0, 3) + ":" + utcOffset.substring(3, 5);
+        checkUtcOffset(utcOffset);
+        return utcOffset;
     }
 
     public void checkTimeZone(String timeZone) {
         this.getUtcOffset(timeZone);
+    }
+
+    private void checkTimeZoneString(String timeZone) {
+        if (!Arrays.asList(TimeZone.getAvailableIDs()).contains(timeZone)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
+        }
+    }
+
+    private void checkUtcOffset(String utcOffset) {
+        if (utcOffset.length() != 6) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
+        }
+        if (!Pattern.compile(
+                "^[" + Pattern.quote("+") + Pattern.quote("-") + "]{1}" + "[0-9]{2}" + Pattern.quote(":") + "[0-9]{2}$")
+                .matcher(utcOffset).find()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
+        }
     }
 
 }
