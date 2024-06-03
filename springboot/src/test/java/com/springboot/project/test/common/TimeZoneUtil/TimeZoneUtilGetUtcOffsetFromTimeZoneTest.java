@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.utcOffsetUtil;
+package com.springboot.project.test.common.TimeZoneUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.TimeZone;
@@ -6,13 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class UTCOffsetUtilGetUtcOffsetFromTimeZoneTest extends BaseTest {
+public class TimeZoneUtilGetUtcOffsetFromTimeZoneTest extends BaseTest {
 
     private TimeZone timeZone;
 
     @Test
     public void test() {
-        var result = this.utcOffsetUtil.getUtcOffset(this.timeZone);
+        var result = this.timeZoneUtil.getUtcOffset(this.timeZone);
         assertEquals("+08:00", result);
     }
 

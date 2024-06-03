@@ -1,20 +1,12 @@
 package com.springboot.project.common.baseController;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.regex.Pattern;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
-import com.springboot.project.common.utcOffsetUtil.UTCOffsetUtil;
+import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -68,7 +60,7 @@ public class BaseController {
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
-    protected UTCOffsetUtil utcOffsetUtil;
+    protected TimeZoneUtil timeZoneUtil;
 
     @Autowired
     protected PermissionUtil permissionUtil;
@@ -132,20 +124,5 @@ public class BaseController {
 
     @Autowired
     protected UserMessageCheckService userMessageCheckService;
-
-    protected void checkTimeZone(String timeZone) {
-        ZoneId zoneId = ZoneId.of(timeZone);
-        ZonedDateTime zonedDateTime = Instant.now().atZone(zoneId);
-        var utcOffset = String.format("%tz", zonedDateTime);
-        utcOffset = utcOffset.substring(0, 3) + ":" + utcOffset.substring(3, 5);
-        if (utcOffset.length() != 6) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
-        }
-        if (!Pattern.compile(
-                "^[" + Pattern.quote("+") + Pattern.quote("-") + "]{1}" + "[0-9]{2}" + Pattern.quote(":") + "[0-9]{2}$")
-                .matcher(utcOffset).find()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid time zone");
-        }
-    }
 
 }

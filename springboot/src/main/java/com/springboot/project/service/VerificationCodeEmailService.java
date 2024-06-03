@@ -81,7 +81,7 @@ public class VerificationCodeEmailService extends BaseService {
             var email = verificationCodeEmailEntity.getEmail();
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
-            var utcOffset = this.utcOffsetUtil.getUtcOffset("UTC");
+            var utcOffset = this.timeZoneUtil.getUtcOffset("UTC");
             var createDateString = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC"))
                     .format(createDate);
             var beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
@@ -113,7 +113,7 @@ public class VerificationCodeEmailService extends BaseService {
                     .length() == VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH) {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
-                var utcOffset = this.utcOffsetUtil.getUtcOffset("UTC");
+                var utcOffset = this.timeZoneUtil.getUtcOffset("UTC");
                 var createDateString = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDay(), TimeZone.getTimeZone("UTC"))
                         .format(createDate);
                 var beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);

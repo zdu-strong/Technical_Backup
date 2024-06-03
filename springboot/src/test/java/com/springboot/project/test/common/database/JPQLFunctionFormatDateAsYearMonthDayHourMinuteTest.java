@@ -19,7 +19,7 @@ public class JPQLFunctionFormatDateAsYearMonthDayHourMinuteTest extends BaseTest
 
     @BeforeEach
     public void beforeEach() {
-        this.utcOffset = this.utcOffsetUtil.getUtcOffset("Asia/Shanghai");
+        this.utcOffset = this.timeZoneUtil.getUtcOffset("Asia/Shanghai");
     }
 
 }

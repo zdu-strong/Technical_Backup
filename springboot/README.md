@@ -252,7 +252,7 @@ javascript:
 
 java:
 
-    var utcOffset = this.utcOffsetUtil.getUtcOffset("Asia/Shanghai");
+    var utcOffset = this.timeZoneUtil.getUtcOffset("Asia/Shanghai");
 
     +08:00
 
