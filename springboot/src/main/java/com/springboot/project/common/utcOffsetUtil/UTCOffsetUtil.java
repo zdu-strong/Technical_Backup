@@ -1,4 +1,4 @@
-package com.springboot.project.common.TimeZoneUtil;
+package com.springboot.project.common.utcOffsetUtil;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 @Component
-public class TimeZoneUtil {
+public class UTCOffsetUtil {
 
     /**
      * return value like +08:00
@@ -18,7 +18,7 @@ public class TimeZoneUtil {
      * @param timeZone
      * @return
      */
-    public String getTimeZoneString(String timeZone) {
+    public String getUtcOffset(String timeZone) {
         ZoneId zoneId = ZoneId.of(timeZone);
         ZonedDateTime zonedDateTime = Instant.now().atZone(zoneId);
         timeZone = String.format("%tz", zonedDateTime);
@@ -40,9 +40,9 @@ public class TimeZoneUtil {
      * @param timeZone
      * @return
      */
-    public String getTimeZoneString(TimeZone timeZone) {
+    public String getUtcOffset(TimeZone timeZone) {
         var zoneId = timeZone.toZoneId();
-        return this.getTimeZoneString(zoneId.getId());
+        return this.getUtcOffset(zoneId.getId());
     }
 
 }

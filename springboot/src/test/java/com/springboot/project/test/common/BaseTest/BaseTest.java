@@ -45,7 +45,7 @@ import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
-import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
+import com.springboot.project.common.utcOffsetUtil.UTCOffsetUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -107,7 +107,7 @@ public class BaseTest {
     protected ResourceHttpHeadersUtil resourceHttpHeadersUtil;
 
     @Autowired
-    protected TimeZoneUtil timeZoneUtil;
+    protected UTCOffsetUtil utcOffsetUtil;
 
     @Autowired
     protected AuthorizationEmailUtil authorizationEmailUtil;

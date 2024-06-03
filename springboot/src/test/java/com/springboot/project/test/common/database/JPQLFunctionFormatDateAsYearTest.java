@@ -8,18 +8,18 @@ import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class JPQLFunctionFormatDateAsYearTest extends BaseTest {
-    private String timeZone;
+    private String utcOffset;
 
     @Test
     public void test() {
         assertThrows(RuntimeException.class, () -> {
-            JPQLFunction.formatDateAsYear(new Date(), this.timeZone);
+            JPQLFunction.formatDateAsYear(new Date(), this.utcOffset);
         });
     }
 
     @BeforeEach
     public void beforeEach() {
-        this.timeZone = this.timeZoneUtil.getTimeZoneString("Asia/Shanghai");
+        this.utcOffset = this.utcOffsetUtil.getUtcOffset("Asia/Shanghai");
     }
 
 }

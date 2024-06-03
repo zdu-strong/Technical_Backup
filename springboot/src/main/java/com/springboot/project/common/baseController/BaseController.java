@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
-import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
+import com.springboot.project.common.utcOffsetUtil.UTCOffsetUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -61,7 +61,7 @@ public class BaseController {
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
-    protected TimeZoneUtil timeZoneUtil;
+    protected UTCOffsetUtil utcOffsetUtil;
 
     @Autowired
     protected PermissionUtil permissionUtil;

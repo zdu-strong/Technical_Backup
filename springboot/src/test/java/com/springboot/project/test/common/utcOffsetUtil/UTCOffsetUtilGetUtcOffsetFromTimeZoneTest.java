@@ -1,25 +1,24 @@
-package com.springboot.project.test.common.TimeZoneUtil;
+package com.springboot.project.test.common.utcOffsetUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.time.ZoneId;
 import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class TimeZoneUtilGetTimeZoneStringFromTimeZoneTest extends BaseTest {
+public class UTCOffsetUtilGetUtcOffsetFromTimeZoneTest extends BaseTest {
 
     private TimeZone timeZone;
 
     @Test
     public void test() {
-        var result = this.timeZoneUtil.getTimeZoneString(this.timeZone);
+        var result = this.utcOffsetUtil.getUtcOffset(this.timeZone);
         assertEquals("+08:00", result);
     }
 
     @BeforeEach
     public void beforeEach() {
-        this.timeZone = TimeZone.getTimeZone(ZoneId.of("Asia/Shanghai"));
+        this.timeZone = TimeZone.getTimeZone("Asia/Shanghai");
     }
 
 }

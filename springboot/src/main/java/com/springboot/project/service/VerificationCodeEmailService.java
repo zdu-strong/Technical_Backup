@@ -81,7 +81,7 @@ public class VerificationCodeEmailService extends BaseService {
             var email = verificationCodeEmailEntity.getEmail();
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
-            var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
+            var utcOffset = this.utcOffsetUtil.getUtcOffset("UTC");
             var createDateString = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC"))
                     .format(createDate);
             var beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
@@ -90,13 +90,13 @@ public class VerificationCodeEmailService extends BaseService {
                     .where(s -> s.getEmail().equals(email))
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> JPQLFunction
-                            .formatDateAsYearMonthDayHourMinuteSecond(s.getCreateDate(), timeZone)
+                            .formatDateAsYearMonthDayHourMinuteSecond(s.getCreateDate(), utcOffset)
                             .equals(createDateString))
                     .where((s, t) -> !t.stream(VerificationCodeEmailEntity.class)
                             .where(m -> m.getEmail().equals(email))
                             .where(m -> beforeDate.before(m.getCreateDate()))
                             .where(m -> JPQLFunction
-                                    .formatDateAsYearMonthDayHourMinuteSecond(m.getCreateDate(), timeZone)
+                                    .formatDateAsYearMonthDayHourMinuteSecond(m.getCreateDate(), utcOffset)
                                     .equals(createDateString))
                             .where(m -> m.getHasUsed())
                             .exists())
@@ -113,8 +113,7 @@ public class VerificationCodeEmailService extends BaseService {
                     .length() == VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH) {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
-
-                var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
+                var utcOffset = this.utcOffsetUtil.getUtcOffset("UTC");
                 var createDateString = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDay(), TimeZone.getTimeZone("UTC"))
                         .format(createDate);
                 var beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
@@ -126,14 +125,14 @@ public class VerificationCodeEmailService extends BaseService {
                         .where(s -> s.getVerificationCode().length() == minVerificationCodeLength)
                         .where(s -> !s.getHasUsed() || !s.getIsPassed())
                         .where(s -> JPQLFunction
-                                .formatDateAsYearMonthDay(s.getCreateDate(), timeZone)
+                                .formatDateAsYearMonthDay(s.getCreateDate(), utcOffset)
                                 .equals(createDateString))
                         .where((s, t) -> !t.stream(VerificationCodeEmailEntity.class)
                                 .where(m -> m.getEmail().equals(email))
                                 .where(m -> beforeDate.before(m.getCreateDate()))
                                 .where(m -> m.getVerificationCode().length() == minVerificationCodeLength)
                                 .where(m -> JPQLFunction
-                                        .formatDateAsYearMonthDay(m.getCreateDate(), timeZone)
+                                        .formatDateAsYearMonthDay(m.getCreateDate(), utcOffset)
                                         .equals(createDateString))
                                 .where(m -> m.getHasUsed() && !m.getIsPassed())
                                 .exists())

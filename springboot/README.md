@@ -242,7 +242,7 @@ java:
 
     Generators.timeBasedReorderedGenerator().generate().toString()
 
-## Notes - Accept timezone from javascript, then convert to Time Zone from UTC. Time Zone from UTC can be passed as a parameter to database methods.
+## Notes - Accept timezone from javascript, then convert to utc offset. UTC offset can be passed as a parameter to database methods.
 
 javascript:
 
@@ -252,7 +252,7 @@ javascript:
 
 java:
 
-    var timeZone = this.timeZoneUtil.getTimeZone("Asia/Shanghai");
+    var utcOffset = this.utcOffsetUtil.getUtcOffset("Asia/Shanghai");
 
     +08:00
 
