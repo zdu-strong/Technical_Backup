@@ -1,6 +1,6 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.common.enumerate;
 
-import com.springboot.project.properties.HibernateDialectProperties;
+import com.springboot.project.common.properties.HibernateDialectProperties;
 
 import cn.hutool.extra.spring.SpringUtil;
 

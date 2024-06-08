@@ -26,8 +26,9 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.CloudStorageUrlResource;
 import com.springboot.project.common.StorageResource.RangeCloudStorageUrlResource;
 import com.springboot.project.common.StorageResource.SequenceResource;
+import com.springboot.project.common.properties.AliyunCloudStorageProperties;
 import com.springboot.project.common.storage.BaseStorage;
-import com.springboot.project.properties.AliyunCloudStorageProperties;
+
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
 

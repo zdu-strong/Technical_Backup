@@ -5,7 +5,8 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
+
+import com.springboot.project.common.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import io.reactivex.rxjava3.core.Flowable;

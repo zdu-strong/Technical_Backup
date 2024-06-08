@@ -7,7 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import com.springboot.project.properties.SchedulingPoolSizeProperties;
+
+import com.springboot.project.common.properties.SchedulingPoolSizeProperties;
 
 @Configuration
 @EnableScheduling

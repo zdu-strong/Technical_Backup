@@ -21,8 +21,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.CloudStorage.CloudStorageImplement;
+import com.springboot.project.common.properties.StorageRootPathProperties;
 import com.springboot.project.model.ResourceAccessLegalModel;
-import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.StorageSpaceService;
 

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseController.BaseController;
-import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
+import com.springboot.project.common.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskModel;
 
 @RestController

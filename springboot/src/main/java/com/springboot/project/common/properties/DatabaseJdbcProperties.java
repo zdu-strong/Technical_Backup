@@ -1,4 +1,4 @@
-package com.springboot.project.properties;
+package com.springboot.project.common.properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
