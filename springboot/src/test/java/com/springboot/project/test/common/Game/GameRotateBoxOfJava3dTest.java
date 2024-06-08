@@ -1,4 +1,4 @@
-package com.springboot.project.test.Game;
+package com.springboot.project.test.common.Game;
 
 import javax.media.j3d.BoundingBox;
 import javax.media.j3d.Transform3D;

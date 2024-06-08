@@ -1,4 +1,4 @@
-package com.springboot.project.test.properties.SchedulingPoolSizeProperties;
+package com.springboot.project.test.common.properties.SchedulingPoolSizeProperties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

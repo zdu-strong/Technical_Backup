@@ -1,4 +1,4 @@
-package com.springboot.project.test.properties.AliyunCloudStorageProperties;
+package com.springboot.project.test.common.properties.AliyunCloudStorageProperties;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;

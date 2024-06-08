@@ -1,4 +1,4 @@
-package com.springboot.project.test.Game;
+package com.springboot.project.test.common.Game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.security.NoSuchAlgorithmException;

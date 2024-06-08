@@ -1,4 +1,4 @@
-package com.springboot.project.test.properties.IsTestOrDevModeProperties;
+package com.springboot.project.test.common.properties.IsTestOrDevModeProperties;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
