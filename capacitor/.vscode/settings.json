@@ -16,6 +16,7 @@
     "app-release-signed.apk": true,
     "src/reportWebVitals.ts": true,
     "src/react-app-env.d.ts": true,
+    "capacitor.config.ts": true,
   },
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
