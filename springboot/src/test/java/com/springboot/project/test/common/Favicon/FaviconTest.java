@@ -15,7 +15,7 @@ public class FaviconTest extends BaseTest {
         URI url = new URIBuilder("/favicon.ico").build();
         var response = this.testRestTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(3870, response.getBody().length);
+        assertEquals(85886, response.getBody().length);
     }
 
 }
