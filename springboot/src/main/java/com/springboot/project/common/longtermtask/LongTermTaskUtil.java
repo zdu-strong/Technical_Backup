@@ -10,9 +10,12 @@ import com.springboot.project.common.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import io.reactivex.rxjava3.core.Flowable;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class LongTermTaskUtil {
+
     @Autowired
     private LongTermTaskService longTermTaskService;
 
@@ -53,6 +56,7 @@ public class LongTermTaskUtil {
                 synchronized (idOfLongTermTask) {
                     this.longTermTaskService.updateLongTermTaskByErrorMessage(idOfLongTermTask, e);
                 }
+                log.error(e.getMessage(), e);
             }
         });
         return ResponseEntity.ok(this.encryptDecryptService.encryptByAES(idOfLongTermTask));
