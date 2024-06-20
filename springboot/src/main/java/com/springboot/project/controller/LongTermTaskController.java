@@ -2,10 +2,12 @@ package com.springboot.project.controller;
 
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -75,7 +77,7 @@ public class LongTermTaskController extends BaseController {
                     new TypeReference<LongTermTaskModel<Object>>() {
                     });
             if (!longTermTaskResult.getIsDone()) {
-                throw new RuntimeException("The task is not completed");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The task is not completed");
             }
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders())
                     .body(longTermTaskResult.getResult());

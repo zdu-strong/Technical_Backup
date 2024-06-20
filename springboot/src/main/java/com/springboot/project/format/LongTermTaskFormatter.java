@@ -63,7 +63,7 @@ public class LongTermTaskFormatter extends BaseService {
                     Long.valueOf(0 - LongTermTaskTempWaitDurationEnum.TEMP_TASK_SURVIVAL_DURATION.toMillis())
                             .intValue());
             if (!longTermTaskEntity.getIsDone() && longTermTaskEntity.getUpdateDate().before(expireDate)) {
-                throw new RuntimeException("The task failed because it stopped");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The task failed because it stopped");
             }
 
             var longTermTaskModel = new LongTermTaskModel<Object>();
