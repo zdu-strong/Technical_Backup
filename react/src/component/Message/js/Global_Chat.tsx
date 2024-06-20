@@ -1,7 +1,8 @@
 import api from "@/api";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { observable, useMount } from "mobx-react-use-autorun";
-import { ReplaySubject, Subscription, of, retry, share, switchMap, tap } from "rxjs"
+import { ReplaySubject, Subscription, catchError, concatMap, of, share, switchMap, tap, timer } from "rxjs"
+import { handleErrorWhenNotSignInToSignIn } from '@/common/Server'
 
 export const GlobalChatMessage = observable({
   totalRecord: 0,
@@ -39,7 +40,13 @@ const GlobalShareMessageSubject = of(null).pipe(
     }
     GlobalChatMessage.ready = true;
   }),
-  retry({ delay: 2000 }),
+  catchError((error, caught) => {
+    handleErrorWhenNotSignInToSignIn(error);
+
+    return timer(2000).pipe(
+      concatMap(() => caught)
+    );
+  }),
   share(),
 );
 

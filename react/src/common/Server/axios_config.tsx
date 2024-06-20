@@ -1,7 +1,8 @@
 import axios from 'axios';
 import qs from 'qs';
 import { ServerAddress } from '@/common/Server/get_server_address'
-import { GlobalUserInfo } from './get_global_user_info';
+import { GlobalUserInfo } from '@/common/Server/get_global_user_info';
+import { handleErrorWhenNotSignInToSignIn } from '@/common/Server/handleErrorWhenNotSignInToSignin';
 
 axios.defaults.baseURL = ServerAddress;
 
@@ -22,6 +23,8 @@ axios.interceptors.response.use(undefined, async (error) => {
       error[objectKey] = error.response.data[objectKey];
     }
   }
+
+  handleErrorWhenNotSignInToSignIn(error);
 
   throw error;
 })

@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,22 +62,13 @@ public class UserMessageWebSocketController {
 
     public synchronized void sendMessage() throws IOException {
         try {
-            if (!this.getPermissionUtil().isSignIn(accessToken)) {
-                this.session
-                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                                CloseCodes.UNEXPECTED_CONDITION.name()));
-                return;
-            }
+            getPermissionUtil().checkIsSignIn(accessToken);
             this.sendMessageForLastMessage();
             this.sendMessageForOnlineMessage();
-        } catch (IllegalStateException e) {
-            this.session
-                    .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                            CloseCodes.UNEXPECTED_CONDITION.name()));
+        } catch (IllegalStateException | ResponseStatusException e) {
+            this.OnError(session, e);
         } catch (Throwable e) {
-            this.session
-                    .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                            CloseCodes.UNEXPECTED_CONDITION.name()));
+            this.OnError(session, e);
             throw e;
         }
     }
@@ -167,8 +159,7 @@ public class UserMessageWebSocketController {
     @OnError
     public void OnError(Session session, Throwable e) throws IOException {
         session
-                .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
-                        CloseCodes.UNEXPECTED_CONDITION.name()));
+                .close(new CloseReason(CloseCodes.CLOSED_ABNORMALLY, e.getMessage()));
     }
 
     /**
