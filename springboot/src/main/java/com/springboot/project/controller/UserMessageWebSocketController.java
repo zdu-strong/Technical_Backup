@@ -139,7 +139,10 @@ public class UserMessageWebSocketController {
          * Get access token
          */
         var accessToken = JinqStream.from(new URIBuilder(session.getRequestURI()).getQueryParams())
-                .where(s -> s.getName().equals("accessToken")).select(s -> s.getValue()).getOnlyValue();
+                .where(s -> s.getName().equals("accessToken"))
+                .select(s -> s.getValue())
+                .findOne()
+                .orElse("");
         this.getPermissionUtil().checkIsSignIn(accessToken);
         var userId = this.getPermissionUtil().getUserId(accessToken);
         /**

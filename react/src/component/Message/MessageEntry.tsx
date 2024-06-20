@@ -23,7 +23,7 @@ export default observer(() => {
 
   return <div className={css.container} >
     <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
-    <MessageUnlimitedAutoSizer />
+    <MessageUnlimitedAutoSizer key={GlobalUserInfo.accessToken} />
     <MessageChat
       userId={GlobalUserInfo.id!}
       username={GlobalUserInfo.username!}
