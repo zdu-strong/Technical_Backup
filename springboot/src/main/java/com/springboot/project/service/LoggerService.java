@@ -15,6 +15,7 @@ public class LoggerService extends BaseService {
         loggerEntity.setId(newId());
         loggerEntity.setCreateDate(new Date());
         loggerEntity.setUpdateDate(new Date());
+        loggerEntity.setIsActive(true);
         loggerEntity.setMessage(loggerModel.getMessage());
         loggerEntity.setLevel(loggerModel.getLevel());
         loggerEntity.setLoggerName(loggerModel.getLoggerName());
