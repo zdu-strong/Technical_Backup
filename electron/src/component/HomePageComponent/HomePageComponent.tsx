@@ -9,6 +9,8 @@ import { useReadyForApplication } from './js/useReadyForApplication';
 import CircularProgress from '@mui/material/CircularProgress';
 import GameDialog from '@/component/Game/GameDialog';
 import remote from '@/remote';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 const css = stylesheet({
   container: {
@@ -57,6 +59,18 @@ export default observer(() => {
     ready: useReadyForApplication(),
   })
 
+  function closeDialog() {
+    remote.getCurrentWindow().setFullScreen(false)
+    remote.getCurrentWindow().setMenuBarVisibility(true)
+    state.gameDialog.open = false;
+  }
+
+  function openDialog() {
+    state.gameDialog.open = true;
+    remote.getCurrentWindow().setMenuBarVisibility(false)
+    remote.getCurrentWindow().setFullScreen(true)
+  }
+
   return (<>
     {!state.ready && BootLoadingComponent}
     {state.ready && <div
@@ -92,12 +106,9 @@ export default observer(() => {
               className={`no-underline hover:underline`}
               variant="contained"
               color="primary"
-              style={{ marginTop: "1em", fontSize: "large", paddingTop: "0", paddingBottom: "0" }}
-              onClick={() => {
-                state.gameDialog.open = true;
-                remote.getCurrentWindow().setMenuBarVisibility(false)
-                remote.getCurrentWindow().setFullScreen(true)
-              }}
+              style={{ marginTop: "1em", fontSize: "large" }}
+              onClick={openDialog}
+              startIcon={<FontAwesomeIcon icon={faGamepad} />}
             >
               <FormattedMessage id="EnterTheGameIfYouWantToExitJustPressTheESCKey" defaultMessage="Enter the game, if you want to exit, just press the ESC key" />
             </Button>
@@ -105,10 +116,6 @@ export default observer(() => {
         </div>
       </header>
     </div>}
-    {state.gameDialog.open && <GameDialog closeDialog={() => {
-      remote.getCurrentWindow().setFullScreen(false)
-      remote.getCurrentWindow().setMenuBarVisibility(true)
-      state.gameDialog.open = false;
-    }} />}
+    {state.gameDialog.open && <GameDialog closeDialog={closeDialog} />}
   </>);
 })

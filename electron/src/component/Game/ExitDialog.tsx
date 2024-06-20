@@ -1,5 +1,5 @@
 import remote from "@/remote";
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCookieBite, faRightFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Dialog, DialogActions, DialogTitle, Fab } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
@@ -53,6 +53,7 @@ export default observer((props: {
         variant="contained"
         style={{ marginLeft: "1em" }}
         color="primary"
+        startIcon={<FontAwesomeIcon icon={faCookieBite} />}
       >
         <FormattedMessage id="EndTheGame" defaultMessage="End Game" />
       </Button>
@@ -62,7 +63,8 @@ export default observer((props: {
         onClick={() => {
           remote.app.exit()
         }}
-        color="secondary"
+        startIcon={<FontAwesomeIcon icon={faRightFromBracket} />}
+        color="primary"
       >
         <FormattedMessage id="ExitTheProgram" defaultMessage="Exit" />
       </Button>
