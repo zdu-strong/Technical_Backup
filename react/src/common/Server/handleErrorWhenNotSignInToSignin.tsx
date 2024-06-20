@@ -1,4 +1,5 @@
 import { existsWindow } from '@/common/exists-window/exists-window';
+import { removeGlobalUserInfo } from '@/common/Server/get_global_user_info';
 
 export function handleErrorWhenNotSignInToSignIn(error: any) {
   if (!existsWindow) {
@@ -7,10 +8,16 @@ export function handleErrorWhenNotSignInToSignIn(error: any) {
   if (!error) {
     return;
   }
+
   if (typeof error.status === "number" && error.status === 401) {
-    window.location.href = "/sign_in";
+    toSignin();
   } else if (typeof error.message === "string" && (error.message as string).startsWith("401 ")) {
-    window.location.href = "/sign_in";
+    toSignin();
   }
 
+}
+
+function toSignin() {
+  removeGlobalUserInfo();
+  window.location.href = "/sign_in";
 }
