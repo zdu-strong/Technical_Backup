@@ -62,7 +62,7 @@ export function removeGlobalUserInfo() {
   GlobalUserInfo.encryptByPrivateKeyOfRSA = undefined as any;
   GlobalUserInfo.decryptByPublicKeyOfRSA = undefined as any;
   if (window.localStorage.getItem(keyOfGlobalUserInfoOfLocalStorage)) {
-    window.localStorage.removeItem(keyOfGlobalUserInfoOfLocalStorage);
+    window.localStorage.clear();
   }
 }
 
