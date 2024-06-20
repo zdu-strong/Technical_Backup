@@ -25,7 +25,7 @@ export default observer((props: {
         state.error = null;
         try {
           if (props.isAutoLogin) {
-            if (!(await api.Authorization.isSignIn())) {
+            if (!GlobalUserInfo.accessToken) {
               await api.Authorization.signUp(v1(), "visitor", []);
             }
           }
