@@ -53,6 +53,7 @@ public class LoggerAppender extends AppenderBase<ILoggingEvent> {
             loggerModel.setExceptionStackTrace(JinqStream
                     .from(Lists.newArrayList(eventObject.getThrowableProxy().getStackTraceElementProxyArray()))
                     .select(s -> s.getSTEAsString()).toList());
+            loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
         }
 
         var stackTraceElementList = new Throwable().getStackTrace();
