@@ -30,7 +30,7 @@ public class LoggerAppender extends AppenderBase<ILoggingEvent> {
     @Override
     protected void append(ILoggingEvent eventObject) {
 
-        if (!Lists.newArrayList(Level.ERROR, Level.WARN).contains(eventObject.getLevel())) {
+        if (Level.ERROR != eventObject.getLevel()) {
             return;
         }
 
