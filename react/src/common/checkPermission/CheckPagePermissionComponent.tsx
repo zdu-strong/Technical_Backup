@@ -44,7 +44,7 @@ export default observer((props: {
 
   useMobxEffect(() => {
     state.subject.next();
-  }, [state.isAutoLogin, state.checkIsSignIn, state.subject, state.checkIsNotSignIn])
+  }, [state.isAutoLogin, state.checkIsSignIn, state.checkIsNotSignIn])
 
   useMobxEffect(() => {
     if (state.checkIsNotSignIn && GlobalUserInfo.accessToken) {
