@@ -16,7 +16,8 @@
         {
           "allowArrowFunction": true
         }
-      ]
+      ],
+      "react-hooks/exhaustive-deps": "off"
     }
   },
   "browserslist": {
