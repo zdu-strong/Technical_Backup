@@ -97,7 +97,7 @@
     "jsencrypt": "3.3.2",
     "linq": "3.2.4",
     "mathjs": "13.0.0",
-    "mobx-react-use-autorun": "4.0.28",
+    "mobx-react-use-autorun": "4.0.30",
     "node-polyfill-webpack-plugin": "3.0.0",
     "node-rsa": "1.1.1",
     "postcss": "8.4.38",
