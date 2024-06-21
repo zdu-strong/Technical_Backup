@@ -4,7 +4,6 @@ import process from "process";
 
 async function main() {
   await writeReactAppEnvToJsFile();
-  await deleteFileOfReadReactAppEnvJs();
 }
 
 async function writeReactAppEnvToJsFile() {
@@ -63,14 +62,6 @@ async function getStaticJsPathList() {
 
 function getFolderPathOfStaticJs() {
   return path.join(__dirname, "static/js");
-}
-
-async function deleteFileOfReadReactAppEnvJs() {
-  await fs.promises.rm(getFilePathOfReadReactAppEnvJs(), { recursive: true, force: true });
-}
-
-function getFilePathOfReadReactAppEnvJs() {
-  return __filename;
 }
 
 function getStringOfNodeEnvProduction() {
