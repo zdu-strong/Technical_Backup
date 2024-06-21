@@ -44,13 +44,13 @@ export default observer((props: {
 
   useMobxEffect(() => {
     state.subject.next();
-  }, [state.isAutoLogin, state.checkIsSignIn, state.checkIsNotSignIn])
+  }, [props.isAutoLogin, props.checkIsSignIn, props.checkIsNotSignIn])
 
   useMobxEffect(() => {
     if (state.checkIsNotSignIn && GlobalUserInfo.accessToken) {
       state.navigate("/");
     }
-  }, [state.checkIsNotSignIn, GlobalUserInfo.accessToken])
+  }, [props.checkIsNotSignIn, GlobalUserInfo.accessToken])
 
   function check() {
     checkIsSignIn();
@@ -67,6 +67,6 @@ export default observer((props: {
   }
 
   return <LoadingOrErrorComponent ready={state.ready} error={state.error} >
-    {state.children}
+    {props.children}
   </LoadingOrErrorComponent>
 })

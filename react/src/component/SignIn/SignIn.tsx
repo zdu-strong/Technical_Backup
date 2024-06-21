@@ -95,7 +95,6 @@ export default observer(() => {
     try {
       state.loading.signIn = true;
       await api.Authorization.signIn(state.username, state.password);
-      state.navigate("/chat")
     } catch (e) {
       MessageService.error(e);
     } finally {
