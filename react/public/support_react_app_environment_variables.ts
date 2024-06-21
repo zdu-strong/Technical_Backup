@@ -70,7 +70,7 @@ async function deleteFileOfReadReactAppEnvJs() {
 }
 
 function getFilePathOfReadReactAppEnvJs() {
-  return path.join(__dirname, "support_react_app_environment_variables.ts");
+  return __filename;
 }
 
 function getStringOfNodeEnvProduction() {
