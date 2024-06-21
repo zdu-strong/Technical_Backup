@@ -7,7 +7,7 @@ it('', () => {
   page.SignIn.showPasswordButton().click()
   page.SignIn.password().clear().type(password)
   page.SignIn.signInButton().click()
-  cy.location('pathname', { timeout: 180000 }).should('equal', '/chat')
+  cy.location('pathname', { timeout: 180000 }).should('equal', '/')
 })
 
 before(() => {
