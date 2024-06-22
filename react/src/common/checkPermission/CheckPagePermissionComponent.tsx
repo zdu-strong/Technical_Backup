@@ -43,8 +43,6 @@ export default observer((props: {
           }
           if (state.checkIsNotSignIn && GlobalUserInfo.accessToken) {
             state.navigate("/");
-            await timer(60000).toPromise();
-            throw new Error("Please don't login")
           }
           state.ready = true;
         } catch (error) {
