@@ -69,7 +69,7 @@ export default observer((props: {
     return true;
   }
 
-  return <LoadingOrErrorComponent ready={state.ready} error={state.error} >
+  return <LoadingOrErrorComponent ready={isReadyOfInit() && state.ready} error={state.error} >
     {state.children}
   </LoadingOrErrorComponent>
 })
