@@ -54,7 +54,7 @@ export default observer((props: {
 
   useMobxEffect(() => {
     state.subject.next();
-  }, [props.isAutoLogin, props.checkIsSignIn, props.checkIsNotSignIn, GlobalUserInfo.accessToken])
+  }, [state.isAutoLogin, state.checkIsSignIn, state.checkIsNotSignIn, GlobalUserInfo.accessToken])
 
   function isReadyOfInit() {
     if (props.isAutoLogin && !GlobalUserInfo.accessToken) {
@@ -70,6 +70,6 @@ export default observer((props: {
   }
 
   return <LoadingOrErrorComponent ready={state.ready} error={state.error} >
-    {props.children}
+    {state.children}
   </LoadingOrErrorComponent>
 })
