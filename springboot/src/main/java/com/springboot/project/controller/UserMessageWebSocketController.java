@@ -101,8 +101,11 @@ public class UserMessageWebSocketController {
 
     private void sendMessageForOnlineMessage() throws IOException {
         for (var pageNum : this.onlineMessageMap.keySet()) {
-            var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
-            if (this.lastMessage.getList().stream().anyMatch(s -> s.getPageNum() == (long)pageNum)) {
+            if (pageNum > this.lastMessage.getTotalPage() - 20) {
+                continue;
+            }
+
+            if (this.lastMessage.getList().stream().anyMatch(s -> s.getPageNum() == (long) pageNum)) {
                 continue;
             }
 
@@ -111,6 +114,8 @@ public class UserMessageWebSocketController {
             if (userMessageList.isEmpty()) {
                 continue;
             }
+
+            var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
             var userMessage = JinqStream.from(userMessageList).getOnlyValue();
             var hasChange = !this.getObjectMapper().writeValueAsString(oldUserMessage)
                     .equals(this.getObjectMapper().writeValueAsString(userMessage));
