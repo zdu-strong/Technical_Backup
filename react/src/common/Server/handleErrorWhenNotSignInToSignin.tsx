@@ -10,14 +10,14 @@ export function handleErrorWhenNotSignInToSignIn(error: any) {
   }
 
   if (typeof error.status === "number" && error.status === 401) {
-    toSignin();
+    toSignIn();
   } else if (typeof error.message === "string" && (error.message as string).startsWith("401 ")) {
-    toSignin();
+    toSignIn();
   }
 
 }
 
-function toSignin() {
+export function toSignIn() {
   removeGlobalUserInfo();
   window.location.href = "/sign_in";
 }

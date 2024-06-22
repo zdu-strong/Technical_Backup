@@ -24,7 +24,6 @@ export default observer((props: { username: string, userId: string }) => {
     try {
       state.loadingOfSignOut = true;
       await api.Authorization.signOut();
-      state.navigate("/sign_in");
     } catch (e) {
       MessageService.error(e);
       state.loadingOfSignOut = false;

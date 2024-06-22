@@ -2,7 +2,6 @@ import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
 import { GlobalUserInfo, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
-import { reinitializeOfGlobalChat } from '@/component/Message/js/Global_Chat';
 import { UserEmailModel } from "@/model/UserEmailModel";
 import { UserModel } from "@/model/UserModel";
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
@@ -50,14 +49,13 @@ export async function signIn(username: string, password: string): Promise<void> 
 }
 
 export async function signOut() {
-  if (await isSignIn()) {
+  if (GlobalUserInfo.accessToken) {
     try {
       await axios.post("/sign_out");
     } catch {
       // do nothing
     }
     removeGlobalUserInfo();
-    reinitializeOfGlobalChat();
   }
 }
 

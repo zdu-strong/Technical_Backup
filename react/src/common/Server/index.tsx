@@ -5,6 +5,6 @@ import { ServerAddress } from '@/common/Server/get_server_address'
 import { getWebSocketServerAddress } from '@/common/Server/get_websocket_server_address'
 import { getResourceUrl } from '@/common/Server/get_resource_url'
 import { getDownloadResourceUrl } from '@/common/Server/get_download_resource_url'
-import { handleErrorWhenNotSignInToSignIn } from '@/common/Server/handleErrorWhenNotSignInToSignin';
+import { handleErrorWhenNotSignInToSignIn, toSignIn } from '@/common/Server/handleErrorWhenNotSignInToSignin';
 
-export { ClientAddress, GlobalUserInfo, ServerAddress, getWebSocketServerAddress, removeGlobalUserInfo, setGlobalUserInfo, getResourceUrl, getDownloadResourceUrl, handleErrorWhenNotSignInToSignIn }
+export { ClientAddress, GlobalUserInfo, ServerAddress, getWebSocketServerAddress, removeGlobalUserInfo, setGlobalUserInfo, getResourceUrl, getDownloadResourceUrl, handleErrorWhenNotSignInToSignIn, toSignIn }
