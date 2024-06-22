@@ -102,7 +102,7 @@ public class UserMessageWebSocketController {
     private void sendMessageForOnlineMessage() throws IOException {
         for (var pageNum : this.onlineMessageMap.keySet()) {
             var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
-            if (this.lastMessage.getList().stream().anyMatch(s -> s.getPageNum() == pageNum)) {
+            if (this.lastMessage.getList().stream().anyMatch(s -> s.getPageNum() == (long)pageNum)) {
                 continue;
             }
 
