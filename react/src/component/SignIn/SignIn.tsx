@@ -6,7 +6,7 @@ import AccountTooltipDialog from "@/component/SignIn/AccountTooltipDialog";
 import PasswordTooltipDialog from "@/component/SignIn/PasswordTooltipDialog";
 import api from "@/api";
 import { MessageService } from "@/common/MessageService";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion, faArrowRightToBracket, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -76,8 +76,6 @@ export default observer(() => {
         return Object.keys(state.error).filter(s => s !== "hasError").some(s => (state.error as any)[s]());
       }
     },
-  }, {
-    navigate: useNavigate(),
   })
 
   async function signIn() {

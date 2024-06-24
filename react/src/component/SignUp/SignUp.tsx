@@ -11,7 +11,7 @@ import { useMount } from "mobx-react-use-autorun";
 import api from "@/api";
 import { MessageService } from "@/common/MessageService";
 import { UserEmailModel } from "@/model/UserEmailModel";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
 import { ReactNode } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -100,8 +100,6 @@ export default observer(() => {
         return false;
       }
     },
-  }, {
-    navigate: useNavigate(),
   })
 
   useMount(async () => {
@@ -141,7 +139,6 @@ export default observer(() => {
         verificationCodeEmail: s.verificationCodeEmail
       }));
       await api.Authorization.signUp(state.password, state.nickname, userEmailList);
-      state.navigate("/chat")
     } catch (e) {
       MessageService.error(e);
     } finally {
