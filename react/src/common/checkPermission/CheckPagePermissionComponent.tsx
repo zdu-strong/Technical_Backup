@@ -4,7 +4,8 @@ import { GlobalUserInfo, toSignIn } from "@/common/Server";
 import { observer, useMobxEffect, useMobxState, useMount } from "mobx-react-use-autorun";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReplaySubject, concatMap, from, timer } from "rxjs";
+import { ReplaySubject, from } from "rxjs";
+import { exhaustMapWithTrailing } from "rxjs-exhaustmap-with-trailing";
 import { v1 } from "uuid";
 
 export default observer((props: {
@@ -15,7 +16,7 @@ export default observer((props: {
 }) => {
 
   const state = useMobxState(() => ({
-    subject: new ReplaySubject<void>(),
+    subject: new ReplaySubject<void>(1),
     ready: isReadyOfInit(),
     error: null as any,
     hasInitAccessToken: false,
@@ -26,7 +27,7 @@ export default observer((props: {
 
   useMount(async (subscription) => {
     subscription.add(state.subject.pipe(
-      concatMap(() => from((async () => {
+      exhaustMapWithTrailing(() => from((async () => {
         state.ready = false;
         state.error = null;
         try {
@@ -38,11 +39,11 @@ export default observer((props: {
           }
           if (state.checkIsSignIn && !GlobalUserInfo.accessToken) {
             toSignIn();
-            await timer(60000).toPromise();
-            throw new Error("Please login first and then visit");
+            return;
           }
           if (state.checkIsNotSignIn && GlobalUserInfo.accessToken) {
             state.navigate("/");
+            return;
           }
           state.ready = true;
         } catch (error) {
