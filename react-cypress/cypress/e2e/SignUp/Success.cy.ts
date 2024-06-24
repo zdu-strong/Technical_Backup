@@ -13,7 +13,7 @@ it('', () => {
   page.SignUp.verificationCodeInput().invoke("val").should("have.length.at.least", 6)
   page.SignUp.nextStepButton().click()
   page.SignUp.signUpButton().click()
-  cy.location('pathname', { timeout: 180000 }).should('equal', "/chat")
+  cy.location('pathname', { timeout: 180000 }).should('equal', "/")
 })
 
 before(() => {

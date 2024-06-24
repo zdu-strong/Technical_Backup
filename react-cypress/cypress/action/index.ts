@@ -12,5 +12,5 @@ export function signUp(email: string, password: string) {
   page.SignUp.verificationCodeInput().invoke("val").should("have.length.at.least", 6)
   page.SignUp.nextStepButton().click()
   page.SignUp.signUpButton().click()
-  cy.location('pathname', { timeout: 300000 }).should('equal', "/chat")
+  cy.location('pathname', { timeout: 300000 }).should('equal', "/")
 }
