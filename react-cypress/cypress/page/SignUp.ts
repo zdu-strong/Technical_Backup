@@ -6,5 +6,5 @@ export default {
   email: () => cy.xpath(`//label[.='Email']/../div/input`),
   sendVerificationCodeButton: () => cy.xpath(`//button[.='Send']`),
   verificationCodeInput: () => cy.xpath(`//label[.='Verification code']/../div/input`),
-  signUpButton: () => cy.xpath(`//button[.='SignUp']`)
+  signUpButton: () => cy.xpath(`//button[.='Sign Up']`)
 }

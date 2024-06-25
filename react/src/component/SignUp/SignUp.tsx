@@ -128,9 +128,8 @@ export default observer(() => {
       }));
       await api.Authorization.signUp(state.password, state.nickname, userEmailList);
     } catch (e) {
+      state.loading.signUp = false;
       MessageService.error(e);
-    } finally {
-      state.loading.signUp = false
     }
   }
 

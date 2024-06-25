@@ -94,9 +94,8 @@ export default observer(() => {
       state.loading.signIn = true;
       await api.Authorization.signIn(state.username, state.password);
     } catch (e) {
-      MessageService.error(e);
-    } finally {
       state.loading.signIn = false;
+      MessageService.error(e);
     }
   }
 
