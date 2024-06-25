@@ -20,24 +20,25 @@ public class VerificationCodeEmailCheckService extends BaseService {
                 .findOne();
         if (!verificationCodeEmailEntityOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
+                    "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }
 
         var verificationCodeEmailEntity = verificationCodeEmailEntityOptional.get();
 
-        if (!this.verificationCodeEmailService.isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailEntity.getId())) {
+        if (!this.verificationCodeEmailService
+                .isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailEntity.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailEntity.getEmail() + " is wrong");
+                    "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }
 
         if (verificationCodeEmailEntity.getHasUsed()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailEntity.getEmail() + " is wrong");
+                    "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }
 
         if (!verificationCodeEmailEntity.getEmail().equals(verificationCodeEmailModel.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
+                    "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }
 
         {
@@ -45,7 +46,7 @@ public class VerificationCodeEmailCheckService extends BaseService {
 
             if (!verificationCodeEmailEntity.getCreateDate().before(expiredDate)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
+                        "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
             }
 
         }
@@ -62,7 +63,7 @@ public class VerificationCodeEmailCheckService extends BaseService {
         if (!verificationCodeEmailEntity.getVerificationCode()
                 .equals(verificationCodeEmailModel.getVerificationCode())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The verification code of email " + verificationCodeEmailModel.getEmail() + " is wrong");
+                    "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }
 
         verificationCodeEmailEntity.setIsPassed(true);
