@@ -17,7 +17,6 @@ export default observer((props: {
 
   const state = useMobxState(() => ({
     subject: new ReplaySubject<void>(1),
-    ready: isReadyOfInit(),
     error: null as any,
     hasInitAccessToken: false,
   }), {
@@ -28,9 +27,8 @@ export default observer((props: {
   useMount(async (subscription) => {
     subscription.add(state.subject.pipe(
       exhaustMapWithTrailing(() => from((async () => {
-        state.ready = false;
-        state.error = null;
         try {
+          state.error = null;
           if (state.isAutoLogin && !state.hasInitAccessToken && !GlobalUserInfo.accessToken) {
             await api.Authorization.signUp(v1(), "visitor", []);
           }
@@ -45,7 +43,6 @@ export default observer((props: {
             state.navigate("/");
             return;
           }
-          state.ready = true;
         } catch (error) {
           state.error = error;
         }
@@ -57,20 +54,17 @@ export default observer((props: {
     state.subject.next();
   }, [state.isAutoLogin, state.checkIsSignIn, state.checkIsNotSignIn, GlobalUserInfo.accessToken])
 
-  function isReadyOfInit() {
-    if (props.isAutoLogin && !GlobalUserInfo.accessToken) {
+  function isReady() {
+    if (state.checkIsSignIn && !GlobalUserInfo.accessToken) {
       return false;
     }
-    if (props.checkIsSignIn && !GlobalUserInfo.accessToken) {
-      return false;
-    }
-    if (props.checkIsNotSignIn && GlobalUserInfo.accessToken) {
+    if (state.checkIsNotSignIn && GlobalUserInfo.accessToken) {
       return false;
     }
     return true;
   }
 
-  return <LoadingOrErrorComponent ready={isReadyOfInit() && state.ready} error={state.error} >
+  return <LoadingOrErrorComponent ready={isReady()} error={state.error} >
     {state.children}
   </LoadingOrErrorComponent>
 })
