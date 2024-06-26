@@ -56,7 +56,7 @@ export default observer(() => {
       signUp: false,
       sendVerificationCode: {} as Record<string, boolean>,
     },
-    error: {
+    errors: {
       nickname() {
         if (state.nickname) {
           if (state.nickname.replaceAll(new RegExp('^\\s+', 'g'), '').length !== state.nickname.length) {
@@ -135,16 +135,16 @@ export default observer(() => {
 
   function nextStep() {
     state.submitted = true;
-    if (state.activeStep === 0 && state.error.nickname()) {
+    if (state.activeStep === 0 && state.errors.nickname()) {
       return;
     }
-    if (state.activeStep === 1 && state.error.password()) {
+    if (state.activeStep === 1 && state.errors.password()) {
       return;
     }
-    if (state.activeStep === 2 && state.emailList.some(s => state.error.email(s))) {
+    if (state.activeStep === 2 && state.emailList.some(s => state.errors.email(s))) {
       return;
     }
-    if (state.activeStep === 2 && state.emailList.some(s => state.error.verificationCode(s))) {
+    if (state.activeStep === 2 && state.emailList.some(s => state.errors.verificationCode(s))) {
       return;
     }
     state.submitted = false
@@ -173,8 +173,8 @@ export default observer(() => {
             }}
             value={state.nickname}
             autoComplete="off"
-            error={!!state.error.nickname()}
-            helperText={state.error.nickname()}
+            error={!!state.errors.nickname()}
+            helperText={state.errors.nickname()}
             style={{ marginTop: "1em" }}
             onKeyDown={(e) => {
               if (!e.shiftKey && e.key === "Enter") {
@@ -231,8 +231,8 @@ export default observer(() => {
             autoComplete="off"
             multiline={true}
             rows={6}
-            error={!!state.error.password()}
-            helperText={state.error.password()}
+            error={!!state.errors.password()}
+            helperText={state.errors.password()}
             autoFocus={true}
           />
         </div>}
@@ -262,8 +262,8 @@ export default observer(() => {
               value={s.email}
               autoComplete="off"
               className="w-full"
-              error={!!state.error.email(s)}
-              helperText={state.error.email(s)}
+              error={!!state.errors.email(s)}
+              helperText={state.errors.email(s)}
               autoFocus={true}
             />
             <div style={{ height: "56px" }} className="flex items-center">
@@ -275,7 +275,7 @@ export default observer(() => {
                 onClick={async () => {
                   try {
                     state.submitted = true;
-                    if (state.error.email(s)) {
+                    if (state.errors.email(s)) {
                       return;
                     }
                     state.submitted = false;
@@ -310,8 +310,8 @@ export default observer(() => {
               value={s.verificationCodeEmail.verificationCode}
               autoComplete="off"
               className="w-full"
-              error={!!state.error.verificationCode(s)}
-              helperText={state.error.verificationCode(s)}
+              error={!!state.errors.verificationCode(s)}
+              helperText={state.errors.verificationCode(s)}
               style={{ marginLeft: "1em" }}
             />
             <div style={{ height: "56px" }} className="flex items-center">

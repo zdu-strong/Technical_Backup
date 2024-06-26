@@ -37,7 +37,7 @@ export default observer(() => {
       signIn: false,
     },
     showPasswordInput: false,
-    error: {
+    errors: {
       username() {
         if (state.username) {
           if (state.username.replaceAll(new RegExp('^\\s+', 'g'), '').length !== state.username.length) {
@@ -73,13 +73,13 @@ export default observer(() => {
         return false;
       },
       hasError() {
-        return Object.keys(state.error).filter(s => s !== "hasError").some(s => (state.error as any)[s]());
+        return Object.keys(state.errors).filter(s => s !== "hasError").some(s => (state.errors as any)[s]());
       }
     },
   })
 
   async function signIn() {
-    if (!state.error.hasError()) {
+    if (!state.errors.hasError()) {
       state.showPasswordInput = false;
     }
 
@@ -87,7 +87,7 @@ export default observer(() => {
       return;
     }
     state.submitted = true;
-    if (state.error.hasError()) {
+    if (state.errors.hasError()) {
       return;
     }
     try {
@@ -112,8 +112,8 @@ export default observer(() => {
         }}
         value={state.username}
         autoComplete="off"
-        error={!!state.error.username()}
-        helperText={state.error.username()}
+        error={!!state.errors.username()}
+        helperText={state.errors.username()}
         InputProps={{
           endAdornment: <IconButton
             color="primary"
@@ -142,8 +142,8 @@ export default observer(() => {
         autoComplete="off"
         multiline={true}
         rows={6}
-        error={!!state.error.password()}
-        helperText={state.error.password()}
+        error={!!state.errors.password()}
+        helperText={state.errors.password()}
         InputProps={{
           endAdornment: <IconButton
             color="primary"
