@@ -5,7 +5,7 @@ import { format, parseJSON } from "date-fns";
 import api from "@/api";
 import { GitPropertiesModel } from "@/model/GitPropertiesModel";
 import { FormattedMessage } from "react-intl";
-import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
+import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 
 export default observer(() => {
 
