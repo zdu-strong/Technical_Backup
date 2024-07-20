@@ -222,6 +222,9 @@ public class SpringbootProjectApplication {
 
     private static boolean isEmptyOfDiffChangeLogFile(String filePathOfDiffChangeLogFile)
             throws FileNotFoundException, IOException {
+        if (!new File(filePathOfDiffChangeLogFile).exists()) {
+            return true;
+        }
         String textContentOfDiffChangeLogFile;
         try (var input = new FileInputStream(new File(filePathOfDiffChangeLogFile))) {
             textContentOfDiffChangeLogFile = IOUtils.toString(input, StandardCharsets.UTF_8);
