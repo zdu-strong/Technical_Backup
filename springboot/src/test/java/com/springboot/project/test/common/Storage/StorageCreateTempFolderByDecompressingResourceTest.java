@@ -10,13 +10,13 @@ import org.springframework.core.io.Resource;
 
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class StorageCreateTempFolderFromResourceTest extends BaseTest {
+public class StorageCreateTempFolderByDecompressingResourceTest extends BaseTest {
 
     private Resource resource;
 
     @Test
     public void test() {
-        File tempFolder = this.storage.createTempFolderByDecompressingZipResource(resource);
+        File tempFolder = this.storage.createTempFolderByDecompressingResource(resource);
         assertEquals(9287, FileUtils.sizeOfDirectory(tempFolder));
         assertEquals("default.jpg", new File(tempFolder, "default.jpg").getName());
         assertEquals(9287, new File(tempFolder, "default.jpg").length());

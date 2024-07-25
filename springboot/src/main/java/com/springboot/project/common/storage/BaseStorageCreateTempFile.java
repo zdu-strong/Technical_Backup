@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
-import cn.hutool.core.util.ZipUtil;
+
+import cn.hutool.extra.compress.CompressUtil;
 
 @Component
 public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
@@ -125,13 +125,14 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
         return tempFolder;
     }
 
-    public File createTempFolderByDecompressingZipResource(Resource resourceOfZipFile) {
-        try (var input = new ZipInputStream(resourceOfZipFile.getInputStream())) {
+    public File createTempFolderByDecompressingResource(Resource resource) {
+        var tempFile = this.createTempFile(resource);
+        try {
             File tempFolder = this.createTempFolder();
-            ZipUtil.unzip(input, tempFolder);
+            CompressUtil.createExtractor(StandardCharsets.UTF_8, tempFile).extract(tempFolder);
             return tempFolder;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            this.delete(tempFile);
         }
     }
 

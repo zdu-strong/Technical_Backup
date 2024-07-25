@@ -30,7 +30,7 @@ public class StorageGetResourceFromRequestByFolderTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var resource = new ClassPathResource("zip/default.zip");
-        File tempFolder = this.storage.createTempFolderByDecompressingZipResource(resource);
+        File tempFolder = this.storage.createTempFolderByDecompressingResource(resource);
         var mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest
                 .setRequestURI(this.storage.storageResource(new FileSystemResource(tempFolder)).getRelativeUrl());

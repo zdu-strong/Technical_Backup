@@ -173,11 +173,11 @@ public class BaseStorageSave extends BaseStorageCreateTempFile {
         }
     }
 
-    public StorageFileModel storageUrlAsFolderAfterUnzip(String url) {
+    public StorageFileModel storageUrlAsFolderAfterDecompressing(String url) {
         var mockHttpServletRequest = new MockHttpServletRequest();
         mockHttpServletRequest.setRequestURI(url);
         var tempFolder = this
-                .createTempFolderByDecompressingZipResource(this.getResourceFromRequest(mockHttpServletRequest));
+                .createTempFolderByDecompressingResource(this.getResourceFromRequest(mockHttpServletRequest));
         var relativePath = tempFolder.getName();
         var storageFileModel = new StorageFileModel().setFolderName(tempFolder.getName());
         storageFileModel.setFolderSize(FileUtils.sizeOfDirectory(tempFolder));

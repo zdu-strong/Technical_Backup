@@ -24,7 +24,7 @@ public class StorageCreateTempFolderFromResourcePathTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        File tempFolder = this.storage.createTempFolderByDecompressingZipResource(
+        File tempFolder = this.storage.createTempFolderByDecompressingResource(
                 new ClassPathResource("zip/default.zip"));
         this.resourcePath = this.storage.storageResource(new FileSystemResource(tempFolder)).getRelativePath();
     }

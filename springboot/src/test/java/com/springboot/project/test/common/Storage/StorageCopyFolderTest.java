@@ -29,7 +29,7 @@ public class StorageCopyFolderTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        this.tempFolder = this.storage.createTempFolderByDecompressingZipResource(
+        this.tempFolder = this.storage.createTempFolderByDecompressingResource(
                 new ClassPathResource("zip/default.zip"));
     }
 
