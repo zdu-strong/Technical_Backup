@@ -20,7 +20,7 @@ RUN git add ..
 RUN git reset --hard
 RUN chmod +x mvn
 RUN ./mvn clean test
-RUN ./mvn clean package --define skipTests=true --define is.test.or.dev.mode=false --define server.shutdown=GRACEFUL
+RUN ./mvn clean package --define skipTests=true --define is.development.mock.mode=false --define server.shutdown=GRACEFUL
 RUN mv target/*.jar target/server.jar
 
 # copy jar

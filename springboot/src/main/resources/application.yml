@@ -86,7 +86,6 @@ properties:
         accessKeyId: ${storage.cloud.aliyun.accessKeyId}
         accessKeySecret: ${storage.cloud.aliyun.accessKeySecret}
   is:
-    test:
-      or:
-        dev:
-          mode: ${is.test.or.dev.mode}
+    development:
+      mock:
+        mode: ${is.development.mock.mode}

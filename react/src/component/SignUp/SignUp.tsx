@@ -154,6 +154,25 @@ export default observer(() => {
     }
   }
 
+  async function sendVerificationCode(userEmailModel: UserEmailModel) {
+    try {
+      state.submitted = true;
+      if (state.errors.email(userEmailModel)) {
+        return;
+      }
+      state.submitted = false;
+      state.loading.sendVerificationCode[userEmailModel.id!] = true;
+      const data = await api.Authorization.sendVerificationCode(userEmailModel.email);
+      userEmailModel.verificationCodeEmail.id = data.id;
+      userEmailModel.verificationCodeEmail.verificationCode = data.verificationCode;
+      userEmailModel.verificationCodeEmail.verificationCodeLength = data.verificationCodeLength;
+    } catch (e) {
+      MessageService.error(e);
+    } finally {
+      state.loading.sendVerificationCode[userEmailModel.id!] = false;
+    }
+  }
+
   return <div className={css.container}>
     <div className="flex flex-col flex-auto w-full">
       <div className="flex flex-col flex-auto w-full">
@@ -272,26 +291,7 @@ export default observer(() => {
                   marginLeft: "1em",
                 }}
                 variant="contained"
-                onClick={async () => {
-                  try {
-                    state.submitted = true;
-                    if (state.errors.email(s)) {
-                      return;
-                    }
-                    state.submitted = false;
-                    state.loading.sendVerificationCode[s.id!] = true;
-                    const data = await api.Authorization.sendVerificationCode(s.email);
-                    s.verificationCodeEmail.id = data.id;
-                    if (data.verificationCode && !s.verificationCodeEmail.verificationCode) {
-                      s.verificationCodeEmail.verificationCode = data.verificationCode;
-                    }
-                    s.verificationCodeEmail.verificationCodeLength = data.verificationCodeLength;
-                  } catch (e) {
-                    MessageService.error(e);
-                  } finally {
-                    state.loading.sendVerificationCode[s.id!] = false;
-                  }
-                }}
+                onClick={() => sendVerificationCode(s)}
                 startIcon={<FontAwesomeIcon icon={state.loading.sendVerificationCode[s.id!] ? faSpinner : faPaperPlane} spin={state.loading.sendVerificationCode[s.id!]} style={{ fontSize: "medium" }} />}
               >
                 <FormattedMessage id="Send" defaultMessage="Send" />

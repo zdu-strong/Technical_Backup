@@ -12,7 +12,7 @@ import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.properties.DateFormatProperties;
 import com.springboot.project.common.properties.HibernateDialectProperties;
-import com.springboot.project.common.properties.IsTestOrDevModeProperties;
+import com.springboot.project.common.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.entity.UserMessageDeactivateEntity;
 import com.springboot.project.entity.DistributedExecutionEntity;
@@ -82,7 +82,7 @@ public abstract class BaseService {
     private HibernateDialectProperties HibernateDialectProperties;
 
     @Autowired
-    protected IsTestOrDevModeProperties isTestOrDevModeProperties;
+    protected IsDevelopmentMockModeProperties isDevelopmentMockModeProperties;
 
     @Autowired
     protected OrganizeService organizeService;

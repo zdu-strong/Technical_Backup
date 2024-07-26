@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.properties.AuthorizationEmailProperties;
 import com.springboot.project.common.properties.DateFormatProperties;
-import com.springboot.project.common.properties.IsTestOrDevModeProperties;
+import com.springboot.project.common.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.service.VerificationCodeEmailService;
 
@@ -34,7 +34,7 @@ public class AuthorizationEmailUtil {
     private AuthorizationEmailProperties authorizationEmailProperties;
 
     @Autowired
-    private IsTestOrDevModeProperties isTestOrDevModeProperties;
+    private IsDevelopmentMockModeProperties isDevelopmentMockModeProperties;
 
     @Autowired
     private VerificationCodeEmailService verificationCodeEmailService;
@@ -64,8 +64,9 @@ public class AuthorizationEmailUtil {
                     "Too many verification code requests in a short period of time");
         }
 
-        if (!this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
+        if (!this.isDevelopmentMockModeProperties.getIsDevelopmentMockMode()) {
             this.sendEmail(email, verificationCodeEmailModel.getVerificationCode());
+            verificationCodeEmailModel.setVerificationCode("");
         }
 
         return verificationCodeEmailModel;

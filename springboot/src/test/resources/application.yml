@@ -86,7 +86,6 @@ properties:
         accessKeyId: ""
         accessKeySecret: ""
   is:
-    test:
-      or:
-        dev:
-          mode: true
+    development:
+      mock:
+        mode: true

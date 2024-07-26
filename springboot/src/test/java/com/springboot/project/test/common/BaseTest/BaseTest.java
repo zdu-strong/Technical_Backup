@@ -52,7 +52,7 @@ import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.properties.AliyunCloudStorageProperties;
 import com.springboot.project.common.properties.AuthorizationEmailProperties;
 import com.springboot.project.common.properties.DateFormatProperties;
-import com.springboot.project.common.properties.IsTestOrDevModeProperties;
+import com.springboot.project.common.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.properties.SchedulingPoolSizeProperties;
 import com.springboot.project.common.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
@@ -128,7 +128,7 @@ public class BaseTest {
     protected SchedulingPoolSizeProperties schedulingPoolSizeProperties;
 
     @Autowired
-    protected IsTestOrDevModeProperties isTestOrDevModeProperties;
+    protected IsDevelopmentMockModeProperties isDevelopmentMockModeProperties;
 
     @Autowired
     protected AliyunCloudStorageProperties aliyunCloudStorageProperties;

@@ -15,9 +15,6 @@ public class VerificationCodeEmailFormatter extends BaseService {
         BeanUtils.copyProperties(verificationCodeEmailEntity, verificationCodeEmailModel);
         verificationCodeEmailModel.setVerificationCodeLength(
                 Integer.valueOf(verificationCodeEmailEntity.getVerificationCode().length()).longValue());
-        if (!this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
-            verificationCodeEmailModel.setVerificationCode(null);
-        }
         return verificationCodeEmailModel;
     }
 

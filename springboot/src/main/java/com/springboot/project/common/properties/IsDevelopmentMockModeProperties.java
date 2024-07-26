@@ -7,10 +7,10 @@ import lombok.Getter;
 
 @Component
 @Getter
-public class IsTestOrDevModeProperties {
+public class IsDevelopmentMockModeProperties {
 
-    @Value("${properties.is.test.or.dev.mode}")
-    private Boolean isTestOrDevMode;
+    @Value("${properties.is.development.mock.mode}")
+    private Boolean isDevelopmentMockMode;
 
 }
 
