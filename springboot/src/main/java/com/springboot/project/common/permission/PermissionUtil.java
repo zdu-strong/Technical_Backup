@@ -1,10 +1,16 @@
 package com.springboot.project.common.permission;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import com.springboot.project.common.enumerate.SystemRoleEnum;
+import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.TokenService;
 
 @Component
@@ -13,14 +19,17 @@ public class PermissionUtil {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private OrganizeService organizeService;
+
     public void checkIsSignIn(HttpServletRequest request) {
-        if(!this.isSignIn(request)){
+        if (!this.isSignIn(request)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
         }
     }
 
     public void checkIsSignIn(String accessToken) {
-        if(!this.isSignIn(accessToken)){
+        if (!this.isSignIn(accessToken)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
         }
     }
@@ -47,4 +56,38 @@ public class PermissionUtil {
     public String getUserId(String accessToken) {
         return this.tokenService.getDecodedJWTOfAccessToken(accessToken).getSubject();
     }
+
+    public void checkAnyRole(SystemRoleEnum... roleList) {
+        if (roleList.length == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+    }
+
+    public void checkAnyRole(String organizeId, List<SystemRoleEnum> roleList) {
+        if (StringUtils.isBlank(organizeId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        if (roleList.size() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        if (roleList.stream().anyMatch(s -> s.getIsSuperAdmin())) {
+            return;
+        }
+        var organizeIdList = getOrganizeIdListByAnyRole(roleList.toArray(new SystemRoleEnum[] {}));
+        var ancestorIdList = this.organizeService.getAccestorIdList(organizeId);
+        if (!JinqStream.from(ancestorIdList).anyMatch(s -> organizeIdList.contains(s))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
+        }
+    }
+
+    public List<String> getOrganizeIdListByAnyRole(SystemRoleEnum... roleList) {
+        if (roleList.length == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        if (Arrays.stream(roleList).anyMatch(s -> s.getIsSuperAdmin())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        return List.of();
+    }
+
 }

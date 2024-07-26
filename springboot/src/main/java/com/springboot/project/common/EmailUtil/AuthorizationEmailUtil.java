@@ -1,4 +1,4 @@
-package com.springboot.project.common.permission;
+package com.springboot.project.common.EmailUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

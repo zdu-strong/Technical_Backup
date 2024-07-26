@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -107,6 +108,22 @@ public class OrganizeService extends BaseService {
             organizeEntity = organizeEntity.getParent();
         }
         return isChild;
+    }
+
+    public List<String> getAccestorIdList(String id) {
+        var organizeIdList = new ArrayList<String>();
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        while (true) {
+            if (organizeEntity == null) {
+                break;
+            }
+            if (organizeIdList.contains(organizeEntity.getId())) {
+                break;
+            }
+            organizeIdList.add(organizeEntity.getId());
+            organizeEntity = organizeEntity.getParent();
+        }
+        return organizeIdList;
     }
 
     private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
