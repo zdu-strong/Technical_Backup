@@ -38,7 +38,7 @@ RUN git add ..
 RUN git reset --hard
 RUN chmod +x mvn
 RUN ./mvn clean test
-RUN ./mvn clean package --define skipTests=true
+RUN ./mvn clean package --define skipTests=true --define server.shutdown=GRACEFUL
 RUN mv target/*.jar target/server.jar
 
 # compile client code
@@ -65,10 +65,7 @@ COPY --from=second_docker /all_code/springboot/target/server.jar /server.jar
 COPY --from=three_docker /all_code/react/build /build
 
 # set env
-ENV SERVER_SHUTDOWN GRACEFUL
 ENV SPRING_DATASOURCE_URL 'jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
-ENV SPRING_DATASOURCE_USERNAME sa
-ENV SPRING_DATASOURCE_PASSWORD sa
 ENV SPRING_DATASOURCE_DRIVER_CLASS_NAME org.h2.Driver
 ENV SPRING_JPA_HIBERNATE_DDL_AUTO update
 ENV SPRING_JPA_DATABASE_PLATFORM com.springboot.project.common.database.CustomH2Dialect
