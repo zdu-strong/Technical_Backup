@@ -34,18 +34,8 @@ public class PermissionUtil {
         }
     }
 
-    public void checkIsSignIn(String accessToken) {
-        if (!this.isSignIn(accessToken)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
-        }
-    }
-
     public boolean isSignIn(HttpServletRequest request) {
         String accessToken = this.tokenService.getAccessToken(request);
-        return this.isSignIn(accessToken);
-    }
-
-    public boolean isSignIn(String accessToken) {
         try {
             this.tokenService.getDecodedJWTOfAccessToken(accessToken);
             return true;
@@ -56,10 +46,6 @@ public class PermissionUtil {
 
     public String getUserId(HttpServletRequest request) {
         String accessToken = this.tokenService.getAccessToken(request);
-        return this.getUserId(accessToken);
-    }
-
-    public String getUserId(String accessToken) {
         return this.tokenService.getDecodedJWTOfAccessToken(accessToken).getSubject();
     }
 
@@ -83,6 +69,9 @@ public class PermissionUtil {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
         if (roleList.size() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        if (roleList.stream().anyMatch(s -> !s.getIsOrganizeRole() && !s.getIsSuperAdmin())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
         if (roleList.stream().anyMatch(s -> s.getIsSuperAdmin())) {

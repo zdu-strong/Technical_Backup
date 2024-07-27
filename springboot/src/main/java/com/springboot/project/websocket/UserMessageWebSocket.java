@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
+import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -20,8 +20,8 @@ import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketReceiveModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.service.UserMessageService;
-
 import cn.hutool.extra.spring.SpringUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.CloseReason.CloseCodes;
 import jakarta.websocket.OnClose;
@@ -53,7 +53,7 @@ public class UserMessageWebSocket {
      */
     @Getter
     private String userId;
-    private String accessToken;
+    private HttpServletRequest request;
     private Session session;
     private UserMessageWebSocketSendModel lastMessage = new UserMessageWebSocketSendModel().setTotalPage(0L)
             .setList(Lists.newArrayList());
@@ -62,7 +62,7 @@ public class UserMessageWebSocket {
 
     public synchronized void sendMessage() throws IOException {
         try {
-            getPermissionUtil().checkIsSignIn(accessToken);
+            getPermissionUtil().checkIsSignIn(request);
             this.sendMessageForLastMessage();
             this.sendMessageForOnlineMessage();
         } catch (IllegalStateException | ResponseStatusException e) {
@@ -140,22 +140,29 @@ public class UserMessageWebSocket {
      */
     @OnOpen
     public void onOpen(Session session) throws URISyntaxException, IOException, InterruptedException {
-        /**
-         * Get access token
-         */
-        var accessToken = JinqStream.from(new URIBuilder(session.getRequestURI()).getQueryParams())
-                .where(s -> s.getName().equals("accessToken"))
-                .select(s -> s.getValue())
-                .findOne()
-                .orElse("");
-        this.getPermissionUtil().checkIsSignIn(accessToken);
-        var userId = this.getPermissionUtil().getUserId(accessToken);
+        {
+            /**
+             * Get access token
+             */
+            var accessToken = JinqStream.from(new URIBuilder(session.getRequestURI())
+                    .getQueryParams())
+                    .where(s -> s.getName().equals("accessToken"))
+                    .select(s -> s.getValue())
+                    .findOne()
+                    .orElse("");
+            var request = new MockHttpServletRequest();
+            var httpHeaders = new HttpHeaders();
+            httpHeaders.setBearerAuth(accessToken);
+            request.addHeader(HttpHeaders.AUTHORIZATION, httpHeaders.getFirst(HttpHeaders.AUTHORIZATION));
+            this.request = request;
+        }
+        this.getPermissionUtil().checkIsSignIn(request);
+        var userId = this.getPermissionUtil().getUserId(request);
         /**
          * Save properties to member variables
          */
         this.userId = userId;
         this.session = session;
-        this.accessToken = accessToken;
         staticWebSocketList.add(this);
     }
 
