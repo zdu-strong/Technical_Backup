@@ -13,6 +13,9 @@ public class BaseStorageDeleteResource extends BaseStorage {
     public void delete(String relativePathOfResource) {
         String relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
         FileUtils.deleteQuietly(new File(this.getRootPath(), relativePath));
+        if (new File(this.getRootPath(), relativePath).exists()) {
+            throw new RuntimeException("Failed to delete files. File path is " + relativePath);
+        }
         if (this.cloud.enabled()) {
             this.cloud.delete(relativePath);
         }
