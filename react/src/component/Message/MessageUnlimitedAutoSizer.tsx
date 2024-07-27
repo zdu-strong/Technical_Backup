@@ -23,7 +23,7 @@ export default observer(() => {
   })
 
   return <div className={css.containerAutoSizer}>
-    <LoadingOrErrorComponent ready={state.ready} error={null}>
+    <LoadingOrErrorComponent ready={state.ready} error={!state.ready && state.error}>
       <AutoSizer>
         {(size) => <MessageUnlimitedList {...size} />}
       </AutoSizer>

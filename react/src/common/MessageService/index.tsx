@@ -65,14 +65,16 @@ function getMessageString(message: any): string {
   }
 
   let messageContent = "";
-  if (typeof message === "string") {
+  if (typeof message === "string" && message) {
     messageContent = message;
   } else if (typeof message === "number") {
     messageContent = String(message);
-  } else if (typeof message!.message === "string") {
+  } else if (typeof message!.message === "string" && message!.message) {
     messageContent = message.message;
-  } else if (typeof message!.error === "string") {
+  } else if (typeof message!.error === "string" && message!.error) {
     messageContent = message.error;
+  } else if (typeof message!.stack == "string" && (message!.stack as string).includes("socket.on")) {
+    messageContent = "Network Error";
   }
   return messageContent;
 }

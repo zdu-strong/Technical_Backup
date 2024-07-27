@@ -8,6 +8,7 @@ export const GlobalChatMessage = observable({
   totalRecord: 0,
   lastMessageId: "",
   ready: false,
+  error: null,
   messageMap: {
 
   } as Record<number, { ready: boolean, message: UserMessageModel }>
@@ -39,8 +40,10 @@ const GlobalShareMessageSubject = of(null).pipe(
       scrollToLastItem();
     }
     GlobalChatMessage.ready = true;
+    GlobalChatMessage.error = null;
   }),
   catchError((error, caught) => {
+    GlobalChatMessage.error = error;
     handleErrorWhenNotSignInToSignIn(error);
 
     return timer(2000).pipe(
@@ -84,7 +87,7 @@ export function useGlobalMessageReady() {
     subjectSingle.add(GlobalShareMessageSubject.subscribe());
   })
 
-  return { ready: GlobalChatMessage.ready };
+  return { ready: GlobalChatMessage.ready, error: GlobalChatMessage.error };
 }
 
 export const GlobalScrollToLastItemSubject = new ReplaySubject<void>(1);
