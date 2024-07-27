@@ -1,4 +1,4 @@
-package com.springboot.project.controller;
+package com.springboot.project.websocket;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,13 +40,13 @@ import lombok.Getter;
  */
 @ServerEndpoint("/user_message/websocket")
 @Component
-public class UserMessageWebSocketController {
+public class UserMessageWebSocket {
 
     /**
      * Public accessible properties
      */
     @Getter
-    private final static CopyOnWriteArrayList<UserMessageWebSocketController> staticWebSocketList = new CopyOnWriteArrayList<UserMessageWebSocketController>();
+    private final static CopyOnWriteArrayList<UserMessageWebSocket> staticWebSocketList = new CopyOnWriteArrayList<UserMessageWebSocket>();
 
     /**
      * Public accessible properties

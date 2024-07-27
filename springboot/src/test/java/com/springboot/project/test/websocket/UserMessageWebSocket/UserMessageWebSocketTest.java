@@ -1,4 +1,4 @@
-package com.springboot.project.test.controller.UserMessageWebSocketController;
+package com.springboot.project.test.websocket.UserMessageWebSocket;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +26,7 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import jakarta.websocket.CloseReason.CloseCodes;
 
-public class UserMessageWebSocketControllerTest extends BaseTest {
+public class UserMessageWebSocketTest extends BaseTest {
 
     private String webSocketServer;
     private String accessToken;

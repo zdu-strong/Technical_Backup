@@ -9,7 +9,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.springboot.project.controller.UserMessageWebSocketController;
+import com.springboot.project.websocket.UserMessageWebSocket;
 
 @Component
 public class MessageScheduled {
@@ -20,7 +20,7 @@ public class MessageScheduled {
     }
 
     private void sendMessage() throws Throwable {
-        var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
+        var websocketList = JinqStream.from(UserMessageWebSocket.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
         if (websocketList.isEmpty()) {
             return;
