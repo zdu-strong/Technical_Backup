@@ -210,14 +210,13 @@ public class BaseTest {
     @SpyBean
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
 
-    @SpyBean
+    @Autowired
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
     public void beforeEachOfBaseTest() throws Throwable {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
-        Mockito.doNothing().when(this.systemInitScheduled).scheduled();
         Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
         Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
