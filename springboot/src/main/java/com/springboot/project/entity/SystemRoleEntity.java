@@ -2,7 +2,6 @@ package com.springboot.project.entity;
 
 import java.util.Date;
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,5 +42,8 @@ public class SystemRoleEntity {
 
     @OneToMany(mappedBy = "systemRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<SystemRoleRelationEntity> systemRoleRelationList;
+
+    @OneToMany(mappedBy = "systemRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserRoleRelationEntity> userRoleRelationList;
 
 }

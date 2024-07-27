@@ -37,6 +37,7 @@ import com.springboot.project.entity.UserBlackOrganizeEntity;
 import com.springboot.project.entity.UserEmailEntity;
 import com.springboot.project.entity.UserEntity;
 import com.springboot.project.entity.UserMessageEntity;
+import com.springboot.project.entity.UserRoleRelationEntity;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.FriendshipFormatter;
@@ -257,6 +258,10 @@ public abstract class BaseService {
 
     protected JPAJinqStream<SystemRoleRelationEntity> SystemRoleRelationEntity() {
         return this.streamAll(SystemRoleRelationEntity.class);
+    }
+
+    protected JPAJinqStream<UserRoleRelationEntity> UserRoleRelationEntity() {
+        return this.streamAll(UserRoleRelationEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

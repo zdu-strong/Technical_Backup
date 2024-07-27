@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class OrganizeClosureEntity {
+public class UserRoleRelationEntity {
 
     @Id
     private String id;
@@ -27,9 +27,9 @@ public class OrganizeClosureEntity {
     private Date updateDate;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
-    private OrganizeEntity ancestor;
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
-    private OrganizeEntity descendant;
-
+    private SystemRoleEntity systemRole;
+    
 }

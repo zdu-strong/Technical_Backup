@@ -3,6 +3,8 @@ package com.springboot.project.common.permission;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.enumerate.SystemRoleEnum;
 import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
 
 @Component
@@ -21,6 +24,9 @@ public class PermissionUtil {
 
     @Autowired
     private OrganizeService organizeService;
+
+    @Autowired
+    private SystemRoleService systemRoleService;
 
     public void checkIsSignIn(HttpServletRequest request) {
         if (!this.isSignIn(request)) {
@@ -57,13 +63,22 @@ public class PermissionUtil {
         return this.tokenService.getDecodedJWTOfAccessToken(accessToken).getSubject();
     }
 
-    public void checkAnyRole(SystemRoleEnum... roleList) {
+    public void checkAnyRole(HttpServletRequest request, SystemRoleEnum... roleList) {
         if (roleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
+        var systemRoleList = systemRoleService.getSystemRoleListForCurrentUser(request);
+        var exists = JinqStream.from(systemRoleList)
+                .selectAllList(s -> s.getSystemDefaultRoleList())
+                .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
+                .where(s -> ArrayUtils.contains(roleList, s))
+                .exists();
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
-    public void checkAnyRole(String organizeId, List<SystemRoleEnum> roleList) {
+    public void checkAnyRole(HttpServletRequest request, String organizeId, List<SystemRoleEnum> roleList) {
         if (StringUtils.isBlank(organizeId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
@@ -73,21 +88,22 @@ public class PermissionUtil {
         if (roleList.stream().anyMatch(s -> s.getIsSuperAdmin())) {
             return;
         }
-        var organizeIdList = getOrganizeIdListByAnyRole(roleList.toArray(new SystemRoleEnum[] {}));
+        var organizeIdList = getOrganizeIdListByAnyRole(request, roleList.toArray(new SystemRoleEnum[] {}));
         var ancestorIdList = this.organizeService.getAccestorIdList(organizeId);
         if (!JinqStream.from(ancestorIdList).anyMatch(s -> organizeIdList.contains(s))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
-    public List<String> getOrganizeIdListByAnyRole(SystemRoleEnum... roleList) {
+    public List<String> getOrganizeIdListByAnyRole(HttpServletRequest request, SystemRoleEnum... roleList) {
         if (roleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
-        if (Arrays.stream(roleList).anyMatch(s -> s.getIsSuperAdmin())) {
+        if (Arrays.stream(roleList).anyMatch(s -> !s.getIsOrganizeRole())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
-        return List.of();
+        return this.systemRoleService.getOrganizeIdListByAnyRole(request,
+                Arrays.stream(roleList).map(s -> s.getRole()).toList());
     }
 
 }

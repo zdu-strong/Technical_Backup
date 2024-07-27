@@ -1,9 +1,11 @@
 package com.springboot.project.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
@@ -12,13 +14,61 @@ import com.springboot.project.common.enumerate.SystemRoleEnum;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.SystemRoleModel;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class SystemRoleService extends BaseService {
+
+    public List<SystemRoleModel> getSystemRoleListForCurrentUser(HttpServletRequest request) {
+        var userId = this.permissionUtil.getUserId(request);
+        var systemRoleList = this.UserRoleRelationEntity()
+                .where(s -> s.getUser().getId().equals(userId))
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .map(s -> this.systemRoleFormatter.format(s))
+                .toList();
+        return systemRoleList;
+    }
+
+    public List<String> getOrganizeIdListByAnyRole(HttpServletRequest request, List<String> roleList) {
+        var userId = this.permissionUtil.getUserId(request);
+        var organizeList = JinqStream.from(this.UserRoleRelationEntity()
+                .where(s -> s.getUser().getId().equals(userId))
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getOrganize() != null)
+                .where(s -> s.getOrganize().getIsActive())
+                .joinList(s -> s.getSystemRoleRelationList())
+                .where(s -> roleList.contains(s.getTwo().getSystemDefaultRole().getName()))
+                .select(s -> s.getOne().getOrganize())
+                .map(s -> this.organizeFormatter.format(s))
+                .toList())
+                .sortedBy(s -> s.getId())
+                .sortedBy(s -> s.getLevel())
+                .toList();
+        var organizeIdList = new ArrayList<String>();
+        for (var organize : organizeList) {
+            if (organizeIdList.contains(organize.getId())) {
+                continue;
+            }
+            if (organizeIdList.stream()
+                    .anyMatch(s -> this.organizeService.isChildOfOrganize(organize.getId(), s))) {
+                continue;
+            }
+            var organizeId = organize.getId();
+            if (!this.organizeFormatter
+                    .isActive(this.OrganizeEntity().where(s -> s.getId().equals(organizeId)).getOnlyValue())) {
+                continue;
+            }
+            organizeIdList.add(organize.getId());
+        }
+        return organizeIdList;
+    }
 
     public List<SystemRoleModel> getSystemRoleListForSuperAdmin() {
         var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.getValue())
+                .map(s -> s.getRole())
                 .toList();
         var systemRoleList = this.SystemDefaultRoleEntity()
                 .where(s -> roles.contains(s.getName()))
@@ -32,7 +82,7 @@ public class SystemRoleService extends BaseService {
     }
 
     public boolean refresh() {
-        var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getValue()).toList();
+        var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getRole()).toList();
 
         {
             var systemRoleEntityList = this.SystemRoleEntity()

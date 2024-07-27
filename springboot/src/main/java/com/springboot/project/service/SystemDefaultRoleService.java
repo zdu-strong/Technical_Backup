@@ -17,7 +17,7 @@ public class SystemDefaultRoleService extends BaseService {
      */
     public boolean refresh() {
         for (var systemRole : SystemRoleEnum.values()) {
-            var role = systemRole.getValue();
+            var role = systemRole.getRole();
             var exists = this.SystemDefaultRoleEntity()
                     .where(s -> s.getName().equals(role))
                     .exists();
@@ -27,7 +27,7 @@ public class SystemDefaultRoleService extends BaseService {
             this.create(systemRole);
         }
 
-        var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getValue()).toList();
+        var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getRole()).toList();
         var systemRoleRelationEntity = this.SystemDefaultRoleEntity()
                 .where(s -> !roles.contains(s.getName()))
                 .selectAllList(s -> s.getSystemRoleRelationList())
@@ -53,7 +53,7 @@ public class SystemDefaultRoleService extends BaseService {
     private void create(SystemRoleEnum systemRole) {
         var systemDefaultRoleEntity = new SystemDefaultRoleEntity();
         systemDefaultRoleEntity.setId(newId());
-        systemDefaultRoleEntity.setName(systemRole.getValue());
+        systemDefaultRoleEntity.setName(systemRole.getRole());
         systemDefaultRoleEntity.setCreateDate(new Date());
         systemDefaultRoleEntity.setUpdateDate(new Date());
         this.persist(systemDefaultRoleEntity);

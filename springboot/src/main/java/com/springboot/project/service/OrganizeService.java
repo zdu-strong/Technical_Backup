@@ -61,7 +61,7 @@ public class OrganizeService extends BaseService {
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeClosureEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
-                .where(s -> s.getIsActive())
+                .where(s -> s.getDescendant().getIsActive())
                 .where(s -> s.getDescendant().getName().contains(name))
                 .select(s -> s.getDescendant());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
