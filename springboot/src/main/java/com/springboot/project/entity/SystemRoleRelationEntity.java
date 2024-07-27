@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "systemDefaultRoleId", "systemRoleId" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "systemRoleId", "systemDefaultRoleId" }) })
 public class SystemRoleRelationEntity {
 
     @Id
