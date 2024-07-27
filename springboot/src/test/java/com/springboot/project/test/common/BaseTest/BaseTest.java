@@ -72,6 +72,8 @@ import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeClosureService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
+import com.springboot.project.service.SystemDefaultRoleService;
+import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserCheckService;
 import com.springboot.project.service.UserEmailCheckService;
@@ -192,6 +194,12 @@ public class BaseTest {
 
     @Autowired
     protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
+
+    @Autowired
+    protected SystemRoleService systemRoleService;
+
+    @Autowired
+    protected SystemDefaultRoleService systemDefaultRoleService;
 
     @Autowired
     protected MessageScheduled messageScheduled;

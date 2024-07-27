@@ -1,0 +1,122 @@
+package com.springboot.project.service;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.uuid.Generators;
+import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.common.enumerate.SystemRoleEnum;
+import com.springboot.project.entity.*;
+import com.springboot.project.model.SystemRoleModel;
+
+@Service
+public class SystemRoleService extends BaseService {
+
+    public List<SystemRoleModel> getSystemRoleListForSuperAdmin() {
+        var roles = Arrays.stream(SystemRoleEnum.values())
+                .filter(s -> !s.getIsOrganizeRole())
+                .map(s -> s.getValue())
+                .toList();
+        var systemRoleList = this.SystemDefaultRoleEntity()
+                .where(s -> roles.contains(s.getName()))
+                .selectAllList(s -> s.getSystemRoleRelationList())
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getOrganize() == null)
+                .map(s -> this.systemRoleFormatter.format(s))
+                .toList();
+        return systemRoleList;
+    }
+
+    public boolean refresh() {
+        var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getValue()).toList();
+
+        {
+            var systemRoleEntityList = this.SystemRoleEntity()
+                    .where(s -> !roles.contains(s.getName()))
+                    .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getIsActive())
+                    .leftOuterJoinList(s -> s.getSystemRoleRelationList())
+                    .where(s -> s.getTwo() == null)
+                    .select(s -> s.getOne())
+                    .limit(1)
+                    .toList();
+            for (var systemRoleEntity : systemRoleEntityList) {
+                systemRoleEntity.setIsActive(false);
+                systemRoleEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+                systemRoleEntity.setUpdateDate(new Date());
+                this.merge(systemRoleEntity);
+                return true;
+            }
+        }
+
+        for (var role : roles) {
+            var exists = this.SystemRoleEntity()
+                    .where(s -> s.getName().equals(role))
+                    .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getIsActive())
+                    .exists();
+            if (!exists) {
+                var systemDefaultRoleId = this.SystemDefaultRoleEntity()
+                        .where(s -> s.getName().equals(role))
+                        .select(s -> s.getId())
+                        .getOnlyValue();
+                this.create(role, List.of(systemDefaultRoleId), null);
+                return true;
+            }
+            var systemRoleEntityList = this.SystemRoleEntity()
+                    .where(s -> s.getName().equals(role))
+                    .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getIsActive())
+                    .skip(1)
+                    .toList();
+            for (var systemRoleEntity : systemRoleEntityList) {
+                this.remove(systemRoleEntity);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void update(SystemRoleModel systemRole) {
+        var id = systemRole.getId();
+        var systemRoleEntity = this.SystemRoleEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        systemRoleEntity.setName(systemRole.getName());
+        systemRoleEntity.setUpdateDate(new Date());
+        this.merge(systemRoleEntity);
+
+        var systemRoleRelationEntityList = this.SystemRoleEntity().where(s -> s.getId().equals(id))
+                .selectAllList(s -> s.getSystemRoleRelationList()).toList();
+        for (var systemRoleRelationEntity : systemRoleRelationEntityList) {
+            this.remove(systemRoleRelationEntity);
+        }
+        for (var systemDefaultRoleId : systemRole.getSystemDefaultRoleList().stream().map(s -> s.getId()).toList()) {
+            this.systemRoleRelationService.create(id, systemDefaultRoleId);
+        }
+    }
+
+    public void create(String role, List<String> systemDefaultRoleIdList, String organizeId) {
+        OrganizeEntity organizeEntity = StringUtils.isNotBlank(organizeId)
+                ? this.OrganizeEntity().where(s -> s.getId().equals(organizeId)).getOnlyValue()
+                : null;
+
+        var systemRoleEntity = new SystemRoleEntity();
+        systemRoleEntity.setId(newId());
+        systemRoleEntity.setCreateDate(new Date());
+        systemRoleEntity.setUpdateDate(new Date());
+        systemRoleEntity.setName(role);
+        systemRoleEntity.setIsActive(true);
+        systemRoleEntity.setDeactiveKey("");
+        systemRoleEntity.setOrganize(organizeEntity);
+        this.persist(systemRoleEntity);
+
+        for (var systemDefaultRoleId : systemDefaultRoleIdList) {
+            this.systemRoleRelationService.create(systemRoleEntity.getId(), systemDefaultRoleId);
+        }
+    }
+
+}

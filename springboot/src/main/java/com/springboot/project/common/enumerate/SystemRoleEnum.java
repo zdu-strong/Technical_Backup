@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum SystemRoleEnum {
 
-    SUPER_ADMIN("SUPER_ADMIN", true, false),
-    COMPANY_ADMIN("COMPANY_ADMIN", false, true),
-    ORGANIZE_ADMIN("ORGANIZE_ADMIN", false, true);
+    SUPER_ADMIN("SYSTEM_ROLE_SUPER_ADMIN", true, false),
+    ORGANIZE_ADMIN("SYSTEM_ROLE_ORGANIZE_ADMIN", false, true),
+    ORGANIZE_NORMAL_USER("SYSTEM_ROLE_ORGANIZE_NORMAL_USER", false, true);
 
     private String value;
 

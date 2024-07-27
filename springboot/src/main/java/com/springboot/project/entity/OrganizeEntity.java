@@ -66,4 +66,7 @@ public class OrganizeEntity {
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<OrganizeMoveTopEntity> organizeMoveTopList;
 
+    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<SystemRoleEntity> systemRoleList;
+
 }

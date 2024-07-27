@@ -3,10 +3,14 @@ package com.springboot.project.common.baseService;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
+import com.google.cloud.spanner.AbortedException;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -24,6 +28,9 @@ import com.springboot.project.entity.OrganizeClosureEntity;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.entity.OrganizeMoveTopEntity;
 import com.springboot.project.entity.StorageSpaceEntity;
+import com.springboot.project.entity.SystemDefaultRoleEntity;
+import com.springboot.project.entity.SystemRoleEntity;
+import com.springboot.project.entity.SystemRoleRelationEntity;
 import com.springboot.project.entity.TokenEntity;
 import com.springboot.project.entity.UserBlackOrganizeClosureEntity;
 import com.springboot.project.entity.UserBlackOrganizeEntity;
@@ -38,6 +45,8 @@ import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.OrganizeMoveTopFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
+import com.springboot.project.format.SystemDefaultRoleFormatter;
+import com.springboot.project.format.SystemRoleFormatter;
 import com.springboot.project.format.TokenFormatter;
 import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
@@ -46,18 +55,20 @@ import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.SystemRoleRelationService;
 import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@Retryable(retryFor = { ObjectOptimisticLockingFailureException.class, AbortedException.class,
+        CannotAcquireLockException.class }, maxAttempts = 1000)
 public abstract class BaseService {
 
     @PersistenceContext
@@ -109,6 +120,9 @@ public abstract class BaseService {
     protected UserEmailCheckService userEmailCheckService;
 
     @Autowired
+    protected SystemRoleRelationService systemRoleRelationService;
+
+    @Autowired
     protected TokenFormatter tokenFormatter;
 
     @Autowired
@@ -146,6 +160,12 @@ public abstract class BaseService {
 
     @Autowired
     protected OrganizeMoveTopFormatter organizeMoveTopFormatter;
+
+    @Autowired
+    protected SystemRoleFormatter systemRoleFormatter;
+
+    @Autowired
+    protected SystemDefaultRoleFormatter systemDefaultRoleFormatter;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
@@ -225,6 +245,18 @@ public abstract class BaseService {
 
     protected JPAJinqStream<UserMessageDeactivateEntity> UserMessageDeactivateEntity() {
         return this.streamAll(UserMessageDeactivateEntity.class);
+    }
+
+    protected JPAJinqStream<SystemDefaultRoleEntity> SystemDefaultRoleEntity() {
+        return this.streamAll(SystemDefaultRoleEntity.class);
+    }
+
+    protected JPAJinqStream<SystemRoleEntity> SystemRoleEntity() {
+        return this.streamAll(SystemRoleEntity.class);
+    }
+
+    protected JPAJinqStream<SystemRoleRelationEntity> SystemRoleRelationEntity() {
+        return this.streamAll(SystemRoleRelationEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {
