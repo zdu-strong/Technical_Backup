@@ -38,12 +38,12 @@ public class SystemDefaultRoleService extends BaseService {
             return true;
         }
 
-        var systemRoleEntity = this.SystemDefaultRoleEntity()
+        var systemDefaultRoleEntity = this.SystemDefaultRoleEntity()
                 .where(s -> !roles.contains(s.getName()))
                 .findFirst()
                 .orElse(null);
-        if (systemRoleEntity != null) {
-            this.remove(systemRoleEntity);
+        if (systemDefaultRoleEntity != null) {
+            this.remove(systemDefaultRoleEntity);
             return true;
         }
 

@@ -19,10 +19,18 @@ public class SystemInitScheduled {
     @Autowired
     private SystemRoleService systemRoleService;
 
+    private boolean hasInit = false;
+
     @Scheduled(initialDelay = 1000, fixedDelay = 24 * 60 * 60 * 1000)
     public void scheduled() {
-        this.initEncryptDecryptKey();
-        this.initSystemRole();
+        synchronized (this) {
+            if (hasInit) {
+                return;
+            }
+            this.initEncryptDecryptKey();
+            this.initSystemRole();
+            this.hasInit = true;
+        }
     }
 
     private void initEncryptDecryptKey() {
@@ -39,7 +47,7 @@ public class SystemInitScheduled {
             if (systemRoleService.refresh()) {
                 continue;
             }
-            break;
+            return;
         }
     }
 

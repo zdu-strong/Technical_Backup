@@ -84,29 +84,10 @@ public class SystemRoleService extends BaseService {
     public boolean refresh() {
         var roles = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getRole()).toList();
 
-        {
-            var systemRoleEntityList = this.SystemRoleEntity()
-                    .where(s -> !roles.contains(s.getName()))
-                    .where(s -> s.getOrganize() == null)
-                    .where(s -> s.getIsActive())
-                    .leftOuterJoinList(s -> s.getSystemRoleRelationList())
-                    .where(s -> s.getTwo() == null)
-                    .select(s -> s.getOne())
-                    .limit(1)
-                    .toList();
-            for (var systemRoleEntity : systemRoleEntityList) {
-                systemRoleEntity.setIsActive(false);
-                systemRoleEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
-                systemRoleEntity.setUpdateDate(new Date());
-                this.merge(systemRoleEntity);
-                return true;
-            }
-        }
-
         for (var role : roles) {
             var exists = this.SystemRoleEntity()
-                    .where(s -> s.getName().equals(role))
                     .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getName().equals(role))
                     .where(s -> s.getIsActive())
                     .exists();
             if (!exists) {
@@ -117,14 +98,36 @@ public class SystemRoleService extends BaseService {
                 this.create(role, List.of(systemDefaultRoleId), null);
                 return true;
             }
+        }
+
+        for (var role : roles) {
             var systemRoleEntityList = this.SystemRoleEntity()
-                    .where(s -> s.getName().equals(role))
                     .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getName().equals(role))
                     .where(s -> s.getIsActive())
                     .skip(1)
                     .toList();
             for (var systemRoleEntity : systemRoleEntityList) {
-                this.remove(systemRoleEntity);
+                systemRoleEntity.setIsActive(false);
+                systemRoleEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+                systemRoleEntity.setUpdateDate(new Date());
+                this.merge(systemRoleEntity);
+                return true;
+            }
+        }
+
+        {
+            var systemRoleEntity = this.SystemRoleEntity()
+                    .where(s -> !roles.contains(s.getName()))
+                    .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getIsActive())
+                    .findFirst()
+                    .orElse(null);
+            if (systemRoleEntity != null) {
+                systemRoleEntity.setIsActive(false);
+                systemRoleEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+                systemRoleEntity.setUpdateDate(new Date());
+                this.merge(systemRoleEntity);
                 return true;
             }
         }
