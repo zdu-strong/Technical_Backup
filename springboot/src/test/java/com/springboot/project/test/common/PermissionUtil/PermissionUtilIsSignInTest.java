@@ -1,15 +1,18 @@
 package com.springboot.project.test.common.PermissionUtil;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class PermissionUtilCheckIsSignInFromRequestTest extends BaseTest {
+public class PermissionUtilIsSignInTest extends BaseTest {
     @Test
     public void test() {
-        this.permissionUtil.checkIsSignIn(this.request);
+        var isSignIn = this.permissionUtil.isSignIn(this.request);
+        assertTrue(isSignIn);
     }
 
     @BeforeEach

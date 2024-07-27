@@ -64,20 +64,30 @@ public class PermissionUtil {
         }
     }
 
-    public void checkAnyRole(HttpServletRequest request, String organizeId, List<SystemRoleEnum> roleList) {
+    public void checkAnyRole(HttpServletRequest request, String organizeId, SystemRoleEnum... roleList) {
         if (StringUtils.isBlank(organizeId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
-        if (roleList.size() == 0) {
+        if (roleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
-        if (roleList.stream().anyMatch(s -> !s.getIsOrganizeRole() && !s.getIsSuperAdmin())) {
+        if (Arrays.stream(roleList).anyMatch(s -> !s.getIsOrganizeRole() && !s.getIsSuperAdmin())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
         }
-        if (roleList.stream().anyMatch(s -> s.getIsSuperAdmin())) {
+
+        var systemRoleList = systemRoleService.getSystemRoleListForCurrentUser(request);
+        if (Arrays.stream(roleList).anyMatch(s -> s.getIsSuperAdmin()) && JinqStream.from(systemRoleList)
+                .selectAllList(s -> s.getSystemDefaultRoleList())
+                .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
+                .anyMatch(s -> s.getIsSuperAdmin())) {
             return;
         }
-        var organizeIdList = getOrganizeIdListByAnyRole(request, roleList.toArray(new SystemRoleEnum[] {}));
+        if (!Arrays.stream(roleList)
+                .anyMatch(s -> JinqStream.from(systemRoleList).selectAllList(t -> t.getSystemDefaultRoleList())
+                        .select(t -> SystemRoleEnum.valueOfRole(t.getName())).toList().contains(s))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "");
+        }
+        var organizeIdList = getOrganizeIdListByAnyRole(request, roleList);
         var ancestorIdList = this.organizeService.getAccestorIdList(organizeId);
         if (!JinqStream.from(ancestorIdList).anyMatch(s -> organizeIdList.contains(s))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

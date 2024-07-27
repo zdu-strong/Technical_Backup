@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class PermissionUtilIsSignFromRequestInNotSignInTest extends BaseTest {
+public class PermissionUtilIsSignInForNotSignInTest extends BaseTest {
     @Test
     public void test() {
         var isSignIn = this.permissionUtil.isSignIn(this.request);

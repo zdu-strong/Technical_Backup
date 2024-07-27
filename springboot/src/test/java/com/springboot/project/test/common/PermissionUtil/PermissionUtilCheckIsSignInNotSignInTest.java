@@ -7,7 +7,7 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PermissionUtilCheckIsSignInFromRequestNotSignInTest extends BaseTest {
+public class PermissionUtilCheckIsSignInNotSignInTest extends BaseTest {
     @Test
     public void test() {
         assertThrows(ResponseStatusException.class, () -> {
