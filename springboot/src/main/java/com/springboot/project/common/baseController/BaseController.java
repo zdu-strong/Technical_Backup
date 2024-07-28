@@ -10,8 +10,8 @@ import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeaders
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.PermissionUtil;
-import com.springboot.project.common.properties.AuthorizationEmailProperties;
-import com.springboot.project.common.properties.DateFormatProperties;
+import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;

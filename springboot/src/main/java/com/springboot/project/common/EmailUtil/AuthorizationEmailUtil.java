@@ -18,9 +18,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.springboot.project.common.properties.AuthorizationEmailProperties;
-import com.springboot.project.common.properties.DateFormatProperties;
-import com.springboot.project.common.properties.IsDevelopmentMockModeProperties;
+import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.DateFormatProperties;
+import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.service.VerificationCodeEmailService;
 

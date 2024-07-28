@@ -9,7 +9,7 @@ import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
 
 import com.springboot.project.common.database.JPQLFunction;
-import com.springboot.project.common.properties.DatabaseJdbcProperties;
+import com.springboot.project.properties.DatabaseJdbcProperties;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
