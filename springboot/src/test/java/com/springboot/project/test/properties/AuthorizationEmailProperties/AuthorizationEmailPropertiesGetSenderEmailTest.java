@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.properties.AuthorizationEmailProperties;
+package com.springboot.project.test.properties.AuthorizationEmailProperties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

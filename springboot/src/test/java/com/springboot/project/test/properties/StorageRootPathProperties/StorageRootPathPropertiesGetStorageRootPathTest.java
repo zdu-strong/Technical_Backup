@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.properties.StorageRootPathProperties;
+package com.springboot.project.test.properties.StorageRootPathProperties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

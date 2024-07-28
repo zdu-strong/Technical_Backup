@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.properties.DateFormatProperties;
+package com.springboot.project.test.properties.DateFormatProperties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
