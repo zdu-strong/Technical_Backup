@@ -19,8 +19,7 @@ WORKDIR /all_code/springboot
 RUN git add ..
 RUN git reset --hard
 RUN chmod +x mvn
-RUN ./mvn clean test
-RUN ./mvn clean package --define skipTests=true --define is.development.mock.mode=false
+RUN ./mvn clean package --define is.development.mock.mode=false
 RUN mv target/*.jar target/server.jar
 
 # copy jar

@@ -37,8 +37,7 @@ WORKDIR /all_code/springboot
 RUN git add ..
 RUN git reset --hard
 RUN chmod +x mvn
-RUN ./mvn clean test
-RUN ./mvn clean package --define skipTests=true
+RUN ./mvn clean package
 RUN mv target/*.jar target/server.jar
 
 # compile client code
