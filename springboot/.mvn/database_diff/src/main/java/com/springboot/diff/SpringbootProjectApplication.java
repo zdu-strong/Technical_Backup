@@ -60,17 +60,31 @@ public class SpringbootProjectApplication {
         while (true) {
             var newDatabaseName = getANewDatabaseName();
             var oldDatabaseName = getANewDatabaseName();
-            createDatabase(oldDatabaseName);
-            createDatabase(newDatabaseName);
-            buildNewDatabase(newDatabaseName);
-            var isCreateChangeLogFileOfThis = diffDatabase(newDatabaseName, oldDatabaseName);
-            deleteDatabase(oldDatabaseName);
-            deleteDatabase(newDatabaseName);
+            var hasCleanDatabase = false;
+            try {
+                createDatabase(oldDatabaseName);
+                createDatabase(newDatabaseName);
+                buildNewDatabase(newDatabaseName);
+                var isCreateChangeLogFileOfThis = diffDatabase(newDatabaseName, oldDatabaseName);
+                deleteDatabase(oldDatabaseName);
+                deleteDatabase(newDatabaseName);
 
-            if (!isCreateChangeLogFileOfThis) {
-                break;
-            } else {
-                isCreateChangeLogFile = true;
+                hasCleanDatabase = true;
+
+                if (!isCreateChangeLogFileOfThis) {
+                    break;
+                } else {
+                    isCreateChangeLogFile = true;
+                }
+            } finally {
+                try {
+                    if (!hasCleanDatabase) {
+                        deleteDatabase(oldDatabaseName);
+                        deleteDatabase(newDatabaseName);
+                    }
+                } catch (Throwable e) {
+                    // do nothing
+                }
             }
         }
         clean();
