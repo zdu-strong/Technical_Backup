@@ -3,7 +3,8 @@ package com.springboot.project.test.scheduled.SystemInitScheduled;
 import static org.junit.jupiter.api.Assertions.*;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.common.enumerate.SystemRoleEnum;
+
+import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class SystemInitScheduledInitSystemRoleTest extends BaseTest {

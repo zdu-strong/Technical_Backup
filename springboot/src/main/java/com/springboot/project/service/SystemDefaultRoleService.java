@@ -5,8 +5,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.enumerate.SystemRoleEnum;
 import com.springboot.project.entity.SystemDefaultRoleEntity;
+import com.springboot.project.enumerate.SystemRoleEnum;
 
 @Service
 public class SystemDefaultRoleService extends BaseService {

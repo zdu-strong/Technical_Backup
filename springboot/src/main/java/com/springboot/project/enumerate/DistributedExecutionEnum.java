@@ -1,4 +1,4 @@
-package com.springboot.project.common.enumerate;
+package com.springboot.project.enumerate;
 
 public enum DistributedExecutionEnum {
 

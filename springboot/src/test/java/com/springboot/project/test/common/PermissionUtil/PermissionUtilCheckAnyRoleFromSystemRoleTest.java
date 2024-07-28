@@ -5,7 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ResponseStatusException;
-import com.springboot.project.common.enumerate.SystemRoleEnum;
+
+import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 

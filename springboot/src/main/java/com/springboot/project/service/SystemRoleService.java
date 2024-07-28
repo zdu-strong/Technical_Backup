@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.enumerate.SystemRoleEnum;
 import com.springboot.project.entity.*;
+import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.SystemRoleModel;
 
 import jakarta.servlet.http.HttpServletRequest;
