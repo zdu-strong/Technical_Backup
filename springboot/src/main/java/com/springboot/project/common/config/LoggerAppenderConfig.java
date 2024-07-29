@@ -1,5 +1,4 @@
-package com.springboot.project.common.logger;
-
+package com.springboot.project.common.config;
 import java.util.Date;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,7 @@ import ch.qos.logback.core.AppenderBase;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class LoggerAppender extends AppenderBase<ILoggingEvent> {
+public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
 
     @Autowired
     private LoggerService loggerService;
@@ -82,7 +81,7 @@ public class LoggerAppender extends AppenderBase<ILoggingEvent> {
             @Override
             public void accept(Logger logger) {
                 if (Logger.ROOT_LOGGER_NAME.equals(logger.getName())) {
-                    logger.addAppender(LoggerAppender.this);
+                    logger.addAppender(LoggerAppenderConfig.this);
                 }
             }
         });
