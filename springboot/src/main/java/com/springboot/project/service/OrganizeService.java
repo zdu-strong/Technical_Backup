@@ -1,12 +1,9 @@
 package com.springboot.project.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.OrganizeEntity;
@@ -52,7 +49,8 @@ public class OrganizeService extends BaseService {
     }
 
     public OrganizeModel getById(String id) {
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+        var organizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
         return this.organizeFormatter.format(organizeEntity);
@@ -61,7 +59,6 @@ public class OrganizeService extends BaseService {
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeClosureEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
-                .where(s -> s.getDescendant().getIsActive())
                 .where(s -> s.getDescendant().getName().contains(name))
                 .select(s -> s.getDescendant());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
@@ -78,52 +75,28 @@ public class OrganizeService extends BaseService {
         this.merge(organizeEntity);
     }
 
-    public PaginationModel<OrganizeModel> getChildOrganizeListThatContainsDeleted(Long pageNum, Long pageSize,
-            String organizeId) {
-        var stream = this.OrganizeEntity().where(s -> s.getParent().getId().equals(organizeId))
-                .sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
-    }
-
     public boolean isChildOfOrganize(String id, String parentId) {
         if (StringUtils.isBlank(parentId)) {
             return false;
         }
-        var isChild = false;
-        var organizeIdList = new ArrayList<String>();
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id)).getOnlyValue();
-        while (true) {
-            if (organizeEntity == null) {
-                break;
-            }
-            if (organizeIdList.contains(organizeEntity.getId())) {
-                break;
-            }
-            if (organizeEntity.getId().equals(parentId)) {
-                isChild = true;
-                break;
-            }
-            organizeIdList.add(organizeEntity.getId());
-            organizeEntity = organizeEntity.getParent();
-        }
+        var isChild = this.organizeFormatter.getAncestorIdList(organizeEntity).contains(parentId);
         return isChild;
     }
 
     public List<String> getAccestorIdList(String id) {
-        var organizeIdList = new ArrayList<String>();
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id)).getOnlyValue();
-        while (true) {
-            if (organizeEntity == null) {
-                break;
-            }
-            if (organizeIdList.contains(organizeEntity.getId())) {
-                break;
-            }
-            organizeIdList.add(organizeEntity.getId());
-            organizeEntity = organizeEntity.getParent();
-        }
-        return organizeIdList;
+        var organizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
+        return this.organizeFormatter.getAncestorIdList(organizeEntity);
+    }
+
+    public List<String> getChildIdList(String id) {
+        var childIdList = this.OrganizeEntity().where(s -> s.getParent().getId().equals(id))
+                .where(s -> s.getIsActive())
+                .select(s -> s.getId())
+                .toList();
+        return childIdList;
     }
 
     private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {

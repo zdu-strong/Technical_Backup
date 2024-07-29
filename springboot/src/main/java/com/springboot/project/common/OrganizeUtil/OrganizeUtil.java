@@ -30,8 +30,6 @@ public class OrganizeUtil {
     @Autowired
     private OrganizeCheckService organizeCheckService;
 
-    private Long pageSize = 1L;
-
     public void move(String id, String parentId) throws InterruptedException {
         OrganizeMoveTopModel[] organizeMoveTopList;
         var initStartDate = new Date();
@@ -65,9 +63,6 @@ public class OrganizeUtil {
     }
 
     private void refresh(String organizeId, Date deadline, Long maxDeep) {
-        if (new Date().after(deadline)) {
-            return;
-        }
         if (maxDeep <= 0) {
             return;
         }
@@ -82,20 +77,13 @@ public class OrganizeUtil {
             }
         }
 
-        var totalPage = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
-                .getTotalPage();
-        for (var pageNum = totalPage; pageNum > 0; pageNum--) {
+        var childIdList = this.organizeService.getChildIdList(organizeId);
+
+        for (var childId : childIdList) {
             if (new Date().after(deadline)) {
                 return;
             }
-            var list = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
-                    .getList();
-            for (var organize : list) {
-                if (new Date().after(deadline)) {
-                    return;
-                }
-                this.refresh(organize.getId(), deadline, maxDeep - 1);
-            }
+            this.refresh(childId, deadline, maxDeep - 1);
         }
     }
 

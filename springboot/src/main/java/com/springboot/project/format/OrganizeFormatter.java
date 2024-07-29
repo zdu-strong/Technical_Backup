@@ -1,6 +1,7 @@
 package com.springboot.project.format;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -33,20 +34,15 @@ public class OrganizeFormatter extends BaseService {
                     .where(s -> s.getIsActive())
                     .count();
             organizeModel.setChildCount(childOrganizeCount);
-            var descendantCount = this.OrganizeClosureEntity()
+            var descendantCount = Math.max(this.OrganizeClosureEntity()
                     .where(s -> s.getAncestor().getId().equals(id))
-                    .where(s -> s.getDescendant().getIsActive())
-                    .count() - 1;
-            if (descendantCount < 0) {
-                descendantCount = 0;
-            }
+                    .count(), 1) - 1;
             organizeModel.setDescendantCount(descendantCount);
         }
         return organizeModel;
     }
 
     public boolean isActive(OrganizeEntity organizeEntity) {
-        var isActive = true;
         var organizeIdList = new ArrayList<String>();
         while (true) {
             if (organizeEntity == null) {
@@ -56,31 +52,32 @@ public class OrganizeFormatter extends BaseService {
                 break;
             }
             if (!organizeEntity.getIsActive()) {
-                isActive = false;
+                return false;
+            }
+            organizeIdList.add(organizeEntity.getId());
+            organizeEntity = organizeEntity.getParent();
+        }
+        return true;
+    }
+
+    public long getLevel(OrganizeEntity organizeEntity) {
+        var level = Math.max(getAncestorIdList(organizeEntity).size() - 1, 0);
+        return level;
+    }
+
+    public List<String> getAncestorIdList(OrganizeEntity organizeEntity) {
+        var organizeIdList = new ArrayList<String>();
+        while (true) {
+            if (organizeEntity == null) {
+                break;
+            }
+            if (organizeIdList.contains(organizeEntity.getId())) {
                 break;
             }
             organizeIdList.add(organizeEntity.getId());
             organizeEntity = organizeEntity.getParent();
         }
-        return isActive;
-    }
-
-    private long getLevel(OrganizeEntity organizeEntity) {
-        var level = 0L;
-        var parent = organizeEntity.getParent();
-        var organizeIdList = new ArrayList<String>();
-        while (true) {
-            if (parent == null) {
-                break;
-            }
-            if (organizeIdList.contains(parent.getId())) {
-                break;
-            }
-            level++;
-            organizeIdList.add(parent.getId());
-            parent = parent.getParent();
-        }
-        return level;
+        return Lists.reverse(organizeIdList);
     }
 
 }
