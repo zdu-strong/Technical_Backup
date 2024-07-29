@@ -69,7 +69,7 @@ import com.springboot.project.service.LoggerService;
 import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeCheckService;
-import com.springboot.project.service.OrganizeClosureService;
+import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import com.springboot.project.service.SystemDefaultRoleService;
@@ -178,7 +178,7 @@ public class BaseTest {
     protected VerificationCodeEmailService verificationCodeEmailService;
 
     @Autowired
-    protected OrganizeClosureService organizeClosureService;
+    protected OrganizeRelationService organizeRelationService;
 
     @Autowired
     protected OrganizeCheckService organizeCheckService;

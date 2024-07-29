@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.model.OrganizeMoveTopModel;
 import com.springboot.project.service.OrganizeCheckService;
-import com.springboot.project.service.OrganizeClosureService;
+import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeMoveTopService;
 import com.springboot.project.service.OrganizeService;
 
@@ -22,7 +22,7 @@ public class OrganizeUtil {
     private OrganizeService organizeService;
 
     @Autowired
-    private OrganizeClosureService organizeClosureService;
+    private OrganizeRelationService organizeRelationService;
 
     @Autowired
     private OrganizeMoveTopService organizeMoveTopService;
@@ -71,7 +71,7 @@ public class OrganizeUtil {
             if (new Date().after(deadline)) {
                 return;
             }
-            var hasNext = this.organizeClosureService.refresh(organizeId);
+            var hasNext = this.organizeRelationService.refresh(organizeId);
             if (!hasNext) {
                 break;
             }

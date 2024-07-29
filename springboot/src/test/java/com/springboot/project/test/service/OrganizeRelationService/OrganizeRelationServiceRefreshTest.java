@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.OrganizeClosureService;
+package com.springboot.project.test.service.OrganizeRelationService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class OrganizeClosureServiceRefreshTest extends BaseTest {
+public class OrganizeRelationServiceRefreshTest extends BaseTest {
 
     private String parentOrganizeId;
     private String childOrganizeId;
@@ -16,7 +16,7 @@ public class OrganizeClosureServiceRefreshTest extends BaseTest {
     @Test
     public void test() {
         while (true) {
-            var hasNext = this.organizeClosureService.refresh(this.childOrganizeId);
+            var hasNext = this.organizeRelationService.refresh(this.childOrganizeId);
             if (!hasNext) {
                 break;
             }

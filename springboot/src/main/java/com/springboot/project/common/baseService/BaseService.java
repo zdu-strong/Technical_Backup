@@ -24,7 +24,7 @@ import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.entity.FriendshipEntity;
 import com.springboot.project.entity.LoggerEntity;
 import com.springboot.project.entity.LongTermTaskEntity;
-import com.springboot.project.entity.OrganizeClosureEntity;
+import com.springboot.project.entity.OrganizeRelationEntity;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.entity.OrganizeMoveTopEntity;
 import com.springboot.project.entity.StorageSpaceEntity;
@@ -228,8 +228,8 @@ public abstract class BaseService {
         return this.streamAll(DistributedExecutionEntity.class);
     }
 
-    protected JPAJinqStream<OrganizeClosureEntity> OrganizeClosureEntity() {
-        return this.streamAll(OrganizeClosureEntity.class);
+    protected JPAJinqStream<OrganizeRelationEntity> OrganizeRelationEntity() {
+        return this.streamAll(OrganizeRelationEntity.class);
     }
 
     protected JPAJinqStream<UserBlackOrganizeEntity> UserBlackOrganizeEntity() {

@@ -3,10 +3,10 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.OrganizeClosureEntity;
+import com.springboot.project.entity.OrganizeRelationEntity;
 
 @Service
-public class OrganizeClosureService extends BaseService {
+public class OrganizeRelationService extends BaseService {
 
     public boolean refresh(String organizeId) {
         var organizeEntity = this.OrganizeEntity()
@@ -15,7 +15,7 @@ public class OrganizeClosureService extends BaseService {
         var isActive = this.organizeFormatter.isActive(organizeEntity);
 
         if (!isActive) {
-            var organizeClosureEntity = this.OrganizeClosureEntity()
+            var organizeClosureEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getDescendant().getId().equals(organizeId))
                     .findFirst()
                     .orElse(null);
@@ -26,7 +26,7 @@ public class OrganizeClosureService extends BaseService {
         }
 
         if (!isActive) {
-            var organizeClosureEntity = this.OrganizeClosureEntity()
+            var organizeClosureEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(organizeId))
                     .findFirst()
                     .orElse(null);
@@ -41,7 +41,7 @@ public class OrganizeClosureService extends BaseService {
         }
 
         var ancestorIdOneList = this.organizeFormatter.getAncestorIdList(organizeEntity);
-        var ancestorIdTwoList = this.OrganizeClosureEntity()
+        var ancestorIdTwoList = this.OrganizeRelationEntity()
                 .where(s -> s.getDescendant().getId().equals(organizeId))
                 .select(s -> s.getAncestor().getId())
                 .toList();
@@ -50,7 +50,7 @@ public class OrganizeClosureService extends BaseService {
             if (ancestorIdOneList.contains(ancestorId)) {
                 continue;
             }
-            var organizeClosureEntity = this.OrganizeClosureEntity()
+            var organizeClosureEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(ancestorId))
                     .where(s -> s.getDescendant().getId().equals(organizeId))
                     .getOnlyValue();
@@ -72,7 +72,7 @@ public class OrganizeClosureService extends BaseService {
     private void create(String ancestorId, String descendantId) {
         var ancestor = this.OrganizeEntity().where(s -> s.getId().equals(ancestorId)).getOnlyValue();
         var descendant = this.OrganizeEntity().where(s -> s.getId().equals(descendantId)).getOnlyValue();
-        var organizeClosureEntity = new OrganizeClosureEntity();
+        var organizeClosureEntity = new OrganizeRelationEntity();
         organizeClosureEntity.setId(newId());
         organizeClosureEntity.setCreateDate(new Date());
         organizeClosureEntity.setUpdateDate(new Date());

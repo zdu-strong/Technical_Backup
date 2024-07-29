@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 import com.springboot.project.common.DistributedExecutionTask.DistributedExecutionTaskUtil;
 import com.springboot.project.service.DistributedExecutionService;
-import com.springboot.project.service.OrganizeClosureService;
+import com.springboot.project.service.OrganizeRelationService;
 
 @Component
 public class OrganizeClosureRefreshScheduled {
 
     @Autowired
-    private OrganizeClosureService organizeClosureService;
+    private OrganizeRelationService organizeRelationService;
 
     @Autowired
     private DistributedExecutionService distributedExecutionService;
@@ -34,7 +34,7 @@ public class OrganizeClosureRefreshScheduled {
             this.distributedExecutionTaskUtil.run(distributedExecutionModel.getId(), () -> {
                 for (var organizeModel : distributedExecutionModel.getPagination().getList()) {
                     while (true) {
-                        var hasNext = this.organizeClosureService.refresh(organizeModel.getId());
+                        var hasNext = this.organizeRelationService.refresh(organizeModel.getId());
                         if (!hasNext) {
                             break;
                         }

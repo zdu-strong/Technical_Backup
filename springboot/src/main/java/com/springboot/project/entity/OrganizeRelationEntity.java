@@ -11,11 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+/**
+ * Only save active organize relationships
+ */
 @Entity
 @Getter
 @Setter
 @Accessors(chain = true)
-public class OrganizeClosureEntity {
+public class OrganizeRelationEntity {
 
     @Id
     private String id;

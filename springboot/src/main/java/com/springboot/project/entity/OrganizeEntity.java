@@ -52,10 +52,10 @@ public class OrganizeEntity {
     private List<OrganizeEntity> childList;
 
     @OneToMany(mappedBy = "ancestor", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<OrganizeClosureEntity> descendantList;
+    private List<OrganizeRelationEntity> descendantList;
 
     @OneToMany(mappedBy = "descendant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<OrganizeClosureEntity> ancestorList;
+    private List<OrganizeRelationEntity> ancestorList;
 
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserBlackOrganizeEntity> userBlackOrganizeList;

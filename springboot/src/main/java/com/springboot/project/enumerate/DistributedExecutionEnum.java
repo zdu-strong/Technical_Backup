@@ -8,7 +8,7 @@ public enum DistributedExecutionEnum {
     STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
 
     /**
-     * The OrganizeEntity refreshes the data of the OrganizeClosureEntity.
+     * The OrganizeEntity refreshes the data of the OrganizeRelationEntity.
      */
     ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY;
 
