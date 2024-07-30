@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
 import com.springboot.project.enumerate.StorageSpaceEnum;
+import com.springboot.project.model.PaginationModel;
+import com.springboot.project.model.StorageSpaceModel;
 
 @Service
 public class StorageSpaceService extends BaseService {
@@ -24,6 +26,13 @@ public class StorageSpaceService extends BaseService {
         }
 
         this.delete(folderName);
+    }
+
+    public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
+        var stream = this.StorageSpaceEntity()
+                .sortedDescendingBy(s -> s.getId())
+                .sortedDescendingBy(s -> s.getCreateDate());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
     }
 
     private boolean isUsedByProgramData(String folderName) {

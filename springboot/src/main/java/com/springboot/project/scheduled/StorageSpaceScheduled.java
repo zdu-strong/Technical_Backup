@@ -3,39 +3,27 @@ package com.springboot.project.scheduled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import com.springboot.project.common.DistributedExecutionTask.DistributedExecutionTaskUtil;
-import com.springboot.project.service.DistributedExecutionService;
-import com.springboot.project.service.StorageSpaceService;
+import com.springboot.project.common.DistributedExecutionUtil.DistributedExecutionUtil;
+import com.springboot.project.enumerate.DistributedExecutionEnum;
 
 @Component
 public class StorageSpaceScheduled {
 
     @Autowired
-    private StorageSpaceService storageSpaceService;
+    private DistributedExecutionUtil distributedExecutionUtil;
 
-    @Autowired
-    private DistributedExecutionService distributedExecutionService;
-
-    @Autowired
-    private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
-
-    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 24 * 60 * 60 * 1000)
+    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 60 * 60 * 1000)
     public void scheduled() {
         this.cleanDatabaseStorage();
     }
 
     private void cleanDatabaseStorage() {
         while (true) {
-            var distributedExecutionModel = this.distributedExecutionService.getDistributedExecutionOfStorageSpace();
-            if (distributedExecutionModel == null) {
+            var isDone = this.distributedExecutionUtil
+                    .run(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+            if (isDone) {
                 return;
             }
-            this.distributedExecutionTaskUtil.run(distributedExecutionModel.getId(), () -> {
-                for (var storageSpaceModel : distributedExecutionModel.getPagination().getList()) {
-                    this.storageSpaceService.refresh(storageSpaceModel.getFolderName());
-                }
-            });
         }
     }
 }

@@ -1,31 +1,31 @@
 package com.springboot.project.entity;
 
 import java.util.Date;
-import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "distributedExecutionId", "pageNum" }) })
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionEntity {
+public class DistributedExecutionTaskEntity {
 
     @Id
     private String id;
 
     @Column(nullable = false)
-    private String executionType;
-
-    @Column(nullable = false)
-    private Long totalRecord;
+    private Long pageNum;
 
     /**
      * Is it running or has ended
@@ -45,7 +45,6 @@ public class DistributedExecutionEntity {
     @Column(nullable = false)
     private Date updateDate;
 
-    @OneToMany(mappedBy = "distributedExecution", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<DistributedExecutionTaskEntity> distributedExecutionTaskList;
-
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    private DistributedExecutionEntity distributedExecution;
 }

@@ -20,6 +20,7 @@ import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.entity.UserMessageDeactivateEntity;
 import com.springboot.project.entity.DistributedExecutionEntity;
+import com.springboot.project.entity.DistributedExecutionTaskEntity;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.entity.FriendshipEntity;
 import com.springboot.project.entity.LoggerEntity;
@@ -40,6 +41,7 @@ import com.springboot.project.entity.UserMessageEntity;
 import com.springboot.project.entity.UserRoleRelationEntity;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
+import com.springboot.project.format.DistributedExecutionTaskFormatter;
 import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
@@ -54,6 +56,7 @@ import com.springboot.project.format.UserEmailFormatter;
 import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
+import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SystemRoleRelationService;
@@ -124,6 +127,9 @@ public abstract class BaseService {
     protected SystemRoleRelationService systemRoleRelationService;
 
     @Autowired
+    protected DistributedExecutionService distributedExecutionService;
+
+    @Autowired
     protected TokenFormatter tokenFormatter;
 
     @Autowired
@@ -167,6 +173,9 @@ public abstract class BaseService {
 
     @Autowired
     protected SystemDefaultRoleFormatter systemDefaultRoleFormatter;
+
+    @Autowired
+    protected DistributedExecutionTaskFormatter distributedExecutionTaskFormatter;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
@@ -262,6 +271,10 @@ public abstract class BaseService {
 
     protected JPAJinqStream<UserRoleRelationEntity> UserRoleRelationEntity() {
         return this.streamAll(UserRoleRelationEntity.class);
+    }
+
+    protected JPAJinqStream<DistributedExecutionTaskEntity> DistributedExecutionTaskEntity() {
+        return this.streamAll(DistributedExecutionTaskEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

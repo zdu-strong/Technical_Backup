@@ -8,13 +8,11 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionModel {
+public class DistributedExecutionTaskModel {
 
     private String id;
 
-    private String executionType;
-
-    private Long totalRecord;
+    private Long pageNum;
 
     /**
      * Is it running or has ended
@@ -29,5 +27,7 @@ public class DistributedExecutionModel {
     private Date createDate;
 
     private Date updateDate;
+
+    private DistributedExecutionModel distributedExecutionModel;
 
 }

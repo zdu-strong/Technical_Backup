@@ -6,6 +6,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,7 +38,7 @@ public class OrganizeUtil {
             try {
                 organizeMoveTopList = this.organizeMoveTopService.createOrganizeMoveTop(id, parentId);
                 break;
-            } catch (DataIntegrityViolationException e) {
+            } catch (DataIntegrityViolationException | JpaSystemException e) {
                 if (!initStartDate.before(DateUtils.addSeconds(new Date(), -10))) {
                     Thread.sleep(1);
                     continue;

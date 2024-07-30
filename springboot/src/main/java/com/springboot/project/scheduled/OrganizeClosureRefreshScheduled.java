@@ -3,22 +3,14 @@ package com.springboot.project.scheduled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import com.springboot.project.common.DistributedExecutionTask.DistributedExecutionTaskUtil;
-import com.springboot.project.service.DistributedExecutionService;
-import com.springboot.project.service.OrganizeRelationService;
+import com.springboot.project.common.DistributedExecutionUtil.DistributedExecutionUtil;
+import com.springboot.project.enumerate.DistributedExecutionEnum;
 
 @Component
 public class OrganizeClosureRefreshScheduled {
 
     @Autowired
-    private OrganizeRelationService organizeRelationService;
-
-    @Autowired
-    private DistributedExecutionService distributedExecutionService;
-
-    @Autowired
-    private DistributedExecutionTaskUtil distributedExecutionTaskUtil;
+    private DistributedExecutionUtil distributedExecutionUtil;
 
     @Scheduled(initialDelay = 60 * 1000, fixedDelay = 60 * 1000)
     public void scheduled() {
@@ -27,20 +19,11 @@ public class OrganizeClosureRefreshScheduled {
 
     private void refresh() {
         while (true) {
-            var distributedExecutionModel = this.distributedExecutionService.getDistributedExecutionOfOrganize();
-            if (distributedExecutionModel == null) {
+            var isDone = this.distributedExecutionUtil
+                    .run(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
+            if (isDone) {
                 return;
             }
-            this.distributedExecutionTaskUtil.run(distributedExecutionModel.getId(), () -> {
-                for (var organizeModel : distributedExecutionModel.getPagination().getList()) {
-                    while (true) {
-                        var hasNext = this.organizeRelationService.refresh(organizeModel.getId());
-                        if (!hasNext) {
-                            break;
-                        }
-                    }
-                }
-            });
         }
     }
 }
