@@ -22,16 +22,21 @@ public class DistributedExecutionUtil {
     @Autowired
     private DistributedExecutionTaskService distributedExecutionTaskService;
 
+    public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
+        while (true) {
+            var isDone = this.refreshSingleData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+            if (isDone) {
+                return;
+            }
+        }
+    }
+
     /**
-     * The return value of the executed method will be stored in the database as a
-     * json string, and will be converted into a json object or json object array
-     * and returned after success. This method will return a relative url, can call
-     * a get request to get the result.
      * 
-     * @param runnable
+     * @param distributedExecutionEnum
      * @return isDone boolean
      */
-    public boolean run(DistributedExecutionEnum distributedExecutionEnum) {
+    private boolean refreshSingleData(DistributedExecutionEnum distributedExecutionEnum) {
         var lastDistributedExecutionModel = distributedExecutionService
                 .getLastDistributedExecution(distributedExecutionEnum);
         if (lastDistributedExecutionModel != null && lastDistributedExecutionModel.getIsDone()) {

@@ -18,12 +18,6 @@ public class StorageSpaceScheduled {
     }
 
     private void cleanDatabaseStorage() {
-        while (true) {
-            var isDone = this.distributedExecutionUtil
-                    .run(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
-            if (isDone) {
-                return;
-            }
-        }
+        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
     }
 }

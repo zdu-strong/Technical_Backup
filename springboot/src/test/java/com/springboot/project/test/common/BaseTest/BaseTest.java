@@ -60,7 +60,7 @@ import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.scheduled.MessageScheduled;
-import com.springboot.project.scheduled.OrganizeClosureRefreshScheduled;
+import com.springboot.project.scheduled.OrganizeRelationRefreshScheduled;
 import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
 import com.springboot.project.service.EncryptDecryptService;
@@ -208,7 +208,7 @@ public class BaseTest {
     protected StorageSpaceScheduled storageSpaceScheduled;
 
     @SpyBean
-    protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
+    protected OrganizeRelationRefreshScheduled organizeRelationRefreshScheduled;
 
     @Autowired
     protected SystemInitScheduled systemInitScheduled;
@@ -217,7 +217,7 @@ public class BaseTest {
     public void beforeEachOfBaseTest() throws Throwable {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
-        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
+        Mockito.doNothing().when(this.organizeRelationRefreshScheduled).scheduled();
         Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
 

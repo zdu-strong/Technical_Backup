@@ -15,23 +15,23 @@ public class OrganizeRelationService extends BaseService {
         var isActive = this.organizeFormatter.isActive(organizeEntity);
 
         if (!isActive) {
-            var organizeClosureEntity = this.OrganizeRelationEntity()
+            var organizeRelationEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getDescendant().getId().equals(organizeId))
                     .findFirst()
                     .orElse(null);
-            if (organizeClosureEntity != null) {
-                this.remove(organizeClosureEntity);
+            if (organizeRelationEntity != null) {
+                this.remove(organizeRelationEntity);
                 return true;
             }
         }
 
         if (!isActive) {
-            var organizeClosureEntity = this.OrganizeRelationEntity()
+            var organizeRelationEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(organizeId))
                     .findFirst()
                     .orElse(null);
-            if (organizeClosureEntity != null) {
-                this.remove(organizeClosureEntity);
+            if (organizeRelationEntity != null) {
+                this.remove(organizeRelationEntity);
                 return true;
             }
         }
@@ -50,11 +50,11 @@ public class OrganizeRelationService extends BaseService {
             if (ancestorIdOneList.contains(ancestorId)) {
                 continue;
             }
-            var organizeClosureEntity = this.OrganizeRelationEntity()
+            var organizeRelationEntity = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(ancestorId))
                     .where(s -> s.getDescendant().getId().equals(organizeId))
                     .getOnlyValue();
-            this.remove(organizeClosureEntity);
+            this.remove(organizeRelationEntity);
             return true;
         }
 
@@ -72,13 +72,13 @@ public class OrganizeRelationService extends BaseService {
     private void create(String ancestorId, String descendantId) {
         var ancestor = this.OrganizeEntity().where(s -> s.getId().equals(ancestorId)).getOnlyValue();
         var descendant = this.OrganizeEntity().where(s -> s.getId().equals(descendantId)).getOnlyValue();
-        var organizeClosureEntity = new OrganizeRelationEntity();
-        organizeClosureEntity.setId(newId());
-        organizeClosureEntity.setCreateDate(new Date());
-        organizeClosureEntity.setUpdateDate(new Date());
-        organizeClosureEntity.setAncestor(ancestor);
-        organizeClosureEntity.setDescendant(descendant);
-        this.persist(organizeClosureEntity);
+        var organizeRelationEntity = new OrganizeRelationEntity();
+        organizeRelationEntity.setId(newId());
+        organizeRelationEntity.setCreateDate(new Date());
+        organizeRelationEntity.setUpdateDate(new Date());
+        organizeRelationEntity.setAncestor(ancestor);
+        organizeRelationEntity.setDescendant(descendant);
+        this.persist(organizeRelationEntity);
     }
 
 }

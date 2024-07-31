@@ -1,5 +1,7 @@
 package com.springboot.project.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Optional;
 import org.apache.commons.lang3.time.DateUtils;
@@ -50,7 +52,8 @@ public class DistributedExecutionTaskService extends BaseService {
         distributedExecutionTaskEntity.setIsDone(true);
         this.merge(distributedExecutionTaskEntity);
 
-        this.distributedExecutionService.refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
+        this.distributedExecutionService
+                .refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
     }
 
     public void updateByErrorMessage(String id) {
@@ -62,7 +65,8 @@ public class DistributedExecutionTaskService extends BaseService {
         distributedExecutionTaskEntity.setHasError(true);
         this.merge(distributedExecutionTaskEntity);
 
-        this.distributedExecutionService.refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
+        this.distributedExecutionService
+                .refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
     }
 
     public Long getPageNumForExecution(String distributedExecutionId) {
@@ -75,7 +79,7 @@ public class DistributedExecutionTaskService extends BaseService {
             return null;
         }
 
-        if(distributedExecutionEntity.getIsDone()){
+        if (distributedExecutionEntity.getIsDone()) {
             return null;
         }
 
@@ -115,17 +119,59 @@ public class DistributedExecutionTaskService extends BaseService {
         }
 
         if (totalRecordOfDistributedExecutionTask < distributedExecutionEntity.getTotalRecord()) {
-            for (var i = distributedExecutionEntity.getTotalRecord(); i > 0; i--) {
-                var pageNum = i;
-                if (!this.DistributedExecutionTaskEntity()
-                        .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
-                        .where(s -> s.getPageNum() == pageNum)
-                        .exists()) {
-                    return pageNum;
-                }
+            var pageNum = this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, 1L,
+                    distributedExecutionEntity.getTotalRecord() + 1);
+            if (pageNum != null) {
+                return pageNum;
             }
         }
 
+        return null;
+    }
+
+    /**
+     * 
+     * @param distributedExecutionId
+     * @param start                  include start
+     * @param end                    not include end
+     * @return
+     */
+    private Long getPageNumOfScarceOfDistributedExecutionTask(String distributedExecutionId, long start, long end) {
+        if (start < 1) {
+            return null;
+        }
+        if (end < 1) {
+            return null;
+        }
+        if (start >= end) {
+            return null;
+        }
+
+        var center = new BigDecimal(start + end).divide(new BigDecimal(2), 0, RoundingMode.FLOOR).longValue();
+        if (center > start) {
+            var countOfHalfUp = this.DistributedExecutionTaskEntity()
+                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
+                    .where(s -> s.getPageNum() >= start)
+                    .where(s -> s.getPageNum() < center)
+                    .count();
+            if (countOfHalfUp < center - start && center - start == 1) {
+                return start;
+            } else if (countOfHalfUp < center - start) {
+                return this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, start, center);
+            }
+        }
+        if (end > center) {
+            var countOfHalfDown = this.DistributedExecutionTaskEntity()
+                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
+                    .where(s -> s.getPageNum() >= center)
+                    .where(s -> s.getPageNum() < end)
+                    .count();
+            if (countOfHalfDown < end - center && end - center == 1) {
+                return center;
+            } else if (countOfHalfDown < end - center) {
+                return this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, center, end);
+            }
+        }
         return null;
     }
 

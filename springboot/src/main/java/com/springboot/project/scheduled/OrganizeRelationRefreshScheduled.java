@@ -7,7 +7,7 @@ import com.springboot.project.common.DistributedExecutionUtil.DistributedExecuti
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 
 @Component
-public class OrganizeClosureRefreshScheduled {
+public class OrganizeRelationRefreshScheduled {
 
     @Autowired
     private DistributedExecutionUtil distributedExecutionUtil;
@@ -18,12 +18,6 @@ public class OrganizeClosureRefreshScheduled {
     }
 
     private void refresh() {
-        while (true) {
-            var isDone = this.distributedExecutionUtil
-                    .run(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
-            if (isDone) {
-                return;
-            }
-        }
+        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
     }
 }
