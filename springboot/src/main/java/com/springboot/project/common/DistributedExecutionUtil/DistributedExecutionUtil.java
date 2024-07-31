@@ -24,7 +24,7 @@ public class DistributedExecutionUtil {
 
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
         while (true) {
-            var isDone = this.refreshSingleData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+            var isDone = this.refreshSingleData(distributedExecutionEnum);
             if (isDone) {
                 return;
             }
