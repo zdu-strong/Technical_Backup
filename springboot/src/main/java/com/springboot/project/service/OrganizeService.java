@@ -101,8 +101,8 @@ public class OrganizeService extends BaseService {
 
     public PaginationModel<OrganizeModel> getOrganizeByPagination(Long pageNum, Long pageSize) {
         var stream = this.OrganizeEntity()
-                .sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate());
+                .sortedBy(s -> s.getId())
+                .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 

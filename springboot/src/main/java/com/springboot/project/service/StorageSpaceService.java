@@ -30,8 +30,8 @@ public class StorageSpaceService extends BaseService {
 
     public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
         var stream = this.StorageSpaceEntity()
-                .sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate());
+                .sortedBy(s -> s.getId())
+                .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
     }
 
