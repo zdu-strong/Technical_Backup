@@ -9,12 +9,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +39,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
@@ -286,7 +286,7 @@ public class BaseTest {
     }
 
     private UserModel signIn(String email, String password)
-            throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
+            throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException,
             JsonProcessingException {
         var secretKeyOfAES = this.encryptDecryptService
                 .generateSecretKeyOfAES(password);
@@ -327,7 +327,7 @@ public class BaseTest {
                         if (isDone) {
                             break;
                         }
-                        Thread.sleep(1);
+                        ThreadUtils.sleepQuietly(Duration.ofMillis(1));
                     }
                     return Flowable.just(id);
                 }).concatMap(id -> {
@@ -338,8 +338,6 @@ public class BaseTest {
                     return Flowable.just(response);
                 }).retry(s -> {
                     if (s.getMessage().contains("The task failed because it stopped")) {
-                        return true;
-                    } else if (s instanceof InterruptedException) {
                         return true;
                     } else {
                         return false;

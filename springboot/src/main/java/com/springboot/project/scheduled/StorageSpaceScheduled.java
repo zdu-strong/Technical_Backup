@@ -12,12 +12,9 @@ public class StorageSpaceScheduled {
     @Autowired
     private DistributedExecutionUtil distributedExecutionUtil;
 
-    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 60 * 60 * 1000)
+    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 1)
     public void scheduled() {
-        this.cleanDatabaseStorage();
-    }
-
-    private void cleanDatabaseStorage() {
         this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
     }
+
 }

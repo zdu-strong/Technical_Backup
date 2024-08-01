@@ -3,6 +3,8 @@ package com.springboot.project.enumerate;
 import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
@@ -45,9 +47,9 @@ public enum DistributedExecutionEnum {
                 var paginationModel = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(pageNum,
                         1L);
                 for (var organizeModel : paginationModel.getList()) {
-                    while(true){
+                    while (true) {
                         var hasNext = SpringUtil.getBean(OrganizeRelationService.class).refresh(organizeModel.getId());
-                        if(!hasNext){
+                        if (!hasNext) {
                             break;
                         }
                     }
@@ -76,6 +78,15 @@ public enum DistributedExecutionEnum {
 
     public void executeTask(long pageNum) {
         this.callbackOfExecuteTask.accept(pageNum);
+    }
+
+    public Duration getTheIntervalBetweenTwoExecutions() {
+        if (SpringUtil.getBean(IsDevelopmentMockModeProperties.class).getIsDevelopmentMockMode()) {
+            if (Duration.ofMinutes(1).compareTo(this.theIntervalBetweenTwoExecutions) < 0) {
+                return Duration.ofMinutes(1);
+            }
+        }
+        return this.theIntervalBetweenTwoExecutions;
     }
 
 }

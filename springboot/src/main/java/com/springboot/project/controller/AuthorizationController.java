@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
 
@@ -24,12 +23,11 @@ public class AuthorizationController extends BaseController {
      * @return
      * @throws InvalidKeySpecException
      * @throws NoSuchAlgorithmException
-     * @throws JsonMappingException
      * @throws JsonProcessingException
      */
     @PostMapping("/sign_in")
     public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
+            throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
         this.userCheckService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
         var accessToken = this.tokenService.generateAccessToken(userId, password);

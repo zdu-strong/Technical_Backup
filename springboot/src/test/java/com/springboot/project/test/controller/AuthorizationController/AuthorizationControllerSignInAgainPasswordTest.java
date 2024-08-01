@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -23,7 +22,7 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
 
     @Test
     public void test()
-            throws JsonMappingException, JsonProcessingException, InvalidKeySpecException, URISyntaxException {
+            throws JsonProcessingException, InvalidKeySpecException, URISyntaxException {
         var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(this.passwordPartJsonString);
         var url = new URIBuilder("/sign_in").setParameter("username", username)
                 .setParameter("password", passwordParameter)

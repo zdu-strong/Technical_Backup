@@ -22,7 +22,7 @@ public class LongTermTaskCheckServiceCheckIsExistLongTermTaskByIdNotExistTest ex
     }
 
     @BeforeEach
-    public void BeforeEach() throws InterruptedException {
+    public void BeforeEach() {
         this.longTermtaskId = Generators.timeBasedReorderedGenerator().generate().toString();
     }
 

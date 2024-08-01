@@ -1,7 +1,9 @@
 package com.springboot.project.common.OrganizeUtil;
 
+import java.time.Duration;
 import java.util.Date;
 
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,7 +33,7 @@ public class OrganizeUtil {
     @Autowired
     private OrganizeCheckService organizeCheckService;
 
-    public void move(String id, String parentId) throws InterruptedException {
+    public void move(String id, String parentId) {
         OrganizeMoveTopModel[] organizeMoveTopList;
         var initStartDate = new Date();
         while (true) {
@@ -40,7 +42,7 @@ public class OrganizeUtil {
                 break;
             } catch (DataIntegrityViolationException | JpaSystemException e) {
                 if (!initStartDate.before(DateUtils.addSeconds(new Date(), -10))) {
-                    Thread.sleep(1);
+                    ThreadUtils.sleepQuietly(Duration.ofMillis(1));
                     continue;
                 }
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

@@ -1,7 +1,11 @@
 package com.springboot.project.test.service.LongTermTaskService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Duration;
 import java.util.Date;
+
+import org.apache.commons.lang3.ThreadUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +28,11 @@ public class LongTermTaskServiceUpdateLongTermTaskToRefreshUpdateDateTest extend
     }
 
     @BeforeEach
-    public void BeforeEach() throws InterruptedException {
+    public void BeforeEach() {
         this.longTermtaskId = this.longTermTaskService.createLongTermTask();
         this.updateDate = ((LongTermTaskModel<?>) this.longTermTaskService.getLongTermTask(this.longTermtaskId)
                 .getBody()).getUpdateDate();
-        Thread.sleep(1);
+        ThreadUtils.sleepQuietly(Duration.ofMillis(1));
     }
 
 }

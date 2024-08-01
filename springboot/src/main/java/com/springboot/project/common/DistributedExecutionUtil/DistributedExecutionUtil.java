@@ -1,7 +1,9 @@
 package com.springboot.project.common.DistributedExecutionUtil;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.DistributedExecutionTaskService;
-import cn.hutool.core.thread.ThreadUtil;
 import io.reactivex.rxjava3.core.Flowable;
 
 @Component
@@ -23,8 +24,9 @@ public class DistributedExecutionUtil {
     private DistributedExecutionTaskService distributedExecutionTaskService;
 
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
+        var now = new Date();
         while (true) {
-            var isDone = this.refreshSingleData(distributedExecutionEnum);
+            var isDone = this.refreshSingleData(distributedExecutionEnum, now);
             if (isDone) {
                 return;
             }
@@ -36,14 +38,20 @@ public class DistributedExecutionUtil {
      * @param distributedExecutionEnum
      * @return isDone boolean
      */
-    private boolean refreshSingleData(DistributedExecutionEnum distributedExecutionEnum) {
+    private boolean refreshSingleData(DistributedExecutionEnum distributedExecutionEnum, Date now) {
         var lastDistributedExecutionModel = distributedExecutionService
                 .getLastDistributedExecution(distributedExecutionEnum);
         if (lastDistributedExecutionModel != null && lastDistributedExecutionModel.getIsDone()) {
             var lastExecutionDate = DateUtils.addMilliseconds(lastDistributedExecutionModel.getUpdateDate(),
                     (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis());
             if (new Date().before(lastExecutionDate)) {
-                return true;
+                if (!now.after(lastDistributedExecutionModel.getCreateDate())) {
+                    return true;
+                } else {
+                    ThreadUtils.sleepQuietly(
+                            Duration.ofMillis(Math.max(lastExecutionDate.getTime() - new Date().getTime(), 0)));
+                    return false;
+                }
             }
         }
         if (lastDistributedExecutionModel == null || lastDistributedExecutionModel.getIsDone()) {
@@ -52,13 +60,13 @@ public class DistributedExecutionUtil {
         }
 
         if (lastDistributedExecutionModel.getIsDone()) {
-            return true;
+            return false;
         }
 
         var pageNum = this.distributedExecutionTaskService
                 .getPageNumForExecution(lastDistributedExecutionModel.getId());
         if (pageNum == null) {
-            ThreadUtil.sleep(1000);
+            ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
             return false;
         }
 
@@ -66,7 +74,7 @@ public class DistributedExecutionUtil {
         try {
             id = this.distributedExecutionTaskService.create(lastDistributedExecutionModel.getId(), pageNum).getId();
         } catch (DataIntegrityViolationException | JpaSystemException e) {
-            ThreadUtil.sleep(1000);
+            ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
             return false;
         }
 

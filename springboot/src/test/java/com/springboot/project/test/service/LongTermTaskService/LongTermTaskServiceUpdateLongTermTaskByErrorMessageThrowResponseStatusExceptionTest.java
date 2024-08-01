@@ -24,7 +24,7 @@ public class LongTermTaskServiceUpdateLongTermTaskByErrorMessageThrowResponseSta
     }
 
     @BeforeEach
-    public void BeforeEach() throws InterruptedException {
+    public void BeforeEach() {
         this.longTermtaskId = this.longTermTaskService.createLongTermTask();
     }
 

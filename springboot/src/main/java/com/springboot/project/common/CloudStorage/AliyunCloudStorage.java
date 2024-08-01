@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,7 +182,7 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
                     }
                     requestedCount += emitter.requested();
                     if (requestedCount == 0) {
-                        Thread.sleep(1);
+                        ThreadUtils.sleepQuietly(Duration.ofMillis(1));
                         continue;
                     }
                     if (!deque.isEmpty()) {

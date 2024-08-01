@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
@@ -81,8 +80,6 @@ public class LongTermTaskFormatter extends BaseService {
                                 this.objectMapper.readValue(this.objectMapper.writeValueAsString(s.getValue()),
                                         new TypeReference<List<String>>() {
                                         }));
-                    } catch (JsonMappingException e) {
-                        throw new RuntimeException(e.getMessage(), e);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
@@ -101,8 +98,6 @@ public class LongTermTaskFormatter extends BaseService {
             } else {
                 return ResponseEntity.ok().body(longTermTaskModel);
             }
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e.getMessage(), e);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

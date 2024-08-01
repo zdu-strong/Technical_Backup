@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -21,7 +20,7 @@ public class AuthorizationControllerSignInNotExistsUsernameTest extends BaseTest
     private String password;
 
     @Test
-    public void test() throws JsonMappingException, JsonProcessingException, InvalidKeySpecException,
+    public void test() throws JsonProcessingException, InvalidKeySpecException,
             NoSuchAlgorithmException, URISyntaxException {
         var secretKeyOfAES = this.encryptDecryptService
                 .generateSecretKeyOfAES(password);

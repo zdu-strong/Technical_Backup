@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.http.client.utils.URIBuilder;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -15,14 +14,11 @@ import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
-
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import jakarta.websocket.CloseReason.CloseCodes;
 
@@ -51,8 +47,6 @@ public class UserMessageWebSocketTest extends BaseTest {
             public void onMessage(String message) {
                 try {
                     subject.onNext(objectMapper.readValue(message, UserMessageWebSocketSendModel.class));
-                } catch (JsonMappingException e) {
-                    throw new RuntimeException(e.getMessage(), e);
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e.getMessage(), e);
                 }

@@ -1,6 +1,9 @@
 package com.springboot.project.controller;
 
+import java.time.Duration;
 import java.util.Date;
+
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskModel;
@@ -20,7 +22,7 @@ public class LongTermTaskController extends BaseController {
 
     @GetMapping("/long_term_task/is_done")
     public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String id)
-            throws InterruptedException, JsonMappingException, JsonProcessingException {
+            throws JsonProcessingException {
         id = this.encryptDecryptService.decryptByAES(id);
 
         this.longTermTaskCheckService
@@ -40,7 +42,7 @@ public class LongTermTaskController extends BaseController {
                 if (longTermTaskResult.getIsDone() || !new Date().before(expireDate)) {
                     return ResponseEntity.ok(longTermTaskResult.getIsDone());
                 } else {
-                    Thread.sleep(1);
+                    ThreadUtils.sleepQuietly(Duration.ofMillis(1));
                 }
             } else {
                 return response;
@@ -56,13 +58,11 @@ public class LongTermTaskController extends BaseController {
      * 
      * @param id
      * @return
-     * @throws InterruptedException
      * @throws JsonProcessingException
-     * @throws JsonMappingException
      */
     @GetMapping("/long_term_task")
     public ResponseEntity<?> getLongTermTask(@RequestParam String id)
-            throws InterruptedException, JsonMappingException, JsonProcessingException {
+            throws JsonProcessingException {
 
         id = this.encryptDecryptService.decryptByAES(id);
 

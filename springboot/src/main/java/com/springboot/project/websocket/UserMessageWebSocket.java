@@ -136,10 +136,9 @@ public class UserMessageWebSocket {
     /**
      * @param session
      * @param email
-     * @throws InterruptedException
      */
     @OnOpen
-    public void onOpen(Session session) throws URISyntaxException, IOException, InterruptedException {
+    public void onOpen(Session session) throws URISyntaxException {
         {
             /**
              * Get access token
@@ -182,8 +181,7 @@ public class UserMessageWebSocket {
      * @param session
      */
     @OnMessage
-    public void OnMessage(String userMessageWebSocketReceiveModelString)
-            throws IOException, InterruptedException {
+    public void OnMessage(String userMessageWebSocketReceiveModelString) throws IOException {
         var userMessageWebSocketReceiveModel = this.getObjectMapper().readValue(userMessageWebSocketReceiveModelString,
                 UserMessageWebSocketReceiveModel.class);
         if (userMessageWebSocketReceiveModel.getIsCancel()) {

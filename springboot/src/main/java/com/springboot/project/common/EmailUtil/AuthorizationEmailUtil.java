@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.regex.Pattern;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class AuthorizationEmailUtil {
     @Autowired
     private DateFormatProperties dateFormatProperties;
 
-    public VerificationCodeEmailModel sendVerificationCode(String email) throws InterruptedException, ParseException {
+    public VerificationCodeEmailModel sendVerificationCode(String email) throws ParseException {
         VerificationCodeEmailModel verificationCodeEmailModel = null;
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
@@ -50,7 +52,8 @@ public class AuthorizationEmailUtil {
             var fastDateFormat = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond());
             var createDate = fastDateFormat.parse(
                     fastDateFormat.format(DateUtils.addSeconds(verificationCodeEmailModelTwo.getCreateDate(), 1)));
-            Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());
+            ThreadUtils.sleepQuietly(
+                    Duration.ofMillis(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime()));
 
             if (this.verificationCodeEmailService
                     .isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailModelTwo.getId())) {

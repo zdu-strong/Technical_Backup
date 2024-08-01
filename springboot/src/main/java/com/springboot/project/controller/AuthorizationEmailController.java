@@ -1,7 +1,5 @@
 package com.springboot.project.controller;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +12,7 @@ public class AuthorizationEmailController extends BaseController {
 
     @PostMapping("/email/send_verification_code")
     public ResponseEntity<?> sendVerificationCode(@RequestParam String email)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, InterruptedException, ParseException {
+            throws ParseException {
         this.userEmailCheckService.checkCannotEmptyOfEmail(email);
         this.userEmailCheckService.checkEmailCorrectFormat(email);
 

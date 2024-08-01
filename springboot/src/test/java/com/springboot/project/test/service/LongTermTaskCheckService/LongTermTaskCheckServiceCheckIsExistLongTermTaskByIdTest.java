@@ -15,7 +15,7 @@ public class LongTermTaskCheckServiceCheckIsExistLongTermTaskByIdTest extends Ba
     }
 
     @BeforeEach
-    public void BeforeEach() throws InterruptedException {
+    public void BeforeEach() {
         this.longTermtaskId = this.longTermTaskService.createLongTermTask();
     }
 

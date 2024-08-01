@@ -12,12 +12,8 @@ public class OrganizeRelationRefreshScheduled {
     @Autowired
     private DistributedExecutionUtil distributedExecutionUtil;
 
-    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 60 * 1000)
+    @Scheduled(initialDelay = 60 * 1000, fixedDelay = 1)
     public void scheduled() {
-        this.refresh();
-    }
-
-    private void refresh() {
         this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
     }
 }
