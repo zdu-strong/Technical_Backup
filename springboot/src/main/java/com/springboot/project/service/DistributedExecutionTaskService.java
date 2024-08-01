@@ -3,7 +3,6 @@ package com.springboot.project.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
-import java.util.Optional;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
@@ -51,9 +50,6 @@ public class DistributedExecutionTaskService extends BaseService {
         distributedExecutionTaskEntity.setUpdateDate(new Date());
         distributedExecutionTaskEntity.setIsDone(true);
         this.merge(distributedExecutionTaskEntity);
-
-        this.distributedExecutionService
-                .refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
     }
 
     public void updateByErrorMessage(String id) {
@@ -64,23 +60,28 @@ public class DistributedExecutionTaskService extends BaseService {
         distributedExecutionTaskEntity.setIsDone(true);
         distributedExecutionTaskEntity.setHasError(true);
         this.merge(distributedExecutionTaskEntity);
-
-        this.distributedExecutionService
-                .refreshDistributedExecution(distributedExecutionTaskEntity.getDistributedExecution().getId());
     }
 
     public Long getPageNumForExecution(String distributedExecutionId) {
-        this.distributedExecutionService.refreshDistributedExecution(distributedExecutionId);
         var distributedExecutionEntity = this.DistributedExecutionEntity()
                 .where(s -> s.getId().equals(distributedExecutionId))
                 .getOnlyValue();
 
-        if (distributedExecutionEntity.getTotalRecord() == 0) {
+        if (distributedExecutionEntity.getIsDone()) {
             return null;
         }
 
-        if (distributedExecutionEntity.getIsDone()) {
-            return null;
+        {
+            var pageNum = this.DistributedExecutionTaskEntity()
+                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
+                    .min(s -> s.getPageNum());
+            if (pageNum == null) {
+                return distributedExecutionEntity.getTotalRecord();
+            }
+
+            if (pageNum > 1) {
+                return pageNum - 1;
+            }
         }
 
         var totalRecordOfDistributedExecutionTask = this.DistributedExecutionTaskEntity()
@@ -88,17 +89,9 @@ public class DistributedExecutionTaskService extends BaseService {
                 .count();
 
         if (totalRecordOfDistributedExecutionTask < distributedExecutionEntity.getTotalRecord()) {
-            var pageNum = Optional.ofNullable(this.DistributedExecutionTaskEntity()
-                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
-                    .min(s -> s.getPageNum()))
-                    .filter(s -> s != null)
-                    .filter(s -> s > 1)
-                    .map(s -> s - 1)
-                    .orElse(distributedExecutionEntity.getTotalRecord());
-            if (!this.DistributedExecutionTaskEntity()
-                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
-                    .where(s -> s.getPageNum() == pageNum)
-                    .exists()) {
+            var pageNum = this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, 1L,
+                    distributedExecutionEntity.getTotalRecord() + 1);
+            if (pageNum != null) {
                 return pageNum;
             }
         }
@@ -111,20 +104,14 @@ public class DistributedExecutionTaskService extends BaseService {
                     .where(s -> s.getUpdateDate().before(now))
                     .findFirst()
                     .orElse(null);
-            if (distributedExecutionEntity != null) {
+            if (distributedExecutionTaskEntity != null) {
                 var pageNum = distributedExecutionTaskEntity.getPageNum();
                 this.remove(distributedExecutionTaskEntity);
                 return pageNum;
             }
         }
 
-        if (totalRecordOfDistributedExecutionTask < distributedExecutionEntity.getTotalRecord()) {
-            var pageNum = this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, 1L,
-                    distributedExecutionEntity.getTotalRecord() + 1);
-            if (pageNum != null) {
-                return pageNum;
-            }
-        }
+        this.distributedExecutionService.refreshDistributedExecution(distributedExecutionId);
 
         return null;
     }
@@ -148,28 +135,28 @@ public class DistributedExecutionTaskService extends BaseService {
         }
 
         var center = new BigDecimal(start + end).divide(new BigDecimal(2), 0, RoundingMode.FLOOR).longValue();
-        if (center > start) {
-            var countOfHalfUp = this.DistributedExecutionTaskEntity()
-                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
-                    .where(s -> s.getPageNum() >= start)
-                    .where(s -> s.getPageNum() < center)
-                    .count();
-            if (countOfHalfUp < center - start && center - start == 1) {
-                return start;
-            } else if (countOfHalfUp < center - start) {
-                return this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, start, center);
-            }
-        }
         if (end > center) {
-            var countOfHalfDown = this.DistributedExecutionTaskEntity()
+            var countOfTask = this.DistributedExecutionTaskEntity()
                     .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                     .where(s -> s.getPageNum() >= center)
                     .where(s -> s.getPageNum() < end)
                     .count();
-            if (countOfHalfDown < end - center && end - center == 1) {
+            if (countOfTask < end - center && end - center == 1) {
                 return center;
-            } else if (countOfHalfDown < end - center) {
+            } else if (countOfTask < end - center) {
                 return this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, center, end);
+            }
+        }
+        if (center > start) {
+            var countOfTask = this.DistributedExecutionTaskEntity()
+                    .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
+                    .where(s -> s.getPageNum() >= start)
+                    .where(s -> s.getPageNum() < center)
+                    .count();
+            if (countOfTask < center - start && center - start == 1) {
+                return start;
+            } else if (countOfTask < center - start) {
+                return this.getPageNumOfScarceOfDistributedExecutionTask(distributedExecutionId, start, center);
             }
         }
         return null;

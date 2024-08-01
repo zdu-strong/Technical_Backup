@@ -51,14 +51,14 @@ public class DistributedExecutionUtil {
                     distributedExecutionEnum.getTotalRecord());
         }
 
-        if (lastDistributedExecutionModel.getTotalRecord() == 0) {
-            return false;
+        if (lastDistributedExecutionModel.getIsDone()) {
+            return true;
         }
 
         var pageNum = this.distributedExecutionTaskService
                 .getPageNumForExecution(lastDistributedExecutionModel.getId());
         if (pageNum == null) {
-            ThreadUtil.sleep(60 * 1000);
+            ThreadUtil.sleep(1000);
             return false;
         }
 
@@ -66,7 +66,7 @@ public class DistributedExecutionUtil {
         try {
             id = this.distributedExecutionTaskService.create(lastDistributedExecutionModel.getId(), pageNum).getId();
         } catch (DataIntegrityViolationException | JpaSystemException e) {
-            ThreadUtil.sleep(60 * 1000);
+            ThreadUtil.sleep(1000);
             return false;
         }
 

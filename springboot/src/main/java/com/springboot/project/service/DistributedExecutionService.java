@@ -59,12 +59,6 @@ public class DistributedExecutionService extends BaseService {
         if (distributedExecutionEntity.getIsDone()) {
             return;
         }
-        var totalRecordOfDistributedExecutionTask = this.DistributedExecutionTaskEntity()
-                .where(s -> s.getDistributedExecution().getId().equals(id))
-                .count();
-        if (totalRecordOfDistributedExecutionTask < distributedExecutionEntity.getTotalRecord()) {
-            return;
-        }
 
         var totalRecordOfDistributedExecutionTaskWithDone = this.DistributedExecutionTaskEntity()
                 .where(s -> s.getDistributedExecution().getId().equals(id))
