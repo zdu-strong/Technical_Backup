@@ -1,6 +1,8 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.OrganizeRelationEntity;
@@ -15,29 +17,15 @@ public class OrganizeRelationService extends BaseService {
         var isActive = this.organizeFormatter.isActive(organizeEntity);
 
         if (!isActive) {
-            var organizeRelationEntity = this.OrganizeRelationEntity()
-                    .where(s -> s.getDescendant().getId().equals(organizeId))
-                    .findFirst()
-                    .orElse(null);
-            if (organizeRelationEntity != null) {
-                this.remove(organizeRelationEntity);
-                return true;
-            }
-        }
-
-        if (!isActive) {
-            var organizeRelationEntity = this.OrganizeRelationEntity()
+            var organizeRelationEntityList = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(organizeId))
-                    .findFirst()
-                    .orElse(null);
-            if (organizeRelationEntity != null) {
+                    .limit(500)
+                    .toList();
+            var hasNext = organizeRelationEntityList.size() == 500;
+            for (var organizeRelationEntity : organizeRelationEntityList) {
                 this.remove(organizeRelationEntity);
-                return true;
             }
-        }
-
-        if (!isActive) {
-            return false;
+            return hasNext;
         }
 
         var ancestorIdOneList = this.organizeFormatter.getAncestorIdList(organizeEntity);
@@ -45,28 +33,35 @@ public class OrganizeRelationService extends BaseService {
                 .where(s -> s.getDescendant().getId().equals(organizeId))
                 .select(s -> s.getAncestor().getId())
                 .toList();
-
-        for (var ancestorId : ancestorIdTwoList) {
-            if (ancestorIdOneList.contains(ancestorId)) {
-                continue;
+        var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
+                .where(s -> !ancestorIdOneList.contains(s))
+                .limit(500)
+                .map(ancestorId -> this.OrganizeRelationEntity()
+                        .where(s -> s.getAncestor().getId().equals(ancestorId))
+                        .where(s -> s.getDescendant().getId().equals(organizeId))
+                        .getOnlyValue())
+                .toList();
+        var ancestorIdList = JinqStream.from(ancestorIdOneList)
+                .where(s -> !ancestorIdTwoList.contains(s))
+                .limit(500)
+                .toList();
+        var totalTimes = 500;
+        for (var organizeRelationEntity : organizeRelationListWillRemove) {
+            if (totalTimes == 0) {
+                break;
             }
-            var organizeRelationEntity = this.OrganizeRelationEntity()
-                    .where(s -> s.getAncestor().getId().equals(ancestorId))
-                    .where(s -> s.getDescendant().getId().equals(organizeId))
-                    .getOnlyValue();
+            totalTimes--;
             this.remove(organizeRelationEntity);
-            return true;
         }
-
-        for (var ancestorId : ancestorIdOneList) {
-            if (ancestorIdTwoList.contains(ancestorId)) {
-                continue;
+        for (var ancestorId : ancestorIdList) {
+            if (totalTimes == 0) {
+                break;
             }
+            totalTimes--;
             this.create(ancestorId, organizeId);
-            return true;
         }
-
-        return false;
+        var hasNext = totalTimes == 0;
+        return hasNext;
     }
 
     private void create(String ancestorId, String descendantId) {
