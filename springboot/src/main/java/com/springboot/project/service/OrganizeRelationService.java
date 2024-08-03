@@ -19,9 +19,9 @@ public class OrganizeRelationService extends BaseService {
         if (!isActive) {
             var organizeRelationEntityList = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(organizeId))
-                    .limit(500)
+                    .limit(50)
                     .toList();
-            var hasNext = organizeRelationEntityList.size() == 500;
+            var hasNext = organizeRelationEntityList.size() == 50;
             for (var organizeRelationEntity : organizeRelationEntityList) {
                 this.remove(organizeRelationEntity);
             }
@@ -35,7 +35,7 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
                 .where(s -> !ancestorIdOneList.contains(s))
-                .limit(500)
+                .limit(50)
                 .map(ancestorId -> this.OrganizeRelationEntity()
                         .where(s -> s.getAncestor().getId().equals(ancestorId))
                         .where(s -> s.getDescendant().getId().equals(organizeId))
@@ -43,9 +43,9 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var ancestorIdList = JinqStream.from(ancestorIdOneList)
                 .where(s -> !ancestorIdTwoList.contains(s))
-                .limit(500)
+                .limit(50)
                 .toList();
-        var totalTimes = 500;
+        var totalTimes = 50;
         for (var organizeRelationEntity : organizeRelationListWillRemove) {
             if (totalTimes == 0) {
                 break;
