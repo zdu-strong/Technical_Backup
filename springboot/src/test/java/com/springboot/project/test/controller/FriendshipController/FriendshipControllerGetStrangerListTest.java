@@ -33,7 +33,7 @@ public class FriendshipControllerGetStrangerListTest extends BaseTest {
     public void test() throws URISyntaxException {
         URI url = new URIBuilder("/friendship/get_stranger_list")
                 .setParameter("pageNum", String.valueOf(1))
-                .setParameter("pageSize", String.valueOf(Long.MAX_VALUE))
+                .setParameter("pageSize", String.valueOf(50))
                 .build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(null),
                 new ParameterizedTypeReference<PaginationModel<FriendshipModel>>() {
@@ -42,7 +42,7 @@ public class FriendshipControllerGetStrangerListTest extends BaseTest {
         assertTrue(response.getBody().getTotalRecord() >= 1);
         assertTrue(response.getBody().getTotalPage() >= 1);
         assertEquals(1, response.getBody().getPageNum());
-        assertEquals(Long.MAX_VALUE, response.getBody().getPageSize());
+        assertEquals(50, response.getBody().getPageSize());
         assertTrue(response.getBody().getList().size() >= 1);
         assertEquals(1, JinqStream.from(response.getBody().getList())
                 .where(s -> s.getFriend().getId().equals(this.friend.getId())).count());

@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
-
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.properties.DatabaseJdbcProperties;
-
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +29,13 @@ public class PaginationModel<T> {
 
     public PaginationModel(Long pageNum, Long pageSize, JinqStream<T> stream) {
         if (pageNum < 1) {
-            throw new RuntimeException("Page num must be greater than 1");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page num must be greater than 1");
         }
         if (pageSize < 1) {
-            throw new RuntimeException("Page size must be greater than 1");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be greater than 1");
+        }
+        if (pageSize > 200) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be less than or equal to 200");
         }
 
         this.pageNum = pageNum;
@@ -55,10 +57,13 @@ public class PaginationModel<T> {
 
     public <U> PaginationModel(Long pageNum, Long pageSize, JinqStream<U> stream, Function<U, T> formatCallback) {
         if (pageNum < 1) {
-            throw new RuntimeException("Page num must be greater than 1");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page num must be greater than 1");
         }
         if (pageSize < 1) {
-            throw new RuntimeException("Page size must be greater than 1");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be greater than 1");
+        }
+        if (pageSize > 200) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be less than or equal to 200");
         }
 
         this.pageNum = pageNum;
