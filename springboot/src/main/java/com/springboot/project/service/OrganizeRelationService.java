@@ -6,6 +6,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.OrganizeRelationEntity;
+import com.springboot.project.enumerate.DatabaseBatchEnum;
 
 @Service
 public class OrganizeRelationService extends BaseService {
@@ -19,9 +20,9 @@ public class OrganizeRelationService extends BaseService {
         if (!isActive) {
             var organizeRelationEntityList = this.OrganizeRelationEntity()
                     .where(s -> s.getAncestor().getId().equals(organizeId))
-                    .limit(50)
+                    .limit(DatabaseBatchEnum.batchSize)
                     .toList();
-            var hasNext = organizeRelationEntityList.size() == 50;
+            var hasNext = organizeRelationEntityList.size() == DatabaseBatchEnum.batchSize;
             for (var organizeRelationEntity : organizeRelationEntityList) {
                 this.remove(organizeRelationEntity);
             }
@@ -35,7 +36,7 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
                 .where(s -> !ancestorIdOneList.contains(s))
-                .limit(50)
+                .limit(DatabaseBatchEnum.batchSize)
                 .map(ancestorId -> this.OrganizeRelationEntity()
                         .where(s -> s.getAncestor().getId().equals(ancestorId))
                         .where(s -> s.getDescendant().getId().equals(organizeId))
@@ -43,9 +44,9 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var ancestorIdList = JinqStream.from(ancestorIdOneList)
                 .where(s -> !ancestorIdTwoList.contains(s))
-                .limit(50)
+                .limit(DatabaseBatchEnum.batchSize)
                 .toList();
-        var totalTimes = 50;
+        var totalTimes = DatabaseBatchEnum.batchSize;
         for (var organizeRelationEntity : organizeRelationListWillRemove) {
             if (totalTimes == 0) {
                 break;
