@@ -41,13 +41,14 @@ public class SystemInitScheduled {
 
     private void initSystemRole() {
         while (true) {
-            if (systemDefaultRoleService.refresh()) {
-                continue;
+            if (!systemDefaultRoleService.refresh()) {
+                break;
             }
-            if (systemRoleService.refresh()) {
-                continue;
+        }
+        while (true) {
+            if (!systemRoleService.refresh()) {
+                break;
             }
-            return;
         }
     }
 
