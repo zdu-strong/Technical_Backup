@@ -27,4 +27,5 @@
     "debug.autoExpandLazyVariables": "on",
     "java.compile.nullAnalysis.mode": "automatic",
     "java.configuration.detectJdksAtStart": true,
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
 }
