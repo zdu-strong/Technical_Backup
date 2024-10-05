@@ -1,0 +1,31 @@
+{
+  "files.exclude": {
+    ".gitignore": true,
+    "package-lock.json": true,
+    "tsconfig.json": true,
+    ".vscode": true,
+    "bin": true,
+    "build": true,
+    "android": true,
+    "ios": true,
+    "ionic.config.json": true,
+    "postcss.config.js": true,
+    "tailwind.config.js": true,
+    "config-overrides.js": true,
+    "app-debug.apk": true,
+    "app-release-signed.apk": true,
+    "src/reportWebVitals.ts": true,
+    "src/react-app-env.d.ts": true,
+    "capacitor.config.ts": true,
+  },
+  "files.autoSave": "onFocusChange",
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "extensions.ignoreRecommendations": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
+  "java.configuration.updateBuildConfiguration": "disabled",
+  "git.enabled": false,
+}

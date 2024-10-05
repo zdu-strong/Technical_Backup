@@ -1,0 +1,58 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node bin/pre_load_configuration.js && node bin/start.js",
+    "test": "node bin/pre_load_configuration.js && node bin/test.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:cypress/recommended"
+    ],
+    "rules": {
+      "no-undef": "error",
+      "import/no-anonymous-default-export": [
+        "off",
+        {
+          "allowArrowFunction": true
+        }
+      ],
+      "prefer-const": "off"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@cypress/xpath": "2.0.3",
+    "@types/node": "22.5.5",
+    "@types/uuid": "10.0.0",
+    "@types/wait-on": "5.3.4",
+    "@typescript-eslint/eslint-plugin": "8.6.0",
+    "@typescript-eslint/parser": "8.6.0",
+    "cypress": "13.14.2",
+    "eslint": "8.57.0",
+    "eslint-plugin-cypress": "3.5.0",
+    "execa": "5.1.1",
+    "get-port": "5.1.1",
+    "linq": "4.0.3",
+    "rxjs": "7.8.1",
+    "rxjs-exhaustmap-with-trailing": "2.1.1",
+    "tree-kill": "1.2.2",
+    "typescript": "5.5.4",
+    "uuid": "10.0.0",
+    "wait-on": "8.0.1"
+  }
+}

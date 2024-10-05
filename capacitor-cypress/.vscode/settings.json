@@ -1,0 +1,22 @@
+{
+  "files.exclude": {
+    ".gitignore": true,
+    "package-lock.json": true,
+    "tsconfig.json": true,
+    ".vscode": true,
+    "bin": true,
+    "cypress/tsconfig.json": true,
+    "cypress/plugins": true,
+    "cypress/support": true,
+    "cypress.config.ts": true,
+  },
+  "files.autoSave": "onFocusChange",
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
+  "extensions.ignoreRecommendations": true,
+  "git.enabled": false,
+}

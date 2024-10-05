@@ -1,0 +1,21 @@
+{
+  "CurrentlyCharging": "当前正在充电",
+  "CurrentlyNotCharging": "当前没有充电",
+  "CurrentBattery": "当前电量",
+  "EditSrcAppTsxAndSaveToReload": "编辑 src/App.tsx 并保存以重新加载",
+  "backHomePage": "返回主页",
+  "notFound": "没有发现",
+  "toUnknownArea": "去未知地区",
+  "EnterTheGameRightNowWithoutDoingTheExitButton": "进入游戏",
+  "AreYouSureToQuitTheGame": "你确认退出游戏吗?",
+  "Agree": "同意",
+  "Disagree": "不同意",
+  "ExitTheApp": "退出",
+  "EndTheGame": "结束游戏",
+  "Quit": "退出?",
+  "TheWayToCloseThePopUpBox": "关闭弹出框的方式",
+  "PressTheESCKey": "按ESC键",
+  "ClickTheCloseButton": "点击关闭按钮",
+  "ClickTheBackgroundBoard": "点击背景板",
+  "NetworkError": "无网络连接"
+}

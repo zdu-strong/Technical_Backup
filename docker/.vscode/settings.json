@@ -1,0 +1,18 @@
+{
+  "files.exclude": {
+    ".gitignore": true,
+    "package-lock.json": true,
+    "tsconfig.json": true,
+    ".vscode": true,
+    "bin": true,
+  },
+  "files.autoSave": "onFocusChange",
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
+  "extensions.ignoreRecommendations": true,
+  "git.enabled": false,
+}

@@ -1,0 +1,32 @@
+{
+  "files.exclude": {
+    ".gitignore": true,
+    "package-lock.json": true,
+    "tsconfig.json": true,
+    ".vscode": true,
+    "build": true,
+    "dist": true,
+    "main/tsconfig.json": true,
+    "output": true,
+    "main/feature/.gitkeep": true,
+    "bin": true,
+    "postcss.config.js": true,
+    "tailwind.config.js": true,
+    "config-overrides.js": true,
+    "src/reportWebVitals.ts": true,
+    "src/react-app-env.d.ts": true,
+    "electron.eslintrc.js": true,
+    "nest-cli.json": true,
+    "tsconfig.build.json": true,
+    "tsconfig.electron.main.json": true,
+  },
+  "files.autoSave": "onFocusChange",
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never"
+  },
+  "extensions.ignoreRecommendations": true,
+  "git.enabled": false,
+}

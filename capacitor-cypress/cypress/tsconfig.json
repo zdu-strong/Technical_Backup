@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "types": [
+            "cypress",
+            "node",
+            "@cypress/xpath"
+        ]
+    },
+    "include": [
+        "**/*.ts"
+    ]
+}

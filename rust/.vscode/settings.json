@@ -1,0 +1,16 @@
+{
+    "files.exclude": {
+        ".gitignore": true,
+        ".vscode": true,
+        "Cargo.lock": true,
+        "target": true,
+        "Dockerfile": true,
+        ".github": true,
+    },
+    "files.autoSave": "onFocusChange",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "extensions.ignoreRecommendations": true,
+    "editor.inlayHints.enabled": "on",
+}

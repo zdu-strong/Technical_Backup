@@ -1,0 +1,138 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "node bin/pre_load_configuration.js && node bin/start.js",
+    "pack": "node bin/pre_load_configuration.js && node bin/pack.js",
+    "make": "node bin/pre_load_configuration.js && node bin/make.js"
+  },
+  "main": "./dist/index.js",
+  "private": true,
+  "homepage": ".",
+  "build": {
+    "extends": null,
+    "files": [
+      "dist",
+      "public",
+      "build"
+    ],
+    "directories": {
+      "output": "output"
+    },
+    "appId": "com.electron.electron",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "deleteAppDataOnUninstall": true,
+      "guid": "b5a96e2b-5f4f-4a67-b77a-2c9d7c947242",
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "asar": {
+      "smartUnpack": true
+    },
+    "asarUnpack": [
+      "public",
+      "build",
+      "node_modules/@electron/remote",
+      "node_modules/node-os-utils"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "import/no-anonymous-default-export": [
+        "off",
+        {
+          "allowArrowFunction": true
+        }
+      ]
+    }
+  },
+  "browserslist": {
+    "production": [
+      "last 1 chrome version"
+    ],
+    "development": [
+      "last 1 chrome version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babylonjs/core": "7.28.0",
+    "@emotion/react": "11.13.3",
+    "@emotion/styled": "11.13.0",
+    "@fontsource/roboto": "5.1.0",
+    "@fortawesome/free-brands-svg-icons": "6.6.0",
+    "@fortawesome/free-solid-svg-icons": "6.6.0",
+    "@fortawesome/react-fontawesome": "0.2.2",
+    "@mui/lab": "6.0.0-beta.9",
+    "@mui/material": "6.1.2",
+    "@mui/x-charts": "7.18.0",
+    "@mui/x-data-grid": "7.18.0",
+    "@mui/x-date-pickers": "7.18.0",
+    "@nestjs/cli": "10.4.5",
+    "@types/crypto-js": "4.2.2",
+    "@types/node": "22.7.4",
+    "@types/node-os-utils": "1.3.4",
+    "@types/node-rsa": "1.1.4",
+    "@types/qs": "6.9.16",
+    "@types/react": "18.3.11",
+    "@types/react-dom": "18.3.0",
+    "@types/react-router-dom": "5.3.3",
+    "@types/uuid": "10.0.0",
+    "@types/wait-on": "5.3.4",
+    "autoprefixer": "10.4.20",
+    "axios": "1.7.7",
+    "crypto-js": "4.2.0",
+    "date-fns": "4.1.0",
+    "dexie": "4.0.8",
+    "electron": "32.1.2",
+    "electron-builder": "25.0.5",
+    "eslint": "8.57.0",
+    "execa": "5.1.1",
+    "get-port": "5.1.1",
+    "is-mobile": "4.0.0",
+    "jsencrypt": "3.3.2",
+    "mathjs": "13.2.0",
+    "mobx-react-use-autorun": "4.0.46",
+    "node-polyfill-webpack-plugin": "3.0.0",
+    "node-rsa": "1.1.1",
+    "postcss": "8.4.47",
+    "qs": "6.13.0",
+    "react": "18.3.1",
+    "react-app-rewired": "2.2.1",
+    "react-dom": "18.3.1",
+    "react-git-info": "2.0.1",
+    "react-intl": "6.7.0",
+    "react-router-dom": "6.26.2",
+    "react-scripts": "5.0.1",
+    "rxjs-exhaustmap-with-trailing": "2.1.1",
+    "source-map-support": "0.5.21",
+    "tailwindcss": "3.4.13",
+    "ts-loader": "9.5.1",
+    "tsconfig-paths": "4.2.0",
+    "typedjson": "1.8.0",
+    "typescript": "4.9.5",
+    "typestyle": "2.4.0",
+    "wait-on": "8.0.1",
+    "web-vitals": "4.2.3",
+    "webworker-promise": "0.5.1",
+    "windows-locale": "1.1.3"
+  },
+  "dependencies": {
+    "@electron/remote": "2.1.2",
+    "electron-log": "5.2.0",
+    "linq": "3.2.4",
+    "node-os-utils": "1.3.7",
+    "rxjs": "7.8.1",
+    "stream-to-string": "1.2.1",
+    "tree-kill": "1.2.2",
+    "uuid": "10.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "CurrentlyCharging": "当前正在充电",
+  "CurrentlyNotCharging": "当前没有充电",
+  "CurrentBattery": "当前电量",
+  "EditSrcAppTsxAndSaveToReload": "编辑 src/App.tsx 并保存以重新加载",
+  "CurrentCpuUsage": "当前cpu使用率",
+  "PleaseWaitLoading": "请稍候, 正在加载中...",
+  "EnterTheGameIfYouWantToExitJustPressTheESCKey": "进入游戏",
+  "ReturnToHomePage": "返回主页",
+  "TheWayToCloseThePopUpBox": "关闭弹出框的方式",
+  "PressTheESCKey": "按ESC键",
+  "ClickTheCloseButton": "点击关闭按钮",
+  "ClickTheBackgroundBoard": "点击背景板",
+  "Yes": "是",
+  "RandomNumber": "随机数",
+  "EndTheGame": "结束游戏",
+  "ExitTheProgram": "退出",
+  "AreYouSure": "你确定吗?",
+  "NetworkError": "无网络连接"
+}

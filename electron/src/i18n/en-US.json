@@ -1,0 +1,20 @@
+{
+  "CurrentlyCharging": "Currently charging",
+  "CurrentlyNotCharging": "Not currently charging",
+  "CurrentBattery": "Current battery",
+  "EditSrcAppTsxAndSaveToReload": "Edit src/App.tsx and save to reload",
+  "CurrentCpuUsage": "Current cpu usage",
+  "PleaseWaitLoading": "Please wait, loading...",
+  "EnterTheGameIfYouWantToExitJustPressTheESCKey": "Enter the game",
+  "ReturnToHomePage": "To home",
+  "TheWayToCloseThePopUpBox": "The way to close the pop -up box",
+  "PressTheESCKey": "Press the ESC key",
+  "ClickTheCloseButton": "Click the close button",
+  "ClickTheBackgroundBoard": "Click the background board",
+  "Yes": "Yes",
+  "RandomNumber": "Random number",
+  "EndTheGame": "End Game",
+  "ExitTheProgram": "Exit",
+  "AreYouSure": "Are you sure?",
+  "NetworkError": "Network Error"
+}

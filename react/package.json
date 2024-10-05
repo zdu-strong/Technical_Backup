@@ -1,0 +1,93 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node bin/pre_load_configuration.js && node bin/start.js",
+    "build": "node bin/pre_load_configuration.js && node bin/build.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "import/no-anonymous-default-export": [
+        "off",
+        {
+          "allowArrowFunction": true
+        }
+      ],
+      "react-hooks/exhaustive-deps": "off"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@emotion/react": "11.13.3",
+    "@emotion/styled": "11.13.0",
+    "@fontsource/roboto": "5.1.0",
+    "@fortawesome/free-brands-svg-icons": "6.6.0",
+    "@fortawesome/free-solid-svg-icons": "6.6.0",
+    "@fortawesome/react-fontawesome": "0.2.2",
+    "@mui/lab": "6.0.0-beta.9",
+    "@mui/material": "6.1.2",
+    "@mui/x-charts": "7.18.0",
+    "@mui/x-data-grid": "7.18.0",
+    "@mui/x-date-pickers": "7.18.0",
+    "@types/crypto-js": "4.2.2",
+    "@types/node": "22.7.4",
+    "@types/node-rsa": "1.1.4",
+    "@types/qs": "6.9.16",
+    "@types/react": "18.3.11",
+    "@types/react-dom": "18.3.0",
+    "@types/react-router-dom": "5.3.3",
+    "@types/react-virtualized": "9.21.30",
+    "@types/uuid": "10.0.0",
+    "autoprefixer": "10.4.20",
+    "axios": "1.7.7",
+    "crypto-js": "4.2.0",
+    "date-fns": "4.1.0",
+    "execa": "5.1.1",
+    "is-mobile": "4.0.0",
+    "jsencrypt": "3.3.2",
+    "linq": "4.0.3",
+    "mathjs": "13.2.0",
+    "mobx-react-use-autorun": "4.0.46",
+    "node-polyfill-webpack-plugin": "3.0.0",
+    "node-rsa": "1.1.1",
+    "postcss": "8.4.47",
+    "qs": "6.13.0",
+    "react": "18.3.1",
+    "react-app-rewired": "2.2.1",
+    "react-dom": "18.3.1",
+    "react-git-info": "2.0.1",
+    "react-intl": "6.7.0",
+    "react-router-dom": "6.26.2",
+    "react-scripts": "5.0.1",
+    "react-virtualized": "9.22.5",
+    "recharts": "2.12.7",
+    "rxjs": "7.8.1",
+    "rxjs-exhaustmap-with-trailing": "2.1.1",
+    "rxjs-websockets": "9.0.0",
+    "tailwindcss": "3.4.13",
+    "typedjson": "1.8.0",
+    "typescript": "4.9.5",
+    "typestyle": "2.4.0",
+    "uuid": "10.0.0",
+    "vh-check": "2.0.5",
+    "web-vitals": "4.2.3",
+    "webworker-promise": "0.5.1",
+    "windows-locale": "1.1.3"
+  }
+}

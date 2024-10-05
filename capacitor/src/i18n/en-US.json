@@ -1,0 +1,21 @@
+{
+  "CurrentlyCharging": "Currently charging",
+  "CurrentlyNotCharging": "Not currently charging",
+  "CurrentBattery": "current battery",
+  "EditSrcAppTsxAndSaveToReload": "Edit src/App.tsx and save to reload",
+  "backHomePage": "Back home",
+  "notFound": "Not Found",
+  "toUnknownArea": "To unkonwn area",
+  "EnterTheGameRightNowWithoutDoingTheExitButton": "Enter the game",
+  "AreYouSureToQuitTheGame": "Are you sure to quit the game?",
+  "Agree": "Agree",
+  "Disagree": "Disagree",
+  "ExitTheApp": "Exit",
+  "EndTheGame": "End Game",
+  "Quit": "Quit?",
+  "TheWayToCloseThePopUpBox": "The way to close the pop -up box",
+  "PressTheESCKey": "Press the ESC key",
+  "ClickTheCloseButton": "Click the close button",
+  "ClickTheBackgroundBoard": "Click the background board",
+  "NetworkError": "Network Error"
+}
