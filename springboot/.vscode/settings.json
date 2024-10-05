@@ -26,4 +26,5 @@
     "java.debug.settings.forceBuildBeforeLaunch": false,
     "debug.autoExpandLazyVariables": "on",
     "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.detectJdksAtStart": true,
 }
