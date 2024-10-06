@@ -25,13 +25,7 @@ public class MessageScheduled {
         Flowable.fromIterable(UserMessageWebSocket.getStaticWebSocketList())
                 .concatMap(s -> Flowable.just(s)
                         .observeOn(Schedulers.from(executor))
-                        .doOnNext(m -> {
-                            try {
-                                m.sendMessage();
-                            } catch (Throwable e) {
-                                // do nothing
-                            }
-                        })
+                        .doOnNext(UserMessageWebSocket::sendMessage)
                         .timeout(1, TimeUnit.SECONDS)
                         .onErrorComplete())
                 .blockingSubscribe();
