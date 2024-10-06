@@ -132,7 +132,7 @@ export default observer((props: {
         />
         {!isMobilePhone && <Button
           variant="contained"
-          color={state.messageContent.trim() ? 'primary' : 'secondary'}
+          color="primary"
           size="large"
           style={{
             marginLeft: "1em",
