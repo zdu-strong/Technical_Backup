@@ -3,7 +3,7 @@ import registerWebworker from 'webworker-promise/lib/register'
 import axios from "axios";
 import { concatMap, from, lastValueFrom, map, range, timer, toArray } from "rxjs";
 import * as mathjs from 'mathjs'
-import { getLongTermTaskByServerAddress } from '@/api/LongTermTask';
+import { getLongTermTask } from '@/api/LongTermTask';
 import { addMilliseconds } from 'date-fns'
 import linq from 'linq'
 
@@ -17,6 +17,7 @@ registerWebworker(async ({
   if (!ServerAddress) {
     throw new Error("Server Address cannot be empty");
   }
+  axios.defaults.baseURL = ServerAddress;
   for (let i = 10; i > 0; i--) {
     await timer(1).toPromise();
   }
@@ -39,7 +40,7 @@ registerWebworker(async ({
     concatMap((pageNum) => {
       const formData = new FormData();
       formData.set("file", new File([file.slice((pageNum - 1) * everySize, pageNum * everySize)], file.name, file));
-      return from(axios.post(`${ServerAddress}/upload/resource`, formData, {
+      return from(axios.post(`/upload/resource`, formData, {
         onUploadProgress(progressEvent) {
           const loaded = (pageNum - 1) * everySize + Math.floor(mathjs.divide(mathjs.multiply((formData.get("file") as File).size, progressEvent.loaded), progressEvent.total!));
           const total = file.size;
@@ -77,7 +78,7 @@ registerWebworker(async ({
     }),
     map((response) => response.data),
     toArray(),
-    concatMap((urlList) => from(getLongTermTaskByServerAddress(async () => axios.post<string>(`${ServerAddress}/upload/merge`, urlList), ServerAddress))),
+    concatMap((urlList) => from(getLongTermTask(async () => axios.post<string>(`/upload/merge`, urlList)))),
     map((result) => result as string)
   ));
   return url;

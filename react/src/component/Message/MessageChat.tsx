@@ -76,7 +76,7 @@ export default observer((props: {
           concatMap((file) => from(api.Resource.upload(file))),
           map(({ url }) => url),
           toArray(),
-        ).toPromise())! as string[];
+        ).toPromise())!;
         for (const url of urlList) {
           await api.UserMessage.sendMessage({
             url,
