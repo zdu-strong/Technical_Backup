@@ -1,4 +1,5 @@
 package com.springboot.project.common.config;
+
 import java.util.Date;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +54,9 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                     .from(Lists.newArrayList(eventObject.getThrowableProxy().getStackTraceElementProxyArray()))
                     .select(s -> s.getSTEAsString()).toList());
             loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
+            if (loggerModel.getExceptionClassName().equals("org.springframework.web.server.ResponseStatusException")) {
+                return;
+            }
         }
 
         var stackTraceElementList = new Throwable().getStackTrace();
