@@ -3,10 +3,8 @@ package com.springboot.project.service;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -28,6 +26,7 @@ import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.symmetric.AES;
+import lombok.SneakyThrows;
 
 @Service
 public class EncryptDecryptService extends BaseService {
@@ -86,89 +85,68 @@ public class EncryptDecryptService extends BaseService {
         return aes.decryptStr(text);
     }
 
+    @SneakyThrows
     public String encryptByPrivateKeyOfRSA(String text, String privateKeyOfRSA) {
-        try {
-            var keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
-                    .generatePrivate(new PKCS8EncodedKeySpec(
-                            Base64.getDecoder().decode(privateKeyOfRSA)));
-            var rsa = new RSA(keyOfRSAPrivateKey, null);
-            return rsa.encryptBase64(text, KeyType.PrivateKey);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
+                .generatePrivate(new PKCS8EncodedKeySpec(
+                        Base64.getDecoder().decode(privateKeyOfRSA)));
+        var rsa = new RSA(keyOfRSAPrivateKey, null);
+        return rsa.encryptBase64(text, KeyType.PrivateKey);
     }
 
+    @SneakyThrows
     public String encryptByPublicKeyOfRSA(String text, String publicKeyOfRSA) {
-        try {
-            var keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                    .generatePublic(new X509EncodedKeySpec(
-                            Base64.getDecoder().decode(publicKeyOfRSA)));
-            var rsa = new RSA(null, keyOfRSAPublicKey);
-            return rsa.encryptBase64(text, KeyType.PublicKey);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
+                .generatePublic(new X509EncodedKeySpec(
+                        Base64.getDecoder().decode(publicKeyOfRSA)));
+        var rsa = new RSA(null, keyOfRSAPublicKey);
+        return rsa.encryptBase64(text, KeyType.PublicKey);
     }
 
+    @SneakyThrows
     public String decryptByByPublicKeyOfRSA(String text, String publicKeyOfRSA) {
-        try {
-            var keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                    .generatePublic(new X509EncodedKeySpec(
-                            Base64.getDecoder().decode(publicKeyOfRSA)));
-            var rsa = new RSA(null, keyOfRSAPublicKey);
-            return rsa.decryptStr(text, KeyType.PublicKey);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
+                .generatePublic(new X509EncodedKeySpec(
+                        Base64.getDecoder().decode(publicKeyOfRSA)));
+        var rsa = new RSA(null, keyOfRSAPublicKey);
+        return rsa.decryptStr(text, KeyType.PublicKey);
     }
 
+    @SneakyThrows
     public String decryptByByPrivateKeyOfRSA(String text, String privateKeyOfRSA) {
-        try {
-            var keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
-                    .generatePrivate(new PKCS8EncodedKeySpec(
-                            Base64.getDecoder().decode(privateKeyOfRSA)));
-            var rsa = new RSA(keyOfRSAPrivateKey, null);
-            return rsa.decryptStr(text, KeyType.PrivateKey);
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
+                .generatePrivate(new PKCS8EncodedKeySpec(
+                        Base64.getDecoder().decode(privateKeyOfRSA)));
+        var rsa = new RSA(keyOfRSAPrivateKey, null);
+        return rsa.decryptStr(text, KeyType.PrivateKey);
     }
 
+    @SneakyThrows
     public String generateSecretKeyOfAES(String password) {
-        try {
-            var salt = DigestUtils.md5(password);
-            var factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            var spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
-            var secret = new SecretKeySpec(factory.generateSecret(spec)
-                    .getEncoded(), "AES");
-            return Base64.getEncoder().encodeToString(secret.getEncoded());
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var salt = DigestUtils.md5(password);
+        var factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        var spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
+        var secret = new SecretKeySpec(factory.generateSecret(spec)
+                .getEncoded(), "AES");
+        return Base64.getEncoder().encodeToString(secret.getEncoded());
     }
 
+    @SneakyThrows
     public String generateSecretKeyOfAES() {
-        try {
-            var keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
-            return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(256);
+        return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
     }
 
+    @SneakyThrows
     public EncryptDecryptModel generateKeyPairOfRSA() {
-        try {
-            var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            var keyPair = keyPairGenerator.generateKeyPair();
-            return new EncryptDecryptModel()
-                    .setPublicKeyOfRSA(Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()))
-                    .setPrivateKeyOfRSA(
-                            Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        var keyPair = keyPairGenerator.generateKeyPair();
+        return new EncryptDecryptModel()
+                .setPublicKeyOfRSA(Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()))
+                .setPrivateKeyOfRSA(
+                        Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()));
     }
 
     public String encryptWithFixedSaltByAES(String text) {
@@ -199,49 +177,46 @@ public class EncryptDecryptService extends BaseService {
         return this.keyOfAESSecretKey;
     }
 
+    @SneakyThrows
     private void initKey() {
-        try {
-            if (!this.ready) {
-                synchronized (getClass()) {
-                    if (!this.ready) {
-                        String id = EncryptDecryptEnum.getId();
-                        if (!this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
+        if (!this.ready) {
+            synchronized (getClass()) {
+                if (!this.ready) {
+                    String id = EncryptDecryptEnum.getId();
+                    if (!this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
 
-                            EncryptDecryptEntity encryptDecryptEntity = new EncryptDecryptEntity();
-                            encryptDecryptEntity.setId(id);
-                            encryptDecryptEntity.setCreateDate(new Date());
-                            encryptDecryptEntity.setUpdateDate(new Date());
+                        EncryptDecryptEntity encryptDecryptEntity = new EncryptDecryptEntity();
+                        encryptDecryptEntity.setId(id);
+                        encryptDecryptEntity.setCreateDate(new Date());
+                        encryptDecryptEntity.setUpdateDate(new Date());
 
-                            /**
-                             * aes for common uses
-                             */
-                            encryptDecryptEntity.setSecretKeyOfAES(this.generateSecretKeyOfAES());
+                        /**
+                         * aes for common uses
+                         */
+                        encryptDecryptEntity.setSecretKeyOfAES(this.generateSecretKeyOfAES());
 
-                            /**
-                             * rsa for common uses
-                             */
-                            var keyPairOfRSA = this.generateKeyPairOfRSA();
-                            encryptDecryptEntity.setPublicKeyOfRSA(keyPairOfRSA.getPublicKeyOfRSA());
-                            encryptDecryptEntity.setPrivateKeyOfRSA(keyPairOfRSA.getPrivateKeyOfRSA());
+                        /**
+                         * rsa for common uses
+                         */
+                        var keyPairOfRSA = this.generateKeyPairOfRSA();
+                        encryptDecryptEntity.setPublicKeyOfRSA(keyPairOfRSA.getPublicKeyOfRSA());
+                        encryptDecryptEntity.setPrivateKeyOfRSA(keyPairOfRSA.getPrivateKeyOfRSA());
 
-                            this.persist(encryptDecryptEntity);
-                        }
-                        EncryptDecryptEntity encryptDecryptEntity = this.EncryptDecryptEntity()
-                                .where(s -> s.getId().equals(id)).getOnlyValue();
-                        this.keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                                .generatePublic(new X509EncodedKeySpec(
-                                        Base64.getDecoder().decode(encryptDecryptEntity.getPublicKeyOfRSA())));
-                        this.keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
-                                .generatePrivate(new PKCS8EncodedKeySpec(
-                                        Base64.getDecoder().decode(encryptDecryptEntity.getPrivateKeyOfRSA())));
-                        this.keyOfAESSecretKey = new SecretKeySpec(
-                                Base64.getDecoder().decode(encryptDecryptEntity.getSecretKeyOfAES()), "AES");
-                        this.ready = true;
+                        this.persist(encryptDecryptEntity);
                     }
+                    EncryptDecryptEntity encryptDecryptEntity = this.EncryptDecryptEntity()
+                            .where(s -> s.getId().equals(id)).getOnlyValue();
+                    this.keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
+                            .generatePublic(new X509EncodedKeySpec(
+                                    Base64.getDecoder().decode(encryptDecryptEntity.getPublicKeyOfRSA())));
+                    this.keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
+                            .generatePrivate(new PKCS8EncodedKeySpec(
+                                    Base64.getDecoder().decode(encryptDecryptEntity.getPrivateKeyOfRSA())));
+                    this.keyOfAESSecretKey = new SecretKeySpec(
+                            Base64.getDecoder().decode(encryptDecryptEntity.getSecretKeyOfAES()), "AES");
+                    this.ready = true;
                 }
             }
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

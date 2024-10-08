@@ -9,6 +9,8 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import com.google.common.collect.Lists;
+import org.jinq.orm.stream.JinqStream.Select;
+import lombok.SneakyThrows;
 
 /**
  * A resource which is the logical concatenation of other resources.
@@ -56,12 +58,9 @@ public class SequenceResource extends AbstractResource {
             }
 
             @Override
+            @SneakyThrows
             public InputStream nextElement() {
-                try {
-                    return resourceIterator.next().getInputStream();
-                } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                }
+                return resourceIterator.next().getInputStream();
             }
 
         });
@@ -69,12 +68,14 @@ public class SequenceResource extends AbstractResource {
 
     @Override
     public long contentLength() throws IOException {
-        return JinqStream.from(Lists.newArrayList(resources)).select(s -> {
-            try {
-                return s.contentLength();
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(), e);
+        return JinqStream.from(Lists.newArrayList(resources)).select(new Select<Resource, Long>() {
+
+            @Override
+            @SneakyThrows
+            public Long select(Resource val) {
+                return val.contentLength();
             }
+
         }).sumLong(s -> s);
     }
 

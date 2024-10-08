@@ -1,9 +1,7 @@
 package com.springboot.project.test.common.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -84,6 +82,7 @@ import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
+import lombok.SneakyThrows;
 
 /**
  * 
@@ -227,28 +226,22 @@ public class BaseTest {
         Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
 
+    @SneakyThrows
     protected UserModel createAccount(String email) {
         var password = email;
-        try {
-            if (!hasExistUser(email)) {
-                signUp(email, password);
-            }
-            return signIn(email, password);
-        } catch (URISyntaxException | InvalidKeySpecException | NoSuchAlgorithmException | JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        if (!hasExistUser(email)) {
+            signUp(email, password);
         }
+        return signIn(email, password);
     }
 
+    @SneakyThrows
     protected MultipartFile createTempMultipartFile(Resource resource) {
-        try {
-            try (InputStream input = resource.getInputStream()) {
-                Tika tika = new Tika();
-                return new MockMultipartFile(this.storage.getFileNameFromResource(resource),
-                        this.storage.getFileNameFromResource(resource),
-                        tika.detect(this.storage.getFileNameFromResource(resource)), IOUtils.toByteArray(input));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        try (InputStream input = resource.getInputStream()) {
+            Tika tika = new Tika();
+            return new MockMultipartFile(this.storage.getFileNameFromResource(resource),
+                    this.storage.getFileNameFromResource(resource),
+                    tika.detect(this.storage.getFileNameFromResource(resource)), IOUtils.toByteArray(input));
         }
     }
 
@@ -260,16 +253,13 @@ public class BaseTest {
         return response.getBody();
     }
 
+    @SneakyThrows
     protected void signOut() {
-        try {
-            var url = new URIBuilder("/sign_out").build();
-            var response = this.testRestTemplate.postForEntity(url, null, Void.class);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            this.testRestTemplate.getRestTemplate().getInterceptors().clear();
-            this.request.removeHeader(HttpHeaders.AUTHORIZATION);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var url = new URIBuilder("/sign_out").build();
+        var response = this.testRestTemplate.postForEntity(url, null, Void.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        this.testRestTemplate.getRestTemplate().getInterceptors().clear();
+        this.request.removeHeader(HttpHeaders.AUTHORIZATION);
     }
 
     private void signUp(String email, String password)

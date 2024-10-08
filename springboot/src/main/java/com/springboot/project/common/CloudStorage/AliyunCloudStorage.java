@@ -2,7 +2,6 @@ package com.springboot.project.common.CloudStorage;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
@@ -22,12 +21,12 @@ import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.ListObjectsV2Request;
 import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.OSSObjectSummary;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.CloudStorageUrlResource;
 import com.springboot.project.common.StorageResource.RangeCloudStorageUrlResource;
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.properties.AliyunCloudStorageProperties;
+import lombok.SneakyThrows;
 import com.springboot.project.common.storage.BaseStorage;
 
 @Component
@@ -44,6 +43,7 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     }
 
     @Override
+    @SneakyThrows
     public void storageResource(File sourceFileOrSourceFolder, String key) {
         var ossClient = this.getOssClientClient();
         try {
@@ -60,8 +60,6 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
                 try (var input = new FileSystemResource(sourceFileOrSourceFolder).getInputStream()) {
                     ossClient.putObject(this.aliyunCloudStorageProperties.getBucketName(), key,
                             input);
-                } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage(), e);
                 }
             }
         } finally {
@@ -70,13 +68,12 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     }
 
     @Override
+    @SneakyThrows
     public void storageResource(SequenceResource sourceFile, String key) {
         var ossClient = this.getOssClientClient();
         try {
             try (var input = sourceFile.getInputStream()) {
                 ossClient.putObject(this.aliyunCloudStorageProperties.getBucketName(), key, input);
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(), e);
             }
         } finally {
             ossClient.shutdown();
@@ -105,18 +102,15 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     }
 
     @Override
+    @SneakyThrows
     public Resource getResource(String key) {
         var list = this.getList(key + "/");
         if (!list.isEmpty()) {
-            try {
-                var jsonString = this.objectMapper
-                        .writeValueAsString(JinqStream.from(list).where(s -> !s.equals(key + "/"))
-                                .select(s -> this.getFileNameFromResource(new FileSystemResource(s))).toList());
-                var jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
-                return new ByteArrayResource(jsonBytes);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            var jsonString = this.objectMapper
+                    .writeValueAsString(JinqStream.from(list).where(s -> !s.equals(key + "/"))
+                            .select(s -> this.getFileNameFromResource(new FileSystemResource(s))).toList());
+            var jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
+            return new ByteArrayResource(jsonBytes);
         }
 
         var expireDate = DateUtils.addMilliseconds(new Date(),
@@ -136,22 +130,19 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     }
 
     @Override
+    @SneakyThrows
     public Resource getResource(String key, long startIndex, long rangeContentLength) {
         var list = this.getList(key + "/");
         if (!list.isEmpty()) {
-            try {
-                var jsonString = this.objectMapper
-                        .writeValueAsString(JinqStream.from(list).where(s -> !s.equals(key + "/"))
-                                .select(s -> this.getFileNameFromResource(new FileSystemResource(s))).toList());
-                var jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
-                var bytes = ArrayUtils.toPrimitive(
-                        JinqStream.from(Lists.newArrayList(ArrayUtils.toObject(jsonBytes))).skip(startIndex)
-                                .limit(rangeContentLength)
-                                .toList().toArray(new Byte[] {}));
-                return new ByteArrayResource(bytes);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            var jsonString = this.objectMapper
+                    .writeValueAsString(JinqStream.from(list).where(s -> !s.equals(key + "/"))
+                            .select(s -> this.getFileNameFromResource(new FileSystemResource(s))).toList());
+            var jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
+            var bytes = ArrayUtils.toPrimitive(
+                    JinqStream.from(Lists.newArrayList(ArrayUtils.toObject(jsonBytes))).skip(startIndex)
+                            .limit(rangeContentLength)
+                            .toList().toArray(new Byte[] {}));
+            return new ByteArrayResource(bytes);
         }
 
         var expireDate = DateUtils.addMilliseconds(new Date(),

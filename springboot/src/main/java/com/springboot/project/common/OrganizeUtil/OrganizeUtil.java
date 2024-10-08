@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
@@ -17,6 +15,7 @@ import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
+import lombok.SneakyThrows;
 
 @Component
 public class OrganizeUtil {
@@ -84,16 +83,13 @@ public class OrganizeUtil {
         return DateUtils.addSeconds(new Date(), 10);
     }
 
+    @SneakyThrows
     private void checkUniqueKeyList(String id, String parentId, LongTermTaskUniqueKeyModel[] uniqueKeyList) {
         var uniqueKeyListTwo = this.getUniqueKeyList(id, parentId);
-        try {
-            if (!this.objectMapper.writeValueAsString(uniqueKeyList)
-                    .equals(this.objectMapper.writeValueAsString(uniqueKeyListTwo))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Too many requests to move the organize, please wait a minute and try again");
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        if (!this.objectMapper.writeValueAsString(uniqueKeyList)
+                .equals(this.objectMapper.writeValueAsString(uniqueKeyListTwo))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Too many requests to move the organize, please wait a minute and try again");
         }
     }
 

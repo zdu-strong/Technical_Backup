@@ -21,6 +21,7 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.processors.ReplayProcessor;
 import jakarta.websocket.CloseReason.CloseCodes;
+import lombok.SneakyThrows;
 
 public class UserMessageWebSocketTest extends BaseTest {
 
@@ -44,12 +45,9 @@ public class UserMessageWebSocketTest extends BaseTest {
             }
 
             @Override
+            @SneakyThrows
             public void onMessage(String message) {
-                try {
-                    replayProcessor.onNext(objectMapper.readValue(message, UserMessageWebSocketSendModel.class));
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                }
+                replayProcessor.onNext(objectMapper.readValue(message, UserMessageWebSocketSendModel.class));
             }
 
             @Override
@@ -67,7 +65,8 @@ public class UserMessageWebSocketTest extends BaseTest {
             }
         };
         this.webSocketClient.connectBlocking();
-        var result = JinqStream.from(replayProcessor.take(1).toList().toFuture().get(10, TimeUnit.SECONDS)).getOnlyValue();
+        var result = JinqStream.from(replayProcessor.take(1).toList().toFuture().get(10, TimeUnit.SECONDS))
+                .getOnlyValue();
         var userMessage = JinqStream.from(result.getList()).getOnlyValue();
         assertEquals(1, result.getList().size());
         assertEquals(1, result.getTotalPage());

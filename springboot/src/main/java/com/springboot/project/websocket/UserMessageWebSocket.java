@@ -38,6 +38,7 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -147,7 +148,7 @@ public class UserMessageWebSocket {
                 continue;
             } else if (e instanceof IllegalStateException) {
                 continue;
-            } else if(e instanceof GenericJDBCException){
+            } else if (e instanceof GenericJDBCException) {
                 continue;
             }
             log.error(e.getMessage(), e);
@@ -274,16 +275,13 @@ public class UserMessageWebSocket {
         }
     }
 
+    @SneakyThrows
     private boolean hasChange(UserMessageModel userMessage) {
-        try {
-            var pageNum = userMessage.getPageNum().toString();
-            var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
-            var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
-                    .equals(this.objectMapper.writeValueAsString(userMessage));
-            return hasChange;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var pageNum = userMessage.getPageNum().toString();
+        var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
+        var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
+                .equals(this.objectMapper.writeValueAsString(userMessage));
+        return hasChange;
     }
 
     private void checkIsSignIn() throws Throwable {

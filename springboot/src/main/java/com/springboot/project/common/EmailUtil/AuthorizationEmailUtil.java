@@ -1,13 +1,12 @@
 package com.springboot.project.common.EmailUtil;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.regex.Pattern;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,7 +18,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
@@ -75,27 +73,23 @@ public class AuthorizationEmailUtil {
         return verificationCodeEmailModel;
     }
 
+    @SneakyThrows
     private void sendEmail(String email, String verificationCode) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(this.authorizationEmailProperties.getSenderEmail());
-            helper.setTo(email);
-            helper.setSubject("Verification Code For Login");
-            helper.setText(this.getEmailOfBody(verificationCode), true);
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom(this.authorizationEmailProperties.getSenderEmail());
+        helper.setTo(email);
+        helper.setSubject("Verification Code For Login");
+        helper.setText(this.getEmailOfBody(verificationCode), true);
+        mailSender.send(message);
     }
 
+    @SneakyThrows
     private String getEmailOfBody(String verificationCode) {
         try (InputStream input = new ClassPathResource("email/email.xml").getInputStream()) {
             String text = IOUtils.toString(input, StandardCharsets.UTF_8);
             String content = text.replaceAll(this.getRegex("verificationCode"), verificationCode);
             return content;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

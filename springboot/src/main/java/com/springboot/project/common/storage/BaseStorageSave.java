@@ -1,7 +1,6 @@
 package com.springboot.project.common.storage;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.List;
@@ -19,87 +18,85 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.model.StorageFileModel;
+import lombok.SneakyThrows;
 
 @Component
 public class BaseStorageSave extends BaseStorageCreateTempFile {
 
+    @SneakyThrows
     public StorageFileModel storageResource(Resource resource) {
-        try {
-            var storageFileModel = new StorageFileModel()
-                    .setFolderName(Generators.timeBasedReorderedGenerator().generate().toString());
-            this.storageSpaceService.refresh(storageFileModel.getFolderName());
+        var storageFileModel = new StorageFileModel()
+                .setFolderName(Generators.timeBasedReorderedGenerator().generate().toString());
+        this.storageSpaceService.refresh(storageFileModel.getFolderName());
 
-            /* Set file name */
-            storageFileModel.setFileName(this.getFileNameFromResource(resource));
-            if (resource.isFile() && resource.getFile().isDirectory()) {
-                storageFileModel.setFileName(null);
+        /* Set file name */
+        storageFileModel.setFileName(this.getFileNameFromResource(resource));
+        if (resource.isFile() && resource.getFile().isDirectory()) {
+            storageFileModel.setFileName(null);
+        }
+
+        /* Set directory size */
+        if (resource.isFile()) {
+            File sourceFile = resource.getFile();
+            if (!sourceFile.exists()) {
+                throw new RuntimeException("Resource does not exist");
             }
-
-            /* Set directory size */
-            if (resource.isFile()) {
-                File sourceFile = resource.getFile();
-                if (!sourceFile.exists()) {
-                    throw new RuntimeException("Resource does not exist");
-                }
-                if (sourceFile.isDirectory()) {
-                    storageFileModel.setFolderSize(FileUtils.sizeOfDirectory(sourceFile));
-                } else {
-                    storageFileModel.setFolderSize(resource.contentLength());
-                }
+            if (sourceFile.isDirectory()) {
+                storageFileModel.setFolderSize(FileUtils.sizeOfDirectory(sourceFile));
             } else {
                 storageFileModel.setFolderSize(resource.contentLength());
             }
+        } else {
+            storageFileModel.setFolderSize(resource.contentLength());
+        }
 
-            /* Get relative path */
-            String relativePath = this.getRelativePathFromResourcePath(storageFileModel.getFolderName());
-            if (StringUtils.isNotBlank(storageFileModel.getFileName())) {
-                relativePath = this.getRelativePathFromResourcePath(
-                        Paths.get(storageFileModel.getFolderName(), storageFileModel.getFileName()).toString());
+        /* Get relative path */
+        String relativePath = this.getRelativePathFromResourcePath(storageFileModel.getFolderName());
+        if (StringUtils.isNotBlank(storageFileModel.getFileName())) {
+            relativePath = this.getRelativePathFromResourcePath(
+                    Paths.get(storageFileModel.getFolderName(), storageFileModel.getFileName()).toString());
+        }
+
+        /* Set relative path */
+        storageFileModel.setRelativePath(relativePath);
+
+        /* Set relative url */
+        storageFileModel.setRelativeUrl(this.getResoureUrlFromResourcePath(relativePath));
+
+        /* Set relative download url */
+        storageFileModel.setRelativeDownloadUrl("/download" + storageFileModel.getRelativeUrl());
+
+        if (resource.isFile()) {
+            File sourceFile = resource.getFile();
+            if (!sourceFile.exists()) {
+                throw new RuntimeException("Resource does not exist");
             }
-
-            /* Set relative path */
-            storageFileModel.setRelativePath(relativePath);
-
-            /* Set relative url */
-            storageFileModel.setRelativeUrl(this.getResoureUrlFromResourcePath(relativePath));
-
-            /* Set relative download url */
-            storageFileModel.setRelativeDownloadUrl("/download" + storageFileModel.getRelativeUrl());
-
-            if (resource.isFile()) {
-                File sourceFile = resource.getFile();
-                if (!sourceFile.exists()) {
-                    throw new RuntimeException("Resource does not exist");
-                }
-                if (this.cloud.enabled()) {
-                    this.cloud.storageResource(sourceFile, storageFileModel.getRelativePath());
+            if (this.cloud.enabled()) {
+                this.cloud.storageResource(sourceFile, storageFileModel.getRelativePath());
+            } else {
+                if (sourceFile.isDirectory()) {
+                    FileUtils.copyDirectory(sourceFile,
+                            new File(this.getRootPath(), storageFileModel.getRelativePath()));
                 } else {
-                    if (sourceFile.isDirectory()) {
-                        FileUtils.copyDirectory(sourceFile,
-                                new File(this.getRootPath(), storageFileModel.getRelativePath()));
-                    } else {
-                        FileUtils.copyFile(sourceFile,
-                                new File(this.getRootPath(), storageFileModel.getRelativePath()));
-                    }
+                    FileUtils.copyFile(sourceFile,
+                            new File(this.getRootPath(), storageFileModel.getRelativePath()));
+                }
+            }
+        } else {
+            if (this.cloud.enabled()) {
+                if (resource instanceof SequenceResource) {
+                    this.cloud.storageResource((SequenceResource) resource, relativePath);
+                } else {
+                    this.cloud.storageResource(new SequenceResource(this.getFileNameFromResource(resource),
+                            Lists.newArrayList(resource)), relativePath);
                 }
             } else {
-                if (this.cloud.enabled()) {
-                    if (resource instanceof SequenceResource) {
-                        this.cloud.storageResource((SequenceResource) resource, relativePath);
-                    } else {
-                        this.cloud.storageResource(new SequenceResource(this.getFileNameFromResource(resource),
-                                Lists.newArrayList(resource)), relativePath);
-                    }
-                } else {
-                    try (var input = resource.getInputStream()) {
-                        FileUtils.copyToFile(input, new File(this.getRootPath(), storageFileModel.getRelativePath()));
-                    }
+                try (var input = resource.getInputStream()) {
+                    FileUtils.copyToFile(input, new File(this.getRootPath(), storageFileModel.getRelativePath()));
                 }
             }
-            return storageFileModel;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
+        return storageFileModel;
     }
 
     public StorageFileModel storageResource(MultipartFile file) {
@@ -162,37 +159,34 @@ public class BaseStorageSave extends BaseStorageCreateTempFile {
         return storageFileModel;
     }
 
+    @SneakyThrows
     private Long getResourceSizeByRelativePath(String relativePathOfResource) {
-        try {
-            var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
-            var request = new MockHttpServletRequest();
-            request.setRequestURI(this.getResoureUrlFromResourcePath(relativePath));
-            var resource = this.getResourceFromRequest(request);
-            if (this.cloud.enabled()) {
-                if (resource instanceof ByteArrayResource) {
-                    try (var input = resource.getInputStream()) {
-                        var jsonString = IOUtils.toString(input, StandardCharsets.UTF_8);
-                        var nameListOfChildFileAndChildFolder = this.objectMapper.readValue(jsonString,
-                                new TypeReference<List<String>>() {
-                                });
-                        return JinqStream.from(nameListOfChildFileAndChildFolder)
-                                .select(nameOfChildFileAndChildFolder -> this.getResourceSizeByRelativePath(
-                                        Paths.get(relativePath, nameOfChildFileAndChildFolder).toString()))
-                                .sumLong(s -> s);
-                    }
-                } else {
-                    return resource.contentLength();
+        var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
+        var request = new MockHttpServletRequest();
+        request.setRequestURI(this.getResoureUrlFromResourcePath(relativePath));
+        var resource = this.getResourceFromRequest(request);
+        if (this.cloud.enabled()) {
+            if (resource instanceof ByteArrayResource) {
+                try (var input = resource.getInputStream()) {
+                    var jsonString = IOUtils.toString(input, StandardCharsets.UTF_8);
+                    var nameListOfChildFileAndChildFolder = this.objectMapper.readValue(jsonString,
+                            new TypeReference<List<String>>() {
+                            });
+                    return JinqStream.from(nameListOfChildFileAndChildFolder)
+                            .select(nameOfChildFileAndChildFolder -> this.getResourceSizeByRelativePath(
+                                    Paths.get(relativePath, nameOfChildFileAndChildFolder).toString()))
+                            .sumLong(s -> s);
                 }
             } else {
-                var file = new File(this.getRootPath(), relativePath);
-                if (file.isDirectory()) {
-                    return FileUtils.sizeOfDirectory(new File(this.getRootPath(), relativePath));
-                } else {
-                    return file.length();
-                }
+                return resource.contentLength();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } else {
+            var file = new File(this.getRootPath(), relativePath);
+            if (file.isDirectory()) {
+                return FileUtils.sizeOfDirectory(new File(this.getRootPath(), relativePath));
+            } else {
+                return file.length();
+            }
         }
     }
 

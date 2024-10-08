@@ -1,8 +1,6 @@
 package com.springboot.project.common.storage;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -11,6 +9,7 @@ import java.util.Collections;
 import java.util.regex.Pattern;
 import java.util.concurrent.CopyOnWriteArrayList;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.CloudStorage.CloudStorageImplement;
@@ -88,76 +86,65 @@ public class BaseStorage {
         return this.storageRootPath;
     }
 
-
-
+    @SneakyThrows
     public String getRelativePathFromRequest(HttpServletRequest request) {
-        try {
-            var pathSegmentList = new URIBuilder(request.getRequestURI()).getPathSegments().stream()
-                    .filter(s -> StringUtils.isNotBlank(s)).toList();
-            if (JinqStream.from(pathSegmentList).findFirst().get().equals("resource")) {
-                pathSegmentList = JinqStream.from(pathSegmentList).skip(1).toList();
-            } else if (JinqStream.from(pathSegmentList).findFirst().get().equals("download")
-                    && JinqStream.from(pathSegmentList).skip(1).findFirst().get().equals("resource")) {
-                pathSegmentList = JinqStream.from(pathSegmentList).skip(2).toList();
-            } else if (JinqStream.from(pathSegmentList).findFirst().get().equals("is_directory")
-                    && JinqStream.from(pathSegmentList).skip(1).findFirst().get().equals("resource")) {
-                pathSegmentList = JinqStream.from(pathSegmentList).skip(2).toList();
-            } else {
-                throw new RuntimeException("Unsupported resource path");
-            }
-
-            var encryptJsonString = new String(
-                    Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()),
-                    StandardCharsets.UTF_8);
-            var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
-            ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
-                    ResourceAccessLegalModel.class);
-            return this.getRelativePathFromResourcePath(
-                    String.join("/", Lists.asList(resourceAccessLegalModel.getRootFolderName(),
-                            JinqStream.from(pathSegmentList).skip(1).toArray(String[]::new))));
-        } catch (URISyntaxException | JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        var pathSegmentList = new URIBuilder(request.getRequestURI()).getPathSegments().stream()
+                .filter(s -> StringUtils.isNotBlank(s)).toList();
+        if (JinqStream.from(pathSegmentList).findFirst().get().equals("resource")) {
+            pathSegmentList = JinqStream.from(pathSegmentList).skip(1).toList();
+        } else if (JinqStream.from(pathSegmentList).findFirst().get().equals("download")
+                && JinqStream.from(pathSegmentList).skip(1).findFirst().get().equals("resource")) {
+            pathSegmentList = JinqStream.from(pathSegmentList).skip(2).toList();
+        } else if (JinqStream.from(pathSegmentList).findFirst().get().equals("is_directory")
+                && JinqStream.from(pathSegmentList).skip(1).findFirst().get().equals("resource")) {
+            pathSegmentList = JinqStream.from(pathSegmentList).skip(2).toList();
+        } else {
+            throw new RuntimeException("Unsupported resource path");
         }
+
+        var encryptJsonString = new String(
+                Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()),
+                StandardCharsets.UTF_8);
+        var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
+        ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
+                ResourceAccessLegalModel.class);
+        return this.getRelativePathFromResourcePath(
+                String.join("/", Lists.asList(resourceAccessLegalModel.getRootFolderName(),
+                        JinqStream.from(pathSegmentList).skip(1).toArray(String[]::new))));
     }
 
+    @SneakyThrows
     public String getResoureUrlFromResourcePath(String relativePathOfResource) {
-        try {
-            String relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
-            String rootFolderName = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/")))
-                    .findFirst().get();
-            ResourceAccessLegalModel resourceAccessLegalModel = new ResourceAccessLegalModel();
-            resourceAccessLegalModel.setRootFolderName(rootFolderName);
-            var pathSegmentList = new ArrayList<String>();
-            pathSegmentList.add("resource");
-            var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
-            var encryptJsonString = this.encryptDecryptService.encryptWithFixedSaltByAES(jsonString);
+        String relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
+        String rootFolderName = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/")))
+                .findFirst().get();
+        ResourceAccessLegalModel resourceAccessLegalModel = new ResourceAccessLegalModel();
+        resourceAccessLegalModel.setRootFolderName(rootFolderName);
+        var pathSegmentList = new ArrayList<String>();
+        pathSegmentList.add("resource");
+        var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
+        var encryptJsonString = this.encryptDecryptService.encryptWithFixedSaltByAES(jsonString);
+        pathSegmentList
+                .add(Base64.getUrlEncoder().encodeToString(encryptJsonString.getBytes(StandardCharsets.UTF_8)));
+        var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
+        if (pathList.size() > 1) {
             pathSegmentList
-                    .add(Base64.getUrlEncoder().encodeToString(encryptJsonString.getBytes(StandardCharsets.UTF_8)));
-            var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
-            if (pathList.size() > 1) {
-                pathSegmentList
-                        .addAll(JinqStream.from(pathList).skip(1).toList());
-            }
-            var url = new URIBuilder().setPathSegments(pathSegmentList).build();
-            return url.toString();
-        } catch (URISyntaxException | JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
+                    .addAll(JinqStream.from(pathList).skip(1).toList());
         }
+        var url = new URIBuilder().setPathSegments(pathSegmentList).build();
+        return url.toString();
     }
 
+    @SneakyThrows
     public String getFileNameFromResource(Resource resource) {
-        try {
-            if (resource instanceof UrlResource) {
-                var pathSegments = Lists
-                        .newArrayList(new URIBuilder(((UrlResource) resource).getURI()).getPathSegments());
-                Collections.reverse(pathSegments);
-                String fileName = pathSegments.stream().findFirst().get();
-                return this.getRelativePathFromResourcePath(fileName);
-            }
-            return this.getRelativePathFromResourcePath(resource.getFilename());
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        if (resource instanceof UrlResource) {
+            var pathSegments = Lists
+                    .newArrayList(new URIBuilder(((UrlResource) resource).getURI()).getPathSegments());
+            Collections.reverse(pathSegments);
+            String fileName = pathSegments.stream().findFirst().get();
+            return this.getRelativePathFromResourcePath(fileName);
         }
+        return this.getRelativePathFromResourcePath(resource.getFilename());
     }
 
     protected String getRelativePathFromResourcePath(String relativePathOfResource) {

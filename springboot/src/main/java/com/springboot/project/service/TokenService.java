@@ -27,6 +27,7 @@ import com.springboot.project.model.TokenModel;
 
 import cn.hutool.crypto.CryptoException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
 
 @Service
 public class TokenService extends BaseService {
@@ -104,29 +105,23 @@ public class TokenService extends BaseService {
         return exists;
     }
 
+    @SneakyThrows
     private String generateUniqueOneTimePasswordLogo() {
-        try {
-            var jsonString = this.objectMapper.writeValueAsString(
-                    List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString()));
-            var logo = Base64.getEncoder().encodeToString(jsonString.getBytes(StandardCharsets.UTF_8));
-            return logo;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var jsonString = this.objectMapper.writeValueAsString(
+                List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString()));
+        var logo = Base64.getEncoder().encodeToString(jsonString.getBytes(StandardCharsets.UTF_8));
+        return logo;
     }
 
+    @SneakyThrows
     private String getUniqueOneTimePasswordLogo(String password) {
-        try {
-            var jsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(password);
-            var passwordPartList = this.objectMapper.readValue(jsonString, new TypeReference<List<String>>() {
-            });
-            var logo = Base64.getEncoder().encodeToString(
-                    this.objectMapper.writeValueAsString(JinqStream.from(passwordPartList).limit(2).toList())
-                            .getBytes(StandardCharsets.UTF_8));
-            return logo;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        var jsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(password);
+        var passwordPartList = this.objectMapper.readValue(jsonString, new TypeReference<List<String>>() {
+        });
+        var logo = Base64.getEncoder().encodeToString(
+                this.objectMapper.writeValueAsString(JinqStream.from(passwordPartList).limit(2).toList())
+                        .getBytes(StandardCharsets.UTF_8));
+        return logo;
     }
 
     private void checkCorrectPassword(String password, String userId) {

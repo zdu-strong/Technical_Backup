@@ -1,7 +1,6 @@
 package com.springboot.project.common.storage;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -17,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import cn.hutool.extra.compress.CompressUtil;
+import lombok.SneakyThrows;
 
 @Component
 public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
@@ -27,6 +27,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
      * @param relativePathOfResource
      * @return
      */
+    @SneakyThrows
     public File createTempFileOrFolder(String relativePathOfResource) {
         var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
         if (this.cloud.enabled()) {
@@ -41,57 +42,49 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
                 return this.createTempFileOrFolder(resource);
             }
         } else {
-            try {
-                var tempFolder = this.createTempFolder();
-                var file = new File(this.getRootPath(), relativePath);
-                if (file.isDirectory()) {
-                    FileUtils.copyDirectory(file, tempFolder);
-                    return tempFolder;
-                } else {
-                    FileUtils.copyFile(file, new File(tempFolder, file.getName()));
-                    return new File(tempFolder, file.getName());
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
-        }
-    }
-
-    public File createTempFileOrFolder(Resource resource) {
-        try {
-            String fileName = this.getFileNameFromResource(resource);
-            if (StringUtils.isBlank(fileName)) {
-                throw new RuntimeException("File name cannot be empty");
-            }
-            if (resource instanceof FileSystemResource) {
-                var tempFolder = this.createTempFolder();
-                var sourceFile = resource.getFile();
-                if (sourceFile.isDirectory()) {
-                    FileUtils.copyDirectory(sourceFile, tempFolder);
-                    return tempFolder;
-                } else {
-                    FileUtils.copyToDirectory(sourceFile, tempFolder);
-                    return new File(tempFolder, sourceFile.getName());
-                }
+            var tempFolder = this.createTempFolder();
+            var file = new File(this.getRootPath(), relativePath);
+            if (file.isDirectory()) {
+                FileUtils.copyDirectory(file, tempFolder);
+                return tempFolder;
             } else {
-                File targetFile = new File(this.createTempFolder(), fileName);
-                try (InputStream input = resource.getInputStream()) {
-                    FileUtils.copyInputStreamToFile(input, targetFile);
-                }
-                return targetFile;
+                FileUtils.copyFile(file, new File(tempFolder, file.getName()));
+                return new File(tempFolder, file.getName());
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
+    @SneakyThrows
+    public File createTempFileOrFolder(Resource resource) {
+        String fileName = this.getFileNameFromResource(resource);
+        if (StringUtils.isBlank(fileName)) {
+            throw new RuntimeException("File name cannot be empty");
+        }
+        if (resource instanceof FileSystemResource) {
+            var tempFolder = this.createTempFolder();
+            var sourceFile = resource.getFile();
+            if (sourceFile.isDirectory()) {
+                FileUtils.copyDirectory(sourceFile, tempFolder);
+                return tempFolder;
+            } else {
+                FileUtils.copyToDirectory(sourceFile, tempFolder);
+                return new File(tempFolder, sourceFile.getName());
+            }
+        } else {
+            File targetFile = new File(this.createTempFolder(), fileName);
+            try (InputStream input = resource.getInputStream()) {
+                FileUtils.copyInputStreamToFile(input, targetFile);
+            }
+            return targetFile;
+        }
+    }
+
+    @SneakyThrows
     public File createTempFile(MultipartFile file) {
         try (InputStream input = file.getInputStream()) {
             File targetFile = new File(this.createTempFolder(), file.getOriginalFilename());
             FileUtils.copyInputStreamToFile(input, targetFile);
             return targetFile;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -115,6 +108,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
         }
     }
 
+    @SneakyThrows
     private void writeToFolderByRelativePath(File tempFolder, String relativePathOfResource) {
         var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
         var request = new MockHttpServletRequest();
@@ -143,8 +137,6 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
                     }
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
