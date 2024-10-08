@@ -5,12 +5,11 @@ import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.util.Enumeration;
 import java.util.Iterator;
-import org.jinq.orm.stream.JinqStream;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import com.google.common.collect.Lists;
-import org.jinq.orm.stream.JinqStream.Select;
 import lombok.SneakyThrows;
+import static eu.ciechanowiec.sneakyfun.SneakyToLongFunction.sneaky;
 
 /**
  * A resource which is the logical concatenation of other resources.
@@ -68,15 +67,7 @@ public class SequenceResource extends AbstractResource {
 
     @Override
     public long contentLength() throws IOException {
-        return JinqStream.from(Lists.newArrayList(resources)).select(new Select<Resource, Long>() {
-
-            @Override
-            @SneakyThrows
-            public Long select(Resource val) {
-                return val.contentLength();
-            }
-
-        }).sumLong(s -> s);
+        return Lists.newArrayList(resources).stream().mapToLong(sneaky((s) -> s.contentLength())).sum();
     }
 
     @Override

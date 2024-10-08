@@ -7,7 +7,6 @@ import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Supplier;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,28 +14,21 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.core.Flowable;
-import lombok.SneakyThrows;
+import static eu.ciechanowiec.sneakyfun.SneakySupplier.sneaky;
 
 public class ResourceControllerUploadMergeTest extends BaseTest {
     private List<String> urlList;
 
     @Test
     public void test() throws URISyntaxException {
-        var urlOfResource = this.fromLongTermTask(new Supplier<ResponseEntity<String>>() {
-
-            @Override
-            @SneakyThrows
-            public ResponseEntity<String> get() {
-                var urlOfMerge = new URIBuilder("/upload/merge").build();
-                return testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
-            }
-
-        }, new ParameterizedTypeReference<String>() {
+        var urlOfResource = this.fromLongTermTask(sneaky(() -> {
+            var urlOfMerge = new URIBuilder("/upload/merge").build();
+            return testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
+        }), new ParameterizedTypeReference<String>() {
         }).getBody();
         assertTrue(urlOfResource.startsWith("/resource/"));
         var result = this.testRestTemplate.getForEntity(new URIBuilder(urlOfResource).build(), byte[].class);
