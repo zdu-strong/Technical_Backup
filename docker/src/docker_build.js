@@ -1,5 +1,5 @@
-import { execSync } from "child_process"
-import path from 'path'
+const { execSync } = require("child_process")
+const path = require('path')
 
 async function main() {
   await buildReact();
@@ -102,18 +102,18 @@ async function buildCloud() {
 }
 
 async function buildRust() {
-    execSync(
-      [
-        "docker build",
-        "-t rust",
-        "-f ./Dockerfile",
-        "../../..",
-      ].join(" "),
-      {
-        stdio: "inherit",
-        cwd: path.join(__dirname, "./rust"),
-      }
-    );
-  }
+  execSync(
+    [
+      "docker build",
+      "-t rust",
+      "-f ./Dockerfile",
+      "../../..",
+    ].join(" "),
+    {
+      stdio: "inherit",
+      cwd: path.join(__dirname, "./rust"),
+    }
+  );
+}
 
-export default main()
+module.exports = main()
