@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.hibernate.exception.GenericJDBCException;
@@ -28,6 +28,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.processors.PublishProcessor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.CloseReason.CloseCodes;
@@ -66,7 +67,7 @@ public class UserMessageWebSocket {
     private boolean ready = false;
     private ConcurrentHashMap<String, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, UserMessageModel> onlineMessageReceiveDateMap = new ConcurrentHashMap<>();
-    private Semaphore checkIsSignInSemaphore = new Semaphore(1);
+    private PublishProcessor<String> publishProcessor;
     private Session webWosketSession;
 
     /**
@@ -168,11 +169,9 @@ public class UserMessageWebSocket {
             var pageSize = this.ready ? 1L : 20L;
             var userMessageWebSocketSendModel = this.userMessageService
                     .getMessageListByLastMessage(pageSize, request);
-            if (this.ready && userMessageWebSocketSendModel.getTotalPage() < this.lastMessage.getTotalPage()) {
+            if (!this.objectMapper.writeValueAsString(this.lastMessage)
+                    .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel))) {
                 this.sendMessageForAllOnlineMessage(userMessageWebSocketSendModel);
-            } else if (!this.ready || (!this.objectMapper.writeValueAsString(this.lastMessage)
-                    .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel)))) {
-                this.sendAndUpdateOnlineMessage(userMessageWebSocketSendModel);
                 this.ready = true;
             } else {
                 this.sendMessageForOnlyOneOnlineMessage();
@@ -248,15 +247,10 @@ public class UserMessageWebSocket {
         var userMessageWebSocketSendNewModel = this.objectMapper.readValue(
                 this.objectMapper.writeValueAsString(userMessageWebSocketSendModel),
                 UserMessageWebSocketSendModel.class);
-        for (var userMessage : this.lastMessage.getList()) {
-            this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
-        }
-        userMessageWebSocketSendNewModel.setList(Flowable.fromIterable(userMessageWebSocketSendNewModel.getList())
+        userMessageWebSocketSendNewModel.setList(userMessageWebSocketSendNewModel.getList()
+                .stream()
                 .filter(s -> hasChange(s))
-                .filter(s -> userMessageWebSocketSendNewModel.getTotalPage() != null
-                        || this.onlineMessageMap.getOrDefault(s.getPageNum().toString(), null) != null)
-                .toList()
-                .blockingGet());
+                .toList());
         if (userMessageWebSocketSendNewModel.getTotalPage() == null
                 && userMessageWebSocketSendNewModel.getList().isEmpty()) {
             return;
@@ -268,7 +262,18 @@ public class UserMessageWebSocket {
             this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
         }
         if (userMessageWebSocketSendModel.getTotalPage() != null) {
-            this.lastMessage = userMessageWebSocketSendModel;
+            var lastMessage = userMessageWebSocketSendModel
+                    .getList()
+                    .stream()
+                    .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
+                    .findFirst()
+                    .orElse(null);
+            if (lastMessage != null) {
+                this.ready = true;
+                this.lastMessage = new UserMessageWebSocketSendModel()
+                        .setTotalPage(lastMessage.getPageNum())
+                        .setList(List.of(lastMessage));
+            }
         }
     }
 
@@ -282,20 +287,29 @@ public class UserMessageWebSocket {
     }
 
     private void checkIsSignIn() throws Throwable {
-        Thread.startVirtualThread(() -> {
-            try {
-                if (this.checkIsSignInSemaphore.tryAcquire()) {
-                    try {
-                        this.permissionUtil.checkIsSignIn(request);
-                        ThreadUtil.sleep(1000);
-                    } finally {
-                        this.checkIsSignInSemaphore.release();
-                    }
-                }
-            } catch (Throwable e) {
-                this.OnError(webWosketSession, e);
+        if (this.publishProcessor != null) {
+            this.publishProcessor.onNext("");
+            return;
+        }
+        synchronized (this) {
+            if (this.publishProcessor != null) {
+                return;
             }
-        });
+            PublishProcessor<String> publishProcessorOne = PublishProcessor.create();
+            publishProcessorOne
+                    .throttleLatest(1, TimeUnit.SECONDS, true)
+                    .delay(1, TimeUnit.MILLISECONDS)
+                    .doOnNext((s) -> {
+                        try {
+                            this.permissionUtil.checkIsSignIn(request);
+                        } catch (Throwable e) {
+                            this.OnError(webWosketSession, e);
+                        }
+                    })
+                    .retry()
+                    .subscribe();
+            this.publishProcessor = publishProcessorOne;
+        }
     }
 
 }
