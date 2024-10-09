@@ -41,6 +41,7 @@ import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import static eu.ciechanowiec.sneakyfun.SneakyPredicate.sneaky;
 
 /**
  * Required parameters: String accessToken;
@@ -258,6 +259,9 @@ public class UserMessageWebSocket {
         this.webWosketSession.getBasicRemote()
                 .sendText(this.objectMapper
                         .writeValueAsString(userMessageWebSocketSendNewModel));
+        for (var userMessage : this.lastMessage.getList()) {
+            this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
+        }
         for (var userMessage : userMessageWebSocketSendNewModel.getList()) {
             this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
         }
@@ -268,12 +272,9 @@ public class UserMessageWebSocket {
                     .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
                     .findFirst()
                     .orElse(null);
-            if (lastMessage != null) {
-                this.ready = true;
-                this.lastMessage = new UserMessageWebSocketSendModel()
-                        .setTotalPage(lastMessage.getPageNum())
-                        .setList(List.of(lastMessage));
-            }
+            this.lastMessage = new UserMessageWebSocketSendModel()
+                    .setTotalPage(lastMessage.getPageNum())
+                    .setList(List.of(lastMessage));
         }
     }
 
@@ -283,6 +284,15 @@ public class UserMessageWebSocket {
         var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
         var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
                 .equals(this.objectMapper.writeValueAsString(userMessage));
+        if (hasChange) {
+            if (this.lastMessage.getList()
+                    .stream()
+                    .filter(s -> s.getPageNum() == (long) userMessage.getPageNum())
+                    .anyMatch(sneaky(s -> this.objectMapper.writeValueAsString(s)
+                            .equals(this.objectMapper.writeValueAsString(userMessage))))) {
+                hasChange = false;
+            }
+        }
         return hasChange;
     }
 
