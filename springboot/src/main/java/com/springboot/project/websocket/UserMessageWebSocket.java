@@ -141,6 +141,7 @@ public class UserMessageWebSocket {
     }
 
     @OnError
+    @SneakyThrows
     public void OnError(Session session, Throwable e) {
         for (var i = 1; i > 0; i--) {
             if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
@@ -153,11 +154,7 @@ public class UserMessageWebSocket {
             }
             log.error(e.getMessage(), e);
         }
-        try {
-            session.close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION, e.getMessage()));
-        } catch (IOException e1) {
-            // do nothing
-        }
+        session.close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION, e.getMessage()));
     }
 
     @OnClose
