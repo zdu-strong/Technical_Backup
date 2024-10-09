@@ -170,7 +170,7 @@ public class UserMessageWebSocket {
             var userMessageWebSocketSendModel = this.userMessageService
                     .getMessageListByLastMessage(pageSize, request);
             if (!this.objectMapper.writeValueAsString(this.lastMessage)
-                    .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel))) {
+                    .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel)) || !this.ready) {
                 this.sendMessageForAllOnlineMessage(userMessageWebSocketSendModel);
                 this.ready = true;
             } else {
