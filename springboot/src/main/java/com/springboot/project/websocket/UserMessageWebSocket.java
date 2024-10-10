@@ -63,7 +63,7 @@ public class UserMessageWebSocket {
     private PermissionUtil permissionUtil;
     private UserMessageService userMessageService;
     private HttpServletRequest request;
-    private UserMessageWebSocketSendModel lastMessage = new UserMessageWebSocketSendModel().setTotalPage(0L)
+    private UserMessageWebSocketSendModel lastMessageCache = new UserMessageWebSocketSendModel().setTotalPage(0L)
             .setList(Lists.newArrayList());
     private boolean ready = false;
     private ConcurrentHashMap<String, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
@@ -170,7 +170,7 @@ public class UserMessageWebSocket {
             var pageSize = this.ready ? 1L : 20L;
             var userMessageWebSocketSendModel = this.userMessageService
                     .getMessageListByLastMessage(pageSize, request);
-            if (!this.objectMapper.writeValueAsString(this.lastMessage)
+            if (!this.objectMapper.writeValueAsString(this.lastMessageCache)
                     .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel)) || !this.ready) {
                 this.sendMessageForAllOnlineMessage(userMessageWebSocketSendModel);
                 this.ready = true;
@@ -259,9 +259,6 @@ public class UserMessageWebSocket {
         this.webWosketSession.getBasicRemote()
                 .sendText(this.objectMapper
                         .writeValueAsString(userMessageWebSocketSendNewModel));
-        for (var userMessage : this.lastMessage.getList()) {
-            this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
-        }
         for (var userMessage : userMessageWebSocketSendNewModel.getList()) {
             this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
         }
@@ -273,7 +270,7 @@ public class UserMessageWebSocket {
                     .findFirst()
                     .orElse(null);
             if (lastMessage != null) {
-                this.lastMessage = new UserMessageWebSocketSendModel()
+                this.lastMessageCache = new UserMessageWebSocketSendModel()
                         .setTotalPage(lastMessage.getPageNum())
                         .setList(List.of(lastMessage));
             }
@@ -282,12 +279,15 @@ public class UserMessageWebSocket {
 
     @SneakyThrows
     private boolean hasChange(UserMessageModel userMessage) {
+        for (var userMessageOne : this.lastMessageCache.getList()) {
+            this.onlineMessageMap.replace(userMessageOne.getPageNum().toString(), userMessageOne);
+        }
         var pageNum = userMessage.getPageNum().toString();
         var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
         var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
                 .equals(this.objectMapper.writeValueAsString(userMessage));
         if (hasChange) {
-            if (this.lastMessage.getList()
+            if (this.lastMessageCache.getList()
                     .stream()
                     .filter(s -> s.getPageNum() == (long) userMessage.getPageNum())
                     .anyMatch(sneaky(s -> this.objectMapper.writeValueAsString(s)
