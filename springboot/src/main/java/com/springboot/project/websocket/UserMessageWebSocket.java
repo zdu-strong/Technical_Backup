@@ -272,9 +272,11 @@ public class UserMessageWebSocket {
                     .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
                     .findFirst()
                     .orElse(null);
-            this.lastMessage = new UserMessageWebSocketSendModel()
-                    .setTotalPage(lastMessage.getPageNum())
-                    .setList(List.of(lastMessage));
+            if (lastMessage != null) {
+                this.lastMessage = new UserMessageWebSocketSendModel()
+                        .setTotalPage(lastMessage.getPageNum())
+                        .setList(List.of(lastMessage));
+            }
         }
     }
 
