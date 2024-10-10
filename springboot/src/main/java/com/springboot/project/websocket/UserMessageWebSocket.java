@@ -245,9 +245,9 @@ public class UserMessageWebSocket {
 
     private void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel)
             throws JsonProcessingException, IOException {
-        var userMessageWebSocketSendNewModel = this.objectMapper.readValue(
-                this.objectMapper.writeValueAsString(userMessageWebSocketSendModel),
-                UserMessageWebSocketSendModel.class);
+        var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
+                .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
+                .setList(userMessageWebSocketSendModel.getList());
         userMessageWebSocketSendNewModel.setList(userMessageWebSocketSendNewModel.getList()
                 .stream()
                 .filter(s -> hasChange(s))
