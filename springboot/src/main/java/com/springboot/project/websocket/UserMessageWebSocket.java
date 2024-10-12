@@ -194,6 +194,10 @@ public class UserMessageWebSocket {
                 .equals(this.objectMapper.writeValueAsString(lastUserMessageWebSocketSendModel))) {
             return true;
         }
+        return this.hasEmptyDataOfOnlineMessage();
+    }
+
+    private boolean hasEmptyDataOfOnlineMessage() {
         return this.onlineMessageMap.entrySet()
                 .stream()
                 .filter(s -> StringUtils.isBlank(s.getValue().getId()))
@@ -203,6 +207,11 @@ public class UserMessageWebSocket {
 
     private void sendMessageForAllOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel)
             throws JsonProcessingException, IOException {
+        if (!this.hasEmptyDataOfOnlineMessage()
+                && userMessageWebSocketSendModel.getTotalPage() >= this.lastMessageCache.getTotalPage()) {
+            this.sendAndUpdateOnlineMessage(userMessageWebSocketSendModel);
+            return;
+        }
         var userMessageList = Flowable.fromIterable(this.onlineMessageMap.keySet())
                 .filter(s -> !userMessageWebSocketSendModel.getList().stream()
                         .anyMatch(m -> s.equals(m.getPageNum().toString())))
