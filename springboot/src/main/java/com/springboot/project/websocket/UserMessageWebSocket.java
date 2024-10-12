@@ -294,6 +294,9 @@ public class UserMessageWebSocket {
                 .findFirst()
                 .orElse(null);
         if (lastMessage != null) {
+            for (var userMessage : this.lastMessageCache.getList()) {
+                this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
+            }
             this.lastMessageCache = new UserMessageWebSocketSendModel()
                     .setTotalPage(lastMessage.getPageNum())
                     .setList(List.of(lastMessage));
@@ -302,11 +305,8 @@ public class UserMessageWebSocket {
 
     @SneakyThrows
     private boolean hasChange(UserMessageModel userMessage) {
-        for (var userMessageOne : this.lastMessageCache.getList()) {
-            this.onlineMessageMap.replace(userMessageOne.getPageNum().toString(), userMessageOne);
-        }
-        var pageNum = userMessage.getPageNum().toString();
-        var oldUserMessage = this.onlineMessageMap.getOrDefault(pageNum, new UserMessageModel());
+        var oldUserMessage = this.onlineMessageMap.getOrDefault(userMessage.getPageNum().toString(),
+                new UserMessageModel());
         var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
                 .equals(this.objectMapper.writeValueAsString(userMessage));
         if (hasChange) {
