@@ -277,18 +277,17 @@ public class UserMessageWebSocket {
         for (var userMessage : userMessageWebSocketSendNewModel.getList()) {
             this.onlineMessageMap.replace(userMessage.getPageNum().toString(), userMessage);
         }
-        if (userMessageWebSocketSendModel.getTotalPage() != null) {
-            var lastMessage = userMessageWebSocketSendModel
-                    .getList()
-                    .stream()
-                    .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
-                    .findFirst()
-                    .orElse(null);
-            if (lastMessage != null) {
-                this.lastMessageCache = new UserMessageWebSocketSendModel()
-                        .setTotalPage(lastMessage.getPageNum())
-                        .setList(List.of(lastMessage));
-            }
+        var lastMessage = userMessageWebSocketSendModel
+                .getList()
+                .stream()
+                .filter(s -> userMessageWebSocketSendModel.getTotalPage() != null)
+                .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
+                .findFirst()
+                .orElse(null);
+        if (lastMessage != null) {
+            this.lastMessageCache = new UserMessageWebSocketSendModel()
+                    .setTotalPage(lastMessage.getPageNum())
+                    .setList(List.of(lastMessage));
         }
     }
 
