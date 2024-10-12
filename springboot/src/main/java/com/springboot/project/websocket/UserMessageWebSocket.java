@@ -1,6 +1,5 @@
 package com.springboot.project.websocket;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +15,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.server.ResponseStatusException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
@@ -92,7 +90,7 @@ public class UserMessageWebSocket {
      * @param session
      */
     @OnMessage
-    public void OnMessage(String userMessageWebSocketReceiveModelString) throws IOException {
+    public void OnMessage(String userMessageWebSocketReceiveModelString) {
         Thread.startVirtualThread(() -> {
             try {
                 var userMessageWebSocketReceiveModel = this.objectMapper.readValue(
@@ -174,7 +172,7 @@ public class UserMessageWebSocket {
             checkIsSignIn();
             var lastUserMessageWebSocketSendModel = this.userMessageService
                     .getMessageListByLastMessage(this.getPageSizeForLastMessage(), request);
-            if (this.HasNeedSendAllOnlineMessage(lastUserMessageWebSocketSendModel)) {
+            if (this.hasNeedSendAllOnlineMessage(lastUserMessageWebSocketSendModel)) {
                 this.sendMessageForAllOnlineMessage(lastUserMessageWebSocketSendModel);
                 this.ready = true;
             } else {
@@ -191,7 +189,7 @@ public class UserMessageWebSocket {
     }
 
     @SneakyThrows
-    private boolean HasNeedSendAllOnlineMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
+    private boolean hasNeedSendAllOnlineMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
         if (!this.ready) {
             return true;
         }
@@ -210,8 +208,7 @@ public class UserMessageWebSocket {
                 .isPresent();
     }
 
-    private void sendMessageForAllOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel)
-            throws JsonProcessingException, IOException {
+    private void sendMessageForAllOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         if (!this.hasEmptyDataOfOnlineMessage()
                 && userMessageWebSocketSendModel.getTotalPage() >= this.lastMessageCache.getTotalPage()) {
             this.sendAndUpdateOnlineMessage(userMessageWebSocketSendModel);
@@ -232,7 +229,7 @@ public class UserMessageWebSocket {
                         .setList(userMessageList));
     }
 
-    private void sendMessageForOnlyOneOnlineMessage() throws IOException {
+    private void sendMessageForOnlyOneOnlineMessage() {
         var pageNum = getPageNumForOnlineMessage();
         if (pageNum == null) {
             return;
@@ -272,8 +269,8 @@ public class UserMessageWebSocket {
         return request;
     }
 
-    private void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel)
-            throws JsonProcessingException, IOException {
+    @SneakyThrows
+    private void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
                 .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
                 .setList(userMessageWebSocketSendModel.getList());
@@ -326,7 +323,7 @@ public class UserMessageWebSocket {
         return hasChange;
     }
 
-    private void checkIsSignIn() throws Throwable {
+    private void checkIsSignIn() {
         if (this.publishProcessor != null) {
             this.publishProcessor.onNext("");
             return;
