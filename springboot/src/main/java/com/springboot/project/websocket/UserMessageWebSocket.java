@@ -1,7 +1,6 @@
 package com.springboot.project.websocket;
 
 import java.io.IOException;
-import java.nio.channels.ClosedChannelException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -155,8 +154,6 @@ public class UserMessageWebSocket {
         } else if (e instanceof GenericJDBCException) {
             // do noting
         } else if (e instanceof CannotCreateTransactionException) {
-            // do noting
-        } else if (e instanceof ClosedChannelException) {
             // do noting
         } else if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
                 .contains("java.nio.channels.ClosedChannelException")) {
