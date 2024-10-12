@@ -167,12 +167,10 @@ public class UserMessageWebSocket {
     public void sendMessage() {
         try {
             checkIsSignIn();
-            var pageSize = this.ready ? 1L : 20L;
-            var userMessageWebSocketSendModel = this.userMessageService
-                    .getMessageListByLastMessage(pageSize, request);
-            if (!this.objectMapper.writeValueAsString(this.lastMessageCache)
-                    .equals(this.objectMapper.writeValueAsString(userMessageWebSocketSendModel)) || !this.ready) {
-                this.sendMessageForAllOnlineMessage(userMessageWebSocketSendModel);
+            var lastUserMessageWebSocketSendModel = this.userMessageService
+                    .getMessageListByLastMessage(this.getPageSizeForLastMessage(), request);
+            if (this.HasNeedSendAllOnlineMessage(lastUserMessageWebSocketSendModel)) {
+                this.sendMessageForAllOnlineMessage(lastUserMessageWebSocketSendModel);
                 this.ready = true;
             } else {
                 this.sendMessageForOnlyOneOnlineMessage();
@@ -180,6 +178,27 @@ public class UserMessageWebSocket {
         } catch (Throwable e) {
             this.OnError(webWosketSession, e);
         }
+    }
+
+    private long getPageSizeForLastMessage() {
+        var pageSize = this.ready ? 1L : 20L;
+        return pageSize;
+    }
+
+    @SneakyThrows
+    private boolean HasNeedSendAllOnlineMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
+        if (!this.ready) {
+            return true;
+        }
+        if (!this.objectMapper.writeValueAsString(this.lastMessageCache)
+                .equals(this.objectMapper.writeValueAsString(lastUserMessageWebSocketSendModel))) {
+            return true;
+        }
+        return this.onlineMessageMap.entrySet()
+                .stream()
+                .filter(s -> StringUtils.isBlank(s.getValue().getId()))
+                .findFirst()
+                .isPresent();
     }
 
     private void sendMessageForAllOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel)
@@ -190,7 +209,7 @@ public class UserMessageWebSocket {
                 .map(s -> this.userMessageService
                         .getUserMessageByPagination(Long.parseLong(s), 1L, request)
                         .getList())
-                .flatMap(s -> Flowable.fromIterable(s))
+                .concatMap(s -> Flowable.fromIterable(s))
                 .toList()
                 .blockingGet();
         userMessageList.addAll(userMessageWebSocketSendModel.getList());
@@ -200,32 +219,28 @@ public class UserMessageWebSocket {
     }
 
     private void sendMessageForOnlyOneOnlineMessage() throws IOException {
-        if (RandomUtil.randomLong(2) == 0) {
-            return;
-        }
-
         var pageNum = getPageNumForOnlineMessage();
-        if (StringUtils.isBlank(pageNum)) {
+        if (pageNum == null) {
             return;
         }
 
-        var userMessageList = this.userMessageService.getUserMessageByPagination(Long.parseLong(pageNum), 1L, request)
+        var userMessageList = this.userMessageService.getUserMessageByPagination(pageNum, 1L, request)
                 .getList();
-
         this.sendAndUpdateOnlineMessage(new UserMessageWebSocketSendModel()
-                .setList(userMessageList).setTotalPage(null));
+                .setList(userMessageList)
+                .setTotalPage(null));
     }
 
-    private String getPageNumForOnlineMessage() {
-        var pageNumList = this.onlineMessageMap.keySet().stream().toList();
-        var pageNum = pageNumList
-                .stream()
-                .filter(s -> StringUtils.isBlank(this.onlineMessageMap.getOrDefault(s, new UserMessageModel()).getId()))
-                .findFirst()
-                .orElse(null);
-        if (StringUtils.isBlank(pageNum) && !pageNumList.isEmpty()) {
-            pageNum = pageNumList.get(RandomUtil.randomInt(pageNumList.size()));
+    private Long getPageNumForOnlineMessage() {
+        if (RandomUtil.randomInt(100) < 80) {
+            return null;
         }
+
+        var pageNumList = this.onlineMessageMap.keySet().stream().map(s -> Long.parseLong(s)).toList();
+        if (pageNumList.isEmpty()) {
+            return null;
+        }
+        var pageNum = pageNumList.get(RandomUtil.randomInt(pageNumList.size()));
         return pageNum;
     }
 
