@@ -156,6 +156,9 @@ public class UserMessageWebSocket {
         } else if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
                 .contains("java.nio.channels.ClosedChannelException")) {
             // do noting
+        } else if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
+                .contains("No operations allowed after connection closed")) {
+            // do noting
         } else {
             log.error(e.getMessage(), e);
         }
