@@ -212,24 +212,36 @@ public class UserMessageWebSocket {
     }
 
     private void sendMessageForAllOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
-        if (!this.hasEmptyDataOfOnlineMessage()
-                && userMessageWebSocketSendModel.getTotalPage() >= this.lastMessageCache.getTotalPage()) {
-            this.sendAndUpdateOnlineMessage(userMessageWebSocketSendModel);
-            return;
-        }
-        var userMessageList = Flowable.fromIterable(this.onlineMessageMap.keySet())
-                .filter(s -> !userMessageWebSocketSendModel.getList().stream()
-                        .anyMatch(m -> s.equals(m.getPageNum().toString())))
-                .map(s -> this.userMessageService
-                        .getUserMessageByPagination(Long.parseLong(s), 1L, request)
-                        .getList())
-                .concatMap(s -> Flowable.fromIterable(s))
-                .toList()
-                .blockingGet();
-        userMessageList.addAll(userMessageWebSocketSendModel.getList());
-        this.sendAndUpdateOnlineMessage(
-                new UserMessageWebSocketSendModel().setTotalPage(userMessageWebSocketSendModel.getTotalPage())
-                        .setList(userMessageList));
+        var userMessageList = JinqStream.from(List.of(
+                userMessageWebSocketSendModel.getList(),
+                Flowable.fromIterable(this.onlineMessageMap.keySet())
+                        .filter(s -> !userMessageWebSocketSendModel.getList().stream()
+                                .anyMatch(m -> s.equals(m.getPageNum().toString())))
+                        .map(s -> this.userMessageService
+                                .getUserMessageByPagination(Long.parseLong(s), 1L, request)
+                                .getList())
+                        .concatMap(s -> Flowable.fromIterable(s))
+                        .toList()
+                        .blockingGet(),
+                Flowable.range((int) (this.lastMessageCache.getTotalPage() + 1),
+                        (int) Math.max(
+                                userMessageWebSocketSendModel.getTotalPage() - this.lastMessageCache.getTotalPage() - 1,
+                                0))
+                        .map(s -> (long) s)
+                        .map(pageNum -> this.userMessageService
+                                .getUserMessageByPagination(pageNum, 1L, request)
+                                .getList())
+                        .concatMap(s -> Flowable.fromIterable(s))
+                        .toList()
+                        .blockingGet()))
+                .selectAllList(s -> s)
+                .group(s -> s.getPageNum(), (s, t) -> t.findFirst().get())
+                .select(s -> s.getTwo())
+                .toList();
+        var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
+                .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
+                .setList(userMessageList);
+        this.sendAndUpdateOnlineMessage(userMessageWebSocketSendNewModel);
     }
 
     private void sendMessageForOnlyOneOnlineMessage() {
