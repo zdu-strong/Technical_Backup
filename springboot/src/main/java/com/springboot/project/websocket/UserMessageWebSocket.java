@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -145,15 +146,16 @@ public class UserMessageWebSocket {
     @OnError
     @SneakyThrows
     public void OnError(Session session, Throwable e) {
-        for (var i = 1; i > 0; i--) {
-            if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
-                    .contains("An established connection was aborted by the software in your host machine")) {
-                continue;
-            } else if (e instanceof IllegalStateException) {
-                continue;
-            } else if (e instanceof GenericJDBCException) {
-                continue;
-            }
+        if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage()
+                .contains("An established connection was aborted by the software in your host machine")) {
+            // do noting
+        } else if (e instanceof IllegalStateException) {
+            // do noting
+        } else if (e instanceof GenericJDBCException) {
+            // do noting
+        } else if (e instanceof CannotCreateTransactionException) {
+            // do noting
+        } else {
             log.error(e.getMessage(), e);
         }
         session.close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION, e.getMessage()));
