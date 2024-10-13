@@ -200,13 +200,11 @@ public class UserMessageWebSocket {
                 .equals(this.objectMapper.writeValueAsString(lastUserMessageWebSocketSendModel))) {
             return true;
         }
-        return this.hasEmptyDataOfOnlineMessage();
-    }
-
-    private boolean hasEmptyDataOfOnlineMessage() {
         return this.onlineMessageMap.entrySet()
                 .stream()
                 .filter(s -> StringUtils.isBlank(s.getValue().getId()))
+                .filter(s -> this.lastMessageCache.getTotalPage() != Long.parseLong(s.getKey()))
+                .filter(s -> lastUserMessageWebSocketSendModel.getTotalPage() != Long.parseLong(s.getKey()))
                 .findFirst()
                 .isPresent();
     }
