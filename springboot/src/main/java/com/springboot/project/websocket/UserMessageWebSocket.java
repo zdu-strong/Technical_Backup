@@ -177,7 +177,7 @@ public class UserMessageWebSocket {
                     .getMessageListByLastMessage(this.getPageSizeForLastMessage(), request);
             if (this.hasNeedSendAllOnlineMessage(lastUserMessageWebSocketSendModel)) {
                 this.sendMessageForAllOnlineMessage(lastUserMessageWebSocketSendModel);
-            } else if (this.hasOnlyNeedSendLastMessage(lastUserMessageWebSocketSendModel)) {
+            } else if (this.hasNeedSendLastMessage(lastUserMessageWebSocketSendModel)) {
                 this.sendAndUpdateOnlineMessage(lastUserMessageWebSocketSendModel);
             } else {
                 this.sendMessageForOnlyOneOnlineMessage();
@@ -194,10 +194,8 @@ public class UserMessageWebSocket {
     }
 
     @SneakyThrows
-    private boolean hasOnlyNeedSendLastMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
-        var hasOnlyNeedSendLastMessage = !this.objectMapper.writeValueAsString(this.lastMessageCache)
-                .equals(this.objectMapper.writeValueAsString(lastUserMessageWebSocketSendModel));
-        return hasOnlyNeedSendLastMessage;
+    private boolean hasNeedSendLastMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
+        return lastUserMessageWebSocketSendModel.getList().stream().anyMatch(s -> hasChange(s));
     }
 
     @SneakyThrows
@@ -214,10 +212,11 @@ public class UserMessageWebSocket {
         return this.onlineMessageMap.entrySet()
                 .stream()
                 .filter(s -> StringUtils.isBlank(s.getValue().getId()))
+                .map(s -> (long) s.getKey())
                 .filter(s -> !this.lastMessageCache.getList().stream()
-                        .anyMatch(m -> m.getPageNum() == (long) s.getKey()))
+                        .anyMatch(m -> m.getPageNum() == (long) s))
                 .filter(s -> !lastUserMessageWebSocketSendModel.getList().stream()
-                        .anyMatch(m -> m.getPageNum() == (long) s.getKey()))
+                        .anyMatch(m -> m.getPageNum() == (long) s))
                 .findFirst()
                 .isPresent();
     }
@@ -303,7 +302,7 @@ public class UserMessageWebSocket {
     }
 
     @SneakyThrows
-    private void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
+    private synchronized void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
                 .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
                 .setList(userMessageWebSocketSendModel.getList()
