@@ -65,8 +65,7 @@ node-polyfill-webpack-plugin<br/>
 8. linq (https://www.npmjs.com/package/linq)<br/>
 9. date-fns (https://date-fns.org)
 10. UUID (https://www.npmjs.com/package/uuid)<br/>
-11. Recharts (https://recharts.org/en-US)<br/>
-12. tailwindcss (https://tailwindcss.com)<br/>
-13. Animate.css (https://animate.style)<br/>
-14. react-git-info (https://www.npmjs.com/package/react-git-info)
-15. mathjs (https://www.npmjs.com/package/mathjs)
+11. tailwindcss (https://tailwindcss.com)<br/>
+12. Animate.css (https://animate.style)<br/>
+13. react-git-info (https://www.npmjs.com/package/react-git-info)
+14. mathjs (https://www.npmjs.com/package/mathjs)
