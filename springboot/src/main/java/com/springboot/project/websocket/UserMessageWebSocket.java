@@ -306,11 +306,10 @@ public class UserMessageWebSocket {
     private void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
                 .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
-                .setList(userMessageWebSocketSendModel.getList());
-        userMessageWebSocketSendNewModel.setList(userMessageWebSocketSendNewModel.getList()
-                .stream()
-                .filter(s -> hasChange(s))
-                .toList());
+                .setList(userMessageWebSocketSendModel.getList()
+                        .stream()
+                        .filter(s -> hasChange(s))
+                        .toList());
         if (userMessageWebSocketSendNewModel.getTotalPage() == null
                 && userMessageWebSocketSendNewModel.getList().isEmpty()) {
             return;
@@ -340,7 +339,7 @@ public class UserMessageWebSocket {
 
     @SneakyThrows
     private boolean hasChange(UserMessageModel userMessage) {
-        var oldUserMessage = this.onlineMessageMap.getOrDefault(userMessage.getPageNum().toString(),
+        var oldUserMessage = this.onlineMessageMap.getOrDefault(userMessage.getPageNum(),
                 new UserMessageModel());
         var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
                 .equals(this.objectMapper.writeValueAsString(userMessage));
