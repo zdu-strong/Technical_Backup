@@ -195,7 +195,9 @@ public class UserMessageWebSocket {
 
     @SneakyThrows
     private boolean hasNeedSendLastMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
-        return lastUserMessageWebSocketSendModel.getList().stream().anyMatch(s -> hasChange(s));
+        return lastUserMessageWebSocketSendModel.getList().stream()
+                .filter(s -> s.getPageNum() == (long) lastUserMessageWebSocketSendModel.getTotalPage())
+                .anyMatch(s -> hasChange(s));
     }
 
     @SneakyThrows
