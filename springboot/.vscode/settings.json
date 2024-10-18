@@ -33,5 +33,6 @@
     "java.typeHierarchy.lazyLoad": false,
     "java.import.gradle.enabled": false,
     "java.import.maven.enabled": true,
-    "java.autobuild.enabled": true
+    "java.autobuild.enabled": true,
+    "java.server.launchMode": "Standard"
 }
