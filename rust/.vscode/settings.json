@@ -4,7 +4,6 @@
         ".vscode": true,
         "Cargo.lock": true,
         "target": true,
-        "Dockerfile": true,
         ".github": true,
     },
     "files.autoSave": "onFocusChange",
