@@ -37,10 +37,14 @@ public class SystemInitScheduled {
             if (hasInit) {
                 return;
             }
-            this.initEncryptDecryptKey();
-            this.initSystemRole();
+            this.init();
             this.hasInit = true;
         }
+    }
+
+    private void init() {
+        this.initEncryptDecryptKey();
+        this.initSystemRole();
     }
 
     private void initEncryptDecryptKey() {
