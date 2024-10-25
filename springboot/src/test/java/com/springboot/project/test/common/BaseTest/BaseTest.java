@@ -222,9 +222,9 @@ public class BaseTest {
     public void beforeEachOfBaseTest() throws Throwable {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
+        this.systemInitScheduled.scheduled();
         Mockito.doNothing().when(this.organizeRelationRefreshScheduled).scheduled();
         Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
-        this.systemInitScheduled.scheduled();
     }
 
     @SneakyThrows
