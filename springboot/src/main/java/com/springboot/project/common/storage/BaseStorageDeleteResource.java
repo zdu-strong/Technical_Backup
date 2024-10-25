@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
-public class BaseStorageDeleteResource extends BaseStorageRefresh {
+public class BaseStorageDeleteResource extends BaseStorage {
 
     public void delete(HttpServletRequest request) {
         String relativePath = this.getRelativePathFromRequest(request);
@@ -21,9 +21,6 @@ public class BaseStorageDeleteResource extends BaseStorageRefresh {
     public void delete(File fileOrFolder) {
         String relativePath = this.getRelativePathFromFileOrFolder(fileOrFolder);
         FileUtils.deleteQuietly(new File(this.getRootPath(), relativePath));
-        if (new File(this.getRootPath(), relativePath).getParentFile().getAbsolutePath().equals(this.getRootPath())) {
-            this.tempFolderNameList.remove(new File(this.getRootPath(), relativePath).getName());
-        }
     }
 
     private String getRelativePathFromFileOrFolder(File fileOrFolder) {

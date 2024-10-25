@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.regex.Pattern;
-import java.util.concurrent.CopyOnWriteArrayList;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -44,8 +43,6 @@ public class BaseStorage {
     protected ObjectMapper objectMapper;
 
     private String storageRootPath;
-
-    protected CopyOnWriteArrayList<String> tempFolderNameList = new CopyOnWriteArrayList<>();
 
     public String getRootPath() {
         if (StringUtils.isBlank(storageRootPath)) {
