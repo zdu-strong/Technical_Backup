@@ -28,25 +28,25 @@ public class CustomH2Dialect extends H2Dialect {
         functionRegistry.registerPattern("LOCATE", "LOCATE(?1, ?2)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD HH24:mi:ss.ff3')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM-DD HH24:mi:ss.ff3')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD HH24:mi:ss')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM-DD HH24:mi:ss')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD HH24:mi')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM-DD HH24:mi')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD HH24')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM-DD HH24')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM-DD')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY-MM')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR",
-                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY')",
+                "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), PARSEDATETIME(?1,'yyyy-MM-dd HH:mm:ss.SSS'))), 'YYYY')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("CONVERT_TO_BIG_DECIMAL", "CAST(?1 AS NUMERIC(65, 4))",
                 basicTypeRegistry.resolve(StandardBasicTypes.BIG_DECIMAL));
