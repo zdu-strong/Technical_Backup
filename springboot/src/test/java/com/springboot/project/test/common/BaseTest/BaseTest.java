@@ -224,6 +224,7 @@ public class BaseTest {
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.organizeRelationRefreshScheduled).scheduled();
         Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
+        this.systemInitScheduled.scheduled();
     }
 
     @SneakyThrows
