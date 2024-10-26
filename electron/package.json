@@ -100,7 +100,7 @@
     "is-mobile": "4.0.0",
     "jsencrypt": "3.3.2",
     "mathjs": "13.2.0",
-    "mobx-react-use-autorun": "4.0.47",
+    "mobx-react-use-autorun": "4.0.48",
     "node-polyfill-webpack-plugin": "3.0.0",
     "node-rsa": "1.1.1",
     "postcss": "8.4.47",
