@@ -15,7 +15,10 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.CloudStorage.CloudStorageImplement;
@@ -65,7 +68,7 @@ public class BaseStorage {
                         }
                     } else {
                         if (StringUtils.isBlank(this.storageRootPathProperties.getStorageRootPath().trim())) {
-                            throw new RuntimeException("Unsupported storage root path");
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported storage root path");
                         }
                         if (new File(this.storageRootPathProperties.getStorageRootPath()).isAbsolute()) {
                             rootPath = this.storageRootPathProperties.getStorageRootPath();
@@ -96,7 +99,7 @@ public class BaseStorage {
                 && JinqStream.from(pathSegmentList).skip(1).findFirst().get().equals("resource")) {
             pathSegmentList = JinqStream.from(pathSegmentList).skip(2).toList();
         } else {
-            throw new RuntimeException("Unsupported resource path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported resource path");
         }
 
         var encryptJsonString = new String(
@@ -147,7 +150,7 @@ public class BaseStorage {
     protected String getRelativePathFromResourcePath(String relativePathOfResource) {
         String path = "";
         if (Paths.get(relativePathOfResource.replaceAll(Pattern.quote("\\"), "/")).isAbsolute()) {
-            throw new RuntimeException("Only relative path can be passed in");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only relative path can be passed in");
         } else {
             path = relativePathOfResource;
         }
@@ -155,10 +158,10 @@ public class BaseStorage {
         path = Paths.get(this.getRootPath(), path.replaceAll(Pattern.quote("\\"), "/")).toString();
         path = Paths.get(path).normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         if (!path.startsWith(this.getRootPath())) {
-            throw new RuntimeException("Unsupported path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported path");
         }
         if (path.equals(this.getRootPath())) {
-            throw new RuntimeException("Unsupported path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported path");
         }
         return Paths.get(this.getRootPath()).relativize(Paths.get(path)).normalize().toString()
                 .replaceAll(Pattern.quote("\\"), "/");

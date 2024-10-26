@@ -3,7 +3,13 @@ package com.springboot.project.common.database;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
+import java.util.TimeZone;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.jinq.jpa.JinqJPAStreamProvider;
+import com.springboot.project.properties.DateFormatProperties;
+import cn.hutool.extra.spring.SpringUtil;
 
 /**
  * In order to call database-specific functions
@@ -22,7 +28,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal ifnull(Long value, int defaultValue) {
-        throw new RuntimeException();
+        return Optional.ofNullable(value).map(s -> new BigDecimal(s)).orElse(new BigDecimal(defaultValue));
     }
 
     /**
@@ -35,7 +41,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal ifnull(Integer value, int defaultValue) {
-        throw new RuntimeException();
+        return Optional.ofNullable(value).map(s -> new BigDecimal(s)).orElse(new BigDecimal(defaultValue));
     }
 
     /**
@@ -48,7 +54,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal ifnull(BigDecimal value, int defaultValue) {
-        throw new RuntimeException();
+        return Optional.ofNullable(value).orElse(new BigDecimal(defaultValue));
     }
 
     /**
@@ -58,7 +64,7 @@ public class JPQLFunction {
      * @return
      */
     public static Long foundTotalRowsForGroupBy() {
-        throw new RuntimeException();
+        throw new NotImplementedException();
     }
 
     /**
@@ -68,7 +74,8 @@ public class JPQLFunction {
      * @return like 2022
      */
     public static String formatDateAsYear(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(SpringUtil.getBean(DateFormatProperties.class).getYear(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -78,7 +85,8 @@ public class JPQLFunction {
      * @return like 2022-08
      */
     public static String formatDateAsYearMonth(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(SpringUtil.getBean(DateFormatProperties.class).getYearMonth(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -88,7 +96,8 @@ public class JPQLFunction {
      * @return like 2022-08-08
      */
     public static String formatDateAsYearMonthDay(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(SpringUtil.getBean(DateFormatProperties.class).getYearMonthDay(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -98,7 +107,8 @@ public class JPQLFunction {
      * @return like 2022-08-08 13
      */
     public static String formatDateAsYearMonthDayHour(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(SpringUtil.getBean(DateFormatProperties.class).getYearMonthDayHour(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -108,7 +118,8 @@ public class JPQLFunction {
      * @return like 2022-08-08 13:05
      */
     public static String formatDateAsYearMonthDayHourMinute(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(SpringUtil.getBean(DateFormatProperties.class).getYearMonthDayHourMinute(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -118,7 +129,10 @@ public class JPQLFunction {
      * @return like 2022-08-08 13:05:06
      */
     public static String formatDateAsYearMonthDayHourMinuteSecond(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat
+                .getInstance(SpringUtil.getBean(DateFormatProperties.class).getYearMonthDayHourMinuteSecond(),
+                        TimeZone.getTimeZone(utcOffset))
+                .format(date);
     }
 
     /**
@@ -128,7 +142,9 @@ public class JPQLFunction {
      * @return like 2022-08-08 13:05:06.008
      */
     public static String formatDateAsYearMonthDayHourMinuteSecondMillisecond(Date date, String utcOffset) {
-        throw new RuntimeException();
+        return FastDateFormat.getInstance(
+                SpringUtil.getBean(DateFormatProperties.class).getYearMonthDayHourMinuteSecondMillisecond(),
+                TimeZone.getTimeZone(utcOffset)).format(date);
     }
 
     /**
@@ -138,7 +154,7 @@ public class JPQLFunction {
      * @return
      */
     public static String convertToString(Integer value) {
-        throw new RuntimeException();
+        return String.valueOf(value);
     }
 
     /**
@@ -148,7 +164,7 @@ public class JPQLFunction {
      * @return
      */
     public static String convertToString(Long value) {
-        throw new RuntimeException();
+        return String.valueOf(value);
     }
 
     /**
@@ -158,7 +174,7 @@ public class JPQLFunction {
      * @return
      */
     public static String convertToString(BigDecimal value) {
-        throw new RuntimeException();
+        return Optional.ofNullable(value).map(s -> s.toPlainString()).orElse(null);
     }
 
     /**
@@ -170,7 +186,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal convertToBigDecimal(String value) {
-        throw new RuntimeException();
+        return new BigDecimal(value);
     }
 
     /**
@@ -181,7 +197,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal convertToBigDecimal(Long value) {
-        throw new RuntimeException();
+        return new BigDecimal(value);
     }
 
     /**
@@ -193,7 +209,7 @@ public class JPQLFunction {
      * @return
      */
     public static BigDecimal convertToBigDecimal(Integer value) {
-        throw new RuntimeException();
+        return new BigDecimal(value);
     }
 
     public static void registerCustomSqlFunction(JinqJPAStreamProvider jinqJPAStreamProvider) {

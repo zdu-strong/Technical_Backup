@@ -3,17 +3,18 @@ package com.springboot.project.service;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
 import com.springboot.project.enumerate.StorageSpaceEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.StorageSpaceModel;
+import cn.hutool.core.text.StrFormatter;
 
 @Service
 public class StorageSpaceService extends BaseService {
@@ -53,7 +54,8 @@ public class StorageSpaceService extends BaseService {
         request.setRequestURI(this.storage.getResoureUrlFromResourcePath(folderName));
         this.storage.delete(request);
         if (new File(this.storage.getRootPath(), folderName).exists()) {
-            throw new RuntimeException("Folder deletion failed. FolderName:" + folderName);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    StrFormatter.format("Folder deletion failed. FolderName:{}", folderName));
         }
         for (var storageSpaceEntity : this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
                 .toList()) {
@@ -96,13 +98,13 @@ public class StorageSpaceService extends BaseService {
 
     private void checkIsValidFolderName(String folderName) {
         if (StringUtils.isBlank(folderName)) {
-            throw new RuntimeException("Folder name cannot be empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name cannot be empty");
         }
         if (folderName.contains("/") || folderName.contains("\\")) {
-            throw new RuntimeException("Folder name is invalid");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name is invalid");
         }
         if (Paths.get(folderName).isAbsolute()) {
-            throw new RuntimeException("Folder name is invalid");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name is invalid");
         }
     }
 

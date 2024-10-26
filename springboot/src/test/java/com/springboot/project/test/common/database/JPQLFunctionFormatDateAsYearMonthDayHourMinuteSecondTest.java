@@ -1,6 +1,6 @@
 package com.springboot.project.test.common.database;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,7 @@ public class JPQLFunctionFormatDateAsYearMonthDayHourMinuteSecondTest extends Ba
 
     @Test
     public void test() {
-        assertThrows(RuntimeException.class, () -> {
-            JPQLFunction.formatDateAsYearMonthDayHourMinuteSecond(new Date(), this.utcOffset);
-        });
+        assertEquals(19, JPQLFunction.formatDateAsYearMonthDayHourMinuteSecond(new Date(), this.utcOffset).length());
     }
 
     @BeforeEach

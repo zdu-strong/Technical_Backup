@@ -13,9 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.model.StorageFileModel;
 import lombok.SneakyThrows;
@@ -39,7 +42,7 @@ public class BaseStorageSave extends BaseStorageCreateTempFile {
         if (resource.isFile()) {
             File sourceFile = resource.getFile();
             if (!sourceFile.exists()) {
-                throw new RuntimeException("Resource does not exist");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Resource does not exist");
             }
             if (sourceFile.isDirectory()) {
                 storageFileModel.setFolderSize(FileUtils.sizeOfDirectory(sourceFile));
@@ -69,7 +72,7 @@ public class BaseStorageSave extends BaseStorageCreateTempFile {
         if (resource.isFile()) {
             File sourceFile = resource.getFile();
             if (!sourceFile.exists()) {
-                throw new RuntimeException("Resource does not exist");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Resource does not exist");
             }
             if (this.cloud.enabled()) {
                 this.cloud.storageResource(sourceFile, storageFileModel.getRelativePath());

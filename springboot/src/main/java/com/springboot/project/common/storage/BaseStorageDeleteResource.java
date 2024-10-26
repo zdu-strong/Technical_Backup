@@ -4,7 +4,10 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -27,10 +30,10 @@ public class BaseStorageDeleteResource extends BaseStorage {
         String path = Paths.get(fileOrFolder.getAbsolutePath()).normalize().toString().replaceAll(Pattern.quote("\\"),
                 "/");
         if (!path.startsWith(this.getRootPath())) {
-            throw new RuntimeException("Unsupported path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported path");
         }
         if (path.equals(this.getRootPath())) {
-            throw new RuntimeException("Unsupported path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported path");
         }
         return this.getRelativePathFromResourcePath(
                 Paths.get(this.getRootPath()).relativize(Paths.get(path)).normalize().toString());

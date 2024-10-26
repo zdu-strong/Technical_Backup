@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.model.UserModel;
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.text.StrFormatter;
 
 @Service
 public class UserCheckService extends BaseService {
@@ -23,7 +24,7 @@ public class UserCheckService extends BaseService {
 
             if (StringUtils.isBlank(userEmail.getVerificationCodeEmail().getVerificationCode())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "The verification code of email " + userEmail.getEmail() + " cannot be empty");
+                        StrFormatter.format("The verification code of email {} cannot be empty", userEmail.getEmail()));
             }
 
             userEmail.getVerificationCodeEmail().setEmail(userEmail.getEmail());

@@ -10,9 +10,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import cn.hutool.extra.compress.CompressUtil;
@@ -58,7 +61,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
     public File createTempFileOrFolder(Resource resource) {
         String fileName = this.getFileNameFromResource(resource);
         if (StringUtils.isBlank(fileName)) {
-            throw new RuntimeException("File name cannot be empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File name cannot be empty");
         }
         if (resource instanceof FileSystemResource) {
             var tempFolder = this.createTempFolder();
