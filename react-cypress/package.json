@@ -42,6 +42,8 @@
     "@types/wait-on": "5.3.4",
     "@typescript-eslint/eslint-plugin": "8.6.0",
     "@typescript-eslint/parser": "8.6.0",
+    "chokidar": "4.0.1",
+    "cli-color": "2.0.4",
     "cypress": "13.14.2",
     "eslint": "8.57.0",
     "eslint-plugin-cypress": "3.5.0",
