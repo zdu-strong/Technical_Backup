@@ -1,9 +1,7 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-import java.util.TimeZone;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
@@ -78,9 +76,6 @@ public class VerificationCodeEmailService extends BaseService {
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
             var utcOffset = this.timeZoneUtil.getUtcOffset("UTC");
-            var createDateString = FastDateFormat
-                    .getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC"))
-                    .format(createDate);
             var beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
 
             isFirstOnTheSecond = this.VerificationCodeEmailEntity()
@@ -88,13 +83,14 @@ public class VerificationCodeEmailService extends BaseService {
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> JPQLFunction
                             .formatDateAsYearMonthDayHourMinuteSecond(s.getCreateDate(), utcOffset)
-                            .equals(createDateString))
+                            .equals(JPQLFunction.formatDateAsYearMonthDayHourMinuteSecond(createDate, utcOffset)))
                     .where((s, t) -> !t.stream(VerificationCodeEmailEntity.class)
                             .where(m -> m.getEmail().equals(email))
                             .where(m -> beforeDate.before(m.getCreateDate()))
                             .where(m -> JPQLFunction
                                     .formatDateAsYearMonthDayHourMinuteSecond(m.getCreateDate(), utcOffset)
-                                    .equals(createDateString))
+                                    .equals(JPQLFunction.formatDateAsYearMonthDayHourMinuteSecond(createDate,
+                                            utcOffset)))
                             .where(m -> m.getHasUsed())
                             .exists())
                     .sortedBy(s -> s.getId())
@@ -111,9 +107,6 @@ public class VerificationCodeEmailService extends BaseService {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
                 var utcOffset = this.timeZoneUtil.getUtcOffset("UTC");
-                var createDateString = FastDateFormat
-                        .getInstance(dateFormatProperties.getYearMonthDay(), TimeZone.getTimeZone("UTC"))
-                        .format(createDate);
                 var beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
 
                 var minVerificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
@@ -124,14 +117,14 @@ public class VerificationCodeEmailService extends BaseService {
                         .where(s -> !s.getHasUsed() || !s.getIsPassed())
                         .where(s -> JPQLFunction
                                 .formatDateAsYearMonthDay(s.getCreateDate(), utcOffset)
-                                .equals(createDateString))
+                                .equals(JPQLFunction.formatDateAsYearMonthDay(createDate, utcOffset)))
                         .where((s, t) -> !t.stream(VerificationCodeEmailEntity.class)
                                 .where(m -> m.getEmail().equals(email))
                                 .where(m -> beforeDate.before(m.getCreateDate()))
                                 .where(m -> m.getVerificationCode().length() == minVerificationCodeLength)
                                 .where(m -> JPQLFunction
                                         .formatDateAsYearMonthDay(m.getCreateDate(), utcOffset)
-                                        .equals(createDateString))
+                                        .equals(JPQLFunction.formatDateAsYearMonthDay(createDate, utcOffset)))
                                 .where(m -> m.getHasUsed() && !m.getIsPassed())
                                 .exists())
                         .sortedBy(s -> s.getId())
