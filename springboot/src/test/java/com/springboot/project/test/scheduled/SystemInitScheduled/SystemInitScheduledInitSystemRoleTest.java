@@ -11,7 +11,7 @@ public class SystemInitScheduledInitSystemRoleTest extends BaseTest {
     @Test
     public void test() {
         this.systemInitScheduled.scheduled();
-        var paginationModel = this.superAdminQuerySystemRoleService.searchByPagination(1, 200);
+        var paginationModel = this.superAdminUserRoleQueryService.searchByPagination(1, 200);
         var systemRoleList = paginationModel.getList();
         assertEquals(1, systemRoleList.size());
         var systemRole = JinqStream.from(systemRoleList).getOnlyValue();

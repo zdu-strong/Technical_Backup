@@ -1,18 +1,20 @@
 import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
 import { DataGrid, GridColDef, useGridApiRef } from '@mui/x-data-grid';
 import { Box, Button } from "@mui/material";
+import linq from 'linq'
 import { format } from "date-fns";
 import { AutoSizer } from "react-virtualized";
 import { SystemRolePaginationModel } from "@/model/SystemRolePaginationModel";
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 import { SystemRoleModel } from "@/model/SystemRoleModel";
+import { useSearchParams } from "react-router-dom";
 
 const columns: GridColDef<SystemRoleModel>[] = [
   {
     headerName: 'ID',
     field: 'id',
-    width: 285
+    width: 290
   },
   {
     headerName: 'Name',
@@ -33,15 +35,19 @@ const columns: GridColDef<SystemRoleModel>[] = [
   },
 ];
 
-export default observer(() => {
+export default observer((props: { companyId: string }) => {
 
   const state = useMobxState({
     ready: false,
     loading: true,
-    error: null as any,
+    error: null,
     systemRolePaginationModel: null as any as SystemRolePaginationModel,
   }, {
     dataGridRef: useGridApiRef(),
+    ...((() => {
+      var [uRLSearchParams, setURLSearchParams] = useSearchParams();
+      return { uRLSearchParams, setURLSearchParams };
+    })()),
   });
 
   useMount(async () => {
@@ -49,25 +55,21 @@ export default observer(() => {
   })
 
   async function searchByPagination() {
-    try {
-      state.loading = true;
-      state.systemRolePaginationModel = await api.SuperAdminQuerySystemRole.searchByPagination();
-      state.loading = false;
-      state.ready = true;
-    } catch (e) {
-      state.error = e;
-    } finally {
-      state.loading = false;
-    }
+    state.systemRolePaginationModel = await api.SuperAdminSystemRoleQuery.searchByPagination();
+    state.loading = false;
+    state.ready = true;
+  }
+
+  function showSelectedIdList() {
+    const idList = linq.from(state.dataGridRef.current.getSelectedRows().keys()).select(s => s as string).toArray();
+    console.log(idList)
   }
 
   return <LoadingOrErrorComponent ready={state.ready} error={!state.ready && state.error}>
     <div className="flex flex-col flex-auto" style={{ paddingLeft: "50px", paddingRight: "50px" }}>
-      <div className="flex flex-row" style={{ marginTop: "10px", marginBottom: "10px" }}>
-        <Button variant="contained" onClick={searchByPagination}>
-          {"Refresh"}
-        </Button>
-      </div>
+      <Button variant="contained" style={{ marginTop: "10px", marginBottom: "10px" }} onClick={showSelectedIdList}>
+        {"Show"}
+      </Button>
       <AutoSizer className="flex flex-col flex-auto">
         {({ width, height }) => <Box width={width} height={height}>
           <DataGrid

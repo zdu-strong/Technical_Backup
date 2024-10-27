@@ -19,7 +19,9 @@ import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeService;
-import com.springboot.project.service.SuperAdminQuerySystemRoleService;
+import com.springboot.project.service.SuperAdminOrganizeRoleQueryService;
+import com.springboot.project.service.SuperAdminUserQueryService;
+import com.springboot.project.service.SuperAdminUserRoleQueryService;
 import com.springboot.project.service.SystemRoleCheckService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
@@ -138,6 +140,12 @@ public class BaseController {
     protected SystemRoleCheckService systemRoleCheckService;
 
     @Autowired
-    protected SuperAdminQuerySystemRoleService superAdminQuerySystemRoleService;
+    protected SuperAdminUserRoleQueryService superAdminUserRoleQueryService;
+
+    @Autowired
+    protected SuperAdminOrganizeRoleQueryService superAdminOrganizeRoleQueryService;
+
+    @Autowired
+    protected SuperAdminUserQueryService superAdminUserQueryService;
 
 }

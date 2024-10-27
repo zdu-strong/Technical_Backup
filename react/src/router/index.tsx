@@ -5,8 +5,9 @@ import SignInPage from '@/router/page/SignInPage';
 import SignUpPage from '@/router/page/SignUpPage';
 import GitPage from '@/router/page/GitPage';
 import NotFoundPage from '@/router/page/NotFoundPage';
-import UserRoleManagePage from '@/router/page/UserRoleManagePage';
-import OrganizeRoleManagePage from '@/router/page/OrganizeRoleManagePage';
+import SuperAdminUserRoleManagePage from '@/router/page/SuperAdminUserRoleManagePage';
+import SuperAdminOrganizeRoleManagePage from '@/router/page/SuperAdminOrganizeRoleManagePage';
+import SuperAdminUserManagePage from '@/router/page/SuperAdminUserManagePage';
 
 export default (
   <BrowserRouter>
@@ -18,8 +19,9 @@ export default (
       <Route path="/git" element={GitPage} />
       <Route path="/home" element={<Home />} />
       <Route path="/404" element={NotFoundPage} />
-      <Route path="/user_role/manage" element={UserRoleManagePage} />
-      <Route path="/organize_role/manage" element={OrganizeRoleManagePage} />
+      <Route path="/super_admin/user_role/manage" element={SuperAdminUserRoleManagePage} />
+      <Route path="/super_admin/organize_role/manage" element={SuperAdminOrganizeRoleManagePage} />
+      <Route path="/super_admin/user/manage" element={SuperAdminUserManagePage} />
       <Route path="*" element={NotFoundPage} />
     </Routes>
   </BrowserRouter>

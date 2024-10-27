@@ -23,6 +23,12 @@ export class UserModel {
   @jsonMember(Boolean)
   menuOpen!: boolean;
 
+  @jsonMember(Date)
+  createDate!: Date;
+
+  @jsonMember(Date)
+  updateDate!: Date;
+
   constructor() {
     makeAutoObservable(this);
   }

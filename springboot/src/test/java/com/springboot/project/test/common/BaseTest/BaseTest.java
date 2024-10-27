@@ -70,7 +70,9 @@ import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
-import com.springboot.project.service.SuperAdminQuerySystemRoleService;
+import com.springboot.project.service.SuperAdminOrganizeRoleQueryService;
+import com.springboot.project.service.SuperAdminUserQueryService;
+import com.springboot.project.service.SuperAdminUserRoleQueryService;
 import com.springboot.project.service.SystemDefaultRoleService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
@@ -204,7 +206,13 @@ public class BaseTest {
     protected SystemDefaultRoleService systemDefaultRoleService;
 
     @Autowired
-    protected SuperAdminQuerySystemRoleService superAdminQuerySystemRoleService;
+    protected SuperAdminUserRoleQueryService superAdminUserRoleQueryService;
+
+    @Autowired
+    protected SuperAdminOrganizeRoleQueryService superAdminOrganizeRoleQueryService;
+
+    @Autowired
+    protected SuperAdminUserQueryService superAdminUserQueryService;
 
     @Autowired
     protected MessageScheduled messageScheduled;

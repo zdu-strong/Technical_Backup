@@ -9,7 +9,7 @@ import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.SystemRoleModel;
 
 @Service
-public class SuperAdminQuerySystemRoleService extends BaseService {
+public class SuperAdminUserRoleQueryService extends BaseService {
 
     public PaginationModel<SystemRoleModel> searchByPagination(long pageNum, long pageSize) {
         var roles = Arrays.stream(SystemRoleEnum.values())

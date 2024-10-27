@@ -3,7 +3,8 @@ import * as UserMessage from '@/api/UserMessage'
 import * as Git from '@/api/Git'
 import * as Resource from '@/api/Resource'
 import * as Friendship from '@/api/Friendship'
-import * as SuperAdminQuerySystemRole from '@/api/SuperAdminQuerySystemRole'
+import * as SuperAdminSystemRoleQuery from '@/api/SuperAdminUserRoleQuery'
+import * as SuperAdminUserQuery from '@/api/SuperAdminUserQuery'
 
 export default {
   Authorization,
@@ -11,7 +12,8 @@ export default {
   Git,
   Friendship,
   Resource,
-  SuperAdminQuerySystemRole,
+  SuperAdminSystemRoleQuery,
+  SuperAdminUserQuery,
 }
 
 

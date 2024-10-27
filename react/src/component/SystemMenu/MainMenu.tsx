@@ -111,7 +111,7 @@ export default observer((props: {
               ⌘C
             </Typography>
           </MenuItem>
-          <MenuItem onClick={() => state.navigate("/user_role/manage")}>
+          <MenuItem onClick={() => state.navigate("/super_admin/user_role/manage")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
@@ -120,11 +120,20 @@ export default observer((props: {
               ⌘V
             </Typography>
           </MenuItem>
-          <MenuItem onClick={() => state.navigate("/organize_role/manage")}>
+          <MenuItem onClick={() => state.navigate("/super_admin/organize_role/manage")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
             <ListItemText>Organize Role Manage</ListItemText>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              ⌘V
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={() => state.navigate("/super_admin/user/manage")}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faPaste} />
+            </ListItemIcon>
+            <ListItemText>User Manage</ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘V
             </Typography>
