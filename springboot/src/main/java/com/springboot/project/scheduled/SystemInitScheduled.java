@@ -87,7 +87,7 @@ public class SystemInitScheduled {
         }
         var superAdminUser = new UserModel();
         superAdminUser.setUsername("SuperAdmin");
-        superAdminUser.setPassword("zdu.strong@gmail.com");
+        superAdminUser.setPassword(email);
         var verificationCodeEmailModel = this.authorizationEmailUtil.sendVerificationCode(email);
         verificationCodeEmailModel.setVerificationCode(
                 this.verificationCodeEmailService.getById(verificationCodeEmailModel.getId()).getVerificationCode());

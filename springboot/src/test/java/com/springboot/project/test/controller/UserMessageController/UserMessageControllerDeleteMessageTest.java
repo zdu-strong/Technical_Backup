@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -28,7 +29,8 @@ public class UserMessageControllerDeleteMessageTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
-        this.userId = this.createAccount("zdu.strong@gmail.com").getId();
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        this.userId = this.createAccount(email).getId();
         var userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
         this.id = this.userMessageService.sendMessage(userMessage).getId();
     }

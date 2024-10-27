@@ -9,6 +9,8 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -32,7 +34,8 @@ public class UserControllerGetUserByIdTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
-        this.userId = this.createAccount("zdu.strong@gmail.com").getId();
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        this.userId = this.createAccount(email).getId();
     }
 
 }

@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -24,7 +25,8 @@ public class UserMessageServiceSendMessageTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        var userId = this.createAccount("zdu.strong@gmail.com").getId();
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        var userId = this.createAccount(email).getId();
         this.userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
     }
 }

@@ -3,39 +3,13 @@ import { DataGrid, GridColDef, useGridApiRef } from '@mui/x-data-grid';
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
 import { AutoSizer } from "react-virtualized";
-import { SystemRolePaginationModel } from "@/model/SystemRolePaginationModel";
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
-import { SystemRoleModel } from "@/model/SystemRoleModel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { UserPaginationModel } from "@/model/UserPaginationModel";
 import { UserModel } from "@/model/UserModel";
-
-const columns: GridColDef<UserModel>[] = [
-  {
-    headerName: 'ID',
-    field: 'id',
-    width: 290
-  },
-  {
-    headerName: 'Name',
-    field: 'username',
-    width: 150,
-    flex: 1,
-  },
-  {
-    headerName: 'Create date',
-    field: 'createDate',
-    description: 'This column has a value getter and is not sortable.',
-    renderCell: (row) => {
-      return <div>
-        {format(row.row.createDate, "yyyy-MM-dd HH:mm:ss")}
-      </div>
-    },
-    width: 150,
-  },
-];
+import SuperAdminUserDetailButton from "./SuperAdminUserDetailButton";
 
 export default observer(() => {
 
@@ -44,6 +18,38 @@ export default observer(() => {
     loading: true,
     error: null as any,
     userPaginationModel: null as any as UserPaginationModel,
+    columns: [
+      {
+        headerName: 'ID',
+        field: 'id',
+        width: 290
+      },
+      {
+        headerName: 'Name',
+        field: 'username',
+        width: 150,
+        flex: 1,
+      },
+      {
+        headerName: 'Create date',
+        field: 'createDate',
+        renderCell: (row) => {
+          return <div>
+            {format(row.row.createDate, "yyyy-MM-dd HH:mm:ss")}
+          </div>
+        },
+        width: 150,
+      },
+      {
+        headerName: 'Operation',
+        field: '',
+        renderCell: (row) => <SuperAdminUserDetailButton
+          id={row.row.id}
+          searchByPagination={searchByPagination}
+        />,
+        width: 150,
+      },
+    ] as GridColDef<UserModel>[],
   }, {
     dataGridRef: useGridApiRef(),
   });
@@ -84,7 +90,7 @@ export default observer(() => {
             sortingMode="client"
             rows={state.userPaginationModel.list}
             getRowId={(s) => s.id}
-            columns={columns}
+            columns={state.columns}
             autoPageSize
             disableRowSelectionOnClick
             disableColumnMenu

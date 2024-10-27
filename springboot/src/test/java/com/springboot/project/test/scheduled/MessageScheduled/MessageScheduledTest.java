@@ -15,6 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
@@ -46,7 +47,8 @@ public class MessageScheduledTest extends BaseTest {
             JsonProcessingException {
         var webSocketServer = new URIBuilder("ws" + this.testRestTemplate.getRootUri().substring(4)).build()
                 .toString();
-        this.user = this.createAccount("zdu.strong@gmail.com");
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        this.user = this.createAccount(email);
         var accessToken = this.user.getAccessToken();
         var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
         this.userMessageService.sendMessage(userMessage);

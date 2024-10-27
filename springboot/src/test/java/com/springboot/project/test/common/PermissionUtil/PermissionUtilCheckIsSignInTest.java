@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class PermissionUtilCheckIsSignInTest extends BaseTest {
@@ -14,7 +15,8 @@ public class PermissionUtilCheckIsSignInTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        var user = this.createAccount("zdu.strong@gmail.com");
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        var user = this.createAccount(email);
         this.request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + user.getAccessToken());
     }
 }

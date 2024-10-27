@@ -23,7 +23,8 @@ public class UserControllerGetUserByIdNotExistsUserTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
-        this.createAccount("zdu.strong@gmail.com").getId();
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        this.createAccount(email).getId();
         this.userId = Generators.timeBasedReorderedGenerator().generate().toString();
     }
 

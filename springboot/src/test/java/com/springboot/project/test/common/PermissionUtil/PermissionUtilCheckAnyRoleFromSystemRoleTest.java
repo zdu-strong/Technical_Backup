@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -22,7 +23,8 @@ public class PermissionUtilCheckAnyRoleFromSystemRoleTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        this.user = this.createAccount("zdu.strong@gmail.com");
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+        this.user = this.createAccount(email);
         this.request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + user.getAccessToken());
     }
 }
