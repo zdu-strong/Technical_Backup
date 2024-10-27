@@ -15,12 +15,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.LongTermTaskModel;
 
+import lombok.SneakyThrows;
+
 @RestController
 public class LongTermTaskController extends BaseController {
 
     @GetMapping("/long_term_task/is_done")
-    public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String id)
-            throws JsonProcessingException {
+    @SneakyThrows
+    public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String id) {
         id = this.encryptDecryptService.decryptByAES(id);
 
         this.longTermTaskCheckService
@@ -58,8 +60,8 @@ public class LongTermTaskController extends BaseController {
      * @throws JsonProcessingException
      */
     @GetMapping("/long_term_task")
-    public ResponseEntity<?> getLongTermTask(@RequestParam String id)
-            throws JsonProcessingException {
+    @SneakyThrows
+    public ResponseEntity<?> getLongTermTask(@RequestParam String id) {
 
         id = this.encryptDecryptService.decryptByAES(id);
 

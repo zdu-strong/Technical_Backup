@@ -1,9 +1,9 @@
 package com.springboot.project.common.StorageResource;
 
-import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.springframework.core.io.ClassPathResource;
+import lombok.SneakyThrows;
 
 public class RangeClassPathResource extends ClassPathResource {
     private long startIndex;
@@ -21,7 +21,8 @@ public class RangeClassPathResource extends ClassPathResource {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    @SneakyThrows
+    public InputStream getInputStream() {
         InputStream input = null;
         try {
             input = super.getInputStream();

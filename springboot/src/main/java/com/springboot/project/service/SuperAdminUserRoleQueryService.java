@@ -1,6 +1,8 @@
 package com.springboot.project.service;
 
 import java.util.Arrays;
+import java.util.List;
+
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
@@ -27,6 +29,25 @@ public class SuperAdminUserRoleQueryService extends BaseService {
                 .toList();
         var stream = JinqStream.from(systemRoleList);
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.systemRoleFormatter.format(s));
+    }
+
+    public List<SystemRoleModel> getUserRoleListOfSuperAdmin() {
+        var roles = Arrays.stream(SystemRoleEnum.values())
+                .filter(s -> !s.getIsOrganizeRole())
+                .filter(s -> s.getIsSuperAdmin())
+                .map(s -> s.getRole())
+                .toList();
+        var systemRoleList = this.SystemDefaultRoleEntity()
+                .where(s -> roles.contains(s.getName()))
+                .selectAllList(s -> s.getSystemRoleRelationList())
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getOrganize() == null)
+                .filter(s -> Arrays.stream(SystemRoleEnum.values())
+                        .anyMatch(m -> m.getRole().equals(s.getName()) && !m.getIsOrganizeRole()))
+                .map(s -> this.systemRoleFormatter.format(s))
+                .toList();
+        return systemRoleList;
     }
 
 }

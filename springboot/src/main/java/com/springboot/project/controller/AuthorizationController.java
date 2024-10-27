@@ -14,6 +14,8 @@ import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
 
+import lombok.SneakyThrows;
+
 @RestController
 public class AuthorizationController extends BaseController {
 
@@ -28,8 +30,8 @@ public class AuthorizationController extends BaseController {
      * @throws JsonProcessingException
      */
     @PostMapping("/sign_in")
-    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
-            throws JsonProcessingException {
+    @SneakyThrows
+    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password) {
         this.userCheckService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
 
@@ -46,8 +48,8 @@ public class AuthorizationController extends BaseController {
     }
 
     @PostMapping("/sign_in/one_time_password")
-    public ResponseEntity<?> signInOneTime(@RequestParam String username, @RequestParam String password)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, JsonProcessingException {
+    @SneakyThrows
+    public ResponseEntity<?> signInOneTime(@RequestParam String username, @RequestParam String password) {
         this.userCheckService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
         var accessToken = this.tokenService.generateAccessToken(userId, password);
@@ -68,8 +70,7 @@ public class AuthorizationController extends BaseController {
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity<?> signUp(@RequestBody UserModel userModel)
-            throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public ResponseEntity<?> signUp(@RequestBody UserModel userModel) {
         this.userCheckService.checkCannotEmptyOfUsername(userModel);
         this.userCheckService.checkValidEmailForSignUp(userModel);
         this.userRoleRelationCheckService.checkUserRoleRelationListMustBeEmpty(userModel);

@@ -1,6 +1,5 @@
 package com.springboot.project.controller;
 
-import java.io.IOException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,7 @@ import com.springboot.project.common.baseController.BaseController;
 public class FriendshipController extends BaseController {
 
     @PostMapping("/friendship/add_to_friend_list")
-    public ResponseEntity<?> addToFriendList(@RequestParam String friendId) throws IOException {
+    public ResponseEntity<?> addToFriendList(@RequestParam String friendId) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -23,7 +22,7 @@ public class FriendshipController extends BaseController {
     }
 
     @PostMapping("/friendship/add_to_blacklist")
-    public ResponseEntity<?> addToBlacklist(@RequestParam String friendId) throws IOException {
+    public ResponseEntity<?> addToBlacklist(@RequestParam String friendId) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -33,7 +32,7 @@ public class FriendshipController extends BaseController {
     }
 
     @DeleteMapping("/friendship/delete_from_friend_list")
-    public ResponseEntity<?> deleteFromFriendList(@RequestParam String friendId) throws IOException {
+    public ResponseEntity<?> deleteFromFriendList(@RequestParam String friendId) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -43,7 +42,7 @@ public class FriendshipController extends BaseController {
     }
 
     @DeleteMapping("/friendship/delete_from_black_list")
-    public ResponseEntity<?> deleteFromBlacklist(@RequestParam String friendId) throws IOException {
+    public ResponseEntity<?> deleteFromBlacklist(@RequestParam String friendId) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -53,7 +52,7 @@ public class FriendshipController extends BaseController {
     }
 
     @GetMapping("/friendship/get_friend_list")
-    public ResponseEntity<?> getFriendList(@RequestParam Long pageNum, @RequestParam Long pageSize) throws IOException {
+    public ResponseEntity<?> getFriendList(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -63,8 +62,7 @@ public class FriendshipController extends BaseController {
     }
 
     @GetMapping("/friendship/get_stranger_list")
-    public ResponseEntity<?> getStrangerList(@RequestParam Long pageNum, @RequestParam Long pageSize)
-            throws IOException {
+    public ResponseEntity<?> getStrangerList(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -74,7 +72,7 @@ public class FriendshipController extends BaseController {
     }
 
     @GetMapping("/friendship/get_blacklist")
-    public ResponseEntity<?> getBlacklist(@RequestParam Long pageNum, @RequestParam Long pageSize) throws IOException {
+    public ResponseEntity<?> getBlacklist(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);
@@ -84,7 +82,7 @@ public class FriendshipController extends BaseController {
     }
 
     @GetMapping("/friendship/get_friendship")
-    public ResponseEntity<?> getFriendship(@RequestParam String friendId) throws IOException {
+    public ResponseEntity<?> getFriendship(@RequestParam String friendId) {
         this.permissionUtil.checkIsSignIn(request);
 
         var userId = this.permissionUtil.getUserId(request);

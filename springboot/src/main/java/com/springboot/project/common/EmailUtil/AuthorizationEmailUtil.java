@@ -2,7 +2,6 @@ package com.springboot.project.common.EmailUtil;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
 import java.time.Duration;
 import java.util.regex.Pattern;
 import jakarta.mail.internet.MimeMessage;
@@ -42,7 +41,8 @@ public class AuthorizationEmailUtil {
     @Autowired
     private DateFormatProperties dateFormatProperties;
 
-    public VerificationCodeEmailModel sendVerificationCode(String email) throws ParseException {
+    @SneakyThrows
+    public VerificationCodeEmailModel sendVerificationCode(String email) {
         VerificationCodeEmailModel verificationCodeEmailModel = null;
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);

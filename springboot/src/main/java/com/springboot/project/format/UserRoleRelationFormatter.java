@@ -14,8 +14,12 @@ public class UserRoleRelationFormatter extends BaseService {
         var userRoleRelationModel = new UserRoleRelationModel();
         BeanUtils.copyProperties(userSystemRoleRelationEntity, userRoleRelationModel);
         userRoleRelationModel.setUser(new UserModel().setId(userSystemRoleRelationEntity.getUser().getId()));
-        userRoleRelationModel.setOrganize(this.organizeFormatter.format(userSystemRoleRelationEntity.getOrganize()));
-        userRoleRelationModel.setSystemRole(this.systemRoleFormatter.format(userSystemRoleRelationEntity.getSystemRole()));
+        if (userSystemRoleRelationEntity.getOrganize() != null) {
+            userRoleRelationModel
+                    .setOrganize(this.organizeFormatter.format(userSystemRoleRelationEntity.getOrganize()));
+        }
+        userRoleRelationModel
+                .setSystemRole(this.systemRoleFormatter.format(userSystemRoleRelationEntity.getSystemRole()));
         return userRoleRelationModel;
     }
 

@@ -1,13 +1,11 @@
 package com.springboot.project.controller;
 
-import java.io.IOException;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.net.URISyntaxException;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.common.baseController.BaseController;
+import lombok.SneakyThrows;
 
 @RestController
 public class ResourceController extends BaseController {
 
     @GetMapping("/resource/**/*")
-    public ResponseEntity<?> getResource() throws IOException {
+    @SneakyThrows
+    public ResponseEntity<?> getResource() {
         var resource = this.storage.getResourceFromRequest(request);
         var totalContentLength = resource.contentLength();
 
@@ -49,7 +49,8 @@ public class ResourceController extends BaseController {
     }
 
     @GetMapping("/download/resource/**/*")
-    public ResponseEntity<?> downloadResource() throws IOException {
+    @SneakyThrows
+    public ResponseEntity<?> downloadResource() {
         var resource = this.storage.getResourceFromRequest(request);
         var totalContentLength = resource.contentLength();
 
@@ -77,13 +78,13 @@ public class ResourceController extends BaseController {
     }
 
     @PostMapping("/upload/resource")
-    public ResponseEntity<?> uploadResource(@RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadResource(@RequestParam MultipartFile file) {
         var storageFileModel = this.storage.storageResource(file);
         return ResponseEntity.ok(storageFileModel.getRelativeUrl());
     }
 
     @PostMapping("/upload/merge")
-    public ResponseEntity<?> mergeResource(@RequestBody String[] urlList) throws IOException, URISyntaxException {
+    public ResponseEntity<?> mergeResource(@RequestBody String[] urlList) {
         return this.longTermTaskUtil.run(() -> {
             var resourceList = JinqStream.from(Lists.newArrayList(urlList)).select(url -> {
                 var mockHttpServletRequest = new MockHttpServletRequest();
@@ -102,7 +103,7 @@ public class ResourceController extends BaseController {
     }
 
     @GetMapping("/is_directory/resource/**/*")
-    public ResponseEntity<?> isDirectoryOfResource() throws IOException {
+    public ResponseEntity<?> isDirectoryOfResource() {
         var isDirectory = this.storage.isDirectory(request);
         return ResponseEntity.ok(isDirectory);
     }

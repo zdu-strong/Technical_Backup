@@ -8,6 +8,8 @@ import java.net.URLConnection;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.ResourceUtils;
 
+import lombok.SneakyThrows;
+
 public class RangeCloudStorageUrlResource extends UrlResource {
     private long startIndex;
     private long rangeContentLength;
@@ -19,7 +21,8 @@ public class RangeCloudStorageUrlResource extends UrlResource {
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    @SneakyThrows
+    public InputStream getInputStream() {
         URLConnection con = this.getURL().openConnection();
         con.setRequestProperty("range", "bytes=" + startIndex + "-" + (startIndex + rangeContentLength - 1));
         ResourceUtils.useCachesIfNecessary(con);
@@ -35,7 +38,7 @@ public class RangeCloudStorageUrlResource extends UrlResource {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return this.rangeContentLength;
     }
 

@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +33,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
@@ -227,7 +223,7 @@ public class BaseTest {
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
-    public void beforeEachOfBaseTest() throws Throwable {
+    public void beforeEachOfBaseTest() {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         this.systemInitScheduled.scheduled();
@@ -254,7 +250,8 @@ public class BaseTest {
         }
     }
 
-    protected VerificationCodeEmailModel sendVerificationCode(String email) throws URISyntaxException {
+    @SneakyThrows
+    protected VerificationCodeEmailModel sendVerificationCode(String email) {
         var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);
@@ -271,8 +268,8 @@ public class BaseTest {
         this.request.removeHeader(HttpHeaders.AUTHORIZATION);
     }
 
-    private void signUp(String email, String password)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, URISyntaxException, JsonProcessingException {
+    @SneakyThrows
+    private void signUp(String email, String password) {
         var verificationCodeEmail = sendVerificationCode(email);
         var userModelOfSignUp = new UserModel();
         userModelOfSignUp
@@ -297,9 +294,8 @@ public class BaseTest {
         }
     }
 
-    private UserModel signIn(String email, String password)
-            throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException,
-            JsonProcessingException {
+    @SneakyThrows
+    private UserModel signIn(String email, String password) {
         var secretKeyOfAES = this.encryptDecryptService
                 .generateSecretKeyOfAES(password);
         var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),

@@ -1,6 +1,5 @@
 package com.springboot.project.common.StorageResource;
 
-import java.io.IOException;
 import java.net.URL;
 import org.springframework.core.io.UrlResource;
 
@@ -14,7 +13,7 @@ public class CloudStorageUrlResource extends UrlResource {
 	}
 
 	@Override
-	public long contentLength() throws IOException {
+	public long contentLength() {
 		return this.contentLength;
 	}
 

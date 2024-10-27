@@ -1,6 +1,5 @@
 package com.springboot.project.controller;
 
-import java.text.ParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,8 +10,7 @@ import com.springboot.project.common.baseController.BaseController;
 public class AuthorizationEmailController extends BaseController {
 
     @PostMapping("/email/send_verification_code")
-    public ResponseEntity<?> sendVerificationCode(@RequestParam String email)
-            throws ParseException {
+    public ResponseEntity<?> sendVerificationCode(@RequestParam String email) {
         this.userEmailCheckService.checkCannotEmptyOfEmail(email);
         this.userEmailCheckService.checkEmailCorrectFormat(email);
 

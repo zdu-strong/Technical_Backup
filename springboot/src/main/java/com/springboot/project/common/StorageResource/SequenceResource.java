@@ -1,6 +1,5 @@
 package com.springboot.project.common.StorageResource;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.util.Enumeration;
@@ -66,7 +65,7 @@ public class SequenceResource extends AbstractResource {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return Lists.newArrayList(resources).stream().mapToLong(sneaky((s) -> s.contentLength())).sum();
     }
 

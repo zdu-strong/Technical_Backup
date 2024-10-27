@@ -139,4 +139,10 @@ public class VerificationCodeEmailService extends BaseService {
         return isFirstOnTheSecond;
     }
 
+    public VerificationCodeEmailModel getById(String id) {
+        var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
+                .getOnlyValue();
+        return this.verificationCodeEmailFormatter.format(verificationCodeEmailEntity);
+    }
+
 }

@@ -1,6 +1,5 @@
 package com.springboot.project.controller;
 
-import java.io.IOException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +23,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<?> getUserById(@RequestParam String id) throws IOException {
+    public ResponseEntity<?> getUserById(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
         this.userCheckService.checkExistUserById(id);
 
@@ -33,7 +32,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/user/create")
-    public ResponseEntity<?> create(@RequestBody UserModel user) throws IOException {
+    public ResponseEntity<?> create(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
         this.userRoleRelationCheckService.checkRole(user, request);
         this.userCheckService.checkCannotEmptyOfUsername(user);
@@ -44,7 +43,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("/user/update")
-    public ResponseEntity<?> update(@RequestBody UserModel user) throws IOException {
+    public ResponseEntity<?> update(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
         this.userCheckService.checkExistUserById(user.getId());
         this.userRoleRelationCheckService.checkRole(user, request);
