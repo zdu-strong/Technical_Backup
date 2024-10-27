@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { UserPaginationModel } from "@/model/UserPaginationModel";
 import { UserModel } from "@/model/UserModel";
-import SuperAdminUserDetailButton from "./SuperAdminUserDetailButton";
+import SuperAdminUserDetailButton from "@/component/SuperAdminUserManage/SuperAdminUserDetailButton";
 
 export default observer(() => {
 
