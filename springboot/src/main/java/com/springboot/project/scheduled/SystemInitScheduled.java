@@ -15,7 +15,6 @@ import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.service.EncryptDecryptService;
-import com.springboot.project.service.SuperAdminUserRoleQueryService;
 import com.springboot.project.service.SystemDefaultRoleService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.UserService;
@@ -49,9 +48,6 @@ public class SystemInitScheduled {
 
     @Autowired
     private VerificationCodeEmailService verificationCodeEmailService;
-
-    @Autowired
-    private SuperAdminUserRoleQueryService superAdminUserRoleQueryService;
 
     private boolean hasInit = false;
 
@@ -94,7 +90,7 @@ public class SystemInitScheduled {
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
         superAdminUser.setOrganizeRoleRelationList(List.of());
-        superAdminUser.setUserRoleRelationList(this.superAdminUserRoleQueryService.getUserRoleListOfSuperAdmin()
+        superAdminUser.setUserRoleRelationList(this.systemRoleService.getUserRoleListForSuperAdmin()
                 .stream()
                 .map(s -> new UserRoleRelationModel().setSystemRole(s))
                 .toList());

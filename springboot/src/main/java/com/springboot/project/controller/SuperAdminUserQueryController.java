@@ -13,7 +13,7 @@ public class SuperAdminUserQueryController extends BaseController {
     public ResponseEntity<?> getUserById(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
 
-        var pagination = this.superAdminUserQueryService.searchByPagination(pageNum, pageSize);
+        var pagination = this.userService.searchForSuperAdminByPagination(pageNum, pageSize);
         return ResponseEntity.ok(pagination);
     }
 

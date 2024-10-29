@@ -17,9 +17,6 @@ import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeService;
-import com.springboot.project.service.SuperAdminOrganizeRoleQueryService;
-import com.springboot.project.service.SuperAdminUserQueryService;
-import com.springboot.project.service.SuperAdminUserRoleQueryService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
@@ -107,15 +104,6 @@ public class BaseController {
 
     @Autowired
     protected SystemRoleService systemRoleService;
-
-    @Autowired
-    protected SuperAdminUserRoleQueryService superAdminUserRoleQueryService;
-
-    @Autowired
-    protected SuperAdminOrganizeRoleQueryService superAdminOrganizeRoleQueryService;
-
-    @Autowired
-    protected SuperAdminUserQueryService superAdminUserQueryService;
 
     @Autowired
     protected UserRoleRelationService userRoleRelationService;

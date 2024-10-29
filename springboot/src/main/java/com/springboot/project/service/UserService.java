@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserEntity;
+import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserModel;
 
 import cn.hutool.core.lang.Validator;
@@ -99,6 +100,13 @@ public class UserService extends BaseService {
                     .getOnlyValue();
             return userEntity.getId();
         }
+    }
+
+    public PaginationModel<UserModel> searchForSuperAdminByPagination(long pageNum, long pageSize) {
+        var stream = this.UserEntity()
+                .where(s -> s.getIsActive())
+                .sortedDescendingBy(s -> s.getCreateDate());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.userFormatter.format(s));
     }
 
     public void checkValidEmailForSignUp(UserModel userModel) {
