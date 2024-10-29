@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.LongTermTaskModel;
-
 import lombok.SneakyThrows;
 
 @RestController
@@ -25,7 +24,7 @@ public class LongTermTaskController extends BaseController {
     public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String id) {
         id = this.encryptDecryptService.decryptByAES(id);
 
-        this.longTermTaskCheckService
+        this.longTermTaskService
                 .checkIsExistLongTermTaskById(id);
 
         var expireDate = DateUtils.addSeconds(new Date(), 30);
@@ -65,7 +64,7 @@ public class LongTermTaskController extends BaseController {
 
         id = this.encryptDecryptService.decryptByAES(id);
 
-        this.longTermTaskCheckService
+        this.longTermTaskService
                 .checkIsExistLongTermTaskById(id);
 
         var response = this.longTermTaskService

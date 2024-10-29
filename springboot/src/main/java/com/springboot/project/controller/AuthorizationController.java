@@ -32,7 +32,7 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_in")
     @SneakyThrows
     public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password) {
-        this.userCheckService.checkExistAccount(username);
+        this.userService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
 
         var secretKeyOfAES = this.encryptDecryptService
@@ -50,7 +50,7 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_in/one_time_password")
     @SneakyThrows
     public ResponseEntity<?> signInOneTime(@RequestParam String username, @RequestParam String password) {
-        this.userCheckService.checkExistAccount(username);
+        this.userService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
         var accessToken = this.tokenService.generateAccessToken(userId, password);
         var user = this.userService.getUserWithMoreInformation(userId);
@@ -71,11 +71,11 @@ public class AuthorizationController extends BaseController {
 
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel) {
-        this.userCheckService.checkCannotEmptyOfUsername(userModel);
-        this.userCheckService.checkValidEmailForSignUp(userModel);
-        this.userRoleRelationCheckService.checkUserRoleRelationListMustBeEmpty(userModel);
-        this.userRoleRelationCheckService.checkOrganizeRoleRelationListMustBeEmpty(userModel);
-        this.userCheckService.checkCannotEmptyOfPassword(userModel);
+        this.userService.checkCannotEmptyOfUsername(userModel);
+        this.userService.checkValidEmailForSignUp(userModel);
+        this.userRoleRelationService.checkUserRoleRelationListMustBeEmpty(userModel);
+        this.userRoleRelationService.checkOrganizeRoleRelationListMustBeEmpty(userModel);
+        this.userService.checkCannotEmptyOfPassword(userModel);
 
         var user = this.userService.create(userModel);
         var accessToken = this.tokenService.generateAccessToken(user.getId());

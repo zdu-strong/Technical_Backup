@@ -25,7 +25,7 @@ public class UserController extends BaseController {
     @GetMapping("/user")
     public ResponseEntity<?> getUserById(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userCheckService.checkExistUserById(id);
+        this.userService.checkExistUserById(id);
 
         var userModel = this.userService.getUser(id);
         return ResponseEntity.ok(userModel);
@@ -34,9 +34,9 @@ public class UserController extends BaseController {
     @PostMapping("/user/create")
     public ResponseEntity<?> create(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userRoleRelationCheckService.checkRole(user, request);
-        this.userCheckService.checkCannotEmptyOfUsername(user);
-        this.userCheckService.checkValidEmailForSignUp(user);
+        this.userRoleRelationService.checkRole(user, request);
+        this.userService.checkCannotEmptyOfUsername(user);
+        this.userService.checkValidEmailForSignUp(user);
 
         var userOne = this.userService.create(user);
         return ResponseEntity.ok(userOne);
@@ -45,10 +45,10 @@ public class UserController extends BaseController {
     @PutMapping("/user/update")
     public ResponseEntity<?> update(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userCheckService.checkExistUserById(user.getId());
-        this.userRoleRelationCheckService.checkRole(user, request);
-        this.userCheckService.checkCannotEmptyOfUsername(user);
-        this.userCheckService.checkValidEmailForSignUp(user);
+        this.userService.checkExistUserById(user.getId());
+        this.userRoleRelationService.checkRole(user, request);
+        this.userService.checkCannotEmptyOfUsername(user);
+        this.userService.checkValidEmailForSignUp(user);
 
         this.userService.update(user);
 

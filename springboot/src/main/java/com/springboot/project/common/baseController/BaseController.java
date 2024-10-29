@@ -15,24 +15,17 @@ import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
-import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
-import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SuperAdminOrganizeRoleQueryService;
 import com.springboot.project.service.SuperAdminUserQueryService;
 import com.springboot.project.service.SuperAdminUserRoleQueryService;
-import com.springboot.project.service.SystemRoleCheckService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
-import com.springboot.project.service.UserCheckService;
-import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
-import com.springboot.project.service.UserMessageCheckService;
 import com.springboot.project.service.UserMessageService;
-import com.springboot.project.service.UserRoleRelationCheckService;
+import com.springboot.project.service.UserRoleRelationService;
 import com.springboot.project.service.UserService;
-import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -89,9 +82,6 @@ public class BaseController {
     protected UserService userService;
 
     @Autowired
-    protected UserCheckService userCheckService;
-
-    @Autowired
     protected LongTermTaskService longTermTaskService;
 
     @Autowired
@@ -116,28 +106,7 @@ public class BaseController {
     protected VerificationCodeEmailService verificationCodeEmailService;
 
     @Autowired
-    protected OrganizeCheckService organizeCheckService;
-
-    @Autowired
-    protected LongTermTaskCheckService longTermTaskCheckService;
-
-    @Autowired
-    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
-
-    @Autowired
-    protected UserEmailCheckService userEmailCheckService;
-
-    @Autowired
-    protected UserMessageCheckService userMessageCheckService;
-
-    @Autowired
-    protected UserRoleRelationCheckService userRoleRelationCheckService;
-
-    @Autowired
     protected SystemRoleService systemRoleService;
-
-    @Autowired
-    protected SystemRoleCheckService systemRoleCheckService;
 
     @Autowired
     protected SuperAdminUserRoleQueryService superAdminUserRoleQueryService;
@@ -147,5 +116,8 @@ public class BaseController {
 
     @Autowired
     protected SuperAdminUserQueryService superAdminUserQueryService;
+
+    @Autowired
+    protected UserRoleRelationService userRoleRelationService;
 
 }

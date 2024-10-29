@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enumerate.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
-import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import lombok.SneakyThrows;
@@ -27,9 +26,6 @@ public class OrganizeUtil {
     private OrganizeRelationService organizeRelationService;
 
     @Autowired
-    private OrganizeCheckService organizeCheckService;
-
-    @Autowired
     private LongTermTaskUtil longTermTaskUtil;
 
     @Autowired
@@ -41,7 +37,7 @@ public class OrganizeUtil {
         var uniqueKeyList = this.getUniqueKeyList(id, parentId);
         this.longTermTaskUtil.run(() -> {
             this.checkUniqueKeyList(id, parentId, uniqueKeyList);
-            this.organizeCheckService.checkOrganizeCanBeMove(id, parentId);
+            this.organizeService.checkOrganizeCanBeMove(id, parentId);
             this.organizeService.move(id, parentId);
         }, true, expectException, uniqueKeyList);
 

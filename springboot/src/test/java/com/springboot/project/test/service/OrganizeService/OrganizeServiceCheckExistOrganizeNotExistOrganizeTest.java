@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.OrganizeCheckService;
+package com.springboot.project.test.service.OrganizeService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,12 +8,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class OrganizeCheckServiceCheckExistOrganizeNotExistOrganizeTest extends BaseTest {
+public class OrganizeServiceCheckExistOrganizeNotExistOrganizeTest extends BaseTest {
 
     @Test
     public void test() {
         assertThrows(ResponseStatusException.class, () -> {
-            this.organizeCheckService.checkExistOrganize(Generators.timeBasedReorderedGenerator().generate().toString());
+            this.organizeService.checkExistOrganize(Generators.timeBasedReorderedGenerator().generate().toString());
         });
     }
 

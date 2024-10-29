@@ -60,9 +60,7 @@ import com.springboot.project.scheduled.SystemInitScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
-import com.springboot.project.service.LongTermTaskCheckService;
 import com.springboot.project.service.LongTermTaskService;
-import com.springboot.project.service.OrganizeCheckService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
@@ -72,12 +70,9 @@ import com.springboot.project.service.SuperAdminUserRoleQueryService;
 import com.springboot.project.service.SystemDefaultRoleService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
-import com.springboot.project.service.UserCheckService;
-import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
-import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
 import lombok.SneakyThrows;
@@ -179,21 +174,6 @@ public class BaseTest {
 
     @Autowired
     protected OrganizeRelationService organizeRelationService;
-
-    @Autowired
-    protected OrganizeCheckService organizeCheckService;
-
-    @Autowired
-    protected UserCheckService userCheckService;
-
-    @Autowired
-    protected LongTermTaskCheckService longTermTaskCheckService;
-
-    @Autowired
-    protected UserEmailCheckService userEmailCheckService;
-
-    @Autowired
-    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
 
     @Autowired
     protected SystemRoleService systemRoleService;

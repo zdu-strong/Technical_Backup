@@ -6,8 +6,11 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
@@ -26,8 +29,9 @@ public class LongTermTaskService extends BaseService {
         longTermTaskEntity.setIsDone(false);
         longTermTaskEntity.setResult(this.longTermTaskFormatter.formatResult(null));
         longTermTaskEntity.setUniqueKeyJsonString(this.longTermTaskFormatter
-                .formatLongTermTaskUniqueKey(new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.COMMON.getType())
-                        .setUniqueKey(Generators.timeBasedReorderedGenerator().generate().toString())));
+                .formatLongTermTaskUniqueKey(
+                        new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.COMMON.getType())
+                                .setUniqueKey(Generators.timeBasedReorderedGenerator().generate().toString())));
 
         this.persist(longTermTaskEntity);
         return longTermTaskEntity.getId();
@@ -108,6 +112,13 @@ public class LongTermTaskService extends BaseService {
         LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.longTermTaskFormatter.format(longTermTaskEntity);
+    }
+
+    public void checkIsExistLongTermTaskById(String id) {
+        var isExistLongTermTask = this.LongTermTaskEntity().where(s -> s.getId().equals(id)).exists();
+        if (!isExistLongTermTask) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified task does not exist");
+        }
     }
 
 }

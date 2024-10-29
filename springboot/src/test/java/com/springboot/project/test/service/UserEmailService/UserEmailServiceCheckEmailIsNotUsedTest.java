@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.UserEmailCheckService;
+package com.springboot.project.test.service.UserEmailService;
 
 import java.net.URISyntaxException;
 
@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class UserEmailCheckServiceCheckEmailIsNotUsedTest extends BaseTest {
+public class UserEmailServiceCheckEmailIsNotUsedTest extends BaseTest {
     private String email;
 
     @Test
     public void test() throws URISyntaxException {
-        this.userEmailCheckService.checkEmailIsNotUsed(this.email);
+        this.userEmailService.checkEmailIsNotUsed(this.email);
     }
 
     @BeforeEach

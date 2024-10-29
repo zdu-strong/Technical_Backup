@@ -64,12 +64,10 @@ import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SystemRoleRelationService;
 import com.springboot.project.service.SystemRoleService;
-import com.springboot.project.service.UserEmailCheckService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserRoleRelationService;
 import com.springboot.project.service.UserService;
-import com.springboot.project.service.VerificationCodeEmailCheckService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -131,12 +129,6 @@ public abstract class BaseService {
 
     @Autowired
     protected UserMessageDeactivateService userMessageDeactivateService;
-
-    @Autowired
-    protected VerificationCodeEmailCheckService verificationCodeEmailCheckService;
-
-    @Autowired
-    protected UserEmailCheckService userEmailCheckService;
 
     @Autowired
     protected SystemRoleRelationService systemRoleRelationService;

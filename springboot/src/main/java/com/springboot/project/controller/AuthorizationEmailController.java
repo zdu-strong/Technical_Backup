@@ -11,8 +11,8 @@ public class AuthorizationEmailController extends BaseController {
 
     @PostMapping("/email/send_verification_code")
     public ResponseEntity<?> sendVerificationCode(@RequestParam String email) {
-        this.userEmailCheckService.checkCannotEmptyOfEmail(email);
-        this.userEmailCheckService.checkEmailCorrectFormat(email);
+        this.userEmailService.checkCannotEmptyOfEmail(email);
+        this.userEmailService.checkEmailCorrectFormat(email);
 
         var verificationCodeEmailModel = this.authorizationEmailUtil.sendVerificationCode(email);
         return ResponseEntity.ok(verificationCodeEmailModel);

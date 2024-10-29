@@ -6,7 +6,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
@@ -243,5 +246,11 @@ public class SystemRoleService extends BaseService {
             }
         }
         return false;
+    }
+
+    public void checkSystemRoleNameCannotBeBlank(String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
+        }
     }
 }

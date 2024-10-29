@@ -15,9 +15,9 @@ public class SystemRoleController extends BaseController {
     public ResponseEntity<?> create(@RequestBody SystemRoleModel systemRole) {
         this.permissionUtil.checkIsSignIn(request);
         this.permissionUtil.checkAnyRole(request, systemRole.getOrganize().getId(), SystemRoleEnum.ORGANIZE_ADMIN);
-        this.organizeCheckService.checkNotBlankOrganizeId(systemRole.getOrganize().getId());
-        this.organizeCheckService.checkOrganizeNoParent(systemRole.getOrganize().getId());
-        this.systemRoleCheckService.checkSystemRoleNameCannotBeBlank(systemRole.getName());
+        this.organizeService.checkNotBlankOrganizeId(systemRole.getOrganize().getId());
+        this.organizeService.checkOrganizeNoParent(systemRole.getOrganize().getId());
+        this.systemRoleService.checkSystemRoleNameCannotBeBlank(systemRole.getName());
 
         var systemRoleOne = this.systemRoleService.create(systemRole.getName(),
                 systemRole.getSystemDefaultRoleList().stream().map(s -> s.getId()).toList(),

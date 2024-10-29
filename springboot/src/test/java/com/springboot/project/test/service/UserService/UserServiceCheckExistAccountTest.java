@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.UserCheckService;
+package com.springboot.project.test.service.UserService;
 
 import java.net.URISyntaxException;
 
@@ -13,7 +13,7 @@ public class UserServiceCheckExistAccountTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        this.userCheckService.checkExistAccount(this.email);
+        this.userService.checkExistAccount(this.email);
     }
 
     @BeforeEach
