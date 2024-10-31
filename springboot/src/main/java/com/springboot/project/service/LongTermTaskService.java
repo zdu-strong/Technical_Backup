@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
@@ -114,9 +116,12 @@ public class LongTermTaskService extends BaseService {
         return this.longTermTaskFormatter.format(longTermTaskEntity);
     }
 
-    public void checkIsExistLongTermTaskById(String id) {
-        var isExistLongTermTask = this.LongTermTaskEntity().where(s -> s.getId().equals(id)).exists();
-        if (!isExistLongTermTask) {
+    public void checkHasExistById(String id) {
+        if (StringUtils.isBlank(id)) {
+            return;
+        }
+        var hasExist = this.LongTermTaskEntity().where(s -> s.getId().equals(id)).exists();
+        if (!hasExist) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified task does not exist");
         }
     }

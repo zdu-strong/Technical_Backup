@@ -48,7 +48,7 @@ public class UserEmailService extends BaseService {
         }
     }
 
-    public void checkEmailCorrectFormat(String email) {
+    public void checkCorrectFormatOfEmail(String email) {
         if (!Validator.isEmail(email)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
         }
@@ -60,7 +60,7 @@ public class UserEmailService extends BaseService {
         }
     }
 
-    public void checkEmailIsNotUsed(String email) {
+    public void checkIsNotUsedOfEmail(String email) {
         var isPresent = this.UserEmailEntity()
                 .where(s -> s.getEmail().equals(email))
                 .where(s -> s.getIsActive())

@@ -11,7 +11,7 @@ public class OrganizeServiceCheckExistOrganizeTest extends BaseTest {
 
     @Test
     public void test() {
-        this.organizeService.checkExistOrganize(this.organizeId);
+        this.organizeService.checkHasExistById(this.organizeId);
     }
 
     @BeforeEach

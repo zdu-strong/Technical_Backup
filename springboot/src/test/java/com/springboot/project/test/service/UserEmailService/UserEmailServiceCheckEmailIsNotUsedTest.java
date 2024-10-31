@@ -13,7 +13,7 @@ public class UserEmailServiceCheckEmailIsNotUsedTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        this.userEmailService.checkEmailIsNotUsed(this.email);
+        this.userEmailService.checkIsNotUsedOfEmail(this.email);
     }
 
     @BeforeEach

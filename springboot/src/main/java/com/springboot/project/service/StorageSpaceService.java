@@ -20,7 +20,7 @@ import cn.hutool.core.text.StrFormatter;
 public class StorageSpaceService extends BaseService {
 
     public void refresh(String folderName) {
-        this.checkIsValidFolderName(folderName);
+        this.checkHasValidOfFolderName(folderName);
         this.refreshStorageSpaceEntity(folderName);
 
         if (isUsed(folderName)) {
@@ -96,7 +96,7 @@ public class StorageSpaceService extends BaseService {
         return isUsed;
     }
 
-    private void checkIsValidFolderName(String folderName) {
+    private void checkHasValidOfFolderName(String folderName) {
         if (StringUtils.isBlank(folderName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name cannot be empty");
         }

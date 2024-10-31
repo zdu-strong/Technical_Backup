@@ -25,7 +25,7 @@ public class LongTermTaskController extends BaseController {
         id = this.encryptDecryptService.decryptByAES(id);
 
         this.longTermTaskService
-                .checkIsExistLongTermTaskById(id);
+                .checkHasExistById(id);
 
         var expireDate = DateUtils.addSeconds(new Date(), 30);
 
@@ -65,7 +65,7 @@ public class LongTermTaskController extends BaseController {
         id = this.encryptDecryptService.decryptByAES(id);
 
         this.longTermTaskService
-                .checkIsExistLongTermTaskById(id);
+                .checkHasExistById(id);
 
         var response = this.longTermTaskService
                 .getLongTermTask(id);

@@ -249,13 +249,13 @@ public class SystemRoleService extends BaseService {
         return false;
     }
 
-    public void checkSystemRoleNameCannotBeBlank(String name) {
-        if (StringUtils.isBlank(name)) {
+    public void checkCannotBeEmptyOfName(SystemRoleModel systemRoleModel) {
+        if (StringUtils.isBlank(systemRoleModel.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
         }
     }
 
-      public PaginationModel<SystemRoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
+    public PaginationModel<SystemRoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
         var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
                 .map(s -> s.getRole())
@@ -292,7 +292,8 @@ public class SystemRoleService extends BaseService {
         return systemRoleList;
     }
 
-    public PaginationModel<SystemRoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize, String organizeId) {
+    public PaginationModel<SystemRoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
+            String organizeId) {
         var stream = this.SystemRoleEntity()
                 .joinList(s -> s.getOrganize().getAncestorList())
                 .where(s -> s.getTwo().getAncestor().getId().equals(organizeId))

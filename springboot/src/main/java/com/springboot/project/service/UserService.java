@@ -132,7 +132,7 @@ public class UserService extends BaseService {
             this.verificationCodeEmailService
                     .checkVerificationCodeEmailIsPassed(userEmail.getVerificationCodeEmail());
 
-            this.userEmailService.checkEmailIsNotUsed(userEmail.getEmail());
+            this.userEmailService.checkIsNotUsedOfEmail(userEmail.getEmail());
         }
     }
 

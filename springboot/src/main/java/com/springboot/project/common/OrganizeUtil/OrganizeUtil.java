@@ -37,7 +37,7 @@ public class OrganizeUtil {
         var uniqueKeyList = this.getUniqueKeyList(id, parentId);
         this.longTermTaskUtil.run(() -> {
             this.checkUniqueKeyList(id, parentId, uniqueKeyList);
-            this.organizeService.checkOrganizeCanBeMove(id, parentId);
+            this.organizeService.checkCanBeMoveOfOrganize(id, parentId);
             this.organizeService.move(id, parentId);
         }, true, expectException, uniqueKeyList);
 

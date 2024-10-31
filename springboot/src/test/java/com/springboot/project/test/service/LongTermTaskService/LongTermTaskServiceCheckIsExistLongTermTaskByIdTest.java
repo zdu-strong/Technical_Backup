@@ -11,7 +11,7 @@ public class LongTermTaskServiceCheckIsExistLongTermTaskByIdTest extends BaseTes
 
     @Test
     public void test() {
-        this.longTermTaskService.checkIsExistLongTermTaskById(this.longTermtaskId);
+        this.longTermTaskService.checkHasExistById(this.longTermtaskId);
     }
 
     @BeforeEach

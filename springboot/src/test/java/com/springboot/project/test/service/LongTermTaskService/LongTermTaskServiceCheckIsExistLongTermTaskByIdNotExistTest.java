@@ -16,7 +16,7 @@ public class LongTermTaskServiceCheckIsExistLongTermTaskByIdNotExistTest extends
     @Test
     public void test() {
         assertThrowsExactly(ResponseStatusException.class, () -> {
-            this.longTermTaskService.checkIsExistLongTermTaskById(this.longTermtaskId);
+            this.longTermTaskService.checkHasExistById(this.longTermtaskId);
         });
 
     }
