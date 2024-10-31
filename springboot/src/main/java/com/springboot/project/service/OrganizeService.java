@@ -178,7 +178,7 @@ public class OrganizeService extends BaseService {
                 .findFirst()
                 .isPresent();
         if (!hasExist) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Organize does not exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
         }
     }
 
