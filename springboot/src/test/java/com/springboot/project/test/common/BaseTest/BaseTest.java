@@ -52,6 +52,7 @@ import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
+import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.OrganizeRelationRefreshScheduled;
@@ -205,6 +206,22 @@ public class BaseTest {
         if (!hasExistUser(email)) {
             signUp(email, password);
         }
+        return signIn(email, password);
+    }
+
+    @SneakyThrows
+    protected UserModel createAccountOfSuperAdmin(String email) {
+        var password = email;
+        if (!hasExistUser(email)) {
+            signUp(email, password);
+        }
+        var userInfo = signIn(email, password);
+        userInfo.getUserRoleRelationList()
+                .addAll(this.systemRoleService.getUserRoleListForSuperAdmin()
+                        .stream()
+                        .map(s -> new UserRoleRelationModel().setSystemRole(s))
+                        .toList());
+        this.userService.update(userInfo);
         return signIn(email, password);
     }
 

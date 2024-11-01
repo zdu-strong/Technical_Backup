@@ -148,7 +148,7 @@ public class OrganizeService extends BaseService {
         return parentOrganizeEntity;
     }
 
-    public void checkHasExistParentOrganize(OrganizeModel organizeModel) {
+    public void checkHasExistOfParentOrganize(OrganizeModel organizeModel) {
         var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
         if (StringUtils.isBlank(parentOrganizeId)) {
             return;

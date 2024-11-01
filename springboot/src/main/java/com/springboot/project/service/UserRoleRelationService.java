@@ -38,15 +38,15 @@ public class UserRoleRelationService extends BaseService {
     }
 
     
-    public void checkRole(UserModel user, HttpServletRequest request) {
+    public void checkRoleRelation(UserModel user, HttpServletRequest request) {
         if (StringUtils.isBlank(user.getId())) {
-            checkRoleForCreate(user, request);
+            checkRoleRelationForCreate(user, request);
         } else {
-            checkRoleForUpdate(user, request);
+            checkRoleRelationForUpdate(user, request);
         }
     }
 
-    private void checkRoleForCreate(UserModel user, HttpServletRequest request) {
+    private void checkRoleRelationForCreate(UserModel user, HttpServletRequest request) {
 
         for (var organizeRoleRelation : user.getOrganizeRoleRelationList()) {
             if (this.permissionUtil.hasAnyRole(request, SystemRoleEnum.SUPER_ADMIN)) {
@@ -62,7 +62,7 @@ public class UserRoleRelationService extends BaseService {
         }
     }
 
-    private void checkRoleForUpdate(UserModel user, HttpServletRequest request) {
+    private void checkRoleRelationForUpdate(UserModel user, HttpServletRequest request) {
         var userOne = this.userService.getUserWithMoreInformation(user.getId());
 
         for (var organizeRole : JinqStream.from(List.of(

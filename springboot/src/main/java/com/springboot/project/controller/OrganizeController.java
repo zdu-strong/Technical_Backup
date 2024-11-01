@@ -17,7 +17,7 @@ public class OrganizeController extends BaseController {
     @PostMapping("/organize/create")
     public ResponseEntity<?> create(@RequestBody OrganizeModel organizeModel) {
         this.permissionUtil.checkIsSignIn(request);
-        this.organizeService.checkHasExistParentOrganize(organizeModel);
+        this.organizeService.checkHasExistOfParentOrganize(organizeModel);
 
         var organize = this.organizeService.create(organizeModel);
         this.organizeUtil.refresh(organize.getId());
