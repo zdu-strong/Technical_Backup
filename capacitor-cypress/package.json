@@ -36,21 +36,20 @@
   },
   "devDependencies": {
     "@cypress/xpath": "2.0.3",
-    "@types/node": "22.5.5",
-    "@types/uuid": "10.0.0",
+    "@types/node": "22.9.0",
     "@types/wait-on": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "8.6.0",
-    "@typescript-eslint/parser": "8.6.0",
-    "cypress": "13.14.2",
+    "@typescript-eslint/eslint-plugin": "8.13.0",
+    "@typescript-eslint/parser": "8.13.0",
+    "cypress": "13.15.2",
     "eslint": "8.57.0",
-    "eslint-plugin-cypress": "3.5.0",
     "execa": "5.1.1",
     "get-port": "5.1.1",
     "linq": "4.0.3",
     "rxjs": "7.8.1",
+    "rxjs-exhaustmap-with-trailing": "2.1.1",
     "tree-kill": "1.2.2",
-    "typescript": "5.5.4",
-    "uuid": "10.0.0",
+    "typescript": "5.6.3",
+    "uuid": "11.0.2",
     "wait-on": "8.0.1"
   }
 }
