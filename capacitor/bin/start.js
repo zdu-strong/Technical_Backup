@@ -73,6 +73,7 @@ async function runCapacitorForCypress() {
       extendEnv: true,
       env: {
         "BROWSER": "NONE",
+        "GENERATE_SOURCEMAP": "false",
       },
     }
   );

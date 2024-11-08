@@ -57,6 +57,7 @@ async function startReact() {
       env: {
         "BROWSER": "NONE",
         "PORT": String(avaliableClientPort),
+        "GENERATE_SOURCEMAP": "false",
       }
     }
   );
