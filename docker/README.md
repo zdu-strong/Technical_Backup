@@ -4,7 +4,7 @@ This is a simple nodejs project, in order to store all the Dockerfiles. If you h
 
 ## Development environment setup
 1. From https://code.visualstudio.com install Visual Studio Code.
-2. From https://nodejs.org install nodejs v20.
+2. From https://nodejs.org install nodejs v22.
 3. From https://www.docker.com/get-started install docker.
 
 ## Available Scripts

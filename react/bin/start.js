@@ -13,6 +13,9 @@ async function startClient() {
       stdio: "inherit",
       cwd: path.join(__dirname, ".."),
       extendEnv: true,
+      env: {
+        "GENERATE_SOURCEMAP": "false"
+      }
     }
   );
 }

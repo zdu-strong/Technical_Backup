@@ -4,7 +4,7 @@ This project was bootstrapped with [NestJS](https://nestjs.com). If you have any
 
 ## Development environment setup
 1. From https://code.visualstudio.com install Visual Studio Code.<br/>
-2. From https://nodejs.org install nodejs v20.<br/>
+2. From https://nodejs.org install nodejs v22.<br/>
 
 ## Available Scripts
 
