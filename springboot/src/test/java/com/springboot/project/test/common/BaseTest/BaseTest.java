@@ -328,7 +328,7 @@ public class BaseTest {
                 })
                 .map(encryptedId -> {
                     var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
-                            .setParameter("id", encryptedId).build();
+                            .setParameter("encryptedId", encryptedId).build();
                     var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
                             responseType);
                     return response;

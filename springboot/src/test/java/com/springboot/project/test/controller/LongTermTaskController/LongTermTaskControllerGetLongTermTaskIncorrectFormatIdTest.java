@@ -13,7 +13,7 @@ public class LongTermTaskControllerGetLongTermTaskIncorrectFormatIdTest extends 
     @Test
     public void test() throws URISyntaxException {
         var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
-                .setParameter("id", Generators.timeBasedReorderedGenerator().generate().toString())
+                .setParameter("encryptedId", Generators.timeBasedReorderedGenerator().generate().toString())
                 .build();
         var result = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
