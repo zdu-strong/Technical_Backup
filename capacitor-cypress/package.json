@@ -42,6 +42,7 @@
     "@typescript-eslint/parser": "8.13.0",
     "cypress": "13.15.2",
     "eslint": "8.57.0",
+    "eslint-plugin-cypress": "3.6.0",
     "execa": "5.1.1",
     "get-port": "5.1.1",
     "linq": "4.0.3",

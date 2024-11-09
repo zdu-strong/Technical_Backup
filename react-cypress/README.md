@@ -39,6 +39,7 @@ After upgrading the dependencies, please make sure that the dependent versions i
 
 The following dependencies are currently unable to continue to be upgraded:<br/>
 eslint<br/>
+eslint-plugin-cypress<br/>
 execa (Current project not support ES module)<br/>
 get-port (Current project not support ES module)<br/>
 
