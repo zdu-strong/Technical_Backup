@@ -313,11 +313,11 @@ public class BaseTest {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     return response.getBody();
                 })
-                .doOnNext((id) -> {
+                .doOnNext((encryptedId) -> {
                     while (true) {
                         var url = new URIBuilder(this.testRestTemplate.getRootUri())
                                 .setPath("/long_term_task/is_done")
-                                .setParameter("id", id)
+                                .setParameter("encryptedId", encryptedId)
                                 .build();
                         var isDone = new RestTemplate().getForObject(url, Boolean.class);
                         if (isDone) {
@@ -326,9 +326,9 @@ public class BaseTest {
                         ThreadUtils.sleepQuietly(Duration.ofMillis(1));
                     }
                 })
-                .map(id -> {
+                .map(encryptedId -> {
                     var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
-                            .setParameter("id", id).build();
+                            .setParameter("id", encryptedId).build();
                     var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
                             responseType);
                     return response;
