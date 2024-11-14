@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
@@ -63,7 +64,9 @@ public class UserMessageService extends BaseService {
         return this.userMessageFormatter.formatForUserId(userMessageEntity, userId);
     }
 
-    public PaginationModel<UserMessageModel> getUserMessageByPagination(long pageNum, long pageSize, HttpServletRequest request) {
+    @Transactional(readOnly = true)
+    public PaginationModel<UserMessageModel> getUserMessageByPagination(long pageNum, long pageSize,
+            HttpServletRequest request) {
         var userId = this.permissionUtil.getUserId(request);
         var stream = this.UserMessageEntity()
                 .where(s -> !s.getIsRecall())
@@ -78,6 +81,7 @@ public class UserMessageService extends BaseService {
         return userMessagePagination;
     }
 
+    @Transactional(readOnly = true)
     public UserMessageWebSocketSendModel getMessageListByLastMessage(long pageSize, HttpServletRequest request) {
         var userId = this.permissionUtil.getUserId(request);
         var stream = this.UserMessageEntity()
@@ -96,7 +100,6 @@ public class UserMessageService extends BaseService {
         return userMessageWebSocketSendModel;
     }
 
-    
     public void checkNotNullOfUserOfUserMessage(UserMessageModel userMessageModel, HttpServletRequest request) {
         userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
     }

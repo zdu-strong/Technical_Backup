@@ -8,7 +8,6 @@ import com.springboot.project.websocket.UserMessageWebSocket;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -26,7 +25,6 @@ public class MessageScheduled {
                 .concatMap(s -> Flowable.just(s)
                         .observeOn(Schedulers.from(executor))
                         .doOnNext(UserMessageWebSocket::sendMessage)
-                        .timeout(1, TimeUnit.SECONDS)
                         .onErrorComplete())
                 .blockingSubscribe();
     }
