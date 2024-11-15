@@ -59,6 +59,7 @@ public class UserMessageService extends BaseService {
         this.userMessageDeactivateService.create(userMessageId, userId);
     }
 
+    @Transactional(readOnly = true)
     public UserMessageModel getUserMessageById(String id, String userId) {
         var userMessageEntity = this.UserMessageEntity().where(s -> s.getId().equals(id)).getOnlyValue();
         return this.userMessageFormatter.formatForUserId(userMessageEntity, userId);
@@ -100,16 +101,19 @@ public class UserMessageService extends BaseService {
         return userMessageWebSocketSendModel;
     }
 
+    @Transactional(readOnly = true)
     public void checkNotNullOfUserOfUserMessage(UserMessageModel userMessageModel, HttpServletRequest request) {
         userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotEmptyUserMessageContent(UserMessageModel userMessageModel) {
         if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkExistsUserMessage(String id) {
         var exists = this.UserMessageEntity().where(s -> s.getId().equals(id)).exists();
         if (!exists) {
@@ -117,6 +121,7 @@ public class UserMessageService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCanRecallUserMessage(String id, HttpServletRequest request) {
         var userMessageEntity = this.UserMessageEntity()
                 .where(s -> s.getId().equals(id))
@@ -129,6 +134,7 @@ public class UserMessageService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCanDeleteUserMessage(String id, HttpServletRequest request) {
         var userId = this.permissionUtil.getUserId(request);
         var exists = this.UserMessageEntity()

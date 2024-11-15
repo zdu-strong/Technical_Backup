@@ -8,6 +8,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
@@ -30,6 +31,7 @@ public class StorageSpaceService extends BaseService {
         this.delete(folderName);
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
         var stream = this.StorageSpaceEntity()
                 .sortedBy(s -> s.getId())

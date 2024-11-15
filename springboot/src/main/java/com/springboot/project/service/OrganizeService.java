@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
@@ -58,6 +59,7 @@ public class OrganizeService extends BaseService {
         this.merge(organizeEntity);
     }
 
+    @Transactional(readOnly = true)
     public OrganizeModel getById(String id) {
         var organizeEntity = this.OrganizeEntity()
                 .where(s -> s.getId().equals(id))
@@ -66,6 +68,7 @@ public class OrganizeService extends BaseService {
         return this.organizeFormatter.format(organizeEntity);
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeRelationEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
@@ -89,6 +92,7 @@ public class OrganizeService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public boolean isChildOfOrganize(String id, String parentId) {
         if (StringUtils.isBlank(parentId)) {
             return false;
@@ -98,6 +102,7 @@ public class OrganizeService extends BaseService {
         return isChild;
     }
 
+    @Transactional(readOnly = true)
     public List<String> getAccestorIdList(String id) {
         var organizeEntity = this.OrganizeEntity()
                 .where(s -> s.getId().equals(id))
@@ -105,6 +110,7 @@ public class OrganizeService extends BaseService {
         return this.organizeFormatter.getAncestorIdList(organizeEntity);
     }
 
+    @Transactional(readOnly = true)
     public List<String> getChildIdList(String id) {
         var childIdList = this.OrganizeEntity().where(s -> s.getParent().getId().equals(id))
                 .where(s -> s.getIsActive())
@@ -113,6 +119,7 @@ public class OrganizeService extends BaseService {
         return childIdList;
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<OrganizeModel> getOrganizeByPagination(Long pageNum, Long pageSize) {
         var stream = this.OrganizeEntity()
                 .sortedBy(s -> s.getId())
@@ -120,6 +127,7 @@ public class OrganizeService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 
+    @Transactional(readOnly = true)
     public OrganizeModel getTopOrganize(String organizeId) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(organizeId)).getOnlyValue();
         var organizeIdList = new ArrayList<String>();
@@ -136,18 +144,7 @@ public class OrganizeService extends BaseService {
         return this.organizeFormatter.format(organizeEntity);
     }
 
-    private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
-        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
-        if (StringUtils.isBlank(parentOrganizeId)) {
-            return null;
-        }
-
-        var parentOrganizeEntity = this.OrganizeEntity()
-                .where(s -> s.getId().equals(parentOrganizeId))
-                .getOnlyValue();
-        return parentOrganizeEntity;
-    }
-
+    @Transactional(readOnly = true)
     public void checkHasExistOfParentOrganize(OrganizeModel organizeModel) {
         var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
         if (StringUtils.isBlank(parentOrganizeId)) {
@@ -156,6 +153,7 @@ public class OrganizeService extends BaseService {
         this.checkHasExistById(parentOrganizeId);
     }
 
+    @Transactional(readOnly = true)
     public void checkCanBeMoveOfOrganize(String id, String parentId) {
         if (StringUtils.isBlank(parentId)) {
             return;
@@ -168,6 +166,7 @@ public class OrganizeService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkHasExistById(String id) {
         if (StringUtils.isBlank(id)) {
             return;
@@ -182,12 +181,14 @@ public class OrganizeService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotBeEmptyById(String id) {
         if (StringUtils.isBlank(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeId cannot be empty");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotHasParentOrganizeById(String id) {
         if (StringUtils.isBlank(id)) {
             return;
@@ -200,6 +201,18 @@ public class OrganizeService extends BaseService {
         if (hasExist) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot has parent organize");
         }
+    }
+    
+    private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
+        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
+        if (StringUtils.isBlank(parentOrganizeId)) {
+            return null;
+        }
+
+        var parentOrganizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(parentOrganizeId))
+                .getOnlyValue();
+        return parentOrganizeEntity;
     }
 
 }

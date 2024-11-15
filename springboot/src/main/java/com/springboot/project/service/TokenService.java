@@ -13,6 +13,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.auth0.jwt.JWT;
@@ -75,6 +76,7 @@ public class TokenService extends BaseService {
         return accessTokenOfNew;
     }
 
+    @Transactional(readOnly = true)
     public String getAccessToken(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.isNotBlank(authorization)) {
@@ -86,6 +88,7 @@ public class TokenService extends BaseService {
         return "";
     }
 
+    @Transactional(readOnly = true)
     public DecodedJWT getDecodedJWTOfAccessToken(String accessToken) {
         var decodedJWT = JWT
                 .require(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
@@ -97,6 +100,7 @@ public class TokenService extends BaseService {
         return decodedJWT;
     }
 
+    @Transactional(readOnly = true)
     public boolean hasExistTokenEntity(String id) {
         var exists = this.TokenEntity()
                 .where(s -> s.getId().equals(id))

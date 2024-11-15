@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,12 +38,32 @@ public class UserRoleRelationService extends BaseService {
         this.persist(userSystemRoleRelationEntity);
     }
 
-    
+    @Transactional(readOnly = true)
     public void checkRoleRelation(UserModel user, HttpServletRequest request) {
         if (StringUtils.isBlank(user.getId())) {
             checkRoleRelationForCreate(user, request);
         } else {
             checkRoleRelationForUpdate(user, request);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkUserRoleRelationListMustBeEmpty(UserModel user) {
+        if (CollectionUtils.isEmpty(user.getUserRoleRelationList())) {
+            user.setUserRoleRelationList(List.of());
+        }
+        if (!CollectionUtils.isEmpty(user.getUserRoleRelationList())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserRoleRelationList must be empty");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkOrganizeRoleRelationListMustBeEmpty(UserModel user) {
+        if (CollectionUtils.isEmpty(user.getOrganizeRoleRelationList())) {
+            user.setOrganizeRoleRelationList(List.of());
+        }
+        if (!CollectionUtils.isEmpty(user.getOrganizeRoleRelationList())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeRoleRelationList must be empty");
         }
     }
 
@@ -97,24 +118,6 @@ public class UserRoleRelationService extends BaseService {
                         .toList()))
                 .selectAllList(s -> s).exists()) {
             this.permissionUtil.checkAnyRole(request, SystemRoleEnum.SUPER_ADMIN);
-        }
-    }
-
-    public void checkUserRoleRelationListMustBeEmpty(UserModel user) {
-        if (CollectionUtils.isEmpty(user.getUserRoleRelationList())) {
-            user.setUserRoleRelationList(List.of());
-        }
-        if (!CollectionUtils.isEmpty(user.getUserRoleRelationList())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "UserRoleRelationList must be empty");
-        }
-    }
-
-    public void checkOrganizeRoleRelationListMustBeEmpty(UserModel user) {
-        if (CollectionUtils.isEmpty(user.getOrganizeRoleRelationList())) {
-            user.setOrganizeRoleRelationList(List.of());
-        }
-        if (!CollectionUtils.isEmpty(user.getOrganizeRoleRelationList())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeRoleRelationList must be empty");
         }
     }
 

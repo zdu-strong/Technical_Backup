@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
@@ -48,18 +49,21 @@ public class UserEmailService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCorrectFormatOfEmail(String email) {
         if (!Validator.isEmail(email)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotEmptyOfEmail(String email) {
         if (StringUtils.isBlank(email)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkIsNotUsedOfEmail(String email) {
         var isPresent = this.UserEmailEntity()
                 .where(s -> s.getEmail().equals(email))

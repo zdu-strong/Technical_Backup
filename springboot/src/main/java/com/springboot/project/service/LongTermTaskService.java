@@ -11,6 +11,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
@@ -110,12 +111,14 @@ public class LongTermTaskService extends BaseService {
         this.remove(longTermTaskEntity);
     }
 
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getLongTermTask(String id) {
         LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.longTermTaskFormatter.format(longTermTaskEntity);
     }
 
+    @Transactional(readOnly = true)
     public void checkHasExistById(String id) {
         if (StringUtils.isBlank(id)) {
             return;

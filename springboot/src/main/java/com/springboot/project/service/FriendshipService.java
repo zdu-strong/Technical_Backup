@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.FriendshipEntity;
@@ -60,6 +61,7 @@ public class FriendshipService extends BaseService {
         this.merge(friendshipEntity);
     }
 
+    @Transactional(readOnly = true)
     public FriendshipModel getFriendship(String userId, String friendId) {
         var friendshipEntity = this.FriendshipEntity()
                 .where(s -> s.getUser().getId().equals(userId))
@@ -68,6 +70,7 @@ public class FriendshipService extends BaseService {
         return this.friendshipFormatter.format(friendshipEntity);
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<FriendshipModel> getFriendList(Long pageNum, Long pageSize, String userId) {
         var stream = this.FriendshipEntity()
                 .where(s -> s.getUser().getId().equals(userId))
@@ -78,6 +81,7 @@ public class FriendshipService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.friendshipFormatter.format(s));
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<FriendshipModel> getStrangerList(Long pageNum, Long pageSize, String userId) {
         var userEntity = this.UserEntity().where(s -> s.getId().equals(userId)).where(s -> s.getIsActive())
                 .getOnlyValue();
@@ -93,6 +97,7 @@ public class FriendshipService extends BaseService {
                 (s) -> this.friendshipFormatter.format(s.getTwo(), userEntity, s.getOne()));
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<FriendshipModel> getBlackList(Long pageNum, Long pageSize, String userId) {
         var stream = this.FriendshipEntity()
                 .where(s -> s.getUser().getId().equals(userId))

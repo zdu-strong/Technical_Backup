@@ -4,6 +4,7 @@ import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
@@ -69,6 +70,7 @@ public class VerificationCodeEmailService extends BaseService {
         return this.verificationCodeEmailFormatter.format(verificationCodeEmailEntity);
     }
 
+    @Transactional(readOnly = true)
     public boolean isFirstOnTheDurationOfVerificationCodeEmail(String id) {
         var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();
@@ -142,6 +144,7 @@ public class VerificationCodeEmailService extends BaseService {
         return isFirstOnTheSecond;
     }
 
+    @Transactional(readOnly = true)
     public VerificationCodeEmailModel getById(String id) {
         var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
                 .getOnlyValue();

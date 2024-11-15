@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
@@ -67,18 +68,21 @@ public class UserService extends BaseService {
         this.merge(userEntity);
     }
 
+    @Transactional(readOnly = true)
     public UserModel getUserWithMoreInformation(String id) {
         var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.formatWithMoreInformation(user);
     }
 
+    @Transactional(readOnly = true)
     public UserModel getUser(String id) {
         var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
 
+    @Transactional(readOnly = true)
     public String getUserId(String account) {
         {
             var userId = account;
@@ -102,6 +106,7 @@ public class UserService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public PaginationModel<UserModel> searchForSuperAdminByPagination(long pageNum, long pageSize) {
         var stream = this.UserEntity()
                 .where(s -> s.getIsActive())
@@ -109,6 +114,7 @@ public class UserService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.userFormatter.format(s));
     }
 
+    @Transactional(readOnly = true)
     public void checkValidEmailForSignUp(UserModel userModel) {
         for (var userEmail : userModel.getUserEmailList()) {
             if (StringUtils.isBlank(userEmail.getEmail())) {
@@ -136,6 +142,7 @@ public class UserService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotEmptyOfUsername(UserModel userModel) {
         if (StringUtils.isBlank(userModel.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in nickname");
@@ -146,18 +153,21 @@ public class UserService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkExistUserById(String id) {
         if (!hasExistsUserId(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User does not exist");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkExistAccount(String account) {
         if (!hasExistsUserId(account) && !hasExistEmail(account)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect username or password");
         }
     }
 
+    @Transactional(readOnly = true)
     public void checkCannotEmptyOfPassword(UserModel userModel) {
         if (StringUtils.isBlank(userModel.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in password");

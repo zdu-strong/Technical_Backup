@@ -8,6 +8,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
@@ -69,6 +70,7 @@ public class SystemRoleService extends BaseService {
         this.merge(systemRoleEntity);
     }
 
+    @Transactional(readOnly = true)
     public List<SystemRoleModel> getOrganizeRoleListByCompanyId(String companyId) {
         var ssytemRoleList = this.SystemRoleEntity()
                 .where(s -> s.getOrganize().getId().equals(companyId))
@@ -120,63 +122,61 @@ public class SystemRoleService extends BaseService {
         return false;
     }
 
-    private boolean deleteUserRoleList() {
-        {
-            var systemRoleEntity = this.SystemRoleEntity()
-                    .where(s -> s.getIsActive())
-                    .leftOuterJoinList(s -> s.getSystemRoleRelationList())
-                    .where(s -> s.getOne().getOrganize() == null)
-                    .where(s -> s.getTwo() == null)
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (systemRoleEntity != null) {
-                this.delete(systemRoleEntity.getId());
-                return true;
-            }
+    @Transactional(readOnly = true)
+    public void checkCannotBeEmptyOfName(SystemRoleModel systemRoleModel) {
+        if (StringUtils.isBlank(systemRoleModel.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
         }
-        {
-            var roleList = Arrays.stream(SystemRoleEnum.values()).filter(s -> !s.getIsOrganizeRole())
-                    .map(s -> s.getRole()).toList();
-            var systemRoleEntity = this.SystemRoleEntity()
-                    .where(s -> s.getIsActive())
-                    .where(s -> s.getOrganize() == null)
-                    .joinList(s -> s.getSystemRoleRelationList())
-                    .where(s -> !roleList.contains(s.getTwo().getSystemDefaultRole().getName()))
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (systemRoleEntity != null) {
-                this.delete(systemRoleEntity.getId());
-                return true;
-            }
-        }
+    }
 
-        {
-            var role = this.SystemRoleEntity()
-                    .where(s -> s.getIsActive())
-                    .where(s -> s.getOrganize() == null)
-                    .group(s -> s.getName(), (s, t) -> t.count())
-                    .where(s -> s.getTwo() > 1)
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (StringUtils.isNotBlank(role)) {
-                var systemRoleEntity = this.SystemRoleEntity()
-                        .where(s -> s.getIsActive())
-                        .where(s -> s.getOrganize() == null)
-                        .where(s -> s.getName().equals(role))
-                        .sortedBy(s -> s.getCreateDate())
-                        .skip(1)
-                        .findFirst()
-                        .orElse(null);
-                if (systemRoleEntity != null) {
-                    this.delete(systemRoleEntity.getId());
-                }
-            }
-        }
+    @Transactional(readOnly = true)
+    public PaginationModel<SystemRoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
+        var roles = Arrays.stream(SystemRoleEnum.values())
+                .filter(s -> !s.getIsOrganizeRole())
+                .map(s -> s.getRole())
+                .toList();
+        var systemRoleList = this.SystemDefaultRoleEntity()
+                .where(s -> roles.contains(s.getName()))
+                .selectAllList(s -> s.getSystemRoleRelationList())
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getOrganize() == null)
+                .filter(s -> Arrays.stream(SystemRoleEnum.values())
+                        .anyMatch(m -> m.getRole().equals(s.getName()) && !m.getIsOrganizeRole()))
+                .toList();
+        var stream = JinqStream.from(systemRoleList);
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.systemRoleFormatter.format(s));
+    }
 
-        return false;
+    @Transactional(readOnly = true)
+    public List<SystemRoleModel> getUserRoleListForSuperAdmin() {
+        var roles = Arrays.stream(SystemRoleEnum.values())
+                .filter(s -> !s.getIsOrganizeRole())
+                .filter(s -> s.getIsSuperAdmin())
+                .map(s -> s.getRole())
+                .toList();
+        var systemRoleList = this.SystemDefaultRoleEntity()
+                .where(s -> roles.contains(s.getName()))
+                .selectAllList(s -> s.getSystemRoleRelationList())
+                .select(s -> s.getSystemRole())
+                .where(s -> s.getIsActive())
+                .where(s -> s.getOrganize() == null)
+                .filter(s -> Arrays.stream(SystemRoleEnum.values())
+                        .anyMatch(m -> m.getRole().equals(s.getName()) && !m.getIsOrganizeRole()))
+                .map(s -> this.systemRoleFormatter.format(s))
+                .toList();
+        return systemRoleList;
+    }
+
+    @Transactional(readOnly = true)
+    public PaginationModel<SystemRoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
+            String organizeId) {
+        var stream = this.SystemRoleEntity()
+                .joinList(s -> s.getOrganize().getAncestorList())
+                .where(s -> s.getTwo().getAncestor().getId().equals(organizeId))
+                .where(s -> s.getOne().getOrganize().getIsActive())
+                .select(s -> s.getOne());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.systemRoleFormatter.format(s));
     }
 
     private boolean createUserRoleList() {
@@ -249,57 +249,62 @@ public class SystemRoleService extends BaseService {
         return false;
     }
 
-    public void checkCannotBeEmptyOfName(SystemRoleModel systemRoleModel) {
-        if (StringUtils.isBlank(systemRoleModel.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
+    private boolean deleteUserRoleList() {
+        {
+            var systemRoleEntity = this.SystemRoleEntity()
+                    .where(s -> s.getIsActive())
+                    .leftOuterJoinList(s -> s.getSystemRoleRelationList())
+                    .where(s -> s.getOne().getOrganize() == null)
+                    .where(s -> s.getTwo() == null)
+                    .select(s -> s.getOne())
+                    .findFirst()
+                    .orElse(null);
+            if (systemRoleEntity != null) {
+                this.delete(systemRoleEntity.getId());
+                return true;
+            }
         }
-    }
+        {
+            var roleList = Arrays.stream(SystemRoleEnum.values()).filter(s -> !s.getIsOrganizeRole())
+                    .map(s -> s.getRole()).toList();
+            var systemRoleEntity = this.SystemRoleEntity()
+                    .where(s -> s.getIsActive())
+                    .where(s -> s.getOrganize() == null)
+                    .joinList(s -> s.getSystemRoleRelationList())
+                    .where(s -> !roleList.contains(s.getTwo().getSystemDefaultRole().getName()))
+                    .select(s -> s.getOne())
+                    .findFirst()
+                    .orElse(null);
+            if (systemRoleEntity != null) {
+                this.delete(systemRoleEntity.getId());
+                return true;
+            }
+        }
 
-    public PaginationModel<SystemRoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
-        var roles = Arrays.stream(SystemRoleEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.getRole())
-                .toList();
-        var systemRoleList = this.SystemDefaultRoleEntity()
-                .where(s -> roles.contains(s.getName()))
-                .selectAllList(s -> s.getSystemRoleRelationList())
-                .select(s -> s.getSystemRole())
-                .where(s -> s.getIsActive())
-                .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.getRole().equals(s.getName()) && !m.getIsOrganizeRole()))
-                .toList();
-        var stream = JinqStream.from(systemRoleList);
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.systemRoleFormatter.format(s));
-    }
+        {
+            var role = this.SystemRoleEntity()
+                    .where(s -> s.getIsActive())
+                    .where(s -> s.getOrganize() == null)
+                    .group(s -> s.getName(), (s, t) -> t.count())
+                    .where(s -> s.getTwo() > 1)
+                    .select(s -> s.getOne())
+                    .findFirst()
+                    .orElse(null);
+            if (StringUtils.isNotBlank(role)) {
+                var systemRoleEntity = this.SystemRoleEntity()
+                        .where(s -> s.getIsActive())
+                        .where(s -> s.getOrganize() == null)
+                        .where(s -> s.getName().equals(role))
+                        .sortedBy(s -> s.getCreateDate())
+                        .skip(1)
+                        .findFirst()
+                        .orElse(null);
+                if (systemRoleEntity != null) {
+                    this.delete(systemRoleEntity.getId());
+                }
+            }
+        }
 
-    public List<SystemRoleModel> getUserRoleListForSuperAdmin() {
-        var roles = Arrays.stream(SystemRoleEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .filter(s -> s.getIsSuperAdmin())
-                .map(s -> s.getRole())
-                .toList();
-        var systemRoleList = this.SystemDefaultRoleEntity()
-                .where(s -> roles.contains(s.getName()))
-                .selectAllList(s -> s.getSystemRoleRelationList())
-                .select(s -> s.getSystemRole())
-                .where(s -> s.getIsActive())
-                .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.getRole().equals(s.getName()) && !m.getIsOrganizeRole()))
-                .map(s -> this.systemRoleFormatter.format(s))
-                .toList();
-        return systemRoleList;
+        return false;
     }
-
-    public PaginationModel<SystemRoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
-            String organizeId) {
-        var stream = this.SystemRoleEntity()
-                .joinList(s -> s.getOrganize().getAncestorList())
-                .where(s -> s.getTwo().getAncestor().getId().equals(organizeId))
-                .where(s -> s.getOne().getOrganize().getIsActive())
-                .select(s -> s.getOne());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.systemRoleFormatter.format(s));
-    }
-
 }

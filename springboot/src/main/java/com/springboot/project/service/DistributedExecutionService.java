@@ -2,6 +2,8 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.DistributedExecutionEntity;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
@@ -10,6 +12,7 @@ import com.springboot.project.model.DistributedExecutionModel;
 @Service
 public class DistributedExecutionService extends BaseService {
 
+    @Transactional(readOnly = true)
     public DistributedExecutionModel getLastSuccessDistributedExecution(
             DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.getExecutionType();
@@ -25,6 +28,7 @@ public class DistributedExecutionService extends BaseService {
         return distributedExecutionModel;
     }
 
+    @Transactional(readOnly = true)
     public DistributedExecutionModel getLastDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.getExecutionType();
         var distributedExecutionModel = this.DistributedExecutionEntity()
