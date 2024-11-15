@@ -204,11 +204,6 @@ public class EncryptDecryptService extends BaseService {
         if (this.ready) {
             return;
         }
-        String id = EncryptDecryptEnum.getId();
-        if (this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
-            this.ready = true;
-            return;
-        }
         Flowable.interval(100, TimeUnit.MILLISECONDS)
                 .filter(s -> this.ready)
                 .take(1)
