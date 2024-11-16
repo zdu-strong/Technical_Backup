@@ -22,7 +22,7 @@ public class StorageSpaceScheduled {
     @Autowired
     private GitProperties gitProperties;
 
-    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = 12 * 60 * 60 * 1000)
+    @Scheduled(initialDelay = 12 * 60 * 60 * 1000, fixedDelay = 12 * 60 * 60 * 1000)
     public void scheduled() {
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
                 .setType(LongTermTaskTypeEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE.getType())

@@ -58,6 +58,8 @@ import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.OrganizeRelationRefreshScheduled;
 import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
+import com.springboot.project.service.DistributedExecutionService;
+import com.springboot.project.service.DistributedExecutionTaskService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
@@ -66,6 +68,7 @@ import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import com.springboot.project.service.SystemDefaultRoleService;
+import com.springboot.project.service.SystemRoleRelationService;
 import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
@@ -180,9 +183,18 @@ public class BaseTest {
     protected SystemDefaultRoleService systemDefaultRoleService;
 
     @Autowired
+    protected DistributedExecutionService distributedExecutionService;
+
+    @Autowired
+    protected DistributedExecutionTaskService distributedExecutionTaskService;
+
+    @Autowired
+    protected SystemRoleRelationService systemRoleRelationService;
+
+    @Autowired
     protected MessageScheduled messageScheduled;
 
-    @SpyBean
+    @Autowired
     protected StorageSpaceScheduled storageSpaceScheduled;
 
     @SpyBean
@@ -197,7 +209,6 @@ public class BaseTest {
         new File(this.storage.getRootPath()).mkdirs();
         this.systemInitScheduled.scheduled();
         Mockito.doNothing().when(this.organizeRelationRefreshScheduled).scheduled();
-        Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
 
     @SneakyThrows
