@@ -50,6 +50,7 @@ import com.springboot.project.properties.SchedulingPoolSizeProperties;
 import com.springboot.project.properties.ServerAddressProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
+import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
@@ -217,6 +218,29 @@ public class BaseTest {
         if (!hasExistUser(email)) {
             signUp(email, password);
         }
+        return signIn(email, password);
+    }
+
+    @SneakyThrows
+    protected UserModel createAccountOfCompanyAdmin(String email) {
+        var password = email;
+        if (!hasExistUser(email)) {
+            signUp(email, password);
+        }
+        var company = this.organizeService
+                .create(new OrganizeModel().setName(Generators.timeBasedReorderedGenerator().generate().toString()));
+        var userInfo = signIn(email, password);
+        userInfo.getUserRoleRelationList()
+                .addAll(this.userRoleService.getUserRoleListForSuperAdmin()
+                        .stream()
+                        .map(s -> new UserRoleRelationModel().setUserRole(s))
+                        .toList());
+        userInfo.getOrganizeRoleRelationList()
+                .addAll(this.userRoleService.getOrganizeRoleListByCompanyId(company.getId())
+                        .stream()
+                        .map(s -> new UserRoleRelationModel().setUserRole(s).setOrganize(company))
+                        .toList());
+        this.userService.update(userInfo);
         return signIn(email, password);
     }
 

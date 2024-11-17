@@ -37,11 +37,11 @@ public class UserService extends BaseService {
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getUserRole().getId());
+            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getUserRole().getId(), null);
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId());
+            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId(), organizeRelation.getOrganize().getId());
         }
 
         return this.userFormatter.formatWithMoreInformation(userEntity);
@@ -58,11 +58,11 @@ public class UserService extends BaseService {
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userId, userRoleRelation.getUserRole().getId());
+            this.userRoleRelationService.create(userId, userRoleRelation.getUserRole().getId(), null);
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId());
+            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId(), organizeRelation.getOrganize().getId());
         }
 
         this.merge(userEntity);

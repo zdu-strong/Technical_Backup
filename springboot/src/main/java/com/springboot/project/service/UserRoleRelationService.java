@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -21,13 +22,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class UserRoleRelationService extends BaseService {
 
-    public void create(String userId, String userRoleId) {
+    public void create(String userId, String userRoleId, String organizeId) {
         var userEntity = this.UserEntity()
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
         var userRoleEntity = this.UserRoleEntity()
                 .where(s -> s.getId().equals(userRoleId))
                 .getOnlyValue();
+        var organizeEntity = Optional.ofNullable(organizeId)
+                .map(s -> this.OrganizeEntity()
+                        .where(m -> m.getId().equals(organizeId))
+                        .getOnlyValue())
+                .orElse(null);
 
         var userRoleRelationEntity = new UserRoleRelationEntity();
         userRoleRelationEntity.setId(newId());
@@ -35,6 +41,7 @@ public class UserRoleRelationService extends BaseService {
         userRoleRelationEntity.setUpdateDate(new Date());
         userRoleRelationEntity.setUser(userEntity);
         userRoleRelationEntity.setUserRole(userRoleEntity);
+        userRoleRelationEntity.setOrganize(organizeEntity);
         this.persist(userRoleRelationEntity);
     }
 
