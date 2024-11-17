@@ -67,9 +67,9 @@ import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
-import com.springboot.project.service.SystemDefaultRoleService;
-import com.springboot.project.service.SystemRoleRelationService;
 import com.springboot.project.service.SystemRoleService;
+import com.springboot.project.service.SystemRoleRelationService;
+import com.springboot.project.service.UserRoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
@@ -177,10 +177,10 @@ public class BaseTest {
     protected OrganizeRelationService organizeRelationService;
 
     @Autowired
-    protected SystemRoleService systemRoleService;
+    protected UserRoleService userRoleService;
 
     @Autowired
-    protected SystemDefaultRoleService systemDefaultRoleService;
+    protected SystemRoleService systemRoleService;
 
     @Autowired
     protected DistributedExecutionService distributedExecutionService;
@@ -228,9 +228,9 @@ public class BaseTest {
         }
         var userInfo = signIn(email, password);
         userInfo.getUserRoleRelationList()
-                .addAll(this.systemRoleService.getUserRoleListForSuperAdmin()
+                .addAll(this.userRoleService.getUserRoleListForSuperAdmin()
                         .stream()
-                        .map(s -> new UserRoleRelationModel().setSystemRole(s))
+                        .map(s -> new UserRoleRelationModel().setUserRole(s))
                         .toList());
         this.userService.update(userInfo);
         return signIn(email, password);

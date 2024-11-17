@@ -16,23 +16,23 @@ public class UserFormatter extends BaseService {
         userModel.setUserEmailList(Lists.newArrayList())
                 .setPassword(null);
         var userId = userEntity.getId();
-        var systemRoleList = this.UserEntity()
+        var userRoleRelationList = this.UserEntity()
                 .where(s -> s.getId().equals(userId))
-                .selectAllList(s -> s.getUserSystemRoleRelationList())
+                .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() == null)
-                .where(s -> s.getSystemRole().getOrganize() == null)
+                .where(s -> s.getUserRole().getOrganize() == null)
                 .distinct()
                 .map(s -> this.userRoleRelationFormatter.format(s))
                 .toList();
-        userModel.setUserRoleRelationList(systemRoleList);
-        var organizeRoleList = this.UserEntity()
+        userModel.setUserRoleRelationList(userRoleRelationList);
+        var organizeRoleRelationList = this.UserEntity()
                 .where(s -> s.getId().equals(userId))
-                .selectAllList(s -> s.getUserSystemRoleRelationList())
+                .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() != null)
-                .where(s -> s.getSystemRole().getOrganize() != null)
+                .where(s -> s.getUserRole().getOrganize() != null)
                 .map(s -> this.userRoleRelationFormatter.format(s))
                 .toList();
-        userModel.setOrganizeRoleRelationList(organizeRoleList);
+        userModel.setOrganizeRoleRelationList(organizeRoleRelationList);
         return userModel;
     }
 

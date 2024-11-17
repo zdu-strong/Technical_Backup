@@ -37,11 +37,11 @@ public class UserService extends BaseService {
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getSystemRole().getId());
+            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getUserRole().getId());
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getSystemRole().getId());
+            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId());
         }
 
         return this.userFormatter.formatWithMoreInformation(userEntity);
@@ -53,16 +53,16 @@ public class UserService extends BaseService {
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
 
-        for (var userSystemRoleRelationEntity : userEntity.getUserSystemRoleRelationList()) {
-            this.remove(userSystemRoleRelationEntity);
+        for (var userRoleRelationEntity : userEntity.getUserRoleRelationList()) {
+            this.remove(userRoleRelationEntity);
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userId, userRoleRelation.getSystemRole().getId());
+            this.userRoleRelationService.create(userId, userRoleRelation.getUserRole().getId());
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userId, organizeRelation.getSystemRole().getId());
+            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId());
         }
 
         this.merge(userEntity);

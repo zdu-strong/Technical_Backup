@@ -34,7 +34,7 @@ public class OrganizeService extends BaseService {
         this.persist(organizeEntity);
 
         if (organizeEntity.getParent() == null) {
-            this.systemRoleService.refreshForCompany(organizeEntity.getId());
+            this.userRoleService.refreshForCompany(organizeEntity.getId());
         }
 
         return this.organizeFormatter.format(organizeEntity);
@@ -88,7 +88,7 @@ public class OrganizeService extends BaseService {
         this.merge(organizeEntity);
 
         if (organizeEntity.getParent() == null) {
-            this.systemRoleService.refreshForCompany(organizeEntity.getId());
+            this.userRoleService.refreshForCompany(organizeEntity.getId());
         }
     }
 

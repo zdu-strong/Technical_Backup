@@ -15,8 +15,8 @@ import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.service.EncryptDecryptService;
-import com.springboot.project.service.SystemDefaultRoleService;
 import com.springboot.project.service.SystemRoleService;
+import com.springboot.project.service.UserRoleService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 
@@ -29,10 +29,10 @@ public class SystemInitScheduled {
     private EncryptDecryptService encryptDecryptService;
 
     @Autowired
-    private SystemDefaultRoleService systemDefaultRoleService;
+    private SystemRoleService systemRoleService;
 
     @Autowired
-    private SystemRoleService systemRoleService;
+    private UserRoleService userRoleService;
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
@@ -64,7 +64,7 @@ public class SystemInitScheduled {
 
     private void init() {
         this.initEncryptDecryptKey();
-        this.initSystemRole();
+        this.initUserRole();
         this.initSuperAdminUser();
     }
 
@@ -90,9 +90,9 @@ public class SystemInitScheduled {
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
         superAdminUser.setOrganizeRoleRelationList(List.of());
-        superAdminUser.setUserRoleRelationList(this.systemRoleService.getUserRoleListForSuperAdmin()
+        superAdminUser.setUserRoleRelationList(this.userRoleService.getUserRoleListForSuperAdmin()
                 .stream()
-                .map(s -> new UserRoleRelationModel().setSystemRole(s))
+                .map(s -> new UserRoleRelationModel().setUserRole(s))
                 .toList());
         this.userService.create(superAdminUser);
     }
@@ -104,15 +104,15 @@ public class SystemInitScheduled {
         this.encryptDecryptService.getKeyOfRSAPublicKey();
     }
 
-    private void initSystemRole() {
+    private void initUserRole() {
         this.longTermTaskUtil.run(() -> {
             while (true) {
-                if (!systemDefaultRoleService.refresh()) {
+                if (!systemRoleService.refresh()) {
                     break;
                 }
             }
             while (true) {
-                if (!systemRoleService.refresh()) {
+                if (!userRoleService.refresh()) {
                     break;
                 }
             }

@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.UserSystemRoleRelationEntity;
+import com.springboot.project.entity.UserRoleRelationEntity;
 import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.UserModel;
 
@@ -21,21 +21,21 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class UserRoleRelationService extends BaseService {
 
-    public void create(String userId, String systemRoleId) {
+    public void create(String userId, String userRoleId) {
         var userEntity = this.UserEntity()
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
-        var systemRoleEntity = this.SystemRoleEntity()
-                .where(s -> s.getId().equals(systemRoleId))
+        var userRoleEntity = this.UserRoleEntity()
+                .where(s -> s.getId().equals(userRoleId))
                 .getOnlyValue();
 
-        var userSystemRoleRelationEntity = new UserSystemRoleRelationEntity();
-        userSystemRoleRelationEntity.setId(newId());
-        userSystemRoleRelationEntity.setCreateDate(new Date());
-        userSystemRoleRelationEntity.setUpdateDate(new Date());
-        userSystemRoleRelationEntity.setUser(userEntity);
-        userSystemRoleRelationEntity.setSystemRole(systemRoleEntity);
-        this.persist(userSystemRoleRelationEntity);
+        var userRoleRelationEntity = new UserRoleRelationEntity();
+        userRoleRelationEntity.setId(newId());
+        userRoleRelationEntity.setCreateDate(new Date());
+        userRoleRelationEntity.setUpdateDate(new Date());
+        userRoleRelationEntity.setUser(userEntity);
+        userRoleRelationEntity.setUserRole(userRoleEntity);
+        this.persist(userRoleRelationEntity);
     }
 
     @Transactional(readOnly = true)
@@ -101,10 +101,10 @@ public class UserRoleRelationService extends BaseService {
             }
 
             var organizeRoleId = organizeRole.getId();
-            var systemRoleEntity = this.SystemRoleEntity()
+            var userRoleEntity = this.UserRoleEntity()
                     .where(s -> s.getId().equals(organizeRoleId))
                     .getOnlyValue();
-            this.permissionUtil.checkAnyRole(request, systemRoleEntity.getOrganize().getId(),
+            this.permissionUtil.checkAnyRole(request, userRoleEntity.getOrganize().getId(),
                     SystemRoleEnum.ORGANIZE_ADMIN);
         }
 

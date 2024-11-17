@@ -65,6 +65,6 @@ public class UserEntity {
     private List<UserMessageDeactivateEntity> userMessageDeactivateList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserSystemRoleRelationEntity> userSystemRoleRelationList;
+    private List<UserRoleRelationEntity> userRoleRelationList;
 
 }

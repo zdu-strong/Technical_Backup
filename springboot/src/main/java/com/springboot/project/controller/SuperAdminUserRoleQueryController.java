@@ -15,7 +15,7 @@ public class SuperAdminUserRoleQueryController extends BaseController {
         this.permissionUtil.checkIsSignIn(request);
         this.permissionUtil.checkAnyRole(request, SystemRoleEnum.SUPER_ADMIN);
 
-        var paginationModel = this.systemRoleService.searchUserRoleForSuperAdminByPagination(pageNum, pageSize);
+        var paginationModel = this.userRoleService.searchUserRoleForSuperAdminByPagination(pageNum, pageSize);
 
         return ResponseEntity.ok(paginationModel);
     }

@@ -18,6 +18,7 @@ import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SystemRoleService;
+import com.springboot.project.service.UserRoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
@@ -103,9 +104,12 @@ public class BaseController {
     protected VerificationCodeEmailService verificationCodeEmailService;
 
     @Autowired
-    protected SystemRoleService systemRoleService;
+    protected UserRoleService userRoleService;
 
     @Autowired
     protected UserRoleRelationService userRoleRelationService;
+
+    @Autowired
+    protected SystemRoleService systemRoleService;
 
 }

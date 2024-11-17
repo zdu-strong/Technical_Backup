@@ -33,8 +33,8 @@ import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.entity.OrganizeRelationEntity;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.entity.StorageSpaceEntity;
-import com.springboot.project.entity.SystemDefaultRoleEntity;
 import com.springboot.project.entity.SystemRoleEntity;
+import com.springboot.project.entity.UserRoleEntity;
 import com.springboot.project.entity.SystemRoleRelationEntity;
 import com.springboot.project.entity.TokenEntity;
 import com.springboot.project.entity.UserBlackOrganizeClosureEntity;
@@ -50,8 +50,8 @@ import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
-import com.springboot.project.format.SystemDefaultRoleFormatter;
 import com.springboot.project.format.SystemRoleFormatter;
+import com.springboot.project.format.UserRoleFormatter;
 import com.springboot.project.format.TokenFormatter;
 import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
@@ -63,7 +63,7 @@ import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SystemRoleRelationService;
-import com.springboot.project.service.SystemRoleService;
+import com.springboot.project.service.UserRoleService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserRoleRelationService;
@@ -71,7 +71,7 @@ import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.springboot.project.entity.UserSystemRoleRelationEntity;
+import com.springboot.project.entity.UserRoleRelationEntity;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -137,7 +137,7 @@ public abstract class BaseService {
     protected DistributedExecutionService distributedExecutionService;
 
     @Autowired
-    protected SystemRoleService systemRoleService;
+    protected UserRoleService userRoleService;
 
     @Autowired
     protected UserRoleRelationService userRoleRelationService;
@@ -179,10 +179,10 @@ public abstract class BaseService {
     protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
 
     @Autowired
-    protected SystemRoleFormatter systemRoleFormatter;
+    protected UserRoleFormatter userRoleFormatter;
 
     @Autowired
-    protected SystemDefaultRoleFormatter systemDefaultRoleFormatter;
+    protected SystemRoleFormatter systemRoleFormatter;
 
     @Autowired
     protected DistributedExecutionTaskFormatter distributedExecutionTaskFormatter;
@@ -266,20 +266,20 @@ public abstract class BaseService {
         return this.streamAll(UserMessageDeactivateEntity.class);
     }
 
-    protected JPAJinqStream<SystemDefaultRoleEntity> SystemDefaultRoleEntity() {
-        return this.streamAll(SystemDefaultRoleEntity.class);
-    }
-
     protected JPAJinqStream<SystemRoleEntity> SystemRoleEntity() {
         return this.streamAll(SystemRoleEntity.class);
+    }
+
+    protected JPAJinqStream<UserRoleEntity> UserRoleEntity() {
+        return this.streamAll(UserRoleEntity.class);
     }
 
     protected JPAJinqStream<SystemRoleRelationEntity> SystemRoleRelationEntity() {
         return this.streamAll(SystemRoleRelationEntity.class);
     }
 
-    protected JPAJinqStream<UserSystemRoleRelationEntity> UserSystemRoleRelationEntity() {
-        return this.streamAll(UserSystemRoleRelationEntity.class);
+    protected JPAJinqStream<UserRoleRelationEntity> UserRoleRelationEntity() {
+        return this.streamAll(UserRoleRelationEntity.class);
     }
 
     protected JPAJinqStream<DistributedExecutionTaskEntity> DistributedExecutionTaskEntity() {

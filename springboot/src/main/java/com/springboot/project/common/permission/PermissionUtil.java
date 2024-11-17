@@ -58,8 +58,8 @@ public class PermissionUtil {
         return decodedJWT.getSubject();
     }
 
-    public boolean hasAnyRole(HttpServletRequest request, SystemRoleEnum... roleList) {
-        if (roleList.length == 0) {
+    public boolean hasAnyRole(HttpServletRequest request, SystemRoleEnum... systemRoleList) {
+        if (systemRoleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleList cannot be empty");
         }
         var userId = this.getUserId(request);
@@ -68,67 +68,67 @@ public class PermissionUtil {
                 user.getUserRoleRelationList(),
                 user.getOrganizeRoleRelationList()))
                 .selectAllList(s -> s)
-                .select(s -> s.getSystemRole())
-                .selectAllList(s -> s.getSystemDefaultRoleList())
+                .select(s -> s.getUserRole())
+                .selectAllList(s -> s.getSystemRoleList())
                 .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
-                .where(s -> ArrayUtils.contains(roleList, s))
+                .where(s -> ArrayUtils.contains(systemRoleList, s))
                 .exists();
         return hasAnyRole;
     }
 
-    public void checkAnyRole(HttpServletRequest request, SystemRoleEnum... roleList) {
-        if (!this.hasAnyRole(request, roleList)) {
+    public void checkAnyRole(HttpServletRequest request, SystemRoleEnum... systemRoleList) {
+        if (!this.hasAnyRole(request, systemRoleList)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
-    public void checkAnyRole(HttpServletRequest request, String organizeId, SystemRoleEnum... roleList) {
+    public void checkAnyRole(HttpServletRequest request, String organizeId, SystemRoleEnum... systemRoleList) {
         if (StringUtils.isBlank(organizeId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeId Cannot be empty");
         }
-        if (roleList.length == 0) {
+        if (systemRoleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleList cannot be empty");
         }
-        if (Arrays.stream(roleList).anyMatch(s -> !s.getIsOrganizeRole() && !s.getIsSuperAdmin())) {
+        if (Arrays.stream(systemRoleList).anyMatch(s -> !s.getIsOrganizeRole() && !s.getIsSuperAdmin())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a superAdmin and not an organize role");
         }
         var userId = this.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
 
-        if (Arrays.stream(roleList).anyMatch(s -> s.getIsSuperAdmin())
+        if (Arrays.stream(systemRoleList).anyMatch(s -> s.getIsSuperAdmin())
                 && JinqStream.from(user.getUserRoleRelationList())
-                        .selectAllList(s -> s.getSystemRole().getSystemDefaultRoleList())
+                        .selectAllList(s -> s.getUserRole().getSystemRoleList())
                         .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
                         .anyMatch(s -> s.getIsSuperAdmin())) {
             return;
         }
-        if (!Arrays.stream(roleList)
+        if (!Arrays.stream(systemRoleList)
                 .anyMatch(s -> JinqStream.from(user.getOrganizeRoleRelationList())
-                        .selectAllList(t -> t.getSystemRole().getSystemDefaultRoleList())
+                        .selectAllList(t -> t.getUserRole().getSystemRoleList())
                         .select(t -> SystemRoleEnum.valueOfRole(t.getName()))
                         .toList()
                         .contains(s))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        var organizeIdList = getOrganizeIdListByAnyRole(request, roleList);
+        var organizeIdList = getOrganizeIdListByAnyRole(request, systemRoleList);
         var ancestorIdList = this.organizeService.getAccestorIdList(organizeId);
         if (!JinqStream.from(ancestorIdList).anyMatch(s -> organizeIdList.contains(s))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
-    public List<String> getOrganizeIdListByAnyRole(HttpServletRequest request, SystemRoleEnum... roleList) {
-        if (roleList.length == 0) {
+    public List<String> getOrganizeIdListByAnyRole(HttpServletRequest request, SystemRoleEnum... systemRoleList) {
+        if (systemRoleList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleList cannot be empty");
         }
-        if (Arrays.stream(roleList).anyMatch(s -> !s.getIsOrganizeRole())) {
+        if (Arrays.stream(systemRoleList).anyMatch(s -> !s.getIsOrganizeRole())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only organize role can be transferred");
         }
         var userId = this.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
         var organizeIdList = JinqStream.from(user.getOrganizeRoleRelationList())
-                .where(s -> JinqStream.from(s.getSystemRole().getSystemDefaultRoleList())
-                        .anyMatch(t -> ArrayUtils.contains(roleList, SystemRoleEnum.valueOfRole(t.getName()))))
+                .where(s -> JinqStream.from(s.getUserRole().getSystemRoleList())
+                        .anyMatch(t -> ArrayUtils.contains(systemRoleList, SystemRoleEnum.valueOfRole(t.getName()))))
                 .select(s -> s.getOrganize().getId())
                 .toList();
         return organizeIdList;

@@ -17,8 +17,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "userRoleId", "systemRoleId" }) })
-public class SystemRoleRelationEntity {
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "userRoleId", "organizeId" }) })
+public class UserRoleRelationEntity {
 
     @Id
     private String id;
@@ -30,7 +30,10 @@ public class SystemRoleRelationEntity {
     private Date updateDate;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
-    private SystemRoleEntity systemRole;
+    private UserEntity user;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = true)
+    private OrganizeEntity organize;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private UserRoleEntity userRole;
