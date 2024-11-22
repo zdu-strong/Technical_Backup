@@ -31,7 +31,9 @@ import lombok.SneakyThrows;
 public class TokenService extends BaseService {
 
     public void deleteTokenEntity(String id) {
-        var tokenEntity = this.streamAll(TokenEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
+        var tokenEntity = this.streamAll(TokenEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         tokenEntity.setIsActive(false);
         this.merge(tokenEntity);
     }

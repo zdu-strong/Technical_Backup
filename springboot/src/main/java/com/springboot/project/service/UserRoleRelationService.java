@@ -92,11 +92,14 @@ public class UserRoleRelationService extends BaseService {
 
         for (var organizeRole : JinqStream.from(List.of(
                 user.getOrganizeRoleRelationList().stream()
-                        .filter(s -> !userOne.getOrganizeRoleRelationList().stream()
+                        .filter(s -> !userOne.getOrganizeRoleRelationList()
+                                .stream()
                                 .anyMatch(t -> s.getId().equals(t.getId())))
                         .toList(),
-                userOne.getOrganizeRoleRelationList().stream()
-                        .filter(s -> user.getOrganizeRoleRelationList().stream()
+                userOne.getOrganizeRoleRelationList()
+                        .stream()
+                        .filter(s -> user.getOrganizeRoleRelationList()
+                                .stream()
                                 .anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).toList()) {
@@ -113,11 +116,13 @@ public class UserRoleRelationService extends BaseService {
         }
 
         if (JinqStream.from(List.of(
-                user.getUserRoleRelationList().stream()
+                user.getUserRoleRelationList()
+                        .stream()
                         .filter(s -> !userOne.getUserRoleRelationList().stream()
                                 .anyMatch(t -> s.getId().equals(t.getId())))
                         .toList(),
-                userOne.getUserRoleRelationList().stream()
+                userOne.getUserRoleRelationList()
+                        .stream()
                         .filter(s -> user.getUserRoleRelationList().stream().anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).exists()) {

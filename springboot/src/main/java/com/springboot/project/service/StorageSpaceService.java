@@ -47,7 +47,9 @@ public class StorageSpaceService extends BaseService {
     }
 
     private boolean isUsedByUserMessageEntity(String folderName) {
-        var isUsed = this.streamAll(UserMessageEntity.class).where(s -> s.getFolderName().equals(folderName)).exists();
+        var isUsed = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .exists();
         return isUsed;
     }
 
@@ -59,16 +61,20 @@ public class StorageSpaceService extends BaseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     StrFormatter.format("Folder deletion failed. FolderName:{}", folderName));
         }
-        for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName))
+        for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
                 .toList()) {
             this.remove(storageSpaceEntity);
         }
     }
 
     private void refreshStorageSpaceEntity(String folderName) {
-        if (this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName)).exists()) {
+        if (this.streamAll(StorageSpaceEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .exists()) {
             if (this.isUsedByProgramData(folderName)) {
-                var storageSpaceEntity = this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName))
+                var storageSpaceEntity = this.streamAll(StorageSpaceEntity.class)
+                        .where(s -> s.getFolderName().equals(folderName))
                         .getOnlyValue();
                 storageSpaceEntity.setUpdateDate(new Date());
                 this.merge(storageSpaceEntity);

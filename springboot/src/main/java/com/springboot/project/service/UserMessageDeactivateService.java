@@ -9,8 +9,12 @@ import com.springboot.project.entity.*;
 public class UserMessageDeactivateService extends BaseService {
 
     public void create(String userMessageId, String userId) {
-        var userEntity = this.streamAll(UserEntity.class).where(s -> s.getId().equals(userId)).getOnlyValue();
-        var userMessageEntity = this.streamAll(UserMessageEntity.class).where(s -> s.getId().equals(userMessageId)).getOnlyValue();
+        var userEntity = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(userId))
+                .getOnlyValue();
+        var userMessageEntity = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getId().equals(userMessageId))
+                .getOnlyValue();
         var userMessageDeactivateEntity = new UserMessageDeactivateEntity();
         userMessageDeactivateEntity.setId(newId());
         userMessageDeactivateEntity.setCreateDate(new Date());

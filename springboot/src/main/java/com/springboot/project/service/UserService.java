@@ -38,7 +38,8 @@ public class UserService extends BaseService {
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId(), organizeRelation.getOrganize().getId());
+            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId(),
+                    organizeRelation.getOrganize().getId());
         }
 
         return this.userFormatter.formatWithMoreInformation(userEntity);
@@ -59,7 +60,8 @@ public class UserService extends BaseService {
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId(), organizeRelation.getOrganize().getId());
+            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId(),
+                    organizeRelation.getOrganize().getId());
         }
 
         this.merge(userEntity);
@@ -67,14 +69,18 @@ public class UserService extends BaseService {
 
     @Transactional(readOnly = true)
     public UserModel getUserWithMoreInformation(String id) {
-        var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
+        var user = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(id))
+                .where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.formatWithMoreInformation(user);
     }
 
     @Transactional(readOnly = true)
     public UserModel getUser(String id) {
-        var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
+        var user = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(id))
+                .where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
@@ -94,7 +100,8 @@ public class UserService extends BaseService {
         }
         {
             var email = account;
-            var userEntity = this.streamAll(UserEmailEntity.class).where(s -> s.getEmail().equals(email))
+            var userEntity = this.streamAll(UserEmailEntity.class)
+                    .where(s -> s.getEmail().equals(email))
                     .where(s -> s.getIsActive())
                     .where(s -> s.getUser().getIsActive())
                     .select(s -> s.getUser())

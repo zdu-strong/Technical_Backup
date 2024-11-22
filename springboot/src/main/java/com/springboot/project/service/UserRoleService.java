@@ -23,7 +23,9 @@ public class UserRoleService extends BaseService {
 
     public UserRoleModel create(String role, List<SystemRoleEnum> systemRoleList, String organizeId) {
         OrganizeEntity organizeEntity = StringUtils.isNotBlank(organizeId)
-                ? this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(organizeId)).getOnlyValue()
+                ? this.streamAll(OrganizeEntity.class)
+                        .where(s -> s.getId().equals(organizeId))
+                        .getOnlyValue()
                 : null;
 
         var userRoleEntity = new UserRoleEntity();
@@ -45,17 +47,22 @@ public class UserRoleService extends BaseService {
 
     public void update(UserRoleModel systemRole) {
         var id = systemRole.getId();
-        var userRoleEntity = this.streamAll(UserRoleEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
+        var userRoleEntity = this.streamAll(UserRoleEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         userRoleEntity.setName(systemRole.getName());
         userRoleEntity.setUpdateDate(new Date());
         this.merge(userRoleEntity);
 
-        var systemRoleRelationEntityList = this.streamAll(UserRoleEntity.class).where(s -> s.getId().equals(id))
-                .selectAllList(s -> s.getSystemRoleRelationList()).toList();
+        var systemRoleRelationEntityList = this.streamAll(UserRoleEntity.class)
+                .where(s -> s.getId().equals(id))
+                .selectAllList(s -> s.getSystemRoleRelationList())
+                .toList();
         for (var systemRoleRelationEntity : systemRoleRelationEntityList) {
             this.remove(systemRoleRelationEntity);
         }
-        for (var systemRoleEnum : systemRole.getSystemRoleList().stream().map(s -> SystemRoleEnum.valueOfRole(s.getName()))
+        for (var systemRoleEnum : systemRole.getSystemRoleList().stream()
+                .map(s -> SystemRoleEnum.valueOfRole(s.getName()))
                 .toList()) {
             this.systemRoleRelationService.create(id, systemRoleEnum);
         }
@@ -88,7 +95,8 @@ public class UserRoleService extends BaseService {
             }
             var systemRoleName = systemRoleEnum.getRole();
             if (!this.streamAll(SystemRoleEntity.class)
-                    .where(s -> s.getName().equals(systemRoleName)).exists()) {
+                    .where(s -> s.getName().equals(systemRoleName))
+                    .exists()) {
                 continue;
             }
             var userRoleEntity = this.streamAll(UserRoleEntity.class)
@@ -191,7 +199,8 @@ public class UserRoleService extends BaseService {
                 .findFirst()
                 .orElse(null);
         if (systemRoleEntity != null) {
-            this.create(systemRoleEntity.getName(), List.of(SystemRoleEnum.valueOfRole(systemRoleEntity.getName())), null);
+            this.create(systemRoleEntity.getName(), List.of(SystemRoleEnum.valueOfRole(systemRoleEntity.getName())),
+                    null);
             return true;
         }
         return false;

@@ -65,8 +65,12 @@ public class OrganizeRelationService extends BaseService {
     }
 
     private void create(String ancestorId, String descendantId) {
-        var ancestor = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(ancestorId)).getOnlyValue();
-        var descendant = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(descendantId)).getOnlyValue();
+        var ancestor = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(ancestorId))
+                .getOnlyValue();
+        var descendant = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(descendantId))
+                .getOnlyValue();
         var organizeRelationEntity = new OrganizeRelationEntity();
         organizeRelationEntity.setId(newId());
         organizeRelationEntity.setCreateDate(new Date());

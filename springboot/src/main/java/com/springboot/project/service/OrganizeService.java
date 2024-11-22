@@ -40,7 +40,8 @@ public class OrganizeService extends BaseService {
 
     public void update(OrganizeModel organizeModel) {
         var id = organizeModel.getId();
-        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id))
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
         organizeEntity.setName(organizeModel.getName());
@@ -49,7 +50,8 @@ public class OrganizeService extends BaseService {
     }
 
     public void delete(String id) {
-        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id))
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsActive(false);
@@ -95,7 +97,9 @@ public class OrganizeService extends BaseService {
         if (StringUtils.isBlank(parentId)) {
             return false;
         }
-        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         var isChild = this.organizeFormatter.getAncestorIdList(organizeEntity).contains(parentId);
         return isChild;
     }
@@ -127,7 +131,9 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public OrganizeModel getTopOrganize(String organizeId) {
-        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(organizeId)).getOnlyValue();
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
+                .where(s -> s.getId().equals(organizeId))
+                .getOnlyValue();
         var organizeIdList = new ArrayList<String>();
         while (true) {
             if (organizeIdList.contains(organizeEntity.getId())) {
@@ -144,7 +150,9 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public void checkHasExistOfParentOrganize(OrganizeModel organizeModel) {
-        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
+        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent())
+                .map(s -> s.getId())
+                .orElse(null);
         if (StringUtils.isBlank(parentOrganizeId)) {
             return;
         }
@@ -200,9 +208,11 @@ public class OrganizeService extends BaseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot has parent organize");
         }
     }
-    
+
     private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
-        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent()).map(s -> s.getId()).orElse(null);
+        var parentOrganizeId = Optional.ofNullable(organizeModel.getParent())
+                .map(s -> s.getId())
+                .orElse(null);
         if (StringUtils.isBlank(parentOrganizeId)) {
             return null;
         }

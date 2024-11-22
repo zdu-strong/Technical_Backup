@@ -81,7 +81,9 @@ public class FriendshipService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<FriendshipModel> getStrangerList(Long pageNum, Long pageSize, String userId) {
-        var userEntity = this.streamAll(UserEntity.class).where(s -> s.getId().equals(userId)).where(s -> s.getIsActive())
+        var userEntity = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(userId))
+                .where(s -> s.getIsActive())
                 .getOnlyValue();
         var stream = this.streamAll(UserEntity.class)
                 .where(s -> s.getIsActive())

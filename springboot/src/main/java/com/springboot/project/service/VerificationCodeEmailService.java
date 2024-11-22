@@ -72,7 +72,8 @@ public class VerificationCodeEmailService extends BaseService {
 
     @Transactional(readOnly = true)
     public boolean isFirstOnTheDurationOfVerificationCodeEmail(String id) {
-        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class)
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         var isFirstOnTheSecond = false;
 
@@ -146,16 +147,17 @@ public class VerificationCodeEmailService extends BaseService {
 
     @Transactional(readOnly = true)
     public VerificationCodeEmailModel getById(String id) {
-        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class)
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.verificationCodeEmailFormatter.format(verificationCodeEmailEntity);
     }
 
-    
     public void checkVerificationCodeEmailHasBeenUsed(VerificationCodeEmailModel verificationCodeEmailModel) {
         var id = verificationCodeEmailModel.getId();
 
-        var verificationCodeEmailEntityOptional = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntityOptional = this.streamAll(VerificationCodeEmailEntity.class)
+                .where(s -> s.getId().equals(id))
                 .findOne();
         if (!verificationCodeEmailEntityOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -196,7 +198,8 @@ public class VerificationCodeEmailService extends BaseService {
 
     public void checkVerificationCodeEmailIsPassed(VerificationCodeEmailModel verificationCodeEmailModel) {
         var id = verificationCodeEmailModel.getId();
-        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class)
+                .where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
         if (!verificationCodeEmailEntity.getVerificationCode()

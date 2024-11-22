@@ -20,7 +20,9 @@ public class UserMessageService extends BaseService {
 
     public UserMessageModel sendMessage(UserMessageModel userMessageModel) {
         var userId = userMessageModel.getUser().getId();
-        var userEntity = this.streamAll(UserEntity.class).where(s -> s.getId().equals(userId)).getOnlyValue();
+        var userEntity = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(userId))
+                .getOnlyValue();
         var userMessageEntity = new UserMessageEntity();
         userMessageEntity.setId(newId());
         userMessageEntity.setCreateDate(new Date());
@@ -45,7 +47,9 @@ public class UserMessageService extends BaseService {
     }
 
     public void recallMessage(String id) {
-        var userMessageEntity = this.streamAll(UserMessageEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
+        var userMessageEntity = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         userMessageEntity.setIsRecall(true);
         userMessageEntity.setUpdateDate(new Date());
         this.merge(userMessageEntity);
@@ -59,7 +63,9 @@ public class UserMessageService extends BaseService {
 
     @Transactional(readOnly = true)
     public UserMessageModel getUserMessageById(String id, String userId) {
-        var userMessageEntity = this.streamAll(UserMessageEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
+        var userMessageEntity = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         return this.userMessageFormatter.formatForUserId(userMessageEntity, userId);
     }
 
