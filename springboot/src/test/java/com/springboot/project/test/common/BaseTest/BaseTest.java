@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.devtools.remote.client.HttpHeaderInterceptor;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
@@ -31,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -198,7 +198,7 @@ public class BaseTest {
     @Autowired
     protected StorageSpaceScheduled storageSpaceScheduled;
 
-    @SpyBean
+    @MockitoSpyBean
     protected OrganizeRelationRefreshScheduled organizeRelationRefreshScheduled;
 
     @Autowired
