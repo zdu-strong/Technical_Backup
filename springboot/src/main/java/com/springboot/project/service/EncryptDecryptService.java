@@ -217,7 +217,7 @@ public class EncryptDecryptService extends BaseService {
             synchronized (getClass()) {
                 if (!this.ready) {
                     String id = EncryptDecryptEnum.getId();
-                    if (!this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
+                    if (!this.streamAll(EncryptDecryptEntity.class).where(s -> s.getId().equals(id)).exists()) {
 
                         EncryptDecryptEntity encryptDecryptEntity = new EncryptDecryptEntity();
                         encryptDecryptEntity.setId(id);
@@ -238,7 +238,7 @@ public class EncryptDecryptService extends BaseService {
 
                         this.persist(encryptDecryptEntity);
                     }
-                    EncryptDecryptEntity encryptDecryptEntity = this.EncryptDecryptEntity()
+                    EncryptDecryptEntity encryptDecryptEntity = this.streamAll(EncryptDecryptEntity.class)
                             .where(s -> s.getId().equals(id)).getOnlyValue();
                     this.keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
                             .generatePublic(new X509EncodedKeySpec(

@@ -29,7 +29,7 @@ public class SystemRoleService extends BaseService {
 
     @Transactional(readOnly = true)
     public SystemRoleModel getById(String id) {
-        var systemRoleEntity = this.SystemRoleEntity()
+        var systemRoleEntity = this.streamAll(SystemRoleEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
@@ -39,7 +39,7 @@ public class SystemRoleService extends BaseService {
     private boolean createSystemRoleList() {
         for (var systemRole : SystemRoleEnum.values()) {
             var role = systemRole.getRole();
-            var exists = this.SystemRoleEntity()
+            var exists = this.streamAll(SystemRoleEntity.class)
                     .where(s -> s.getName().equals(role))
                     .exists();
             if (exists) {
@@ -53,13 +53,13 @@ public class SystemRoleService extends BaseService {
 
     private boolean deleteSystemRoleList() {
         var roleList = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getRole()).toList();
-        var systemRoleEntity = this.SystemRoleEntity()
+        var systemRoleEntity = this.streamAll(SystemRoleEntity.class)
                 .where(s -> !roleList.contains(s.getName()))
                 .findFirst()
                 .orElse(null);
         if (systemRoleEntity != null) {
             var idOfSystemRoleEntity = systemRoleEntity.getId();
-            var systemRoleRelationEntity = this.SystemRoleEntity()
+            var systemRoleRelationEntity = this.streamAll(SystemRoleEntity.class)
                     .where(s -> s.getId().equals(idOfSystemRoleEntity))
                     .selectAllList(s -> s.getSystemRoleRelationList())
                     .findFirst()

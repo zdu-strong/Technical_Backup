@@ -24,7 +24,7 @@ public class VerificationCodeEmailService extends BaseService {
         {
             var beforeDate = DateUtils.addMonths(new Date(), -1);
 
-            var retryCount = this.VerificationCodeEmailEntity()
+            var retryCount = this.streamAll(VerificationCodeEmailEntity.class)
                     .where(s -> s.getEmail().equals(email))
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> !s.getHasUsed() || !s.getIsPassed())
@@ -37,7 +37,7 @@ public class VerificationCodeEmailService extends BaseService {
         {
             var beforeDate = DateUtils.addDays(new Date(), -1);
 
-            var retryCount = this.VerificationCodeEmailEntity()
+            var retryCount = this.streamAll(VerificationCodeEmailEntity.class)
                     .where(s -> s.getEmail().equals(email))
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> !s.getHasUsed() || !s.getIsPassed())
@@ -72,7 +72,7 @@ public class VerificationCodeEmailService extends BaseService {
 
     @Transactional(readOnly = true)
     public boolean isFirstOnTheDurationOfVerificationCodeEmail(String id) {
-        var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         var isFirstOnTheSecond = false;
 
@@ -83,7 +83,7 @@ public class VerificationCodeEmailService extends BaseService {
             var utcOffset = this.timeZoneUtil.getUtcOffset("UTC");
             var beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
 
-            isFirstOnTheSecond = this.VerificationCodeEmailEntity()
+            isFirstOnTheSecond = this.streamAll(VerificationCodeEmailEntity.class)
                     .where(s -> s.getEmail().equals(email))
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> JPQLFunction
@@ -115,7 +115,7 @@ public class VerificationCodeEmailService extends BaseService {
                 var beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
 
                 var minVerificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
-                isFirstOnTheSecond = this.VerificationCodeEmailEntity()
+                isFirstOnTheSecond = this.streamAll(VerificationCodeEmailEntity.class)
                         .where(s -> s.getEmail().equals(email))
                         .where(s -> beforeDate.before(s.getCreateDate()))
                         .where(s -> s.getVerificationCode().length() == minVerificationCodeLength)
@@ -146,7 +146,7 @@ public class VerificationCodeEmailService extends BaseService {
 
     @Transactional(readOnly = true)
     public VerificationCodeEmailModel getById(String id) {
-        var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.verificationCodeEmailFormatter.format(verificationCodeEmailEntity);
     }
@@ -155,7 +155,7 @@ public class VerificationCodeEmailService extends BaseService {
     public void checkVerificationCodeEmailHasBeenUsed(VerificationCodeEmailModel verificationCodeEmailModel) {
         var id = verificationCodeEmailModel.getId();
 
-        var verificationCodeEmailEntityOptional = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntityOptional = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
                 .findOne();
         if (!verificationCodeEmailEntityOptional.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -196,7 +196,7 @@ public class VerificationCodeEmailService extends BaseService {
 
     public void checkVerificationCodeEmailIsPassed(VerificationCodeEmailModel verificationCodeEmailModel) {
         var id = verificationCodeEmailModel.getId();
-        var verificationCodeEmailEntity = this.VerificationCodeEmailEntity().where(s -> s.getId().equals(id))
+        var verificationCodeEmailEntity = this.streamAll(VerificationCodeEmailEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
         if (!verificationCodeEmailEntity.getVerificationCode()

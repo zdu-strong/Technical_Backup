@@ -3,9 +3,8 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.DistributedExecutionEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionModel;
 
@@ -16,7 +15,7 @@ public class DistributedExecutionService extends BaseService {
     public DistributedExecutionModel getLastSuccessDistributedExecution(
             DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.getExecutionType();
-        var distributedExecutionModel = this.DistributedExecutionEntity()
+        var distributedExecutionModel = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
                 .where(s -> s.getIsDone())
                 .where(s -> !s.getHasError())
@@ -31,7 +30,7 @@ public class DistributedExecutionService extends BaseService {
     @Transactional(readOnly = true)
     public DistributedExecutionModel getLastDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.getExecutionType();
-        var distributedExecutionModel = this.DistributedExecutionEntity()
+        var distributedExecutionModel = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
@@ -57,21 +56,21 @@ public class DistributedExecutionService extends BaseService {
     }
 
     public void refreshDistributedExecution(String id) {
-        var distributedExecutionEntity = this.DistributedExecutionEntity()
+        var distributedExecutionEntity = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         if (distributedExecutionEntity.getIsDone()) {
             return;
         }
 
-        var totalRecordOfDistributedExecutionTaskWithDone = this.DistributedExecutionTaskEntity()
+        var totalRecordOfDistributedExecutionTaskWithDone = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getDistributedExecution().getId().equals(id))
                 .where(s -> s.getIsDone())
                 .count();
         if (totalRecordOfDistributedExecutionTaskWithDone < distributedExecutionEntity.getTotalRecord()) {
             return;
         }
-        var hasError = this.DistributedExecutionTaskEntity()
+        var hasError = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getDistributedExecution().getId().equals(id))
                 .where(s -> s.getHasError())
                 .exists();

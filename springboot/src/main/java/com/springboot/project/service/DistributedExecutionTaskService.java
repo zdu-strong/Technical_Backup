@@ -6,7 +6,7 @@ import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.DistributedExecutionTaskEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.DistributedExecutionTaskModel;
 
 @Service
@@ -14,7 +14,7 @@ public class DistributedExecutionTaskService extends BaseService {
 
     public DistributedExecutionTaskModel create(
             String distributedExecutionId, long pageNum) {
-        var distributedExecutionEntity = this.DistributedExecutionEntity()
+        var distributedExecutionEntity = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getId().equals(distributedExecutionId))
                 .getOnlyValue();
 
@@ -33,7 +33,7 @@ public class DistributedExecutionTaskService extends BaseService {
     }
 
     public void refreshUpdateDate(String id) {
-        var distributedExecutionTaskEntity = this.DistributedExecutionTaskEntity()
+        var distributedExecutionTaskEntity = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         if (distributedExecutionTaskEntity.getIsDone()) {
@@ -44,7 +44,7 @@ public class DistributedExecutionTaskService extends BaseService {
     }
 
     public void updateByResult(String id) {
-        var distributedExecutionTaskEntity = this.DistributedExecutionTaskEntity()
+        var distributedExecutionTaskEntity = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         distributedExecutionTaskEntity.setUpdateDate(new Date());
@@ -53,7 +53,7 @@ public class DistributedExecutionTaskService extends BaseService {
     }
 
     public void updateByErrorMessage(String id) {
-        var distributedExecutionTaskEntity = this.DistributedExecutionTaskEntity()
+        var distributedExecutionTaskEntity = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         distributedExecutionTaskEntity.setUpdateDate(new Date());
@@ -63,7 +63,7 @@ public class DistributedExecutionTaskService extends BaseService {
     }
 
     public Long getPageNumForExecution(String distributedExecutionId) {
-        var distributedExecutionEntity = this.DistributedExecutionEntity()
+        var distributedExecutionEntity = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getId().equals(distributedExecutionId))
                 .getOnlyValue();
 
@@ -72,7 +72,7 @@ public class DistributedExecutionTaskService extends BaseService {
         }
 
         {
-            var pageNum = this.DistributedExecutionTaskEntity()
+            var pageNum = this.streamAll(DistributedExecutionTaskEntity.class)
                     .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                     .min(s -> s.getPageNum());
             if (pageNum == null) {
@@ -84,7 +84,7 @@ public class DistributedExecutionTaskService extends BaseService {
             }
         }
 
-        var totalRecordOfDistributedExecutionTask = this.DistributedExecutionTaskEntity()
+        var totalRecordOfDistributedExecutionTask = this.streamAll(DistributedExecutionTaskEntity.class)
                 .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                 .count();
 
@@ -98,7 +98,7 @@ public class DistributedExecutionTaskService extends BaseService {
 
         if (totalRecordOfDistributedExecutionTask >= distributedExecutionEntity.getTotalRecord()) {
             var now = DateUtils.addMinutes(new Date(), -1);
-            var distributedExecutionTaskEntity = this.DistributedExecutionTaskEntity()
+            var distributedExecutionTaskEntity = this.streamAll(DistributedExecutionTaskEntity.class)
                     .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                     .where(s -> !s.getIsDone())
                     .where(s -> s.getUpdateDate().before(now))
@@ -136,7 +136,7 @@ public class DistributedExecutionTaskService extends BaseService {
 
         var center = new BigDecimal(start + end).divide(new BigDecimal(2), 0, RoundingMode.FLOOR).longValue();
         if (end > center) {
-            var countOfTask = this.DistributedExecutionTaskEntity()
+            var countOfTask = this.streamAll(DistributedExecutionTaskEntity.class)
                     .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                     .where(s -> s.getPageNum() >= center)
                     .where(s -> s.getPageNum() < end)
@@ -148,7 +148,7 @@ public class DistributedExecutionTaskService extends BaseService {
             }
         }
         if (center > start) {
-            var countOfTask = this.DistributedExecutionTaskEntity()
+            var countOfTask = this.streamAll(DistributedExecutionTaskEntity.class)
                     .where(s -> s.getDistributedExecution().getId().equals(distributedExecutionId))
                     .where(s -> s.getPageNum() >= start)
                     .where(s -> s.getPageNum() < center)

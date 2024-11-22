@@ -79,51 +79,51 @@ Some experience in use, if you already know it, you can skip it.
 
 get only one element, like this:
 
-    this.UserEmailEntity().getOnlyValue();
+    this.streamAll(UserEmailEntity.class).getOnlyValue();
 
 ## Notes - jinq - findFirst
 
 get the first element, like this:
 
-    this.UserEntity().findFirst();
+    this.streamAll(UserEntity.class).findFirst();
 
 ## Notes - jinq - toList
 
 get array
 
-    this.UserEntity().toList();
+    this.streamAll(UserEntity.class).toList();
 
 get model array
 
-    this.UserEntity().map(s -> this.userFormatter.format(s)).toList();
+    this.streamAll(UserEntity.class).map(s -> this.userFormatter.format(s)).toList();
 
 ## Notes - jinq - pagination
 
-    JPAJinqStream<UserEntity> stream = this.UserEntity();
+    JPAJinqStream<UserEntity> stream = this.streamAll(UserEntity.class);
     return new PaginationModel<>(1, 10, stream, (s) -> s.getUsername());
 
 ## Notes - jinq - exists
 
-    this.UserEntity().exists();
+    this.streamAll(UserEntity.class).exists();
 
 ## Notes - jinq - where
 
-    this.UserEntity().where(s -> s.getUsername().equals("tom"));
+    this.streamAll(UserEntity.class).where(s -> s.getUsername().equals("tom"));
 
 ## Notes - jinq - and
 
-    this.UserEntity().where(s -> s.getUsername().contains("jerry") && s.getUsername().contains("tom"));
+    this.streamAll(UserEntity.class).where(s -> s.getUsername().contains("jerry") && s.getUsername().contains("tom"));
 
-    this.UserEntity().where(s -> s.getUsername().contains("jerry")).where(s -> s.getUsername().contains("tom"));
+    this.streamAll(UserEntity.class).where(s -> s.getUsername().contains("jerry")).where(s -> s.getUsername().contains("tom"));
 
 ## Notes - jinq - or
 
-    this.UserEntity().where(s -> s.getUsername().contains("tom") || s.getUsername().contains("jerry"));
+    this.streamAll(UserEntity.class).where(s -> s.getUsername().contains("tom") || s.getUsername().contains("jerry"));
 
 ## Notes - jinq - or of array
 
     public long getUsers(List<String> names) {
-        JPAJinqStream<UserEntity> stream = this.UserEntity();
+        JPAJinqStream<UserEntity> stream = this.streamAll(UserEntity.class);
         JPAJinqStream<UserEntity> streamOne = stream;
         for (String name : names) {
             JPAJinqStream<UserEntity> streamTwo = streamOne.where(s -> s.getUsername().contains(name));
@@ -134,28 +134,28 @@ get model array
 
 ## Notes - jinq - inner join
 
-    this.UserEntity().join((s, t) -> t.stream(UserEmailEntity.class));
+    this.streamAll(UserEntity.class).join((s, t) -> t.stream(UserEmailEntity.class));
 
-    this.UserEmailEntity().join(s -> JinqStream.of(s.getUser()));
+    this.streamAll(UserEmailEntity.class).join(s -> JinqStream.of(s.getUser()));
 
-    this.UserEntity().joinList(t -> t.getUserEmailList());
+    this.streamAll(UserEntity.class).joinList(t -> t.getUserEmailList());
 
-    this.UserEmailEntity().where(s -> s.getUser().getUsername().equals("tom"));
+    this.streamAll(UserEmailEntity.class).where(s -> s.getUser().getUsername().equals("tom"));
 
 ## Notes - jinq - left join
 
-    this.UserEntity().leftOuterJoin((s, t) -> t.stream(UserEmailEntity.class),
+    this.streamAll(UserEntity.class).leftOuterJoin((s, t) -> t.stream(UserEmailEntity.class),
         (s, t) -> s.getId().equals(t.getId()));
 
-    this.UserEmailEntity().leftOuterJoin(s -> JinqStream.of(s.getUser()));
+    this.streamAll(UserEmailEntity.class).leftOuterJoin(s -> JinqStream.of(s.getUser()));
 
-    this.UserEntity().leftOuterJoinList((s) -> s.getUserEmailList());
+    this.streamAll(UserEntity.class).leftOuterJoinList((s) -> s.getUserEmailList());
 
 ## Notes - jinq - group by
 
 Group by id, username
 
-    var stream = this.UserEntity().group(s -> new Pair<>(s.getId(), s.getUsername()), (s, t) -> t.count());
+    var stream = this.streamAll(UserEntity.class).group(s -> new Pair<>(s.getId(), s.getUsername()), (s, t) -> t.count());
     return new PaginationModel<>(1, 15, stream, (s) -> {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("id", s.getOne().getOne());
@@ -168,11 +168,11 @@ Group by id, username
 
 Sort by username first, then by id
 
-    this.UserEntity().sortedBy(s -> s.getId()).sortedBy(s -> s.getUsername());
+    this.streamAll(UserEntity.class).sortedBy(s -> s.getId()).sortedBy(s -> s.getUsername());
 
 ## Notes - jinq - order by with complex statistical conditions
 
-    this.OrganizeEntity().select((s, t) ->
+    this.streamAll(OrganizeEntity.class).select((s, t) ->
         new Pair<>(
             s,
             t.stream(OrganizeEntity.class)
@@ -186,11 +186,11 @@ Sort by username first, then by id
 
 ## Notes - jinq - Use subqueries in where
 
-    this.UserEntity().where((s, t) ->
+    this.streamAll(UserEntity.class).where((s, t) ->
         t.stream(UserEmailEntity.class).where(m -> m.getUser().getId().equals(s.getId())).exists()
     );
 
-    this.UserEntity().where( s ->
+    this.streamAll(UserEntity.class).where( s ->
         JinqStream.from(s.getUserEmailList()).where(m -> m.getEmail().equals("tom@gmail.com")).exists()
     );
 
@@ -200,7 +200,7 @@ All data can be obtained and set to the model, support any structure
 
     public UserModel format(UserEntity userEntity) {
         var userId = userEntity.getId();
-        var email = this.UserEmailEntity()
+        var email = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
                 .where(s -> s.getIsActive())
                 .sortedDescendingBy(s -> s.getId())

@@ -1,18 +1,15 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.UserEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserModel;
-
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.text.StrFormatter;
 
@@ -49,7 +46,7 @@ public class UserService extends BaseService {
 
     public void update(UserModel userModel) {
         var userId = userModel.getId();
-        var userEntity = this.UserEntity()
+        var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
 
@@ -70,14 +67,14 @@ public class UserService extends BaseService {
 
     @Transactional(readOnly = true)
     public UserModel getUserWithMoreInformation(String id) {
-        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
+        var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.formatWithMoreInformation(user);
     }
 
     @Transactional(readOnly = true)
     public UserModel getUser(String id) {
-        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
+        var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(id)).where(s -> s.getIsActive())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
@@ -86,7 +83,7 @@ public class UserService extends BaseService {
     public String getUserId(String account) {
         {
             var userId = account;
-            var userEntity = this.UserEntity()
+            var userEntity = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(userId))
                     .where(s -> s.getIsActive())
                     .findOne()
@@ -97,7 +94,7 @@ public class UserService extends BaseService {
         }
         {
             var email = account;
-            var userEntity = this.UserEmailEntity().where(s -> s.getEmail().equals(email))
+            var userEntity = this.streamAll(UserEmailEntity.class).where(s -> s.getEmail().equals(email))
                     .where(s -> s.getIsActive())
                     .where(s -> s.getUser().getIsActive())
                     .select(s -> s.getUser())
@@ -108,7 +105,7 @@ public class UserService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<UserModel> searchForSuperAdminByPagination(long pageNum, long pageSize) {
-        var stream = this.UserEntity()
+        var stream = this.streamAll(UserEntity.class)
                 .where(s -> s.getIsActive())
                 .sortedDescendingBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.userFormatter.format(s));
@@ -179,7 +176,7 @@ public class UserService extends BaseService {
     }
 
     private boolean hasExistsUserId(String userId) {
-        var exists = this.UserEntity()
+        var exists = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .where(s -> s.getIsActive())
                 .exists();
@@ -187,7 +184,7 @@ public class UserService extends BaseService {
     }
 
     private boolean hasExistEmail(String email) {
-        var exists = this.UserEmailEntity()
+        var exists = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getEmail().equals(email))
                 .where(s -> s.getIsActive())
                 .where(s -> s.getUser().getIsActive())

@@ -23,7 +23,7 @@ public class UserRoleService extends BaseService {
 
     public UserRoleModel create(String role, List<SystemRoleEnum> systemRoleList, String organizeId) {
         OrganizeEntity organizeEntity = StringUtils.isNotBlank(organizeId)
-                ? this.OrganizeEntity().where(s -> s.getId().equals(organizeId)).getOnlyValue()
+                ? this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(organizeId)).getOnlyValue()
                 : null;
 
         var userRoleEntity = new UserRoleEntity();
@@ -45,12 +45,12 @@ public class UserRoleService extends BaseService {
 
     public void update(UserRoleModel systemRole) {
         var id = systemRole.getId();
-        var userRoleEntity = this.UserRoleEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        var userRoleEntity = this.streamAll(UserRoleEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
         userRoleEntity.setName(systemRole.getName());
         userRoleEntity.setUpdateDate(new Date());
         this.merge(userRoleEntity);
 
-        var systemRoleRelationEntityList = this.UserRoleEntity().where(s -> s.getId().equals(id))
+        var systemRoleRelationEntityList = this.streamAll(UserRoleEntity.class).where(s -> s.getId().equals(id))
                 .selectAllList(s -> s.getSystemRoleRelationList()).toList();
         for (var systemRoleRelationEntity : systemRoleRelationEntityList) {
             this.remove(systemRoleRelationEntity);
@@ -62,7 +62,7 @@ public class UserRoleService extends BaseService {
     }
 
     public void delete(String id) {
-        var userRoleEntity = this.UserRoleEntity()
+        var userRoleEntity = this.streamAll(UserRoleEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         userRoleEntity.setIsActive(false);
@@ -73,7 +73,7 @@ public class UserRoleService extends BaseService {
 
     @Transactional(readOnly = true)
     public List<UserRoleModel> getOrganizeRoleListByCompanyId(String companyId) {
-        var ssytemRoleList = this.UserRoleEntity()
+        var ssytemRoleList = this.streamAll(UserRoleEntity.class)
                 .where(s -> s.getOrganize().getId().equals(companyId))
                 .where(s -> s.getIsActive())
                 .map(s -> this.userRoleFormatter.format(s))
@@ -87,11 +87,11 @@ public class UserRoleService extends BaseService {
                 continue;
             }
             var systemRoleName = systemRoleEnum.getRole();
-            if (!this.SystemRoleEntity()
+            if (!this.streamAll(SystemRoleEntity.class)
                     .where(s -> s.getName().equals(systemRoleName)).exists()) {
                 continue;
             }
-            var userRoleEntity = this.UserRoleEntity()
+            var userRoleEntity = this.streamAll(UserRoleEntity.class)
                     .where(s -> s.getOrganize().getId().equals(companyId))
                     .selectAllList(s -> s.getSystemRoleRelationList())
                     .where(s -> s.getSystemRole().getName().equals(systemRoleName))
@@ -132,7 +132,7 @@ public class UserRoleService extends BaseService {
                 .filter(s -> !s.getIsOrganizeRole())
                 .map(s -> s.getRole())
                 .toList();
-        var userRoleList = this.SystemRoleEntity()
+        var userRoleList = this.streamAll(SystemRoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
                 .selectAllList(s -> s.getSystemRoleRelationList())
                 .select(s -> s.getUserRole())
@@ -152,7 +152,7 @@ public class UserRoleService extends BaseService {
                 .filter(s -> s.getIsSuperAdmin())
                 .map(s -> s.getRole())
                 .toList();
-        var userRoleList = this.SystemRoleEntity()
+        var userRoleList = this.streamAll(SystemRoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
                 .selectAllList(s -> s.getSystemRoleRelationList())
                 .select(s -> s.getUserRole())
@@ -168,7 +168,7 @@ public class UserRoleService extends BaseService {
     @Transactional(readOnly = true)
     public PaginationModel<UserRoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
             String organizeId) {
-        var stream = this.UserRoleEntity()
+        var stream = this.streamAll(UserRoleEntity.class)
                 .joinList(s -> s.getOrganize().getAncestorList())
                 .where(s -> s.getTwo().getAncestor().getId().equals(organizeId))
                 .where(s -> s.getOne().getOrganize().getIsActive())
@@ -181,7 +181,7 @@ public class UserRoleService extends BaseService {
                 .filter(s -> !s.getIsOrganizeRole())
                 .map(s -> s.getRole())
                 .toList();
-        var systemRoleEntity = this.SystemRoleEntity()
+        var systemRoleEntity = this.streamAll(SystemRoleEntity.class)
                 .where(s -> roleList.contains(s.getName()))
                 .leftOuterJoinList(s -> s.getSystemRoleRelationList())
                 .leftOuterJoin((s, t) -> JinqStream.of(s.getTwo().getUserRole()),
@@ -198,7 +198,7 @@ public class UserRoleService extends BaseService {
     }
 
     private boolean deleteOrganizeRoleList() {
-        var userRoleEntity = this.UserRoleEntity()
+        var userRoleEntity = this.streamAll(UserRoleEntity.class)
                 .where(s -> s.getOrganize() != null)
                 .where(s -> s.getIsActive())
                 .leftOuterJoinList(s -> s.getSystemRoleRelationList())
@@ -221,7 +221,7 @@ public class UserRoleService extends BaseService {
                 continue;
             }
             var systemRoleName = systemRoleEnum.getRole();
-            var organizeId = this.OrganizeEntity()
+            var organizeId = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getParent() == null)
                     .where(s -> s.getIsActive())
                     .leftOuterJoin(s -> JinqStream.from(s.getUserRoleList()))
@@ -244,7 +244,7 @@ public class UserRoleService extends BaseService {
 
     private boolean deleteUserRoleList() {
         {
-            var userRoleEntity = this.UserRoleEntity()
+            var userRoleEntity = this.streamAll(UserRoleEntity.class)
                     .where(s -> s.getIsActive())
                     .leftOuterJoinList(s -> s.getSystemRoleRelationList())
                     .where(s -> s.getOne().getOrganize() == null)
@@ -260,7 +260,7 @@ public class UserRoleService extends BaseService {
         {
             var roleList = Arrays.stream(SystemRoleEnum.values()).filter(s -> !s.getIsOrganizeRole())
                     .map(s -> s.getRole()).toList();
-            var userRoleEntity = this.UserRoleEntity()
+            var userRoleEntity = this.streamAll(UserRoleEntity.class)
                     .where(s -> s.getIsActive())
                     .where(s -> s.getOrganize() == null)
                     .joinList(s -> s.getSystemRoleRelationList())
@@ -275,7 +275,7 @@ public class UserRoleService extends BaseService {
         }
 
         {
-            var role = this.UserRoleEntity()
+            var role = this.streamAll(UserRoleEntity.class)
                     .where(s -> s.getIsActive())
                     .where(s -> s.getOrganize() == null)
                     .group(s -> s.getName(), (s, t) -> t.count())
@@ -284,7 +284,7 @@ public class UserRoleService extends BaseService {
                     .findFirst()
                     .orElse(null);
             if (StringUtils.isNotBlank(role)) {
-                var userRoleEntity = this.UserRoleEntity()
+                var userRoleEntity = this.streamAll(UserRoleEntity.class)
                         .where(s -> s.getIsActive())
                         .where(s -> s.getOrganize() == null)
                         .where(s -> s.getName().equals(role))

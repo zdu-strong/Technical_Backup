@@ -39,7 +39,7 @@ public class UserMessageFormatter extends BaseService {
 
     private boolean getIsActiveOfUserMessageEntity(UserMessageEntity userMessageEntity, String userId) {
         var id = userMessageEntity.getId();
-        var isActive = this.UserMessageEntity()
+        var isActive = this.streamAll(UserMessageEntity.class)
                 .where(s -> s.getId().equals(id))
                 .where(s -> !s.getIsRecall())
                 .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
@@ -62,7 +62,7 @@ public class UserMessageFormatter extends BaseService {
     private Long getPageNumOfUserMessageEntity(UserMessageEntity userMessageEntity, String userId) {
         var crateDate = userMessageEntity.getCreateDate();
         var id = userMessageEntity.getId();
-        var stream = this.UserMessageEntity()
+        var stream = this.streamAll(UserMessageEntity.class)
                 .where(s -> !s.getIsRecall())
                 .leftOuterJoin((s, t) -> JinqStream.from(s.getUserMessageDeactivateList()),
                         (s, t) -> t.getUser().getId().equals(userId))

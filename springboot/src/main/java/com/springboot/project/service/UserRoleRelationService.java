@@ -3,7 +3,6 @@ package com.springboot.project.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
@@ -11,26 +10,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.UserRoleRelationEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.UserModel;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserRoleRelationService extends BaseService {
 
     public void create(String userId, String userRoleId, String organizeId) {
-        var userEntity = this.UserEntity()
+        var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
-        var userRoleEntity = this.UserRoleEntity()
+        var userRoleEntity = this.streamAll(UserRoleEntity.class)
                 .where(s -> s.getId().equals(userRoleId))
                 .getOnlyValue();
         var organizeEntity = Optional.ofNullable(organizeId)
-                .map(s -> this.OrganizeEntity()
+                .map(s -> this.streamAll(OrganizeEntity.class)
                         .where(m -> m.getId().equals(organizeId))
                         .getOnlyValue())
                 .orElse(null);
@@ -108,7 +105,7 @@ public class UserRoleRelationService extends BaseService {
             }
 
             var organizeRoleId = organizeRole.getId();
-            var userRoleEntity = this.UserRoleEntity()
+            var userRoleEntity = this.streamAll(UserRoleEntity.class)
                     .where(s -> s.getId().equals(organizeRoleId))
                     .getOnlyValue();
             this.permissionUtil.checkAnyRole(request, userRoleEntity.getOrganize().getId(),

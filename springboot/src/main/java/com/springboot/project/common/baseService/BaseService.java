@@ -23,26 +23,6 @@ import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.storage.Storage;
-import com.springboot.project.entity.UserMessageDeactivateEntity;
-import com.springboot.project.entity.DistributedExecutionEntity;
-import com.springboot.project.entity.DistributedExecutionTaskEntity;
-import com.springboot.project.entity.EncryptDecryptEntity;
-import com.springboot.project.entity.FriendshipEntity;
-import com.springboot.project.entity.LoggerEntity;
-import com.springboot.project.entity.LongTermTaskEntity;
-import com.springboot.project.entity.OrganizeRelationEntity;
-import com.springboot.project.entity.OrganizeEntity;
-import com.springboot.project.entity.StorageSpaceEntity;
-import com.springboot.project.entity.SystemRoleEntity;
-import com.springboot.project.entity.UserRoleEntity;
-import com.springboot.project.entity.SystemRoleRelationEntity;
-import com.springboot.project.entity.TokenEntity;
-import com.springboot.project.entity.UserBlackOrganizeClosureEntity;
-import com.springboot.project.entity.UserBlackOrganizeEntity;
-import com.springboot.project.entity.UserEmailEntity;
-import com.springboot.project.entity.UserEntity;
-import com.springboot.project.entity.UserMessageEntity;
-import com.springboot.project.entity.VerificationCodeEmailEntity;
 import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.DistributedExecutionTaskFormatter;
 import com.springboot.project.format.FriendshipFormatter;
@@ -71,7 +51,6 @@ import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.springboot.project.entity.UserRoleRelationEntity;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -202,91 +181,7 @@ public abstract class BaseService {
         this.entityManager.remove(entity);
     }
 
-    protected JPAJinqStream<StorageSpaceEntity> StorageSpaceEntity() {
-        return this.streamAll(StorageSpaceEntity.class);
-    }
-
-    protected JPAJinqStream<EncryptDecryptEntity> EncryptDecryptEntity() {
-        return this.streamAll(EncryptDecryptEntity.class);
-    }
-
-    protected JPAJinqStream<UserEmailEntity> UserEmailEntity() {
-        return this.streamAll(UserEmailEntity.class);
-    }
-
-    protected JPAJinqStream<UserEntity> UserEntity() {
-        return this.streamAll(UserEntity.class);
-    }
-
-    protected JPAJinqStream<LongTermTaskEntity> LongTermTaskEntity() {
-        return this.streamAll(LongTermTaskEntity.class);
-    }
-
-    protected JPAJinqStream<OrganizeEntity> OrganizeEntity() {
-        return this.streamAll(OrganizeEntity.class);
-    }
-
-    protected JPAJinqStream<UserMessageEntity> UserMessageEntity() {
-        return this.streamAll(UserMessageEntity.class);
-    }
-
-    protected JPAJinqStream<TokenEntity> TokenEntity() {
-        return this.streamAll(TokenEntity.class);
-    }
-
-    protected JPAJinqStream<FriendshipEntity> FriendshipEntity() {
-        return this.streamAll(FriendshipEntity.class);
-    }
-
-    protected JPAJinqStream<LoggerEntity> LoggerEntity() {
-        return this.streamAll(LoggerEntity.class);
-    }
-
-    protected JPAJinqStream<VerificationCodeEmailEntity> VerificationCodeEmailEntity() {
-        return this.streamAll(VerificationCodeEmailEntity.class);
-    }
-
-    protected JPAJinqStream<DistributedExecutionEntity> DistributedExecutionEntity() {
-        return this.streamAll(DistributedExecutionEntity.class);
-    }
-
-    protected JPAJinqStream<OrganizeRelationEntity> OrganizeRelationEntity() {
-        return this.streamAll(OrganizeRelationEntity.class);
-    }
-
-    protected JPAJinqStream<UserBlackOrganizeEntity> UserBlackOrganizeEntity() {
-        return this.streamAll(UserBlackOrganizeEntity.class);
-    }
-
-    protected JPAJinqStream<UserBlackOrganizeClosureEntity> UserBlackOrganizeClosureEntity() {
-        return this.streamAll(UserBlackOrganizeClosureEntity.class);
-    }
-
-    protected JPAJinqStream<UserMessageDeactivateEntity> UserMessageDeactivateEntity() {
-        return this.streamAll(UserMessageDeactivateEntity.class);
-    }
-
-    protected JPAJinqStream<SystemRoleEntity> SystemRoleEntity() {
-        return this.streamAll(SystemRoleEntity.class);
-    }
-
-    protected JPAJinqStream<UserRoleEntity> UserRoleEntity() {
-        return this.streamAll(UserRoleEntity.class);
-    }
-
-    protected JPAJinqStream<SystemRoleRelationEntity> SystemRoleRelationEntity() {
-        return this.streamAll(SystemRoleRelationEntity.class);
-    }
-
-    protected JPAJinqStream<UserRoleRelationEntity> UserRoleRelationEntity() {
-        return this.streamAll(UserRoleRelationEntity.class);
-    }
-
-    protected JPAJinqStream<DistributedExecutionTaskEntity> DistributedExecutionTaskEntity() {
-        return this.streamAll(DistributedExecutionTaskEntity.class);
-    }
-
-    private <U> JPAJinqStream<U> streamAll(Class<U> entity) {
+    protected <U> JPAJinqStream<U> streamAll(Class<U> entity) {
         var jinqJPAStreamProvider = new JinqJPAStreamProvider(
                 entityManager.getMetamodel());
         JPQLFunction.registerCustomSqlFunction(jinqJPAStreamProvider);

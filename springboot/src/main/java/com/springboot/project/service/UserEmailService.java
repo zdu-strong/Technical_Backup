@@ -1,17 +1,14 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.UserEmailEntity;
-
+import com.springboot.project.entity.*;
 import cn.hutool.core.lang.Validator;
 
 @Service
@@ -20,7 +17,7 @@ public class UserEmailService extends BaseService {
     public void createUserEmail(String email, String userId) {
         inactiveUserEmail(email);
 
-        var userEntity = this.UserEntity()
+        var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .where(s -> s.getIsActive())
                 .getOnlyValue();
@@ -37,7 +34,7 @@ public class UserEmailService extends BaseService {
     }
 
     private void inactiveUserEmail(String email) {
-        var userEmailList = this.UserEmailEntity()
+        var userEmailList = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getIsActive())
                 .where(s -> !s.getUser().getIsActive())
                 .toList();
@@ -65,7 +62,7 @@ public class UserEmailService extends BaseService {
 
     @Transactional(readOnly = true)
     public void checkIsNotUsedOfEmail(String email) {
-        var isPresent = this.UserEmailEntity()
+        var isPresent = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getEmail().equals(email))
                 .where(s -> s.getIsActive())
                 .where(s -> s.getUser().getIsActive())

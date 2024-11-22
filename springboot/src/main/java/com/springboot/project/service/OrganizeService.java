@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.OrganizeEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.PaginationModel;
 
@@ -42,7 +40,7 @@ public class OrganizeService extends BaseService {
 
     public void update(OrganizeModel organizeModel) {
         var id = organizeModel.getId();
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
         organizeEntity.setName(organizeModel.getName());
@@ -51,7 +49,7 @@ public class OrganizeService extends BaseService {
     }
 
     public void delete(String id) {
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsActive(false);
@@ -61,7 +59,7 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public OrganizeModel getById(String id) {
-        var organizeEntity = this.OrganizeEntity()
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
 
@@ -70,7 +68,7 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
-        var stream = this.OrganizeRelationEntity()
+        var stream = this.streamAll(OrganizeRelationEntity.class)
                 .where(s -> s.getAncestor().getId().equals(organizeId))
                 .where(s -> s.getDescendant().getName().contains(name))
                 .select(s -> s.getDescendant());
@@ -80,7 +78,7 @@ public class OrganizeService extends BaseService {
     public void move(String id, String parentId) {
         var parentOrganizeEntity = this
                 .getParentOrganize(new OrganizeModel().setParent(new OrganizeModel().setId(parentId)));
-        var organizeEntity = this.OrganizeEntity()
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
@@ -97,14 +95,14 @@ public class OrganizeService extends BaseService {
         if (StringUtils.isBlank(parentId)) {
             return false;
         }
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
         var isChild = this.organizeFormatter.getAncestorIdList(organizeEntity).contains(parentId);
         return isChild;
     }
 
     @Transactional(readOnly = true)
     public List<String> getAccestorIdList(String id) {
-        var organizeEntity = this.OrganizeEntity()
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.organizeFormatter.getAncestorIdList(organizeEntity);
@@ -112,7 +110,7 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public List<String> getChildIdList(String id) {
-        var childIdList = this.OrganizeEntity().where(s -> s.getParent().getId().equals(id))
+        var childIdList = this.streamAll(OrganizeEntity.class).where(s -> s.getParent().getId().equals(id))
                 .where(s -> s.getIsActive())
                 .select(s -> s.getId())
                 .toList();
@@ -121,7 +119,7 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<OrganizeModel> getOrganizeByPagination(Long pageNum, Long pageSize) {
-        var stream = this.OrganizeEntity()
+        var stream = this.streamAll(OrganizeEntity.class)
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
@@ -129,7 +127,7 @@ public class OrganizeService extends BaseService {
 
     @Transactional(readOnly = true)
     public OrganizeModel getTopOrganize(String organizeId) {
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(organizeId)).getOnlyValue();
+        var organizeEntity = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(organizeId)).getOnlyValue();
         var organizeIdList = new ArrayList<String>();
         while (true) {
             if (organizeIdList.contains(organizeEntity.getId())) {
@@ -171,7 +169,7 @@ public class OrganizeService extends BaseService {
         if (StringUtils.isBlank(id)) {
             return;
         }
-        var hasExist = this.OrganizeEntity()
+        var hasExist = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .filter(s -> this.organizeFormatter.isActive(s))
                 .findFirst()
@@ -193,7 +191,7 @@ public class OrganizeService extends BaseService {
         if (StringUtils.isBlank(id)) {
             return;
         }
-        var hasExist = this.OrganizeEntity()
+        var hasExist = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .select(s -> s.getParent())
                 .where(s -> s != null)
@@ -209,7 +207,7 @@ public class OrganizeService extends BaseService {
             return null;
         }
 
-        var parentOrganizeEntity = this.OrganizeEntity()
+        var parentOrganizeEntity = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(parentOrganizeId))
                 .getOnlyValue();
         return parentOrganizeEntity;

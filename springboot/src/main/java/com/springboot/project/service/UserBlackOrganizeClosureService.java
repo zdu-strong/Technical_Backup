@@ -9,11 +9,11 @@ import com.springboot.project.entity.*;
 public class UserBlackOrganizeClosureService extends BaseService {
 
     public void create(String userId, String organizeId) {
-        var user = this.UserEntity()
+        var user = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .where(s -> s.getIsActive())
                 .getOnlyValue();
-        var organize = this.OrganizeEntity()
+        var organize = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(organizeId))
                 .getOnlyValue();
         var userBlackOrganizeClosureEntity = new UserBlackOrganizeClosureEntity();
@@ -26,7 +26,7 @@ public class UserBlackOrganizeClosureService extends BaseService {
     }
 
     public void delete(String id) {
-        var userBlackOrganizeClosureEntity = this.UserBlackOrganizeClosureEntity()
+        var userBlackOrganizeClosureEntity = this.streamAll(UserBlackOrganizeClosureEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         this.remove(userBlackOrganizeClosureEntity);

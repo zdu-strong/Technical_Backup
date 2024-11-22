@@ -17,7 +17,7 @@ public class UserRoleFormatter extends BaseService {
         }
         var id = userRoleEntity.getId();
 
-        var systemRoleList = this.UserRoleEntity()
+        var systemRoleList = this.streamAll(UserRoleEntity.class)
                 .where(s -> s.getId().equals(id))
                 .selectAllList(s -> s.getSystemRoleRelationList())
                 .select(s -> s.getSystemRole())

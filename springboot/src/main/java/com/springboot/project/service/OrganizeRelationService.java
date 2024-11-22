@@ -1,24 +1,23 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.OrganizeRelationEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.enumerate.DatabaseBatchEnum;
 
 @Service
 public class OrganizeRelationService extends BaseService {
 
     public boolean refresh(String organizeId) {
-        var organizeEntity = this.OrganizeEntity()
+        var organizeEntity = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(organizeId))
                 .getOnlyValue();
         var isActive = this.organizeFormatter.isActive(organizeEntity);
 
         if (!isActive) {
-            var organizeRelationEntityList = this.OrganizeRelationEntity()
+            var organizeRelationEntityList = this.streamAll(OrganizeRelationEntity.class)
                     .where(s -> s.getAncestor().getId().equals(organizeId))
                     .limit(DatabaseBatchEnum.batchSize)
                     .toList();
@@ -30,14 +29,14 @@ public class OrganizeRelationService extends BaseService {
         }
 
         var ancestorIdOneList = this.organizeFormatter.getAncestorIdList(organizeEntity);
-        var ancestorIdTwoList = this.OrganizeRelationEntity()
+        var ancestorIdTwoList = this.streamAll(OrganizeRelationEntity.class)
                 .where(s -> s.getDescendant().getId().equals(organizeId))
                 .select(s -> s.getAncestor().getId())
                 .toList();
         var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
                 .where(s -> !ancestorIdOneList.contains(s))
                 .limit(DatabaseBatchEnum.batchSize)
-                .map(ancestorId -> this.OrganizeRelationEntity()
+                .map(ancestorId -> this.streamAll(OrganizeRelationEntity.class)
                         .where(s -> s.getAncestor().getId().equals(ancestorId))
                         .where(s -> s.getDescendant().getId().equals(organizeId))
                         .getOnlyValue())
@@ -66,8 +65,8 @@ public class OrganizeRelationService extends BaseService {
     }
 
     private void create(String ancestorId, String descendantId) {
-        var ancestor = this.OrganizeEntity().where(s -> s.getId().equals(ancestorId)).getOnlyValue();
-        var descendant = this.OrganizeEntity().where(s -> s.getId().equals(descendantId)).getOnlyValue();
+        var ancestor = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(ancestorId)).getOnlyValue();
+        var descendant = this.streamAll(OrganizeEntity.class).where(s -> s.getId().equals(descendantId)).getOnlyValue();
         var organizeRelationEntity = new OrganizeRelationEntity();
         organizeRelationEntity.setId(newId());
         organizeRelationEntity.setCreateDate(new Date());

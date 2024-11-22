@@ -10,11 +10,11 @@ import com.springboot.project.model.UserBlackOrganizeModel;
 public class UserBlackOrganizeService extends BaseService {
 
     public UserBlackOrganizeModel create(String userId, String organizeId) {
-        var user = this.UserEntity()
+        var user = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .where(s -> s.getIsActive())
                 .getOnlyValue();
-        var organize = this.OrganizeEntity()
+        var organize = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getId().equals(organizeId))
                 .getOnlyValue();
         var userBlackOrganizeEntity = new UserBlackOrganizeEntity();
@@ -29,7 +29,7 @@ public class UserBlackOrganizeService extends BaseService {
     }
 
     public void delete(String id) {
-        var userBlackOrganizeEntity = this.UserBlackOrganizeEntity()
+        var userBlackOrganizeEntity = this.streamAll(UserBlackOrganizeEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         this.remove(userBlackOrganizeEntity);

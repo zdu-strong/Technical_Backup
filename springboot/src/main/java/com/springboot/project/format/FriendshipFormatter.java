@@ -15,7 +15,7 @@ public class FriendshipFormatter extends BaseService {
     public FriendshipModel format(FriendshipEntity friendshipEntity) {
         var userId = friendshipEntity.getUser().getId();
         var friendId = friendshipEntity.getFriend().getId();
-        var friendshipEntityOfFriend = this.FriendshipEntity().where(s -> s.getUser().getId().equals(friendId))
+        var friendshipEntityOfFriend = this.streamAll(FriendshipEntity.class).where(s -> s.getUser().getId().equals(friendId))
                 .where(s -> s.getFriend().getId().equals(userId)).getOnlyValue();
         var friendshipModel = new FriendshipModel();
         BeanUtils.copyProperties(friendshipEntity, friendshipModel);

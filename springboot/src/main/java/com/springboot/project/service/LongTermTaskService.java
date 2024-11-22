@@ -49,7 +49,7 @@ public class LongTermTaskService extends BaseService {
                 .toList();
 
         for (var uniqueKeyJsonString : longTermTaskUniqueKeyList) {
-            var longTermTaskList = this.LongTermTaskEntity()
+            var longTermTaskList = this.streamAll(LongTermTaskEntity.class)
                     .where(s -> s.getUniqueKeyJsonString().equals(uniqueKeyJsonString))
                     .where(s -> s.getUpdateDate().before(expiredDate))
                     .toList();
@@ -77,7 +77,7 @@ public class LongTermTaskService extends BaseService {
     }
 
     public void updateLongTermTaskToRefreshUpdateDate(String id) {
-        LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
+        LongTermTaskEntity longTermTaskEntity = this.streamAll(LongTermTaskEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         if (longTermTaskEntity.getIsDone()) {
             return;
@@ -87,7 +87,7 @@ public class LongTermTaskService extends BaseService {
     }
 
     public void updateLongTermTaskByResult(String id, ResponseEntity<?> result) {
-        LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
+        LongTermTaskEntity longTermTaskEntity = this.streamAll(LongTermTaskEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         longTermTaskEntity.setUpdateDate(new Date());
         longTermTaskEntity.setIsDone(true);
@@ -96,7 +96,7 @@ public class LongTermTaskService extends BaseService {
     }
 
     public void updateLongTermTaskByErrorMessage(String id, Throwable e) {
-        LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
+        LongTermTaskEntity longTermTaskEntity = this.streamAll(LongTermTaskEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         longTermTaskEntity.setIsDone(true);
         longTermTaskEntity.setUpdateDate(new Date());
@@ -105,7 +105,7 @@ public class LongTermTaskService extends BaseService {
     }
 
     public void delete(String id) {
-        LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity()
+        LongTermTaskEntity longTermTaskEntity = this.streamAll(LongTermTaskEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         this.remove(longTermTaskEntity);
@@ -113,7 +113,7 @@ public class LongTermTaskService extends BaseService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<?> getLongTermTask(String id) {
-        LongTermTaskEntity longTermTaskEntity = this.LongTermTaskEntity().where(s -> s.getId().equals(id))
+        LongTermTaskEntity longTermTaskEntity = this.streamAll(LongTermTaskEntity.class).where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.longTermTaskFormatter.format(longTermTaskEntity);
     }
@@ -123,7 +123,7 @@ public class LongTermTaskService extends BaseService {
         if (StringUtils.isBlank(id)) {
             return;
         }
-        var hasExist = this.LongTermTaskEntity().where(s -> s.getId().equals(id)).exists();
+        var hasExist = this.streamAll(LongTermTaskEntity.class).where(s -> s.getId().equals(id)).exists();
         if (!hasExist) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified task does not exist");
         }

@@ -4,7 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.UserEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.UserModel;
 
 @Service
@@ -16,7 +16,7 @@ public class UserFormatter extends BaseService {
         userModel.setUserEmailList(Lists.newArrayList())
                 .setPassword(null);
         var userId = userEntity.getId();
-        var userRoleRelationList = this.UserEntity()
+        var userRoleRelationList = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() == null)
@@ -25,7 +25,7 @@ public class UserFormatter extends BaseService {
                 .map(s -> this.userRoleRelationFormatter.format(s))
                 .toList();
         userModel.setUserRoleRelationList(userRoleRelationList);
-        var organizeRoleRelationList = this.UserEntity()
+        var organizeRoleRelationList = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() != null)
@@ -39,7 +39,7 @@ public class UserFormatter extends BaseService {
     public UserModel formatWithMoreInformation(UserEntity userEntity) {
         var userModel = this.format(userEntity);
         var id = userEntity.getId();
-        var userEmailList = this.UserEmailEntity()
+        var userEmailList = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getUser().getId().equals(id))
                 .where(s -> s.getIsActive())
                 .map(s -> this.userEmailFormatter.format(s))

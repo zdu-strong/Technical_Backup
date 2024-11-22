@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.StorageSpaceEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.enumerate.StorageSpaceEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.StorageSpaceModel;
@@ -33,7 +33,7 @@ public class StorageSpaceService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
-        var stream = this.StorageSpaceEntity()
+        var stream = this.streamAll(StorageSpaceEntity.class)
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
@@ -47,7 +47,7 @@ public class StorageSpaceService extends BaseService {
     }
 
     private boolean isUsedByUserMessageEntity(String folderName) {
-        var isUsed = this.UserMessageEntity().where(s -> s.getFolderName().equals(folderName)).exists();
+        var isUsed = this.streamAll(UserMessageEntity.class).where(s -> s.getFolderName().equals(folderName)).exists();
         return isUsed;
     }
 
@@ -59,16 +59,16 @@ public class StorageSpaceService extends BaseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     StrFormatter.format("Folder deletion failed. FolderName:{}", folderName));
         }
-        for (var storageSpaceEntity : this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
+        for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName))
                 .toList()) {
             this.remove(storageSpaceEntity);
         }
     }
 
     private void refreshStorageSpaceEntity(String folderName) {
-        if (this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName)).exists()) {
+        if (this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName)).exists()) {
             if (this.isUsedByProgramData(folderName)) {
-                var storageSpaceEntity = this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
+                var storageSpaceEntity = this.streamAll(StorageSpaceEntity.class).where(s -> s.getFolderName().equals(folderName))
                         .getOnlyValue();
                 storageSpaceEntity.setUpdateDate(new Date());
                 this.merge(storageSpaceEntity);
@@ -91,7 +91,7 @@ public class StorageSpaceService extends BaseService {
     private boolean isUsedByTempFile(String folderName) {
         var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
-        var isUsed = !this.StorageSpaceEntity()
+        var isUsed = !this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
                 .where(s -> s.getUpdateDate().before(expireDate))
                 .exists();

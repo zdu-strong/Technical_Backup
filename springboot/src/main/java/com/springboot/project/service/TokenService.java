@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -23,9 +21,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.TokenEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.TokenModel;
-
 import cn.hutool.crypto.CryptoException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -34,7 +31,7 @@ import lombok.SneakyThrows;
 public class TokenService extends BaseService {
 
     public void deleteTokenEntity(String id) {
-        var tokenEntity = this.TokenEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        var tokenEntity = this.streamAll(TokenEntity.class).where(s -> s.getId().equals(id)).getOnlyValue();
         tokenEntity.setIsActive(false);
         this.merge(tokenEntity);
     }
@@ -102,7 +99,7 @@ public class TokenService extends BaseService {
 
     @Transactional(readOnly = true)
     public boolean hasExistTokenEntity(String id) {
-        var exists = this.TokenEntity()
+        var exists = this.streamAll(TokenEntity.class)
                 .where(s -> s.getId().equals(id))
                 .where(s -> s.getIsActive())
                 .exists();
@@ -130,7 +127,7 @@ public class TokenService extends BaseService {
 
     private void checkCorrectPassword(String password, String userId) {
         try {
-            var userEntity = this.UserEntity()
+            var userEntity = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(userId))
                     .getOnlyValue();
             var jsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(password);
@@ -154,7 +151,7 @@ public class TokenService extends BaseService {
                         "Incorrect username or password");
             }
             var uniqueOneTimePasswordLogo = this.getUniqueOneTimePasswordLogo(password);
-            var exists = this.TokenEntity()
+            var exists = this.streamAll(TokenEntity.class)
                     .where(s -> s.getUser().getId().equals(userId))
                     .where(s -> s.getUniqueOneTimePasswordLogo().equals(uniqueOneTimePasswordLogo))
                     .exists();
@@ -169,7 +166,7 @@ public class TokenService extends BaseService {
     }
 
     private TokenModel createTokenEntity(String uniqueOneTimePasswordLogo, String userId) {
-        var user = this.UserEntity().where(s -> s.getId().equals(userId)).getOnlyValue();
+        var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(userId)).getOnlyValue();
 
         var tokenEntity = new TokenEntity();
         tokenEntity.setId(newId());

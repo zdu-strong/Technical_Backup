@@ -2,12 +2,11 @@ package com.springboot.project.format;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.entity.OrganizeEntity;
+import com.springboot.project.entity.*;
 import com.springboot.project.model.OrganizeModel;
 
 @Service
@@ -29,12 +28,12 @@ public class OrganizeFormatter extends BaseService {
         }
 
         if (this.isActive(organizeEntity)) {
-            var childOrganizeCount = this.OrganizeEntity()
+            var childOrganizeCount = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getParent().getId().equals(id))
                     .where(s -> s.getIsActive())
                     .count();
             organizeModel.setChildCount(childOrganizeCount);
-            var descendantCount = Math.max(this.OrganizeRelationEntity()
+            var descendantCount = Math.max(this.streamAll(OrganizeRelationEntity.class)
                     .where(s -> s.getAncestor().getId().equals(id))
                     .count(), 1) - 1;
             organizeModel.setDescendantCount(descendantCount);
