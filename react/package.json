@@ -40,7 +40,7 @@
     "@fortawesome/free-brands-svg-icons": "6.7.1",
     "@fortawesome/free-solid-svg-icons": "6.7.1",
     "@fortawesome/react-fontawesome": "0.2.2",
-    "@mui/lab": "6.0.0-beta.14",
+    "@mui/lab": "6.0.0-beta.16",
     "@mui/material": "6.1.8",
     "@mui/x-charts": "7.22.3",
     "@mui/x-data-grid": "7.22.3",
