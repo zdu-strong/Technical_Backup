@@ -25,7 +25,7 @@ public class UserEmailEntity {
     @Id
     private String id;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
