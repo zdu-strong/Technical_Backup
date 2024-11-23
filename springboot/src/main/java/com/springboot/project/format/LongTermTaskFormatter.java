@@ -17,8 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.entity.LongTermTaskEntity;
-import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import lombok.SneakyThrows;
@@ -63,7 +63,7 @@ public class LongTermTaskFormatter extends BaseService {
     @SneakyThrows
     public ResponseEntity<?> format(LongTermTaskEntity longTermTaskEntity) {
         var expireDate = DateUtils.addMilliseconds(new Date(),
-                Long.valueOf(0 - LongTermTaskTempWaitDurationEnum.TEMP_TASK_SURVIVAL_DURATION.toMillis())
+                Long.valueOf(0 - LongTermTaskTempWaitDurationConstant.TEMP_TASK_SURVIVAL_DURATION.toMillis())
                         .intValue());
         if (!longTermTaskEntity.getIsDone() && longTermTaskEntity.getUpdateDate().before(expireDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The task failed because it stopped");

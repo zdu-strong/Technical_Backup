@@ -1,6 +1,6 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.constant;
 
-public class VerificationCodeEmailEnum {
+public class VerificationCodeEmailConstant {
 
     /**
      * min verification code length

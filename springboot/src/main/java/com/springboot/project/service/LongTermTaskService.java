@@ -16,9 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.enumerate.LongTermTaskTypeEnum;
-import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 
 @Service
@@ -42,7 +42,7 @@ public class LongTermTaskService extends BaseService {
 
     public List<String> createLongTermTask(LongTermTaskUniqueKeyModel... longTermTaskUniqueKey) {
         var expiredDate = DateUtils.addMilliseconds(new Date(),
-                (int) -LongTermTaskTempWaitDurationEnum.TEMP_TASK_SURVIVAL_DURATION.toMillis());
+                (int) -LongTermTaskTempWaitDurationConstant.TEMP_TASK_SURVIVAL_DURATION.toMillis());
         var longTermTaskUniqueKeyList = JinqStream.from(Arrays.asList(longTermTaskUniqueKey))
                 .select(s -> this.longTermTaskFormatter.formatLongTermTaskUniqueKey(s))
                 .sortedBy(s -> s)

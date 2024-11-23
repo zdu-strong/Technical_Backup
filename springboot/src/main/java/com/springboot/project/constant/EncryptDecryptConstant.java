@@ -1,10 +1,10 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.constant;
 
 import com.springboot.project.properties.HibernateDialectProperties;
 
 import cn.hutool.extra.spring.SpringUtil;
 
-public class EncryptDecryptEnum {
+public class EncryptDecryptConstant {
 
     public static String getId() {
         var isNewSqlDatabase = SpringUtil.getBean(HibernateDialectProperties.class).getIsNewSqlDatabase();

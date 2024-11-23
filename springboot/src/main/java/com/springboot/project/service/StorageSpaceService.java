@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.constant.StorageSpaceConstant;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumerate.StorageSpaceEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.StorageSpaceModel;
 import cn.hutool.core.text.StrFormatter;
@@ -96,7 +96,7 @@ public class StorageSpaceService extends BaseService {
 
     private boolean isUsedByTempFile(String folderName) {
         var expireDate = DateUtils.addMilliseconds(new Date(),
-                Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
+                Long.valueOf(0 - StorageSpaceConstant.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
         var isUsed = !this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
                 .where(s -> s.getUpdateDate().before(expireDate))

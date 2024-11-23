@@ -4,8 +4,8 @@ import java.util.Date;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.constant.DatabaseBatchConstant;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumerate.DatabaseBatchEnum;
 
 @Service
 public class OrganizeRelationService extends BaseService {
@@ -19,9 +19,9 @@ public class OrganizeRelationService extends BaseService {
         if (!isActive) {
             var organizeRelationEntityList = this.streamAll(OrganizeRelationEntity.class)
                     .where(s -> s.getAncestor().getId().equals(organizeId))
-                    .limit(DatabaseBatchEnum.batchSize)
+                    .limit(DatabaseBatchConstant.BATCH_SIZE)
                     .toList();
-            var hasNext = organizeRelationEntityList.size() == DatabaseBatchEnum.batchSize;
+            var hasNext = organizeRelationEntityList.size() == DatabaseBatchConstant.BATCH_SIZE;
             for (var organizeRelationEntity : organizeRelationEntityList) {
                 this.remove(organizeRelationEntity);
             }
@@ -35,7 +35,7 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
                 .where(s -> !ancestorIdOneList.contains(s))
-                .limit(DatabaseBatchEnum.batchSize)
+                .limit(DatabaseBatchConstant.BATCH_SIZE)
                 .map(ancestorId -> this.streamAll(OrganizeRelationEntity.class)
                         .where(s -> s.getAncestor().getId().equals(ancestorId))
                         .where(s -> s.getDescendant().getId().equals(organizeId))
@@ -43,9 +43,9 @@ public class OrganizeRelationService extends BaseService {
                 .toList();
         var ancestorIdList = JinqStream.from(ancestorIdOneList)
                 .where(s -> !ancestorIdTwoList.contains(s))
-                .limit(DatabaseBatchEnum.batchSize)
+                .limit(DatabaseBatchConstant.BATCH_SIZE)
                 .toList();
-        var totalTimes = DatabaseBatchEnum.batchSize;
+        var totalTimes = DatabaseBatchConstant.BATCH_SIZE;
         for (var organizeRelationEntity : organizeRelationListWillRemove) {
             if (totalTimes == 0) {
                 break;

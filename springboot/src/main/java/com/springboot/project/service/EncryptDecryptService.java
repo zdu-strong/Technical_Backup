@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
+import com.springboot.project.constant.EncryptDecryptConstant;
 import com.springboot.project.entity.EncryptDecryptEntity;
-import com.springboot.project.enumerate.EncryptDecryptEnum;
 import com.springboot.project.model.EncryptDecryptModel;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
@@ -216,7 +216,7 @@ public class EncryptDecryptService extends BaseService {
         if (!this.ready) {
             synchronized (getClass()) {
                 if (!this.ready) {
-                    String id = EncryptDecryptEnum.getId();
+                    String id = EncryptDecryptConstant.getId();
                     if (!this.streamAll(EncryptDecryptEntity.class)
                             .where(s -> s.getId().equals(id))
                             .exists()) {

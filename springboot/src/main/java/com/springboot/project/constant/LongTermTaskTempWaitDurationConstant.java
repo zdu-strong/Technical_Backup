@@ -1,8 +1,8 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.constant;
 
 import java.time.Duration;
 
-public class LongTermTaskTempWaitDurationEnum {
+public class LongTermTaskTempWaitDurationConstant {
 
     public final static Duration REFRESH_INTERVAL_DURATION = Duration.ofSeconds(10);
 

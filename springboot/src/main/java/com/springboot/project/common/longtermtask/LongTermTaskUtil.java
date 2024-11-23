@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.uuid.Generators;
-import com.springboot.project.enumerate.LongTermTaskTempWaitDurationEnum;
+import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
@@ -45,7 +45,7 @@ public class LongTermTaskUtil {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
         Thread.startVirtualThread(() -> {
             var subscription = Flowable
-                    .timer(LongTermTaskTempWaitDurationEnum.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
+                    .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
                     .doOnNext((a) -> {
                         Thread.startVirtualThread(() -> {
                             synchronized (idOfLongTermTask) {
@@ -117,7 +117,7 @@ public class LongTermTaskUtil {
         var idList = idListOfLongTermTask;
         var syncKey = Generators.timeBasedReorderedGenerator().generate().toString();
         var subscription = Flowable
-                .timer(LongTermTaskTempWaitDurationEnum.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
+                .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
                 .doOnNext((a) -> {
                     Thread.startVirtualThread(() -> {
                         synchronized (syncKey) {

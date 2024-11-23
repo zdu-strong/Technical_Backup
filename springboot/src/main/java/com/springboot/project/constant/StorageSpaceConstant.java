@@ -1,8 +1,8 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.constant;
 
 import java.time.Duration;
 
-public class StorageSpaceEnum {
+public class StorageSpaceConstant {
 
     /**
      * temp file survival duration
