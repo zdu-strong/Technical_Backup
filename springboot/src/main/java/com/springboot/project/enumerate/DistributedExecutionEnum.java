@@ -18,7 +18,6 @@ public enum DistributedExecutionEnum {
      * Storage space cleans up the stored data in the database
      */
     STORAGE_SPACE_CLEAN_DATABASE_STORAGE(
-            "STORAGE_SPACE_CLEAN_DATABASE_STORAGE",
             Duration.ofHours(12),
             () -> {
                 var totalRecord = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
@@ -37,7 +36,7 @@ public enum DistributedExecutionEnum {
      * The OrganizeEntity refreshes the data of the OrganizeRelationEntity.
      */
     ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY(
-            "ORGANIZE_REFRESH_ORGANIZE_RELATION_ENTITY", Duration.ofMinutes(1),
+            Duration.ofMinutes(1),
             () -> {
                 var totalRecord = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
                         .getTotalRecord();
@@ -56,17 +55,14 @@ public enum DistributedExecutionEnum {
                 }
             });
 
-    private String executionType;
-
     private Duration theIntervalBetweenTwoExecutions;
 
     private Supplier<Long> callbackOfGetTotalRecord;
 
     private Consumer<Long> callbackOfExecuteTask;
 
-    private DistributedExecutionEnum(String executionType, Duration theIntervalBetweenTwoExecutions,
+    private DistributedExecutionEnum(Duration theIntervalBetweenTwoExecutions,
             Supplier<Long> callbackOfGetTotalRecord, Consumer<Long> callbackOfExecuteTask) {
-        this.executionType = executionType;
         this.theIntervalBetweenTwoExecutions = theIntervalBetweenTwoExecutions;
         this.callbackOfGetTotalRecord = callbackOfGetTotalRecord;
         this.callbackOfExecuteTask = callbackOfExecuteTask;

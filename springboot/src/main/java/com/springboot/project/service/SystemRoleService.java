@@ -38,7 +38,7 @@ public class SystemRoleService extends BaseService {
 
     private boolean createSystemRoleList() {
         for (var systemRole : SystemRoleEnum.values()) {
-            var role = systemRole.getRole();
+            var role = systemRole.name();
             var exists = this.streamAll(SystemRoleEntity.class)
                     .where(s -> s.getName().equals(role))
                     .exists();
@@ -52,7 +52,7 @@ public class SystemRoleService extends BaseService {
     }
 
     private boolean deleteSystemRoleList() {
-        var roleList = Arrays.stream(SystemRoleEnum.values()).map(s -> s.getRole()).toList();
+        var roleList = Arrays.stream(SystemRoleEnum.values()).map(s -> s.name()).toList();
         var systemRoleEntity = this.streamAll(SystemRoleEntity.class)
                 .where(s -> !roleList.contains(s.getName()))
                 .findFirst()
@@ -77,7 +77,7 @@ public class SystemRoleService extends BaseService {
     private void create(SystemRoleEnum systemRole) {
         var systemRoleEntity = new SystemRoleEntity();
         systemRoleEntity.setId(newId());
-        systemRoleEntity.setName(systemRole.getRole());
+        systemRoleEntity.setName(systemRole.name());
         systemRoleEntity.setCreateDate(new Date());
         systemRoleEntity.setUpdateDate(new Date());
         this.persist(systemRoleEntity);

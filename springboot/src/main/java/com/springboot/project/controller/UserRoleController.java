@@ -21,7 +21,7 @@ public class UserRoleController extends BaseController {
 
         var userRoleModelOne = this.userRoleService.create(userRoleModel.getName(),
                 userRoleModel.getSystemRoleList().stream()
-                        .map(s -> SystemRoleEnum.valueOfRole(this.systemRoleService.getById(s.getId()).getName())).toList(),
+                        .map(s -> SystemRoleEnum.valueOf(this.systemRoleService.getById(s.getId()).getName())).toList(),
                 userRoleModel.getOrganize().getId());
 
         return ResponseEntity.ok(userRoleModelOne);

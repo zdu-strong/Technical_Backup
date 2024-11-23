@@ -25,7 +25,7 @@ public class StorageSpaceScheduled {
     @Scheduled(initialDelay = 12 * 60 * 60 * 1000, fixedDelay = 12 * 60 * 60 * 1000)
     public void scheduled() {
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
-                .setType(LongTermTaskTypeEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE.getType())
+                .setType(LongTermTaskTypeEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE.name())
                 .setUniqueKey(gitProperties.getCommitId());
         this.longTermTaskUtil.run(() -> {
             this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);

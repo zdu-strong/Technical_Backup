@@ -16,14 +16,14 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
         assertEquals(1, userRoleList.size());
         var userRole = JinqStream.from(userRoleList).getOnlyValue();
         assertEquals(36, userRole.getId().length());
-        assertEquals(SystemRoleEnum.SUPER_ADMIN.getRole(), userRole.getName());
+        assertEquals(SystemRoleEnum.SUPER_ADMIN.name(), userRole.getName());
         assertNotNull(userRole.getCreateDate());
         assertNotNull(userRole.getUpdateDate());
         assertNull(userRole.getOrganize());
         assertEquals(1, userRole.getSystemRoleList().size());
         var systemRole = JinqStream.from(userRole.getSystemRoleList()).getOnlyValue();
         assertEquals(36, systemRole.getId().length());
-        assertEquals(SystemRoleEnum.SUPER_ADMIN.getRole(), systemRole.getName());
+        assertEquals(SystemRoleEnum.SUPER_ADMIN.name(), systemRole.getName());
         assertNotNull(systemRole.getCreateDate());
         assertNotNull(systemRole.getUpdateDate());
     }

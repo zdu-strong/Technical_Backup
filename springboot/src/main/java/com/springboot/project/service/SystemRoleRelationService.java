@@ -10,7 +10,7 @@ import com.springboot.project.enumerate.SystemRoleEnum;
 public class SystemRoleRelationService extends BaseService {
 
     public void create(String userRoleId, SystemRoleEnum systemRoleEnum) {
-        var systemRoleName = systemRoleEnum.getRole();
+        var systemRoleName = systemRoleEnum.name();
         var systemRoleEntity = this.streamAll(SystemRoleEntity.class)
                 .where(s -> s.getName().equals(systemRoleName))
                 .getOnlyValue();

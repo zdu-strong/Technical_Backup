@@ -116,7 +116,7 @@ public class SystemInitScheduled {
                     break;
                 }
             }
-        }, null, new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.INIT_SYSTEM_ROLE.getType())
+        }, null, new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.INIT_SYSTEM_ROLE.name())
                 .setUniqueKey(gitProperties.getCommitId()));
     }
 

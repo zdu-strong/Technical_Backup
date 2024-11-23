@@ -16,9 +16,9 @@ public class SystemInitScheduledInitUserRoleAfterMoveOrganinzeTest extends BaseT
     public void test() {
         var userRoleList = this.userRoleService.getOrganizeRoleListByCompanyId(this.organizeId);
         assertEquals(2, userRoleList.size());
-        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.valueOfRole(s.getName())).toList()
+        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.valueOf(s.getName())).toList()
                 .contains(SystemRoleEnum.ORGANIZE_NORMAL_USER));
-        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.valueOfRole(s.getName())).toList()
+        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.valueOf(s.getName())).toList()
                 .contains(SystemRoleEnum.ORGANIZE_ADMIN));
         assertEquals(this.organizeId,
                 JinqStream.from(userRoleList).select(s -> s.getOrganize().getId()).distinct().getOnlyValue());

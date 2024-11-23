@@ -33,7 +33,7 @@ public class LongTermTaskService extends BaseService {
         longTermTaskEntity.setResult(this.longTermTaskFormatter.formatResult(null));
         longTermTaskEntity.setUniqueKeyJsonString(this.longTermTaskFormatter
                 .formatLongTermTaskUniqueKey(
-                        new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.COMMON.getType())
+                        new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.COMMON.name())
                                 .setUniqueKey(Generators.timeBasedReorderedGenerator().generate().toString())));
 
         this.persist(longTermTaskEntity);

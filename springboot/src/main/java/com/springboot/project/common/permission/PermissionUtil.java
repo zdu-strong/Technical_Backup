@@ -70,7 +70,7 @@ public class PermissionUtil {
                 .selectAllList(s -> s)
                 .select(s -> s.getUserRole())
                 .selectAllList(s -> s.getSystemRoleList())
-                .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
+                .select(s -> SystemRoleEnum.valueOf(s.getName()))
                 .where(s -> ArrayUtils.contains(systemRoleList, s))
                 .exists();
         return hasAnyRole;
@@ -98,14 +98,14 @@ public class PermissionUtil {
         if (Arrays.stream(systemRoleList).anyMatch(s -> s.getIsSuperAdmin())
                 && JinqStream.from(user.getUserRoleRelationList())
                         .selectAllList(s -> s.getUserRole().getSystemRoleList())
-                        .select(s -> SystemRoleEnum.valueOfRole(s.getName()))
+                        .select(s -> SystemRoleEnum.valueOf(s.getName()))
                         .anyMatch(s -> s.getIsSuperAdmin())) {
             return;
         }
         if (!Arrays.stream(systemRoleList)
                 .anyMatch(s -> JinqStream.from(user.getOrganizeRoleRelationList())
                         .selectAllList(t -> t.getUserRole().getSystemRoleList())
-                        .select(t -> SystemRoleEnum.valueOfRole(t.getName()))
+                        .select(t -> SystemRoleEnum.valueOf(t.getName()))
                         .toList()
                         .contains(s))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -128,7 +128,8 @@ public class PermissionUtil {
         var user = this.userService.getUserWithMoreInformation(userId);
         var organizeIdList = JinqStream.from(user.getOrganizeRoleRelationList())
                 .where(s -> JinqStream.from(s.getUserRole().getSystemRoleList())
-                        .anyMatch(t -> ArrayUtils.contains(systemRoleList, SystemRoleEnum.valueOfRole(t.getName()))))
+                        .anyMatch(t -> ArrayUtils.contains(systemRoleList,
+                                SystemRoleEnum.valueOf(t.getName()))))
                 .select(s -> s.getOrganize().getId())
                 .toList();
         return organizeIdList;

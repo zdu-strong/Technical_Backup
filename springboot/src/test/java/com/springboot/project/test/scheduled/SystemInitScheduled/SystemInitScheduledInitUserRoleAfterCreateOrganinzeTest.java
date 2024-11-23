@@ -16,9 +16,11 @@ public class SystemInitScheduledInitUserRoleAfterCreateOrganinzeTest extends Bas
     public void test() {
         var organizeRoleList = this.userRoleService.getOrganizeRoleListByCompanyId(this.organizeId);
         assertEquals(2, organizeRoleList.size());
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOfRole(s.getName())).toList()
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+                .toList()
                 .contains(SystemRoleEnum.ORGANIZE_NORMAL_USER));
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOfRole(s.getName())).toList()
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+                .toList()
                 .contains(SystemRoleEnum.ORGANIZE_ADMIN));
         assertEquals(this.organizeId,
                 JinqStream.from(organizeRoleList).select(s -> s.getOrganize().getId()).distinct().getOnlyValue());

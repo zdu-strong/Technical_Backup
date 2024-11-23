@@ -14,7 +14,7 @@ public class DistributedExecutionService extends BaseService {
     @Transactional(readOnly = true)
     public DistributedExecutionModel getLastSuccessDistributedExecution(
             DistributedExecutionEnum distributedExecutionEnum) {
-        var distributedExecutionType = distributedExecutionEnum.getExecutionType();
+        var distributedExecutionType = distributedExecutionEnum.name();
         var distributedExecutionModel = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
                 .where(s -> s.getIsDone())
@@ -29,7 +29,7 @@ public class DistributedExecutionService extends BaseService {
 
     @Transactional(readOnly = true)
     public DistributedExecutionModel getLastDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
-        var distributedExecutionType = distributedExecutionEnum.getExecutionType();
+        var distributedExecutionType = distributedExecutionEnum.name();
         var distributedExecutionModel = this.streamAll(DistributedExecutionEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
                 .sortedDescendingBy(s -> s.getId())
@@ -46,7 +46,7 @@ public class DistributedExecutionService extends BaseService {
         distributedExecutionEntity.setId(newId());
         distributedExecutionEntity.setCreateDate(new Date());
         distributedExecutionEntity.setUpdateDate(new Date());
-        distributedExecutionEntity.setExecutionType(distributedExecutionEnum.getExecutionType());
+        distributedExecutionEntity.setExecutionType(distributedExecutionEnum.name());
         distributedExecutionEntity.setTotalRecord(totalRecord);
         distributedExecutionEntity.setIsDone(totalRecord <= 0);
         distributedExecutionEntity.setHasError(false);

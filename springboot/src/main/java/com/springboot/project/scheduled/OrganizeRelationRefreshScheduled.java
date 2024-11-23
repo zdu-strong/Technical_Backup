@@ -25,7 +25,7 @@ public class OrganizeRelationRefreshScheduled {
     @Scheduled(initialDelay = 60 * 1000, fixedDelay = 60 * 1000)
     public void scheduled() {
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
-                .setType(LongTermTaskTypeEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY.getType())
+                .setType(LongTermTaskTypeEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY.name())
                 .setUniqueKey(gitProperties.getCommitId());
         this.longTermTaskUtil.run(() -> {
             this.distributedExecutionUtil
