@@ -11,12 +11,12 @@ public enum SupportDatabaseTypeEnum {
 
     SPANNER("spanner", "com.google.cloud.spanner.jdbc.JdbcDriver", "CustomSpannerDialect");
 
-    private String name;
+    private String type;
     private String driver;
     private String platform;
 
-    private SupportDatabaseTypeEnum(String name, String driver, String platform) {
-        this.name = name;
+    private SupportDatabaseTypeEnum(String type, String driver, String platform) {
+        this.type = type;
         this.driver = driver;
         this.platform = platform;
     }

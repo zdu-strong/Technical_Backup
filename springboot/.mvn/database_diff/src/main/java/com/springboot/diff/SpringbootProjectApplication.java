@@ -179,7 +179,7 @@ public class SpringbootProjectApplication {
         var filePathOfDiffChangeLogFile = Paths
                 .get(getBaseFolderPath(), "src/main/resources", "liquibase/changelog",
                         today.substring(0, 10),
-                        today + "_changelog." + getDatabaseType().getName() + getFilenameExtensionOfChangeLog())
+                        today + "_changelog." + getDatabaseType().getType() + getFilenameExtensionOfChangeLog())
                 .normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         var isCreateFolder = !existFolder(Paths.get(filePathOfDiffChangeLogFile, "..").normalize().toString());
 
@@ -464,7 +464,7 @@ public class SpringbootProjectApplication {
         if (!hasMatch) {
             throw new RuntimeException(
                     "Only support database " + "[" + String.join(", ", Arrays.stream(SupportDatabaseTypeEnum.values())
-                            .map(s -> s.getName()).toList().toArray(ArrayUtils.EMPTY_STRING_ARRAY)) + "]");
+                            .map(s -> s.getType()).toList().toArray(ArrayUtils.EMPTY_STRING_ARRAY)) + "]");
         }
     }
 
