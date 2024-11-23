@@ -1,4 +1,4 @@
-package com.springboot.project.test.enumerate.StorageSpaceEnum;
+package com.springboot.project.test.constant.StorageSpaceConstant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.constant.StorageSpaceConstant;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class StorageSpaceEnumTest extends BaseTest {
+public class StorageSpaceConstantTest extends BaseTest {
 
     @Test
     public void test() {

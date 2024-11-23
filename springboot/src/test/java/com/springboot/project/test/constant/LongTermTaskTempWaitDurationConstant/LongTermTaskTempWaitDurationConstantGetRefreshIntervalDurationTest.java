@@ -1,4 +1,4 @@
-package com.springboot.project.test.enumerate.LongTermTaskTempWaitDurationEnum;
+package com.springboot.project.test.constant.LongTermTaskTempWaitDurationConstant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class LongTermTaskTempWaitDurationEnumGetRefreshIntervalDurationTest extends BaseTest {
+public class LongTermTaskTempWaitDurationConstantGetRefreshIntervalDurationTest extends BaseTest {
 
     @Test
     public void test() {
