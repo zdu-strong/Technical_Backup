@@ -50,7 +50,7 @@ public class UserMessageEntity {
     @Lob
     private String fileName;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;
 
     @OneToMany(mappedBy = "userMessage", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

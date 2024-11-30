@@ -29,10 +29,10 @@ public class SystemRoleRelationEntity {
     @Column(nullable = false)
     private Date updateDate;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private SystemRoleEntity systemRole;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserRoleEntity userRole;
 
 }

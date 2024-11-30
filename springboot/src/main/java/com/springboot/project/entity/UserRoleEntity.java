@@ -40,7 +40,7 @@ public class UserRoleEntity {
     @Column(nullable = false)
     private String deactiveKey;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity organize;
 
     @OneToMany(mappedBy = "userRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

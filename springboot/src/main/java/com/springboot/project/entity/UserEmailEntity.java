@@ -40,7 +40,7 @@ public class UserEmailEntity {
     @Column(nullable = false)
     private String deactiveKey;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;
 
 }

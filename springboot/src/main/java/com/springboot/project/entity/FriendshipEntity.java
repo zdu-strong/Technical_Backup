@@ -38,10 +38,10 @@ public class FriendshipEntity {
     @Column(nullable = false)
     private Boolean hasInitiative;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserEntity friend;
 
 }
