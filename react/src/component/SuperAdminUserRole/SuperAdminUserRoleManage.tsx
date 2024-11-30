@@ -9,6 +9,7 @@ import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorCompo
 import { SystemRoleModel } from "@/model/SystemRoleModel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FormattedMessage } from "react-intl";
 
 const columns: GridColDef<SystemRoleModel>[] = [
   {
@@ -71,7 +72,7 @@ export default observer(() => {
           onClick={searchByPagination}
           startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faSearch} spin={state.loading} />}
         >
-          {"Refresh"}
+          <FormattedMessage id="Refresh" defaultMessage="Refresh" />
         </Button>
       </div>
       <AutoSizer className="flex flex-col flex-auto">

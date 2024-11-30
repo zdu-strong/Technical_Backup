@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { v1 } from "uuid";
 import SuperAdminUserDetailDialog from "./SuperAdminUserDetailDialog";
+import { FormattedMessage } from "react-intl";
 
 export default observer((props: { id: string, searchByPagination: () => void }) => {
 
@@ -31,7 +32,7 @@ export default observer((props: { id: string, searchByPagination: () => void }) 
       variant="contained"
       startIcon={<FontAwesomeIcon icon={faCircleInfo} />}
     >
-      {"详情"}
+      <FormattedMessage id="Detail" defaultMessage="Detail" />
     </Button>
     {
       state.dialog.open && <SuperAdminUserDetailDialog

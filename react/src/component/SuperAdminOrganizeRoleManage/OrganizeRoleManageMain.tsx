@@ -9,6 +9,7 @@ import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 import { SystemRoleModel } from "@/model/SystemRoleModel";
 import { useSearchParams } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 
 const columns: GridColDef<SystemRoleModel>[] = [
   {
@@ -69,6 +70,7 @@ export default observer((props: { companyId: string }) => {
     <div className="flex flex-col flex-auto" style={{ paddingLeft: "50px", paddingRight: "50px" }}>
       <Button variant="contained" style={{ marginTop: "10px", marginBottom: "10px" }} onClick={showSelectedIdList}>
         {"Show"}
+        <FormattedMessage id="Show" defaultMessage="Show" />
       </Button>
       <AutoSizer className="flex flex-col flex-auto">
         {({ width, height }) => <Box width={width} height={height}>

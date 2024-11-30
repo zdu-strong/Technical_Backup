@@ -10,6 +10,7 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { UserPaginationModel } from "@/model/UserPaginationModel";
 import { UserModel } from "@/model/UserModel";
 import SuperAdminUserDetailButton from "@/component/SuperAdminUserManage/SuperAdminUserDetailButton";
+import { FormattedMessage } from "react-intl";
 
 export default observer(() => {
 
@@ -79,7 +80,7 @@ export default observer(() => {
           onClick={searchByPagination}
           startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faSearch} spin={state.loading} />}
         >
-          {"Refresh"}
+          <FormattedMessage id="Refresh" defaultMessage="Refresh" />
         </Button>
       </div>
       <AutoSizer className="flex flex-col flex-auto">

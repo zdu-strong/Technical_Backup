@@ -91,5 +91,15 @@
   "TheNicknameCannotHaveASpaceAtTheEnd": "The nickname cannot have a space at the end",
   "NetworkError": "Network Error",
   "Delete": "Delete",
-  "PleaseLoginFirstAndThenVisit": "Please login first and then visit"
+  "PleaseLoginFirstAndThenVisit": "Please login first and then visit",
+  "Chat": "Chat",
+  "Git": "Git",
+  "UserRoleManage": "User Role Manage",
+  "OrganizeRoleManage": "Organize Role Manage",
+  "UserManage": "User Manage",
+  "WebClipboard": "Web Clipboard",
+  "Refresh": "Refresh",
+  "UserDetail": "User Detail",
+  "Detail": "Detail",
+  "Show": "Show"
 }

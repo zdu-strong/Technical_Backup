@@ -97,7 +97,7 @@ export default observer((props: {
             <ListItemIcon >
               <FontAwesomeIcon icon={faMessage} />
             </ListItemIcon>
-            <ListItemText>Chat</ListItemText>
+            <ListItemText><FormattedMessage id="Chat" defaultMessage="Chat" /></ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘X
             </Typography>
@@ -106,7 +106,7 @@ export default observer((props: {
             <ListItemIcon>
               <FontAwesomeIcon icon={faGitAlt} />
             </ListItemIcon>
-            <ListItemText>Git</ListItemText>
+            <ListItemText><FormattedMessage id="Git" defaultMessage="Git" /></ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘C
             </Typography>
@@ -115,7 +115,7 @@ export default observer((props: {
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
-            <ListItemText>User Role Manage</ListItemText>
+            <ListItemText><FormattedMessage id="UserRoleManage" defaultMessage="User Role Manage" /></ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘V
             </Typography>
@@ -124,7 +124,7 @@ export default observer((props: {
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
-            <ListItemText>Organize Role Manage</ListItemText>
+            <ListItemText><FormattedMessage id="OrganizeRoleManage" defaultMessage="Organize Role Manage" /></ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘V
             </Typography>
@@ -133,7 +133,7 @@ export default observer((props: {
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
-            <ListItemText>User Manage</ListItemText>
+            <ListItemText><FormattedMessage id="UserManage" defaultMessage="User Manage" /></ListItemText>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               ⌘V
             </Typography>
@@ -143,7 +143,7 @@ export default observer((props: {
             <ListItemIcon>
               <FontAwesomeIcon icon={faCloud} />
             </ListItemIcon>
-            <ListItemText>Web Clipboard</ListItemText>
+            <ListItemText><FormattedMessage id="WebClipboard" defaultMessage="Web Clipboard" /></ListItemText>
           </MenuItem>
         </MenuList>
         <Divider orientation="vertical" />

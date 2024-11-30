@@ -91,5 +91,15 @@
   "TheNicknameCannotHaveASpaceAtTheEnd": "呢称的结尾不能有空格",
   "NetworkError": "无网络连接",
   "Delete": "删除",
-  "PleaseLoginFirstAndThenVisit": "请先登录再访问"
+  "PleaseLoginFirstAndThenVisit": "请先登录再访问",
+  "Chat": "聊天",
+  "Git": "Git",
+  "UserRoleManage": "用户角色管理",
+  "OrganizeRoleManage": "组织角色管理",
+  "UserManage": "用户管理",
+  "WebClipboard": "网页剪贴板",
+  "Refresh": "刷新",
+  "UserDetail": "用户详情",
+  "Detail": "详情",
+  "Show": "显示"
 }
