@@ -18,13 +18,13 @@ const columns: GridColDef<SystemRoleModel>[] = [
     width: 290
   },
   {
-    headerName: 'Name',
+    renderHeader: () => <FormattedMessage id="Name" defaultMessage="Name" />,
     field: 'name',
     width: 150,
     flex: 1,
   },
   {
-    headerName: 'Create date',
+    renderHeader: () => <FormattedMessage id="CreateDate" defaultMessage="Create Date" />,
     field: 'createDate',
     description: 'This column has a value getter and is not sortable.',
     renderCell: (row) => {

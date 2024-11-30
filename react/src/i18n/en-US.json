@@ -101,5 +101,8 @@
   "Refresh": "Refresh",
   "UserDetail": "User Detail",
   "Detail": "Detail",
-  "Show": "Show"
+  "Show": "Show",
+  "Name": "Name",
+  "CreateDate": "Create Date",
+  "Operation": "Operation"
 }

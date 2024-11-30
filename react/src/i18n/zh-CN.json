@@ -101,5 +101,8 @@
   "Refresh": "刷新",
   "UserDetail": "用户详情",
   "Detail": "详情",
-  "Show": "显示"
+  "Show": "显示",
+  "Name": "名称",
+  "CreateDate": "创建时间",
+  "Operation": "操作"
 }

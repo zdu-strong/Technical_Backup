@@ -26,13 +26,13 @@ export default observer(() => {
         width: 290
       },
       {
-        headerName: 'Name',
+        renderHeader: () => <FormattedMessage id="Name" defaultMessage="Name" />,
         field: 'username',
         width: 150,
         flex: 1,
       },
       {
-        headerName: 'Create date',
+        renderHeader: () => <FormattedMessage id="CreateDate" defaultMessage="Create Date" />,
         field: 'createDate',
         renderCell: (row) => {
           return <div>
@@ -42,7 +42,7 @@ export default observer(() => {
         width: 150,
       },
       {
-        headerName: 'Operation',
+        renderHeader: () => <FormattedMessage id="Operation" defaultMessage="Operation" />,
         field: '',
         renderCell: (row) => <SuperAdminUserDetailButton
           id={row.row.id}
