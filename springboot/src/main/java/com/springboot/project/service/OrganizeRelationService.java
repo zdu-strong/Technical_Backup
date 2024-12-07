@@ -1,10 +1,10 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.constant.DatabaseBatchConstant;
 import com.springboot.project.entity.*;
 
 @Service
@@ -17,14 +17,14 @@ public class OrganizeRelationService extends BaseService {
         var isActive = this.organizeFormatter.isActive(organizeEntity);
 
         if (!isActive) {
-            var organizeRelationEntityList = this.streamAll(OrganizeRelationEntity.class)
+            var organizeRelationEntity = this.streamAll(OrganizeRelationEntity.class)
                     .where(s -> s.getAncestor().getId().equals(organizeId))
-                    .limit(DatabaseBatchConstant.BATCH_SIZE)
-                    .toList();
-            var hasNext = organizeRelationEntityList.size() == DatabaseBatchConstant.BATCH_SIZE;
-            for (var organizeRelationEntity : organizeRelationEntityList) {
+                    .findFirst()
+                    .orElse(null);
+            if (organizeRelationEntity != null) {
                 this.remove(organizeRelationEntity);
             }
+            var hasNext = organizeRelationEntity != null;
             return hasNext;
         }
 
@@ -33,35 +33,32 @@ public class OrganizeRelationService extends BaseService {
                 .where(s -> s.getDescendant().getId().equals(organizeId))
                 .select(s -> s.getAncestor().getId())
                 .toList();
-        var organizeRelationListWillRemove = JinqStream.from(ancestorIdTwoList)
-                .where(s -> !ancestorIdOneList.contains(s))
-                .limit(DatabaseBatchConstant.BATCH_SIZE)
-                .map(ancestorId -> this.streamAll(OrganizeRelationEntity.class)
-                        .where(s -> s.getAncestor().getId().equals(ancestorId))
-                        .where(s -> s.getDescendant().getId().equals(organizeId))
-                        .getOnlyValue())
-                .toList();
-        var ancestorIdList = JinqStream.from(ancestorIdOneList)
-                .where(s -> !ancestorIdTwoList.contains(s))
-                .limit(DatabaseBatchConstant.BATCH_SIZE)
-                .toList();
-        var totalTimes = DatabaseBatchConstant.BATCH_SIZE;
-        for (var organizeRelationEntity : organizeRelationListWillRemove) {
-            if (totalTimes == 0) {
-                break;
+        {
+            var organizeRelationEntity = JinqStream.from(ancestorIdTwoList)
+                    .where(s -> !ancestorIdOneList.contains(s))
+                    .findFirst()
+                    .map(ancestorId -> this.streamAll(OrganizeRelationEntity.class)
+                            .where(s -> s.getAncestor().getId().equals(ancestorId))
+                            .where(s -> s.getDescendant().getId().equals(organizeId))
+                            .getOnlyValue())
+                    .orElse(null);
+            if (organizeRelationEntity != null) {
+                this.remove(organizeRelationEntity);
+                return true;
             }
-            totalTimes--;
-            this.remove(organizeRelationEntity);
         }
-        for (var ancestorId : ancestorIdList) {
-            if (totalTimes == 0) {
-                break;
+        {
+            var ancestorId = JinqStream.from(ancestorIdOneList)
+                    .where(s -> !ancestorIdTwoList.contains(s))
+                    .findFirst()
+                    .orElse(null);
+            if (StringUtils.isNotBlank(ancestorId)) {
+                this.create(ancestorId, organizeId);
+                return true;
             }
-            totalTimes--;
-            this.create(ancestorId, organizeId);
         }
-        var hasNext = totalTimes == 0;
-        return hasNext;
+
+        return false;
     }
 
     private void create(String ancestorId, String descendantId) {
