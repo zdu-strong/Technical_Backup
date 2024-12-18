@@ -2,15 +2,12 @@ package com.springboot.project.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
 
@@ -34,14 +31,8 @@ public class AuthorizationController extends BaseController {
     public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password) {
         this.userService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
-
-        var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(password);
-        var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
-                secretKeyOfAES);
-        var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString);
-        var accessToken = this.tokenService.generateAccessToken(userId, passwordParameter);
+        var accessToken = this.tokenService.generateAccessToken(userId,
+                this.encryptDecryptService.encryptByPublicKeyOfRSA(password));
         var user = this.userService.getUserWithMoreInformation(userId);
         user.setAccessToken(accessToken);
         return ResponseEntity.ok(user);

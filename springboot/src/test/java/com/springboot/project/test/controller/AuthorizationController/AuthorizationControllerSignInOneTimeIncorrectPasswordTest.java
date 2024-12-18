@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.List;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,14 +20,9 @@ public class AuthorizationControllerSignInOneTimeIncorrectPasswordTest extends B
     @Test
     public void test() throws JsonProcessingException, InvalidKeySpecException,
             NoSuchAlgorithmException, URISyntaxException {
-        var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(password);
-        var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
-                secretKeyOfAES);
-        var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString);
-        var url = new URIBuilder("/sign_in/one_time_password").setParameter("username", username)
-                .setParameter("password", passwordParameter)
+        var url = new URIBuilder("/sign_in/one_time_password")
+                .setParameter("username", username)
+                .setParameter("password", this.encryptDecryptService.encryptByPublicKeyOfRSA(password))
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, Throwable.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

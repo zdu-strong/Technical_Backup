@@ -3,10 +3,7 @@ package com.springboot.project.test.common.BaseTest;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 import java.time.Duration;
-import java.util.Date;
-import java.util.List;
 import java.util.function.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -316,18 +313,9 @@ public class BaseTest {
 
     @SneakyThrows
     private UserModel signIn(String email, String password) {
-        var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(password);
-        var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
-                secretKeyOfAES);
-        var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        URI urlForGetPublicKeyOfRSA = new URIBuilder(
-                this.testRestTemplate.getRootUri() + "/encrypt_decrypt/rsa/public_key").build();
-        var publicKeyOfRSA = new RestTemplate().getForObject(urlForGetPublicKeyOfRSA, String.class);
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString,
-                publicKeyOfRSA);
-        var url = new URIBuilder("/sign_in/one_time_password").setParameter("username", email)
-                .setParameter("password", passwordParameter)
+        var url = new URIBuilder("/sign_in")
+                .setParameter("username", email)
+                .setParameter("password", password)
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

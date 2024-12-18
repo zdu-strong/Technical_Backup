@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
-import java.util.List;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +16,14 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
 
     private String username;
-    private String passwordPartJsonString;
+    private String passwordOneTime;
 
     @Test
     public void test()
             throws JsonProcessingException, InvalidKeySpecException, URISyntaxException {
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(this.passwordPartJsonString);
-        var url = new URIBuilder("/sign_in/one_time_password").setParameter("username", username)
-                .setParameter("password", passwordParameter)
+        var url = new URIBuilder("/sign_in/one_time_password")
+                .setParameter("username", username)
+                .setParameter("password", passwordOneTime)
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null,
                 Throwable.class);
@@ -39,15 +37,10 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
             throws JsonProcessingException, InvalidKeySpecException, NoSuchAlgorithmException, URISyntaxException {
         this.username = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.createAccount(username);
-        var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(username);
-        var passwordPartList = List.of(new Date(),
-                Generators.timeBasedReorderedGenerator().generate().toString(),
-                secretKeyOfAES);
-        this.passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(this.passwordPartJsonString);
-        var url = new URIBuilder("/sign_in/one_time_password").setParameter("username", username)
-                .setParameter("password", passwordParameter)
+        this.passwordOneTime = this.encryptDecryptService.encryptByPublicKeyOfRSA(this.username);
+        var url = new URIBuilder("/sign_in/one_time_password")
+                .setParameter("username", username)
+                .setParameter("password", passwordOneTime)
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

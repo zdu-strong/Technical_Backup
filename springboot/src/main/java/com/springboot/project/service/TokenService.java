@@ -1,14 +1,9 @@
 package com.springboot.project.service;
 
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Base64;
 import java.util.Date;
-import java.util.List;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
-import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,8 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
@@ -110,49 +103,34 @@ public class TokenService extends BaseService {
 
     @SneakyThrows
     private String generateUniqueOneTimePasswordLogo() {
-        var jsonString = this.objectMapper.writeValueAsString(
-                List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString()));
-        var logo = Base64.getEncoder().encodeToString(jsonString.getBytes(StandardCharsets.UTF_8));
+        var password = Generators.timeBasedReorderedGenerator().generate().toString();
+        var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfRSA(password);
+        var logo = DigestUtils.sha3_512Hex(this.encryptDecryptService.encryptWithFixedSaltByAES(encryptedPassword,
+                this.encryptDecryptService.generateSecretKeyOfAES(encryptedPassword)));
         return logo;
     }
 
     @SneakyThrows
-    private String getUniqueOneTimePasswordLogo(String password) {
-        var jsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(password);
-        var passwordPartList = this.objectMapper.readValue(jsonString, new TypeReference<List<String>>() {
-        });
-        var logo = Base64.getEncoder().encodeToString(
-                this.objectMapper.writeValueAsString(JinqStream.from(passwordPartList).limit(2).toList())
-                        .getBytes(StandardCharsets.UTF_8));
+    private String getUniqueOneTimePasswordLogo(String encryptedPassword) {
+        var logo = DigestUtils.sha3_512Hex(this.encryptDecryptService.encryptWithFixedSaltByAES(encryptedPassword,
+                this.encryptDecryptService.generateSecretKeyOfAES(encryptedPassword)));
         return logo;
     }
 
-    private void checkCorrectPassword(String password, String userId) {
+    private void checkCorrectPassword(String encryptedPassword, String userId) {
         try {
             var userEntity = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(userId))
                     .getOnlyValue();
-            var jsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(password);
-            var passwordPartList = this.objectMapper.readValue(jsonString, new TypeReference<List<String>>() {
-            });
+            var password = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(encryptedPassword);
 
             if (!userId.equals(this.encryptDecryptService.decryptByAES(userEntity.getPassword(),
-                    JinqStream.from(passwordPartList).skip(2).getOnlyValue()))) {
+                    this.encryptDecryptService.generateSecretKeyOfAES(password)))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
             }
 
-            var passwordDate = FastDateFormat.getInstance(this.dateFormatProperties.getUTC())
-                    .parse(JinqStream.from(passwordPartList).limit(1).getOnlyValue());
-            if (DateUtils.addMinutes(new Date(), 5).before(passwordDate)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Incorrect username or password");
-            }
-            if (DateUtils.addMinutes(new Date(), -5).after(passwordDate)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Incorrect username or password");
-            }
-            var uniqueOneTimePasswordLogo = this.getUniqueOneTimePasswordLogo(password);
+            var uniqueOneTimePasswordLogo = this.getUniqueOneTimePasswordLogo(encryptedPassword);
             var exists = this.streamAll(TokenEntity.class)
                     .where(s -> s.getUser().getId().equals(userId))
                     .where(s -> s.getUniqueOneTimePasswordLogo().equals(uniqueOneTimePasswordLogo))
@@ -161,7 +139,7 @@ public class TokenService extends BaseService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
             }
-        } catch (CryptoException | JsonProcessingException | ParseException e) {
+        } catch (CryptoException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Incorrect username or password");
         }

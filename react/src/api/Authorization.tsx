@@ -28,14 +28,10 @@ export async function sendVerificationCode(email: string) {
 
 export async function signIn(username: string, password: string): Promise<void> {
   await signOut();
-  const passwordPartList = [new Date(), v1(), await generateSecretKeyOfAES(password)];
-  const passwordJsonString = JSON.stringify(passwordPartList);
-  const publicKey = await getKeyOfRSAPublicKey();
-  const passwordParameter = await encryptByPublicKeyOfRSA(passwordJsonString, publicKey);
   let { data: user } = await axios.post<UserModel>(`/sign_in/one_time_password`, null, {
     params: {
       username: username,
-      password: passwordParameter,
+      password: await encryptByPublicKeyOfRSA(password, await getKeyOfRSAPublicKey()),
     }
   });
   user = new TypedJSON(UserModel).parse(user)!;

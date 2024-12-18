@@ -182,6 +182,20 @@ public class EncryptDecryptService extends BaseService {
     }
 
     @Transactional(readOnly = true)
+    public String encryptWithFixedSaltByAES(String text, String secretKeyOfAES) {
+        var salt = Base64.getEncoder()
+                .encodeToString(
+                        DigestUtils.md5(this
+                                .generateSecretKeyOfAES(secretKeyOfAES
+                                        + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
+                                .getBytes(StandardCharsets.UTF_8)));
+        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
+                Base64.getDecoder().decode(secretKeyOfAES), "AES"),
+                Base64.getDecoder().decode(salt));
+        return salt + aes.encryptBase64(text);
+    }
+
+    @Transactional(readOnly = true)
     public RSAPrivateKey getKeyOfRSAPrivateKey() {
         this.initKey();
         return this.keyOfRSAPrivateKey;
