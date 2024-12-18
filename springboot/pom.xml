@@ -55,6 +55,7 @@
         <commons-compress.version>1.27.1</commons-compress.version>
         <org-tukaani-xz.version>1.10</org-tukaani-xz.version>
         <sneakyfun.version>1.0.0</sneakyfun.version>
+        <commons-exec.version>1.4.0</commons-exec.version>
     </properties>
 
     <dependencies>
@@ -222,7 +223,12 @@
             <groupId>eu.ciechanowiec</groupId>
             <artifactId>sneakyfun</artifactId>
             <version>${sneakyfun.version}</version>
-          </dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>${commons-exec.version}</version>
+        </dependency>
     </dependencies>
 
     <parent>

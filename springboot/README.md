@@ -261,30 +261,13 @@ java:
 
 ## Notes - multi-process programming
 
-    var command = new ArrayList<String>();
-    if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
-        command.add("cmd");
-        command.add("/c");
-    } else {
-        command.add("/bin/bash");
-        command.add("-c");
+    var command = "npm --version";
+    if (SystemUtils.IS_OS_WINDOWS) {
+        command = "cmd /c " + command;
     }
-    command.add("npm --version");
-    var processBuilder = new ProcessBuilder(command)
-                .inheritIO()
-                .directory(this.storage.createTempFolder());
-    processBuilder.environment().put("CUSTOM_ENV", "custom value");
-    var exitValue = processBuilder.start()
-            .waitFor();
-    destroy(processBuilder.toHandle());
-    if (exitValue != 0) {
-        throw new RuntimeException("Failed!");
-    }
-
-    public static void destroy(ProcessHandle hanlde) {
-        hanlde.descendants().forEach((s) -> destroy(s));
-        hanlde.destroy();
-    }
+    var env = EnvironmentUtils.getProcEnvironment();
+    env.put("CustomerEnv", "GREEN");
+    DefaultExecutor.builder().get().execute(CommandLine.parse(command), env);
 
 ## Learn More
 
