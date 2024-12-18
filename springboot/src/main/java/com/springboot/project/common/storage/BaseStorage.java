@@ -1,10 +1,8 @@
 package com.springboot.project.common.storage;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.regex.Pattern;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +16,6 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.CloudStorage.CloudStorageImplement;
@@ -26,6 +23,7 @@ import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.model.ResourceAccessLegalModel;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.StorageSpaceService;
+import cn.hutool.core.util.HexUtil;
 
 @Component
 public class BaseStorage {
@@ -101,10 +99,7 @@ public class BaseStorage {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported resource path");
         }
-
-        var encryptJsonString = new String(
-                Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()),
-                StandardCharsets.UTF_8);
+        var encryptJsonString = HexUtil.decodeHexStr(JinqStream.from(pathSegmentList).findFirst().get());
         var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
         ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
                 ResourceAccessLegalModel.class);
@@ -124,8 +119,7 @@ public class BaseStorage {
         pathSegmentList.add("resource");
         var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
         var encryptJsonString = this.encryptDecryptService.encryptWithFixedSaltByAES(jsonString);
-        pathSegmentList
-                .add(Base64.getUrlEncoder().encodeToString(encryptJsonString.getBytes(StandardCharsets.UTF_8)));
+        pathSegmentList.add(HexUtil.encodeHexStr(encryptJsonString));
         var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
         if (pathList.size() > 1) {
             pathSegmentList
