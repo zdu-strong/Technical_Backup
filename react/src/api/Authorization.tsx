@@ -1,5 +1,4 @@
 import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
-import { generateSecretKeyOfAES } from '@/common/AESUtils';
 import { encryptByPublicKeyOfRSA } from "@/common/RSAUtils";
 import { GlobalUserInfo, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
 import { UserEmailModel } from "@/model/UserEmailModel";
