@@ -18,7 +18,6 @@ import com.springboot.project.entity.*;
 import com.springboot.project.model.TokenModel;
 import cn.hutool.crypto.CryptoException;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.SneakyThrows;
 
 @Service
 public class TokenService extends BaseService {
@@ -101,19 +100,15 @@ public class TokenService extends BaseService {
         return exists;
     }
 
-    @SneakyThrows
     private String generateUniqueOneTimePasswordLogo() {
         var password = Generators.timeBasedReorderedGenerator().generate().toString();
         var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfRSA(password);
-        var logo = DigestUtils.sha3_512Hex(this.encryptDecryptService.encryptWithFixedSaltByAES(encryptedPassword,
-                this.encryptDecryptService.generateSecretKeyOfAES(encryptedPassword)));
+        var logo = DigestUtils.sha3_512Hex(encryptedPassword);
         return logo;
     }
 
-    @SneakyThrows
     private String getUniqueOneTimePasswordLogo(String encryptedPassword) {
-        var logo = DigestUtils.sha3_512Hex(this.encryptDecryptService.encryptWithFixedSaltByAES(encryptedPassword,
-                this.encryptDecryptService.generateSecretKeyOfAES(encryptedPassword)));
+        var logo = DigestUtils.sha3_512Hex(encryptedPassword);
         return logo;
     }
 

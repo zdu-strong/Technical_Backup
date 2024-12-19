@@ -1,6 +1,5 @@
 package com.springboot.project.service;
 
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -23,6 +22,7 @@ import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.constant.EncryptDecryptConstant;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.model.EncryptDecryptModel;
+import cn.hutool.core.util.HexUtil;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.asymmetric.KeyType;
@@ -77,22 +77,20 @@ public class EncryptDecryptService extends BaseService {
 
     @Transactional(readOnly = true)
     public String encryptByAES(String text, String secretKeyOfAES) {
-        var salt = Base64.getEncoder()
-                .encodeToString(DigestUtils.md5((Generators.timeBasedReorderedGenerator().generate().toString()
-                        + Generators.randomBasedGenerator().generate().toString()).getBytes(StandardCharsets.UTF_8)));
+        var salt = DigestUtils.md5Hex(Generators.timeBasedReorderedGenerator().generate().toString());
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
                 Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                Base64.getDecoder().decode(salt));
+                HexUtil.decodeHex(salt));
         return salt + aes.encryptBase64(text);
     }
 
     @Transactional(readOnly = true)
     public String decryptByAES(String text, String secretKeyOfAES) {
-        var salt = text.substring(0, 24);
-        text = text.substring(24);
+        var salt = text.substring(0, 32);
+        text = text.substring(32);
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
                 Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                Base64.getDecoder().decode(salt));
+                HexUtil.decodeHex(salt));
         return aes.decryptStr(text);
     }
 
@@ -169,29 +167,9 @@ public class EncryptDecryptService extends BaseService {
 
     @Transactional(readOnly = true)
     public String encryptWithFixedSaltByAES(String text) {
-        var salt = Base64.getEncoder()
-                .encodeToString(
-                        DigestUtils.md5(this
-                                .generateSecretKeyOfAES(Base64.getEncoder()
-                                        .encodeToString(this.getKeyOfAESSecretKey().getEncoded())
-                                        + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
-                                .getBytes(StandardCharsets.UTF_8)));
+        var salt = DigestUtils.md5Hex(text);
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
-                Base64.getDecoder().decode(salt));
-        return salt + aes.encryptBase64(text);
-    }
-
-    @Transactional(readOnly = true)
-    public String encryptWithFixedSaltByAES(String text, String secretKeyOfAES) {
-        var salt = Base64.getEncoder()
-                .encodeToString(
-                        DigestUtils.md5(this
-                                .generateSecretKeyOfAES(secretKeyOfAES
-                                        + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
-                                .getBytes(StandardCharsets.UTF_8)));
-        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
-                Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                Base64.getDecoder().decode(salt));
+                HexUtil.decodeHex(salt));
         return salt + aes.encryptBase64(text);
     }
 

@@ -17,7 +17,7 @@ public class LongTermTaskControllerGetLongTermTaskIncorrectFormatIdTest extends 
                 .build();
         var result = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("Illegal base64 character 2d", result.getBody().getMessage());
+        assertEquals("Illegal hexadecimal character - at index 8", result.getBody().getMessage());
     }
 
 }
