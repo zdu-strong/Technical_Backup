@@ -1,7 +1,7 @@
 package com.springboot.project.service;
 
+import java.util.Base64;
 import java.util.Date;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -103,12 +103,12 @@ public class TokenService extends BaseService {
     private String generateUniqueOneTimePasswordLogo() {
         var password = Generators.timeBasedReorderedGenerator().generate().toString();
         var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfRSA(password);
-        var logo = DigestUtils.sha3_512Hex(encryptedPassword);
+        var logo = Base64.getEncoder().encodeToString(DigestUtils.sha3_512(encryptedPassword));
         return logo;
     }
 
     private String getUniqueOneTimePasswordLogo(String encryptedPassword) {
-        var logo = DigestUtils.sha3_512Hex(encryptedPassword);
+        var logo = Base64.getEncoder().encodeToString(DigestUtils.sha3_512(encryptedPassword));
         return logo;
     }
 
