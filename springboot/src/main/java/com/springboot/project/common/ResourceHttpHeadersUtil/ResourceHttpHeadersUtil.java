@@ -2,7 +2,6 @@ package com.springboot.project.common.ResourceHttpHeadersUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.common.storage.Storage;
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.HexUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 
@@ -49,11 +50,10 @@ public class ResourceHttpHeadersUtil {
     }
 
     public void setETag(HttpHeaders httpHeaders, HttpServletRequest request) {
+        var eTag = StrFormatter.format("\"{}\"",
+                HexUtil.encodeHexStr(this.storage.getRelativePathFromRequest(request)));
         httpHeaders
-                .setETag("\""
-                        + Base64.getEncoder().encodeToString(
-                                this.storage.getRelativePathFromRequest(request).getBytes(StandardCharsets.UTF_8))
-                        + "\"");
+                .setETag(eTag);
     }
 
     public void setCacheControl(HttpHeaders httpHeaders, HttpServletRequest request) {
