@@ -6,7 +6,6 @@ import { UserModel } from "@/model/UserModel";
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
 import axios from "axios";
 import { TypedJSON } from "typedjson";
-import { v1 } from "uuid";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
   let { data: user } = await axios.post<UserModel>(`/sign_up`, {
