@@ -3,6 +3,7 @@ package com.springboot.project.common.storage;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.regex.Pattern;
 import jakarta.servlet.http.HttpServletRequest;
@@ -99,7 +100,8 @@ public class BaseStorage {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported resource path");
         }
-        var encryptJsonString = HexUtil.decodeHexStr(JinqStream.from(pathSegmentList).findFirst().get());
+        var encryptJsonString = Base64.getEncoder()
+                .encodeToString(HexUtil.decodeHex(JinqStream.from(pathSegmentList).findFirst().get()));
         var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
         ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
                 ResourceAccessLegalModel.class);
@@ -119,7 +121,7 @@ public class BaseStorage {
         pathSegmentList.add("resource");
         var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
         var encryptJsonString = this.encryptDecryptService.encryptWithFixedSaltByAES(jsonString);
-        pathSegmentList.add(HexUtil.encodeHexStr(encryptJsonString));
+        pathSegmentList.add(HexUtil.encodeHexStr(Base64.getDecoder().decode(encryptJsonString)));
         var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
         if (pathList.size() > 1) {
             pathSegmentList

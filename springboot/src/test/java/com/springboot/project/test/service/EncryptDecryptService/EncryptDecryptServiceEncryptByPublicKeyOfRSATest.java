@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class EncryptDecryptServiceEncryptByPublicKeyOfRSATest extends BaseTest {
-    private String text = "Hello, world!";
+    private String text = "Hello, World!";
 
     @Test
     public void test() {

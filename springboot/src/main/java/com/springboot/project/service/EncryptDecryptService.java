@@ -15,6 +15,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.uuid.Generators;
@@ -76,22 +77,22 @@ public class EncryptDecryptService extends BaseService {
 
     @Transactional(readOnly = true)
     public String encryptByAES(String text, String secretKeyOfAES) {
-        var salt = Base64.getEncoder()
-                .encodeToString(DigestUtils.md5(Generators.timeBasedReorderedGenerator().generate().toString()));
+        var salt = DigestUtils.md5(Generators.timeBasedReorderedGenerator().generate().toString());
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
                 Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                Base64.getDecoder().decode(salt));
-        return salt + aes.encryptBase64(text);
+                salt);
+        return Base64.getEncoder().encodeToString(ArrayUtils.addAll(salt, aes.encrypt(text)));
     }
 
     @Transactional(readOnly = true)
     public String decryptByAES(String text, String secretKeyOfAES) {
-        var salt = text.substring(0, 24);
-        text = text.substring(24);
+        var textByteList = Base64.getDecoder().decode(text);
+        var salt = ArrayUtils.subarray(textByteList, 0, 16);
+        var secretKeyOfAESByteList = ArrayUtils.subarray(textByteList, 16, textByteList.length);
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
                 Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                Base64.getDecoder().decode(salt));
-        return aes.decryptStr(text);
+                salt);
+        return aes.decryptStr(secretKeyOfAESByteList);
     }
 
     @SneakyThrows
@@ -167,10 +168,10 @@ public class EncryptDecryptService extends BaseService {
 
     @Transactional(readOnly = true)
     public String encryptWithFixedSaltByAES(String text) {
-        var salt = Base64.getEncoder().encodeToString(DigestUtils.md5(text));
+        var salt = DigestUtils.md5(text);
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
-                Base64.getDecoder().decode(salt));
-        return salt + aes.encryptBase64(text);
+                salt);
+        return Base64.getEncoder().encodeToString(ArrayUtils.addAll(salt, aes.encrypt(text)));
     }
 
     @Transactional(readOnly = true)

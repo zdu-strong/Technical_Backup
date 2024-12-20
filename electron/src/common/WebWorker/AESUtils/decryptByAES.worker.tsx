@@ -8,13 +8,13 @@ registerWebworker(async ({
   data: string,
   secretKeyOfAES: string,
 }) => {
-  const salt = data.slice(0, 24);
-  data = data.slice(24);
-  let text = CryptoJS.AES.decrypt(
-    data,
+  const dataByteList = Buffer.from(data, "base64");
+  const salt = CryptoJS.enc.Base64.parse(Buffer.from(dataByteList.buffer.slice(0, 16)).toString("base64"));
+  const text = CryptoJS.AES.decrypt(
+    Buffer.from(dataByteList.buffer.slice(16)).toString("base64"),
     CryptoJS.enc.Base64.parse(secretKeyOfAES),
     {
-      iv: CryptoJS.enc.Base64.parse(salt),
+      iv: salt,
       padding: CryptoJS.pad.Pkcs7,
       mode: CryptoJS.mode.CBC,
     }
