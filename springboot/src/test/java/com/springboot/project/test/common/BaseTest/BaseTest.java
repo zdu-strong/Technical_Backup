@@ -313,9 +313,9 @@ public class BaseTest {
 
     @SneakyThrows
     private UserModel signIn(String email, String password) {
-        var url = new URIBuilder("/sign_in")
+        var url = new URIBuilder("/sign_in/one_time_password")
                 .setParameter("username", email)
-                .setParameter("password", password)
+                .setParameter("password", this.encryptDecryptService.encryptByPublicKeyOfRSA(password))
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
