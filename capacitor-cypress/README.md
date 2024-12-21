@@ -41,6 +41,7 @@ eslint<br/>
 eslint-plugin-cypress<br/>
 execa (Current project not support ES module)<br/>
 get-port (Current project not support ES module)<br/>
+typescript<br/>
 
 ## Notes - xpath - Select the node whose text contains "abc"
 

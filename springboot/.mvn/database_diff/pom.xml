@@ -15,9 +15,9 @@
         <commons-io.version>2.18.0</commons-io.version>
         <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
-        <google-cloud-spanner-jdbc.version>2.24.1</google-cloud-spanner-jdbc.version>
-        <gax-httpjson.version>2.58.0</gax-httpjson.version>
-        <opentelemetry-api.version>1.44.1</opentelemetry-api.version>
+        <google-cloud-spanner-jdbc.version>2.25.2</google-cloud-spanner-jdbc.version>
+        <gax-httpjson.version>2.59.0</gax-httpjson.version>
+        <opentelemetry-api.version>1.45.0</opentelemetry-api.version>
     </properties>
 
     <dependencies>
@@ -84,7 +84,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
     </parent>
 
     <build>
