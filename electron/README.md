@@ -42,12 +42,18 @@ After upgrading the dependencies, please make sure that the project runs normall
 After upgrading the dependencies, please make sure that the dependent versions in package.json are all accurate versions.<br/>
 
 The following dependencies are currently unable to continue to be upgraded:<br/>
+linq (Current project not support ES module)<br/>
+@types/react<br/>
+@types/react-dom<br/>
 eslint<br/>
 execa (Current project not support ES module)<br/>
 get-port (Current project not support ES module)<br/>
-linq (Current project not support ES module)<br/>
-typescript (Dependency incompatibility)<br/>
 node-polyfill-webpack-plugin<br/>
+react<br/>
+react-dom<br/>
+react-intl<br/>
+react-router-dom<br/>
+typescript (Dependency incompatibility)<br/>
 
 ## Notes - Things to note
 

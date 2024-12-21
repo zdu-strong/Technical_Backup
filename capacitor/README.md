@@ -54,8 +54,14 @@ execa (Current project not support ES module)<br/>
 get-port (Current project not support ES module)<br/>
 inquirer (Current project not support ES module)<br/>
 linq (Current project not support ES module)<br/>
-typescript (Dependency incompatibility)<br/>
 node-polyfill-webpack-plugin<br/>
+typescript (Dependency incompatibility)<br/>
+react<br/>
+react-dom<br/>
+react-intl<br/>
+react-router-dom<br/>
+@types/react<br/>
+@types/react-dom<br/>
 
 ## Learn More
 
