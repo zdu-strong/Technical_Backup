@@ -7,7 +7,7 @@ RUN dnf install -y langpacks-en glibc-langpack-en
 ENV LANG="en_US.UTF-8"
 
 # install nodejs
-RUN dnf module install -y nodejs:22/minimal
+RUN dnf module install -y nodejs:22
 
 # Install java
 RUN dnf install -y java-17-openjdk-devel
