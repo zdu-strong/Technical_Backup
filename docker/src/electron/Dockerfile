@@ -8,7 +8,7 @@ ENV LANG="en_US.UTF-8"
 
 # run test
 FROM first_docker AS second_docker
-RUN dnf module install -y nodejs:20/minimal
+RUN dnf module install -y nodejs:22/minimal
 RUN dnf install -y git
 RUN dnf install -y procps-ng
 RUN dnf install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel nss libXScrnSaver alsa-lib
