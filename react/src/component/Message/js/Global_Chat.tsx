@@ -1,7 +1,7 @@
 import api from "@/api";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { observable, useMount } from "mobx-react-use-autorun";
-import { ReplaySubject, Subscription, catchError, concatMap, of, repeat, share, switchMap, tap, timer } from "rxjs"
+import { ReplaySubject, Subscription, catchError, concatMap, repeat, share, tap, timer } from "rxjs"
 import { v1 } from "uuid";
 
 export const GlobalChatMessage = observable({
@@ -16,39 +16,39 @@ export const GlobalChatMessage = observable({
 
 let subject = new ReplaySubject<{ pageNum: number, isCancel: boolean }>(100);
 
-const GlobalShareMessageSubject = of(null).pipe(
-  switchMap(() => api.UserMessage.getUserMessageWebsocket(subject)),
-  tap((s) => {
-    let hasNewMessage = false;
-    if (typeof s.totalPage === "number") {
-      hasNewMessage = s.totalPage > GlobalChatMessage.totalRecord;
-      GlobalChatMessage.totalRecord = s.totalPage;
-    }
-    for (const message of s.list) {
-      GlobalChatMessage.messageMap[message.pageNum] = message;
-      if (message.pageNum === GlobalChatMessage.totalRecord) {
-        if (message.id !== GlobalChatMessage.lastMessageId) {
-          GlobalChatMessage.lastMessageId = message.id;
-          hasNewMessage = true;
+const GlobalShareMessageSubject = api.UserMessage.getUserMessageWebsocket(subject)
+  .pipe(
+    tap((s) => {
+      let hasNewMessage = false;
+      if (typeof s.totalPage === "number") {
+        hasNewMessage = s.totalPage > GlobalChatMessage.totalRecord;
+        GlobalChatMessage.totalRecord = s.totalPage;
+      }
+      for (const message of s.list) {
+        GlobalChatMessage.messageMap[message.pageNum] = message;
+        if (message.pageNum === GlobalChatMessage.totalRecord) {
+          if (message.id !== GlobalChatMessage.lastMessageId) {
+            GlobalChatMessage.lastMessageId = message.id;
+            hasNewMessage = true;
+          }
         }
       }
-    }
-    if (hasNewMessage) {
-      scrollToLastItem();
-    }
-    GlobalChatMessage.ready = true;
-    GlobalChatMessage.error = null;
-  }),
-  repeat({ delay: 2000 }),
-  catchError((error, caught) => {
-    GlobalChatMessage.error = error;
+      if (hasNewMessage) {
+        scrollToLastItem();
+      }
+      GlobalChatMessage.ready = true;
+      GlobalChatMessage.error = null;
+    }),
+    repeat({ delay: 2000 }),
+    catchError((error, caught) => {
+      GlobalChatMessage.error = error;
 
-    return timer(2000).pipe(
-      concatMap(() => caught)
-    );
-  }),
-  share(),
-);
+      return timer(2000).pipe(
+        concatMap(() => caught)
+      );
+    }),
+    share(),
+  );
 
 function loadMessage(pageNum: number) {
   subject.next({ pageNum, isCancel: false });
