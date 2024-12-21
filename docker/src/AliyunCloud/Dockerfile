@@ -72,4 +72,4 @@ EXPOSE 8080
 EXPOSE 443
 
 # start server
-ENTRYPOINT ["concurrently", "wait-on http://127.0.0.1:8080 && node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build", "java -jar server.jar"]
+ENTRYPOINT ["concurrently", "java -jar server.jar", "wait-on http://127.0.0.1:8080 && node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build"]

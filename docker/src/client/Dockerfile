@@ -12,6 +12,9 @@ RUN dnf module install -y nodejs:22
 # install serve
 RUN npm install --location=global serve
 
+# install concurrently
+RUN npm install --location=global concurrently
+
 # run test
 FROM first_docker AS second_docker
 RUN dnf install -y git
@@ -40,4 +43,4 @@ COPY --from=second_docker /all_code/react/build /build
 EXPOSE 443
 
 # start server
-ENTRYPOINT node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build
+ENTRYPOINT ["concurrently", "node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build"]
