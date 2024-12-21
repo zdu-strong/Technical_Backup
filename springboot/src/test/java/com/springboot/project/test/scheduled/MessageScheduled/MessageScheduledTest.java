@@ -1,93 +1,71 @@
 package com.springboot.project.test.scheduled.MessageScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.hc.core5.net.URIBuilder;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import org.jinq.orm.stream.JinqStream;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
-import io.reactivex.rxjava3.processors.ReplayProcessor;
-import jakarta.websocket.CloseReason.CloseCodes;
-import lombok.SneakyThrows;
+import static eu.ciechanowiec.sneakyfun.SneakyFunction.sneaky;
 
 public class MessageScheduledTest extends BaseTest {
 
     private UserModel user;
-    private ReplayProcessor<UserMessageWebSocketSendModel> replayProcessor;
-    private WebSocketClient webSocketClient;
+
+    private UserMessageModel userMessage;
 
     @Test
     public void test() throws Throwable {
-        var result = this.replayProcessor.take(1).toList().toFuture().get(10, TimeUnit.SECONDS);
-        assertEquals(1, result.size());
-        assertEquals(1, JinqStream.from(result).selectAllList(s -> s.getList()).count());
-        assertEquals(1, JinqStream.from(result).select(s -> s.getTotalPage()).findFirst().get());
-        assertEquals("Hello, World!", JinqStream.from(result).selectAllList(s -> s.getList())
-                .where(s -> s.getUser().getId().equals(this.user.getId())).select(s -> s.getContent())
-                .limit(1)
-                .getOnlyValue());
+        assertEquals("Hello, World!", userMessage.getContent());
+        assertNull(userMessage.getUrl());
+        assertEquals(this.user.getId(), userMessage.getUser().getId());
+        assertNotNull(userMessage.getCreateDate());
+        assertNotNull(userMessage.getCreateDate());
+        assertEquals(1, userMessage.getPageNum());
     }
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
             JsonProcessingException {
-        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
-        this.user = this.createAccount(email);
-        var accessToken = this.user.getAccessToken();
-        var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
-        this.userMessageService.sendMessage(userMessage);
-        URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
-                .setPath("/user_message/websocket")
-                .setParameter("accessToken", accessToken)
-                .build();
-        this.replayProcessor = ReplayProcessor.create(1);
-        this.webSocketClient = new WebSocketClient(url) {
-
-            @Override
-            public void onOpen(ServerHandshake handshakeData) {
-
-            }
-
-            @Override
-            @SneakyThrows
-            public void onMessage(String message) {
-                replayProcessor.onNext(objectMapper.readValue(message, UserMessageWebSocketSendModel.class));
-            }
-
-            @Override
-            public void onClose(int code, String reason, boolean remote) {
-                if (code == CloseCodes.NORMAL_CLOSURE.getCode()) {
-                    replayProcessor.onComplete();
-                } else {
-                    replayProcessor.onError(new RuntimeException(reason));
-                }
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                replayProcessor.onError(ex);
-            }
-        };
-        this.webSocketClient.connectBlocking();
-    }
-
-    @AfterEach
-    public void afterEach() throws InterruptedException {
-        this.webSocketClient.closeBlocking();
+        {
+            var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
+            this.user = this.createAccount(email);
+            var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
+            this.userMessageService.sendMessage(userMessage);
+        }
+        {
+            URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
+                    .setPath("/user_message/websocket")
+                    .setParameter("accessToken", this.user.getAccessToken())
+                    .build();
+            var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
+            var webSocketClient = new StandardWebSocketClient();
+            webSocketClient.execute(url, (session) -> session
+                    .receive()
+                    .map(sneaky((s) -> {
+                        userMessageResultList
+                                .add(this.objectMapper.readValue(s.getPayloadAsText(),
+                                        UserMessageWebSocketSendModel.class));
+                        return session.close();
+                    }))
+                    .then())
+                    .block(Duration.ofMinutes(1));
+            assertEquals(1, userMessageResultList.size());
+            assertEquals(1, JinqStream.from(userMessageResultList).select(s -> s.getTotalPage()).getOnlyValue());
+            this.userMessage = JinqStream.from(userMessageResultList).selectAllList(s -> s.getList()).getOnlyValue();
+        }
     }
 
 }

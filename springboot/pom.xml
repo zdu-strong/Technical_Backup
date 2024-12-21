@@ -38,7 +38,6 @@
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
         <commons-io.version>2.18.0</commons-io.version>
         <tika-core.version>3.0.0</tika-core.version>
-        <Java-WebSocket.version>1.6.0</Java-WebSocket.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <guava.version>33.4.0-jre</guava.version>
         <com-google-zxing-core.version>3.5.3</com-google-zxing-core.version>
@@ -74,6 +73,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -133,11 +136,6 @@
             <groupId>org.jinq</groupId>
             <artifactId>jinq-jpa</artifactId>
             <version>${jinq-jpa.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>${Java-WebSocket.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
