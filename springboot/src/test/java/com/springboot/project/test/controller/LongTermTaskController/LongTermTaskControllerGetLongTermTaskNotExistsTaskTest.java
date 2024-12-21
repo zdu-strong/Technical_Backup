@@ -12,7 +12,7 @@ public class LongTermTaskControllerGetLongTermTaskNotExistsTaskTest extends Base
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
+        var url = new URIBuilder("/long_term_task")
                 .setParameter("encryptedId", this.encryptDecryptService
                         .encryptByAES(Generators.timeBasedReorderedGenerator().generate().toString()))
                 .build();

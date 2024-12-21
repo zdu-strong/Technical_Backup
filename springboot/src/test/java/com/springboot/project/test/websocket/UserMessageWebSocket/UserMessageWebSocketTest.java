@@ -1,7 +1,6 @@
 package com.springboot.project.test.websocket.UserMessageWebSocket;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
@@ -26,7 +25,6 @@ import lombok.SneakyThrows;
 
 public class UserMessageWebSocketTest extends BaseTest {
 
-    private String webSocketServer;
     private String accessToken;
     private UserModel user;
     private WebSocketClient webSocketClient;
@@ -34,7 +32,8 @@ public class UserMessageWebSocketTest extends BaseTest {
     @Test
     public void test() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
             JsonProcessingException {
-        URI url = new URIBuilder(webSocketServer).setPath("/user_message/websocket")
+        URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
+                .setPath("/user_message/websocket")
                 .setParameter("accessToken", accessToken)
                 .build();
         ReplayProcessor<UserMessageWebSocketSendModel> replayProcessor = ReplayProcessor.create();
@@ -81,8 +80,6 @@ public class UserMessageWebSocketTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
-        this.webSocketServer = new URIBuilder("ws" + this.testRestTemplate.getRootUri().substring(4)).build()
-                .toString();
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.user = this.createAccount(email);
         this.accessToken = this.user.getAccessToken();

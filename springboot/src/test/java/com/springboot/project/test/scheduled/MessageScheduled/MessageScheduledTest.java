@@ -45,14 +45,13 @@ public class MessageScheduledTest extends BaseTest {
     @BeforeEach
     public void beforeEach() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
             JsonProcessingException {
-        var webSocketServer = new URIBuilder("ws" + this.testRestTemplate.getRootUri().substring(4)).build()
-                .toString();
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.user = this.createAccount(email);
         var accessToken = this.user.getAccessToken();
         var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
         this.userMessageService.sendMessage(userMessage);
-        URI url = new URIBuilder(webSocketServer).setPath("/user_message/websocket")
+        URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
+                .setPath("/user_message/websocket")
                 .setParameter("accessToken", accessToken)
                 .build();
         this.replayProcessor = ReplayProcessor.create(1);

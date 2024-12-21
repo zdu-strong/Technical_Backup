@@ -16,4 +16,10 @@ public class ServerAddressProperties {
         return serverAddress;
     }
 
+    public String getWebSocketServerAddress() {
+        var port = servletWebServerApplicationContext.getWebServer().getPort();
+        var serverAddress = "ws://127.0.0.1:" + port;
+        return serverAddress;
+    }
+
 }

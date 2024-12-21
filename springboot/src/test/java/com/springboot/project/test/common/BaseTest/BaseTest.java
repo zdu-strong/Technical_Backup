@@ -338,7 +338,7 @@ public class BaseTest {
                 })
                 .doOnNext((encryptedId) -> {
                     while (true) {
-                        var url = new URIBuilder(this.testRestTemplate.getRootUri())
+                        var url = new URIBuilder(this.serverAddressProperties.getServerAddress())
                                 .setPath("/long_term_task/is_done")
                                 .setParameter("encryptedId", encryptedId)
                                 .build();
@@ -350,8 +350,10 @@ public class BaseTest {
                     }
                 })
                 .map(encryptedId -> {
-                    var url = new URIBuilder(this.testRestTemplate.getRootUri()).setPath("/long_term_task")
-                            .setParameter("encryptedId", encryptedId).build();
+                    var url = new URIBuilder(this.serverAddressProperties.getServerAddress())
+                            .setPath("/long_term_task")
+                            .setParameter("encryptedId", encryptedId)
+                            .build();
                     var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
                             responseType);
                     return response;
