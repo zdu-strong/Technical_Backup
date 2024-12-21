@@ -9,7 +9,7 @@ pub async fn json_to_string() -> String {
         name: "Tom".to_string(),
     }].to_vec();
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
-    println!("{}", json_string);
+    println!("{:?}", json_string);
     return json_string.clone();
 }
 

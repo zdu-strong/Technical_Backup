@@ -7,6 +7,7 @@ use crate::action::json_example::user_json::string_to_json;
 pub mod model;
 pub mod enumable;
 pub mod action;
+pub mod constant;
 
 #[tokio::main]
 async fn main() {
