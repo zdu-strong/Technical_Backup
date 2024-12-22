@@ -15,14 +15,17 @@ import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
+import com.springboot.project.model.UserMessageWebSocketReceiveModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+import io.reactivex.rxjava3.processors.ReplayProcessor;
 import static eu.ciechanowiec.sneakyfun.SneakyFunction.sneaky;
 
 public class UserMessageWebSocketTest extends BaseTest {
 
     private UserModel user;
+    private ReplayProcessor<UserMessageWebSocketReceiveModel> webSocketSendProcessor = ReplayProcessor.create(100);
 
     @Test
     public void test() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
@@ -34,14 +37,13 @@ public class UserMessageWebSocketTest extends BaseTest {
         var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
         var webSocketClient = new StandardWebSocketClient();
         webSocketClient.execute(url, (session) -> session
-                .receive()
-                .map(sneaky((s) -> {
+                .send(webSocketSendProcessor.map(s -> session.textMessage(this.objectMapper.writeValueAsString(s))))
+                .and(session.receive().map(sneaky((s) -> {
                     userMessageResultList
                             .add(this.objectMapper.readValue(s.getPayloadAsText(),
                                     UserMessageWebSocketSendModel.class));
                     return session.close();
-                }))
-                .then())
+                }))))
                 .block(Duration.ofMinutes(1));
         assertEquals(1, userMessageResultList.size());
         assertEquals(1, JinqStream.from(userMessageResultList).select(s -> s.getTotalPage()).getOnlyValue());
