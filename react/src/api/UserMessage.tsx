@@ -34,7 +34,7 @@ export function getUserMessageWebsocket(webSocketInput?: Subject<{
   }
   return of("")
     .pipe(
-      map(() => getWebSocketServerAddress(`/user_message/websocket`)),
+      map(() => getWebSocketServerAddress(`/web_socket/user_message`)),
       concatMap((url) => makeWebSocketObservable(url)),
       switchMap((getResponses: GetWebSocketResponses) => {
         return getResponses(webSocketInput!.pipe(map(data => JSON.stringify(data))));

@@ -47,7 +47,7 @@ public class MessageScheduledTest extends BaseTest {
         }
         {
             URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
-                    .setPath("/user_message/websocket")
+                    .setPath("/web_socket/user_message")
                     .setParameter("accessToken", this.user.getAccessToken())
                     .build();
             var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
