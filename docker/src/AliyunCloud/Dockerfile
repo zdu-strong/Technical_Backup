@@ -15,9 +15,6 @@ RUN npm install --location=global serve
 # install wait-on
 RUN npm install --location=global wait-on
 
-# install concurrently
-RUN npm install --location=global concurrently
-
 # Install java
 RUN dnf install -y java-21-openjdk-devel
 ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
@@ -72,4 +69,4 @@ EXPOSE 8080
 EXPOSE 443
 
 # start server
-ENTRYPOINT ["concurrently", "java -jar server.jar", "wait-on http://127.0.0.1:8080 && node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build"]
+ENTRYPOINT java -jar server.jar & wait-on http://127.0.0.1:8080 && node build/support_react_app_environment_variables.js && serve --single --cors --no-clipboard --no-port-switching --no-request-logging --listen=443 build
