@@ -60,7 +60,6 @@ ENV SPRING_DATASOURCE_DRIVER_CLASS_NAME="org.h2.Driver"
 ENV SPRING_JPA_HIBERNATE_DDL_AUTO="update"
 ENV SPRING_JPA_DATABASE_PLATFORM="com.springboot.project.common.database.CustomH2Dialect"
 ENV SPRING_LIQUIBASE_ENABLED="false"
-ENV PROPERTIES_STORAGE_ROOT_PATH="defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a"
 
 # 8080 is server port, Since the server port is configured as 8080 in the client, the server port must be 8080 during runtime
 EXPOSE 8080
