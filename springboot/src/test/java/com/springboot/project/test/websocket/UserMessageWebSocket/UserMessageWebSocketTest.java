@@ -35,8 +35,7 @@ public class UserMessageWebSocketTest extends BaseTest {
                 .setParameter("accessToken", this.user.getAccessToken())
                 .build();
         var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
-        var webSocketClient = new StandardWebSocketClient();
-        webSocketClient.execute(url, (session) -> session
+        new StandardWebSocketClient().execute(url, (session) -> session
                 .send(webSocketSendProcessor.map(s -> session.textMessage(this.objectMapper.writeValueAsString(s))))
                 .and(session.receive().map(sneaky((s) -> {
                     userMessageResultList

@@ -51,8 +51,7 @@ public class MessageScheduledTest extends BaseTest {
                     .setParameter("accessToken", this.user.getAccessToken())
                     .build();
             var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
-            var webSocketClient = new StandardWebSocketClient();
-            webSocketClient.execute(url, (session) -> session
+            new StandardWebSocketClient().execute(url, (session) -> session
                     .receive()
                     .map(sneaky((s) -> {
                         userMessageResultList
