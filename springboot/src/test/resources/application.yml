@@ -63,6 +63,8 @@ logging:
         orm:
           jdbc:
             bind: TRACE
+          connections:
+            pooling: OFF
         engine:
           jdbc:
             spi:
