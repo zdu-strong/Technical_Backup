@@ -28,4 +28,5 @@
   },
   "java.configuration.updateBuildConfiguration": "disabled",
   "git.enabled": false,
+  "workbench.editor.enablePreview": false,
 }

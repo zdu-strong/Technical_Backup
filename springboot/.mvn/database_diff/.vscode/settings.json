@@ -32,5 +32,6 @@
     "java.configuration.detectJdksAtStart": true,
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "debug.inlineValues": "on",
-    "java.server.launchMode": "Standard"
+    "java.server.launchMode": "Standard",
+    "workbench.editor.enablePreview": false,
 }

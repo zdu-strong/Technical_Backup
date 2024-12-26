@@ -12,4 +12,5 @@
     "editor.detectIndentation": false,
     "extensions.ignoreRecommendations": true,
     "editor.inlayHints.enabled": "on",
+    "workbench.editor.enablePreview": false,
 }

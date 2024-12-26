@@ -19,4 +19,5 @@
   },
   "extensions.ignoreRecommendations": true,
   "git.enabled": false,
+  "workbench.editor.enablePreview": false,
 }
