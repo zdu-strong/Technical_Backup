@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionModel {
+public class DistributedExecutionMainModel {
 
     private String id;
 

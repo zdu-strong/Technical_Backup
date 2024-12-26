@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.DistributedExecutionService;
+package com.springboot.project.test.service.DistributedExecutionMainService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,16 +8,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class DistributedExecutionServiceGetLastSuccessDistributedExecutionTest extends BaseTest {
+public class DistributedExecutionMainServiceGetLastDistributedExecutionTest extends BaseTest {
 
     @Test
     public void test() {
-        var result = this.distributedExecutionService
-                .getLastSuccessDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+        var result = this.distributedExecutionMainService
+                .getLastDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));

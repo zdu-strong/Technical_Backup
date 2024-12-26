@@ -15,11 +15,11 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "distributedExecutionId", "pageNum" }) })
+        @UniqueConstraint(columnNames = { "distributedExecutionMainId", "pageNum" }) })
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionTaskEntity {
+public class DistributedExecutionDetailEntity {
 
     @Id
     private String id;
@@ -46,5 +46,5 @@ public class DistributedExecutionTaskEntity {
     private Date updateDate;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
-    private DistributedExecutionEntity distributedExecution;
+    private DistributedExecutionMainEntity distributedExecutionMain;
 }

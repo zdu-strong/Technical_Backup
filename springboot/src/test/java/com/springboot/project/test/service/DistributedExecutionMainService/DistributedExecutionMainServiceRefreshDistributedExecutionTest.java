@@ -1,4 +1,4 @@
-package com.springboot.project.test.service.DistributedExecutionService;
+package com.springboot.project.test.service.DistributedExecutionMainService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,15 +9,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
+import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class DistributedExecutionServiceGetLastDistributedExecutionTest extends BaseTest {
+public class DistributedExecutionMainServiceRefreshDistributedExecutionTest extends BaseTest {
+
+    private DistributedExecutionMainModel distributedExecutionMainModel;
 
     @Test
     public void test() {
-        var result = this.distributedExecutionService
+        this.distributedExecutionMainService.refreshDistributedExecution(this.distributedExecutionMainModel.getId());
+        var result = this.distributedExecutionMainService
                 .getLastDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
         assertTrue(StringUtils.isNotBlank(result.getId()));
+        assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));
         assertTrue(result.getIsDone());
@@ -30,7 +35,11 @@ public class DistributedExecutionServiceGetLastDistributedExecutionTest extends 
     @BeforeEach
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
-        this.storageSpaceScheduled.scheduled();
+        this.distributedExecutionMainModel = this.distributedExecutionMainService
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, 1);
+        var distributedExecutionTaskModel = this.distributedExecutionDetailService
+                .create(this.distributedExecutionMainModel.getId(), 1);
+        this.distributedExecutionDetailService.updateByResult(distributedExecutionTaskModel.getId());
     }
 
 }

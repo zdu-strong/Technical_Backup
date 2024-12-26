@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionEntity {
+public class DistributedExecutionMainEntity {
 
     @Id
     private String id;
@@ -45,7 +45,7 @@ public class DistributedExecutionEntity {
     @Column(nullable = false)
     private Date updateDate;
 
-    @OneToMany(mappedBy = "distributedExecution", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<DistributedExecutionTaskEntity> distributedExecutionTaskList;
+    @OneToMany(mappedBy = "distributedExecutionMain", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<DistributedExecutionDetailEntity> distributedExecutionDetailList;
 
 }

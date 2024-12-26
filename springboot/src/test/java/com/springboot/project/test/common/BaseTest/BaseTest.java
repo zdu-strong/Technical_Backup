@@ -56,8 +56,8 @@ import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.OrganizeRelationRefreshScheduled;
 import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
-import com.springboot.project.service.DistributedExecutionService;
-import com.springboot.project.service.DistributedExecutionTaskService;
+import com.springboot.project.service.DistributedExecutionMainService;
+import com.springboot.project.service.DistributedExecutionDetailService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
@@ -181,10 +181,10 @@ public class BaseTest {
     protected SystemRoleService systemRoleService;
 
     @Autowired
-    protected DistributedExecutionService distributedExecutionService;
+    protected DistributedExecutionMainService distributedExecutionMainService;
 
     @Autowired
-    protected DistributedExecutionTaskService distributedExecutionTaskService;
+    protected DistributedExecutionDetailService distributedExecutionDetailService;
 
     @Autowired
     protected SystemRoleRelationService systemRoleRelationService;

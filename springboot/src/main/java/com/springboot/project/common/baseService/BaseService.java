@@ -23,8 +23,8 @@ import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.storage.Storage;
-import com.springboot.project.format.DistributedExecutionFormatter;
-import com.springboot.project.format.DistributedExecutionTaskFormatter;
+import com.springboot.project.format.DistributedExecutionDetailFormatter;
+import com.springboot.project.format.DistributedExecutionMainFormatter;
 import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
@@ -39,7 +39,7 @@ import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.UserRoleRelationFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
-import com.springboot.project.service.DistributedExecutionService;
+import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.SystemRoleRelationService;
@@ -113,7 +113,7 @@ public abstract class BaseService {
     protected SystemRoleRelationService systemRoleRelationService;
 
     @Autowired
-    protected DistributedExecutionService distributedExecutionService;
+    protected DistributedExecutionMainService distributedExecutionService;
 
     @Autowired
     protected UserRoleService userRoleService;
@@ -152,7 +152,7 @@ public abstract class BaseService {
     protected VerificationCodeEmailFormatter verificationCodeEmailFormatter;
 
     @Autowired
-    protected DistributedExecutionFormatter distributedExecutionFormatter;
+    protected DistributedExecutionMainFormatter distributedExecutionMainFormatter;
 
     @Autowired
     protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
@@ -164,7 +164,7 @@ public abstract class BaseService {
     protected SystemRoleFormatter systemRoleFormatter;
 
     @Autowired
-    protected DistributedExecutionTaskFormatter distributedExecutionTaskFormatter;
+    protected DistributedExecutionDetailFormatter distributedExecutionDetailFormatter;
 
     @Autowired
     protected UserRoleRelationFormatter userRoleRelationFormatter;

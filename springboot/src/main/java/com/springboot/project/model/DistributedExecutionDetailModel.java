@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DistributedExecutionTaskModel {
+public class DistributedExecutionDetailModel {
 
     private String id;
 
@@ -28,6 +28,6 @@ public class DistributedExecutionTaskModel {
 
     private Date updateDate;
 
-    private DistributedExecutionModel distributedExecutionModel;
+    private DistributedExecutionMainModel distributedExecutionMain;
 
 }

@@ -10,18 +10,18 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
-import com.springboot.project.service.DistributedExecutionService;
-import com.springboot.project.service.DistributedExecutionTaskService;
+import com.springboot.project.service.DistributedExecutionMainService;
+import com.springboot.project.service.DistributedExecutionDetailService;
 import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class DistributedExecutionUtil {
 
     @Autowired
-    private DistributedExecutionService distributedExecutionService;
+    private DistributedExecutionMainService distributedExecutionService;
 
     @Autowired
-    private DistributedExecutionTaskService distributedExecutionTaskService;
+    private DistributedExecutionDetailService distributedExecutionTaskService;
 
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
         var now = new Date();
