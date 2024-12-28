@@ -1,6 +1,6 @@
 import registerWebworker from 'webworker-promise/lib/register'
-import CryptoJS from 'crypto-js';
-import { v1 } from 'uuid'
+import { v1 } from 'uuid';
+import { createHash, pbkdf2Sync } from 'crypto';
 
 registerWebworker(async ({
   password,
@@ -10,11 +10,6 @@ registerWebworker(async ({
   if (!password) {
     password = v1();
   }
-  const salt = CryptoJS.MD5(password);
-  const key256Bits = CryptoJS.PBKDF2(password, salt, {
-    keySize: 256 / 32,
-    hasher: CryptoJS.algo.SHA256,
-    iterations: 65536
-  });
-  return key256Bits.toString(CryptoJS.enc.Base64);
+  const salt = createHash("MD5").update(Buffer.from(password, "utf-8")).digest("base64");
+  return pbkdf2Sync(Buffer.from(password, "utf-8"), Buffer.from(salt, "base64"), 65536, 256 / 8, "sha256").toString("base64");
 });
