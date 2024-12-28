@@ -1,5 +1,6 @@
 package com.springboot.project.service;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Base64;
 import java.util.Date;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -16,6 +17,7 @@ import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.TokenModel;
+
 import cn.hutool.crypto.CryptoException;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -134,7 +136,7 @@ public class TokenService extends BaseService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
             }
-        } catch (CryptoException e) {
+        } catch (UndeclaredThrowableException | CryptoException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Incorrect username or password");
         }
