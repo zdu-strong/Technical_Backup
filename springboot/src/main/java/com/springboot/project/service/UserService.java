@@ -19,7 +19,7 @@ public class UserService extends BaseService {
     public UserModel create(UserModel userModel) {
         var id = newId();
         var password = this.encryptDecryptService.encryptByAES(id,
-                this.encryptDecryptService.generateSecretKeyOfAES(userModel.getPassword()));
+                this.encryptDecryptService.generateSecretKeyOfAES(id + userModel.getPassword()));
         var userEntity = new UserEntity();
         userEntity.setId(id);
         userEntity.setUsername(userModel.getUsername());
