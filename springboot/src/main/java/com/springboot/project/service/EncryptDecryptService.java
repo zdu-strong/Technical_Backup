@@ -1,5 +1,6 @@
 package com.springboot.project.service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -9,9 +10,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -23,11 +26,8 @@ import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.constant.EncryptDecryptConstant;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.model.EncryptDecryptModel;
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
-import cn.hutool.crypto.symmetric.AES;
 import io.reactivex.rxjava3.core.Flowable;
 import lombok.SneakyThrows;
 
@@ -76,23 +76,26 @@ public class EncryptDecryptService extends BaseService {
     }
 
     @Transactional(readOnly = true)
+    @SneakyThrows
     public String encryptByAES(String text, String secretKeyOfAES) {
         var salt = DigestUtils.md5(Generators.timeBasedReorderedGenerator().generate().toString());
-        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
-                Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                salt);
-        return Base64.getEncoder().encodeToString(ArrayUtils.addAll(salt, aes.encrypt(text)));
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
+                Base64.getDecoder().decode(secretKeyOfAES), "AES"), new GCMParameterSpec(16 * 8, salt));
+        return Base64.getEncoder()
+                .encodeToString(ArrayUtils.addAll(salt, cipher.doFinal(text.getBytes(StandardCharsets.UTF_8))));
     }
 
     @Transactional(readOnly = true)
+    @SneakyThrows
     public String decryptByAES(String text, String secretKeyOfAES) {
         var textByteList = Base64.getDecoder().decode(text);
         var salt = ArrayUtils.subarray(textByteList, 0, 16);
-        var secretKeyOfAESByteList = ArrayUtils.subarray(textByteList, 16, textByteList.length);
-        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
-                Base64.getDecoder().decode(secretKeyOfAES), "AES"),
-                salt);
-        return aes.decryptStr(secretKeyOfAESByteList);
+        var encryptedTextByteList = ArrayUtils.subarray(textByteList, 16, textByteList.length);
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(
+                Base64.getDecoder().decode(secretKeyOfAES), "AES"), new GCMParameterSpec(16 * 8, salt));
+        return new String(cipher.doFinal(encryptedTextByteList), StandardCharsets.UTF_8);
     }
 
     @SneakyThrows
@@ -167,11 +170,13 @@ public class EncryptDecryptService extends BaseService {
     }
 
     @Transactional(readOnly = true)
+    @SneakyThrows
     public String encryptWithFixedSaltByAES(String text) {
         var salt = DigestUtils.md5(text);
-        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
-                salt);
-        return Base64.getEncoder().encodeToString(ArrayUtils.addAll(salt, aes.encrypt(text)));
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, this.getKeyOfAESSecretKey(), new GCMParameterSpec(16 * 8, salt));
+        return Base64.getEncoder()
+                .encodeToString(ArrayUtils.addAll(salt, cipher.doFinal(text.getBytes(StandardCharsets.UTF_8))));
     }
 
     @Transactional(readOnly = true)

@@ -10,7 +10,7 @@ export default observer(() => {
     error: null as any,
   }, {
     ...((() => {
-      var [urlSearchParams, setURLSearchParams] = useSearchParams();
+      const [urlSearchParams, setURLSearchParams] = useSearchParams();
       return { urlSearchParams, setURLSearchParams };
     })()),
   });

@@ -46,7 +46,7 @@ export default observer((props: { companyId: string }) => {
   }, {
     dataGridRef: useGridApiRef(),
     ...((() => {
-      var [uRLSearchParams, setURLSearchParams] = useSearchParams();
+      const [uRLSearchParams, setURLSearchParams] = useSearchParams();
       return { uRLSearchParams, setURLSearchParams };
     })()),
   });
