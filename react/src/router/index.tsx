@@ -10,7 +10,7 @@ import SuperAdminOrganizeRoleManagePage from '@/router/page/SuperAdminOrganizeRo
 import SuperAdminUserManagePage from '@/router/page/SuperAdminUserManagePage';
 
 export default (
-  <BrowserRouter>
+  <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
     <Routes>
       <Route index element={MessagePage} />
       <Route path="/chat" element={MessagePage} />
