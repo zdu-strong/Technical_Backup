@@ -161,7 +161,7 @@ public class EncryptDecryptService extends BaseService {
     @Transactional(readOnly = true)
     public EncryptDecryptModel generateKeyPairOfRSA() {
         var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        keyPairGenerator.initialize(4096);
         var keyPair = keyPairGenerator.generateKeyPair();
         return new EncryptDecryptModel()
                 .setPublicKeyOfRSA(Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()))
