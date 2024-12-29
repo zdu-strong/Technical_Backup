@@ -1,7 +1,6 @@
 package com.springboot.project.test.controller.OrganizeController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
@@ -9,7 +8,6 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -28,7 +26,7 @@ public class OrganizeControllerGetOrganizeByIdTest extends BaseTest {
         assertEquals(36, response.getBody().getId().length());
         assertEquals("Super Saiyan Son Goku", response.getBody().getName());
         assertEquals(0, response.getBody().getLevel());
-        assertNull(response.getBody().getParent());
+        assertTrue(StringUtils.isBlank(response.getBody().getParent().getId()));
         assertEquals(0, response.getBody().getChildList().size());
     }
 

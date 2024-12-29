@@ -1,7 +1,6 @@
 package com.springboot.project.test.service.OrganizeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ public class OrganizeServiceMoveToTopTest extends BaseTest {
         this.organizeService.move(organizeId, null);
         var result = this.organizeService.getById(organizeId);
         assertTrue(StringUtils.isNotBlank(result.getId()));
-        assertNull(result.getParent());
+        assertTrue(StringUtils.isBlank(result.getParent().getId()));
         assertEquals(0, result.getLevel());
     }
 

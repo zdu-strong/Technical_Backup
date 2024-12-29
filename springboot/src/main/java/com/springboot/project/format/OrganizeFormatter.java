@@ -2,6 +2,9 @@ package com.springboot.project.format;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
@@ -17,15 +20,12 @@ public class OrganizeFormatter extends BaseService {
         BeanUtils.copyProperties(organizeEntity, organizeModel);
         organizeModel.setChildCount(0L)
                 .setDescendantCount(0L)
-                .setChildList(Lists.newArrayList());
+                .setChildList(Lists.newArrayList())
+                .setParent(new OrganizeModel().setId(Optional.ofNullable(organizeEntity.getParent())
+                        .map(OrganizeEntity::getId).orElse(StringUtils.EMPTY)))
+                .setLevel(this.getLevel(organizeEntity));
 
         var id = organizeEntity.getId();
-
-        organizeModel.setLevel(this.getLevel(organizeEntity));
-
-        if (organizeEntity.getParent() != null) {
-            organizeModel.setParent(new OrganizeModel().setId(organizeEntity.getParent().getId()));
-        }
 
         if (this.isActive(organizeEntity)) {
             var childOrganizeCount = this.streamAll(OrganizeEntity.class)

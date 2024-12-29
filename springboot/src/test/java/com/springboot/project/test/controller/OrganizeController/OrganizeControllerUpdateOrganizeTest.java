@@ -2,15 +2,15 @@ package com.springboot.project.test.controller.OrganizeController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -34,7 +34,7 @@ public class OrganizeControllerUpdateOrganizeTest extends BaseTest {
         assertNotNull(result.getUpdateDate());
         assertEquals(0, result.getChildCount());
         assertEquals(0, result.getDescendantCount());
-        assertNull(result.getParent());
+        assertTrue(StringUtils.isBlank(result.getParent().getId()));
         assertEquals(0, result.getChildList().size());
     }
 

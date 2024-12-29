@@ -2,8 +2,8 @@ package com.springboot.project.test.service.OrganizeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
@@ -21,7 +21,7 @@ public class OrganizeServiceGetByIdTest extends BaseTest {
         assertEquals("Super Saiyan Son Goku", result.getName());
         assertEquals(0, result.getChildList().size());
         assertEquals(0, result.getChildCount());
-        assertNull(result.getParent());
+        assertTrue(StringUtils.isBlank(result.getParent().getId()));
         assertEquals(0, result.getLevel());
     }
 

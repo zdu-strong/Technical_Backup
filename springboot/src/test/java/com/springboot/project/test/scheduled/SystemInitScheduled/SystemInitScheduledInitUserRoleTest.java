@@ -1,6 +1,8 @@
 package com.springboot.project.test.scheduled.SystemInitScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.enumerate.SystemRoleEnum;
@@ -19,7 +21,7 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
         assertEquals(SystemRoleEnum.SUPER_ADMIN.name(), userRole.getName());
         assertNotNull(userRole.getCreateDate());
         assertNotNull(userRole.getUpdateDate());
-        assertNull(userRole.getOrganize());
+        assertTrue(StringUtils.isBlank(userRole.getOrganize().getId()));
         assertEquals(1, userRole.getSystemRoleList().size());
         var systemRole = JinqStream.from(userRole.getSystemRoleList()).getOnlyValue();
         assertEquals(36, systemRole.getId().length());

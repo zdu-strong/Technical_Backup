@@ -12,13 +12,6 @@ import com.springboot.project.model.UserMessageModel;
 @Service
 public class UserMessageFormatter extends BaseService {
 
-    private UserMessageModel format(UserMessageEntity userMessageEntity) {
-        var userMessageModel = new UserMessageModel();
-        BeanUtils.copyProperties(userMessageEntity, userMessageModel);
-        userMessageModel.setUser(this.userFormatter.format(userMessageEntity.getUser()));
-        return userMessageModel;
-    }
-
     public UserMessageModel formatForUserId(UserMessageEntity userMessageEntity, String userId) {
         var userMessage = this.format(userMessageEntity);
         userMessage.setPageNum(getPageNumOfUserMessageEntity(userMessageEntity, userId));
@@ -26,6 +19,13 @@ public class UserMessageFormatter extends BaseService {
         userMessage.setUrl(getUrlOfUserMessageEntity(userMessageEntity, isActive));
         userMessage.setContent(getContentOfUserMessageEntity(userMessageEntity, isActive));
         return userMessage;
+    }
+
+    private UserMessageModel format(UserMessageEntity userMessageEntity) {
+        var userMessageModel = new UserMessageModel();
+        BeanUtils.copyProperties(userMessageEntity, userMessageModel);
+        userMessageModel.setUser(this.userFormatter.format(userMessageEntity.getUser()));
+        return userMessageModel;
     }
 
     private String getContentOfUserMessageEntity(UserMessageEntity userMessageEntity, boolean isActive) {
