@@ -86,7 +86,6 @@ export default observer(() => {
       <AutoSizer className="flex flex-col flex-auto">
         {({ width, height }) => <Box width={width} height={height}>
           <DataGrid
-            className="flex flex-col flex-auto"
             apiRef={state.dataGridRef}
             sortingMode="client"
             rows={state.userPaginationModel.list}
