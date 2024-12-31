@@ -75,22 +75,24 @@ export default observer(() => {
           <FormattedMessage id="Refresh" defaultMessage="Refresh" />
         </Button>
       </div>
-      <AutoSizer>
-        {({ width, height }) => <Box width={width} height={height}>
-          <DataGrid
-            apiRef={state.dataGridRef}
-            sortingMode="client"
-            rows={state.systemRolePaginationModel.list}
-            getRowId={(s) => s.id}
-            columns={columns}
-            autoPageSize
-            disableRowSelectionOnClick
-            disableColumnMenu
-            disableColumnResize
-            disableColumnSorting
-          />
-        </Box>}
-      </AutoSizer>
+      <div className="flex flex-auto">
+        <AutoSizer>
+          {({ width, height }) => <Box width={width} height={height}>
+            <DataGrid
+              apiRef={state.dataGridRef}
+              sortingMode="client"
+              rows={state.systemRolePaginationModel.list}
+              getRowId={(s) => s.id}
+              columns={columns}
+              autoPageSize
+              disableRowSelectionOnClick
+              disableColumnMenu
+              disableColumnResize
+              disableColumnSorting
+            />
+          </Box>}
+        </AutoSizer>
+      </div>
     </div>
   </LoadingOrErrorComponent>
 })
