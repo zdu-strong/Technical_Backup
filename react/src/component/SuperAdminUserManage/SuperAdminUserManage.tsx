@@ -83,7 +83,7 @@ export default observer(() => {
           <FormattedMessage id="Refresh" defaultMessage="Refresh" />
         </Button>
       </div>
-      <AutoSizer className="flex flex-col flex-auto">
+      <AutoSizer>
         {({ width, height }) => <Box width={width} height={height}>
           <DataGrid
             apiRef={state.dataGridRef}

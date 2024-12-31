@@ -72,7 +72,7 @@ export default observer((props: { companyId: string }) => {
         {"Show"}
         <FormattedMessage id="Show" defaultMessage="Show" />
       </Button>
-      <AutoSizer className="flex flex-col flex-auto">
+      <AutoSizer>
         {({ width, height }) => <Box width={width} height={height}>
           <DataGrid
             apiRef={state.dataGridRef}
