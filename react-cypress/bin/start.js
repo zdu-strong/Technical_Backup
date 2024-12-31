@@ -5,6 +5,7 @@ const util = require('util')
 const path = require('path')
 const waitOn = require('wait-on')
 const { timer } = require('rxjs')
+const { default: axios } = require("axios")
 
 async function main() {
   const { availableServerPort, childProcessOfServer } = await startServer();
@@ -50,6 +51,13 @@ async function startServer() {
       ]
     })
   ]);
+  while (true) {
+    const { data: hasInit } = await axios.get(`http://127.0.0.1:${availableServerPort}/system_init`);
+    if (hasInit) {
+      break;
+    }
+    await timer(100).toPromise();
+  }
   for (let i = 1000; i > 0; i--) {
     await timer(1).toPromise();
   }

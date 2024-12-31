@@ -1,7 +1,6 @@
 package com.springboot.project.scheduled;
 
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
@@ -19,8 +18,8 @@ import com.springboot.project.service.SystemRoleService;
 import com.springboot.project.service.UserRoleService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
-
 import io.reactivex.rxjava3.core.Flowable;
+import lombok.Getter;
 
 @Component
 public class SystemInitScheduled {
@@ -49,7 +48,8 @@ public class SystemInitScheduled {
     @Autowired
     private VerificationCodeEmailService verificationCodeEmailService;
 
-    private boolean hasInit = false;
+    @Getter
+    private Boolean hasInit = false;
 
     @Scheduled(initialDelay = 0, fixedDelay = 24 * 60 * 60 * 1000)
     public void scheduled() {
