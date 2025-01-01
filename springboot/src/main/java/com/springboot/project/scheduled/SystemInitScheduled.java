@@ -14,8 +14,8 @@ import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.service.EncryptDecryptService;
-import com.springboot.project.service.SystemRoleService;
-import com.springboot.project.service.UserRoleService;
+import com.springboot.project.service.PermissionService;
+import com.springboot.project.service.RoleService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
@@ -28,10 +28,10 @@ public class SystemInitScheduled {
     private EncryptDecryptService encryptDecryptService;
 
     @Autowired
-    private SystemRoleService systemRoleService;
+    private PermissionService permissionService;
 
     @Autowired
-    private UserRoleService userRoleService;
+    private RoleService userRoleService;
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
@@ -92,7 +92,7 @@ public class SystemInitScheduled {
         superAdminUser.setOrganizeRoleRelationList(List.of());
         superAdminUser.setUserRoleRelationList(this.userRoleService.getUserRoleListForSuperAdmin()
                 .stream()
-                .map(s -> new UserRoleRelationModel().setUserRole(s))
+                .map(s -> new UserRoleRelationModel().setRole(s))
                 .toList());
         this.userService.create(superAdminUser);
     }
@@ -107,7 +107,7 @@ public class SystemInitScheduled {
     private void initUserRole() {
         this.longTermTaskUtil.run(() -> {
             while (true) {
-                if (!systemRoleService.refresh()) {
+                if (!permissionService.refresh()) {
                     break;
                 }
             }

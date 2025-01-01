@@ -64,7 +64,7 @@ public class OrganizeEntity {
     private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
 
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserRoleEntity> userRoleList;
+    private List<RoleEntity> userRoleList;
 
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserRoleRelationEntity> UserRoleRelationList;

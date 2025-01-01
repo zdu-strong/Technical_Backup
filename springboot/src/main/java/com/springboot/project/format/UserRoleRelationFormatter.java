@@ -22,7 +22,7 @@ public class UserRoleRelationFormatter extends BaseService {
                 .map(this.organizeFormatter::format)
                 .orElse(new OrganizeModel().setId(StringUtils.EMPTY)));
         userRoleRelationModel
-                .setUserRole(this.userRoleFormatter.format(userRoleRelationEntity.getUserRole()));
+                .setRole(this.roleFormatter.format(userRoleRelationEntity.getRole()));
         return userRoleRelationModel;
     }
 

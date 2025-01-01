@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.model.UserRoleModel;
+import com.springboot.project.model.RoleModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class UserRoleControllerCreateTest extends BaseTest {
@@ -19,14 +19,14 @@ public class UserRoleControllerCreateTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var body = new UserRoleModel();
+        var body = new RoleModel();
         body.setName("Manager");
         body.setOrganize(new OrganizeModel().setId(
                 user.getOrganizeRoleRelationList().stream().map(s -> s.getOrganize().getId()).findFirst().get()));
-        body.setSystemRoleList(this.userRoleService.getOrganizeRoleListByCompanyId(body.getOrganize().getId()).stream()
-                .map(s -> s.getSystemRoleList()).findFirst().get());
+        body.setPermissionList(this.roleService.getOrganizeRoleListByCompanyId(body.getOrganize().getId()).stream()
+                .map(s -> s.getPermissionList()).findFirst().get());
         var url = new URIBuilder("/user_role/create").build();
-        var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(body), UserRoleModel.class);
+        var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(body), RoleModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

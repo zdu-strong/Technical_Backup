@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class SystemRoleEntity {
+public class PermissionEntity {
 
     @Id
     private String id;
@@ -31,7 +31,7 @@ public class SystemRoleEntity {
     @Column(nullable = false)
     private Date updateDate;
 
-    @OneToMany(mappedBy = "systemRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<SystemRoleRelationEntity> systemRoleRelationList;
+    @OneToMany(mappedBy = "permission", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<RolePermissionRelationEntity> rolePermissionRelationList;
 
 }

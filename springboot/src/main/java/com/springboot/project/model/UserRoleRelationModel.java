@@ -15,6 +15,6 @@ public class UserRoleRelationModel {
     private Date updateDate;
     private UserModel user;
     private OrganizeModel organize;
-    private UserRoleModel userRole;
+    private RoleModel role;
 
 }

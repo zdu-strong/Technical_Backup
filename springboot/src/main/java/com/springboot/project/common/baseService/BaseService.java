@@ -30,8 +30,8 @@ import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
-import com.springboot.project.format.SystemRoleFormatter;
-import com.springboot.project.format.UserRoleFormatter;
+import com.springboot.project.format.PermissionFormatter;
+import com.springboot.project.format.RoleFormatter;
 import com.springboot.project.format.TokenFormatter;
 import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
@@ -42,8 +42,8 @@ import com.springboot.project.format.VerificationCodeEmailFormatter;
 import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
-import com.springboot.project.service.SystemRoleRelationService;
-import com.springboot.project.service.UserRoleService;
+import com.springboot.project.service.RolePermissionRelationService;
+import com.springboot.project.service.RoleService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageDeactivateService;
 import com.springboot.project.service.UserRoleRelationService;
@@ -110,13 +110,13 @@ public abstract class BaseService {
     protected UserMessageDeactivateService userMessageDeactivateService;
 
     @Autowired
-    protected SystemRoleRelationService systemRoleRelationService;
+    protected RolePermissionRelationService rolePermissionRelationService;
 
     @Autowired
     protected DistributedExecutionMainService distributedExecutionMainService;
 
     @Autowired
-    protected UserRoleService userRoleService;
+    protected RoleService roleService;
 
     @Autowired
     protected UserRoleRelationService userRoleRelationService;
@@ -158,10 +158,10 @@ public abstract class BaseService {
     protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
 
     @Autowired
-    protected UserRoleFormatter userRoleFormatter;
+    protected RoleFormatter roleFormatter;
 
     @Autowired
-    protected SystemRoleFormatter systemRoleFormatter;
+    protected PermissionFormatter permissionFormatter;
 
     @Autowired
     protected DistributedExecutionDetailFormatter distributedExecutionDetailFormatter;

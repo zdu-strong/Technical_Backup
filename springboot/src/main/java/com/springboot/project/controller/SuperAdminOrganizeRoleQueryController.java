@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.springboot.project.common.baseController.BaseController;
-import com.springboot.project.enumerate.SystemRoleEnum;
+import com.springboot.project.enumerate.SystemPermissionEnum;
 
 @RestController
 public class SuperAdminOrganizeRoleQueryController extends BaseController {
@@ -14,9 +14,9 @@ public class SuperAdminOrganizeRoleQueryController extends BaseController {
     public ResponseEntity<?> searchByPagination(@RequestParam Long pageNum, @RequestParam Long pageSize,
             @RequestParam String organizeId) {
         this.permissionUtil.checkIsSignIn(request);
-        this.permissionUtil.checkAnyRole(request, SystemRoleEnum.SUPER_ADMIN);
+        this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION);
 
-        var paginationModel = this.userRoleService.searchOrganizeRoleForSuperAdminByPagination(pageNum, pageSize, organizeId);
+        var paginationModel = this.roleService.searchOrganizeRoleForSuperAdminByPagination(pageNum, pageSize, organizeId);
 
         return ResponseEntity.ok(paginationModel);
     }

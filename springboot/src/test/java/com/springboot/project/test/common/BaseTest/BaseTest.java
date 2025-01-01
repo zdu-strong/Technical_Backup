@@ -65,9 +65,9 @@ import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
-import com.springboot.project.service.SystemRoleService;
-import com.springboot.project.service.SystemRoleRelationService;
-import com.springboot.project.service.UserRoleService;
+import com.springboot.project.service.PermissionService;
+import com.springboot.project.service.RolePermissionRelationService;
+import com.springboot.project.service.RoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
@@ -175,10 +175,10 @@ public class BaseTest {
     protected OrganizeRelationService organizeRelationService;
 
     @Autowired
-    protected UserRoleService userRoleService;
+    protected RoleService roleService;
 
     @Autowired
-    protected SystemRoleService systemRoleService;
+    protected PermissionService permissionService;
 
     @Autowired
     protected DistributedExecutionMainService distributedExecutionMainService;
@@ -187,7 +187,7 @@ public class BaseTest {
     protected DistributedExecutionDetailService distributedExecutionDetailService;
 
     @Autowired
-    protected SystemRoleRelationService systemRoleRelationService;
+    protected RolePermissionRelationService rolePermissionRelationService;
 
     @Autowired
     protected MessageScheduled messageScheduled;
@@ -228,14 +228,14 @@ public class BaseTest {
                 .create(new OrganizeModel().setName(Generators.timeBasedReorderedGenerator().generate().toString()));
         var userInfo = signIn(email, password);
         userInfo.getUserRoleRelationList()
-                .addAll(this.userRoleService.getUserRoleListForSuperAdmin()
+                .addAll(this.roleService.getUserRoleListForSuperAdmin()
                         .stream()
-                        .map(s -> new UserRoleRelationModel().setUserRole(s))
+                        .map(s -> new UserRoleRelationModel().setRole(s))
                         .toList());
         userInfo.getOrganizeRoleRelationList()
-                .addAll(this.userRoleService.getOrganizeRoleListByCompanyId(company.getId())
+                .addAll(this.roleService.getOrganizeRoleListByCompanyId(company.getId())
                         .stream()
-                        .map(s -> new UserRoleRelationModel().setUserRole(s).setOrganize(company))
+                        .map(s -> new UserRoleRelationModel().setRole(s).setOrganize(company))
                         .toList());
         this.userService.update(userInfo);
         return signIn(email, password);
@@ -249,9 +249,9 @@ public class BaseTest {
         }
         var userInfo = signIn(email, password);
         userInfo.getUserRoleRelationList()
-                .addAll(this.userRoleService.getUserRoleListForSuperAdmin()
+                .addAll(this.roleService.getUserRoleListForSuperAdmin()
                         .stream()
-                        .map(s -> new UserRoleRelationModel().setUserRole(s))
+                        .map(s -> new UserRoleRelationModel().setRole(s))
                         .toList());
         this.userService.update(userInfo);
         return signIn(email, password);

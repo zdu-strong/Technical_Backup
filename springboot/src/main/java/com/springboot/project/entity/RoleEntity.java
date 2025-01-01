@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "organizeId", "name", "deactiveKey" }) })
-public class UserRoleEntity {
+public class RoleEntity {
 
     @Id
     private String id;
@@ -43,10 +43,10 @@ public class UserRoleEntity {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity organize;
 
-    @OneToMany(mappedBy = "userRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<SystemRoleRelationEntity> systemRoleRelationList;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<RolePermissionRelationEntity> rolePermissionRelationList;
 
-    @OneToMany(mappedBy = "userRole", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserRoleRelationEntity> userRoleRelationList;
 
 }

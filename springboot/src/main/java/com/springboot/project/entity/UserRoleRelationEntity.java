@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "userRoleId", "organizeId" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "roleId", "organizeId" }) })
 public class UserRoleRelationEntity {
 
     @Id
@@ -36,6 +36,6 @@ public class UserRoleRelationEntity {
     private OrganizeEntity organize;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
-    private UserRoleEntity userRole;
+    private RoleEntity role;
 
 }

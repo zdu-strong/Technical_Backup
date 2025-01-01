@@ -34,11 +34,11 @@ public class UserService extends BaseService {
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getUserRole().getId(), null);
+            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getRole().getId(), null);
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getUserRole().getId(),
+            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getRole().getId(),
                     organizeRelation.getOrganize().getId());
         }
 
@@ -56,11 +56,11 @@ public class UserService extends BaseService {
         }
 
         for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userId, userRoleRelation.getUserRole().getId(), null);
+            this.userRoleRelationService.create(userId, userRoleRelation.getRole().getId(), null);
         }
 
         for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userId, organizeRelation.getUserRole().getId(),
+            this.userRoleRelationService.create(userId, organizeRelation.getRole().getId(),
                     organizeRelation.getOrganize().getId());
         }
 

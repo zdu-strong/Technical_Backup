@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.enumerate.SystemRoleEnum;
+import com.springboot.project.enumerate.SystemPermissionEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -14,14 +14,14 @@ public class SystemInitScheduledInitUserRoleAfterCreateOrganinzeTest extends Bas
 
     @Test
     public void test() {
-        var organizeRoleList = this.userRoleService.getOrganizeRoleListByCompanyId(this.organizeId);
+        var organizeRoleList = this.roleService.getOrganizeRoleListByCompanyId(this.organizeId);
         assertEquals(2, organizeRoleList.size());
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemPermissionEnum.valueOf(s.getName()))
                 .toList()
-                .contains(SystemRoleEnum.ORGANIZE_NORMAL_USER));
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+                .contains(SystemPermissionEnum.ORGANIZE_VIEW_PERMISSION));
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemPermissionEnum.valueOf(s.getName()))
                 .toList()
-                .contains(SystemRoleEnum.ORGANIZE_ADMIN));
+                .contains(SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION));
         assertEquals(this.organizeId,
                 JinqStream.from(organizeRoleList).select(s -> s.getOrganize().getId()).distinct().getOnlyValue());
     }

@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumerate.SystemRoleEnum;
+import com.springboot.project.enumerate.SystemPermissionEnum;
 import com.springboot.project.model.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,7 +23,7 @@ public class UserRoleRelationService extends BaseService {
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
-        var userRoleEntity = this.streamAll(UserRoleEntity.class)
+        var userRoleEntity = this.streamAll(RoleEntity.class)
                 .where(s -> s.getId().equals(userRoleId))
                 .getOnlyValue();
         var organizeEntity = Optional.ofNullable(organizeId)
@@ -37,7 +37,7 @@ public class UserRoleRelationService extends BaseService {
         userRoleRelationEntity.setCreateDate(new Date());
         userRoleRelationEntity.setUpdateDate(new Date());
         userRoleRelationEntity.setUser(userEntity);
-        userRoleRelationEntity.setUserRole(userRoleEntity);
+        userRoleRelationEntity.setRole(userRoleEntity);
         userRoleRelationEntity.setOrganize(organizeEntity);
         this.persist(userRoleRelationEntity);
     }
@@ -74,16 +74,16 @@ public class UserRoleRelationService extends BaseService {
     private void checkRoleRelationForCreate(UserModel user, HttpServletRequest request) {
 
         for (var organizeRoleRelation : user.getOrganizeRoleRelationList()) {
-            if (this.permissionUtil.hasAnyRole(request, SystemRoleEnum.SUPER_ADMIN)) {
+            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION)) {
                 break;
             }
 
-            this.permissionUtil.checkAnyRole(request, organizeRoleRelation.getOrganize().getId(),
-                    SystemRoleEnum.ORGANIZE_ADMIN);
+            this.permissionUtil.checkAnyPermission(request, organizeRoleRelation.getOrganize().getId(),
+                    SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION);
         }
 
         if (!user.getUserRoleRelationList().isEmpty()) {
-            this.permissionUtil.checkAnyRole(request, SystemRoleEnum.SUPER_ADMIN);
+            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION);
         }
     }
 
@@ -103,16 +103,16 @@ public class UserRoleRelationService extends BaseService {
                                 .anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).toList()) {
-            if (this.permissionUtil.hasAnyRole(request, SystemRoleEnum.SUPER_ADMIN)) {
+            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION)) {
                 break;
             }
 
             var organizeRoleId = organizeRole.getId();
-            var userRoleEntity = this.streamAll(UserRoleEntity.class)
+            var userRoleEntity = this.streamAll(RoleEntity.class)
                     .where(s -> s.getId().equals(organizeRoleId))
                     .getOnlyValue();
-            this.permissionUtil.checkAnyRole(request, userRoleEntity.getOrganize().getId(),
-                    SystemRoleEnum.ORGANIZE_ADMIN);
+            this.permissionUtil.checkAnyPermission(request, userRoleEntity.getOrganize().getId(),
+                    SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION);
         }
 
         if (JinqStream.from(List.of(
@@ -126,7 +126,7 @@ public class UserRoleRelationService extends BaseService {
                         .filter(s -> user.getUserRoleRelationList().stream().anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).exists()) {
-            this.permissionUtil.checkAnyRole(request, SystemRoleEnum.SUPER_ADMIN);
+            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION);
         }
     }
 

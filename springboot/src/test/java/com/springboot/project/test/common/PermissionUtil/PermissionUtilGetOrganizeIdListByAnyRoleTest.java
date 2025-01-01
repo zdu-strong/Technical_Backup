@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.fasterxml.uuid.Generators;
-import com.springboot.project.enumerate.SystemRoleEnum;
+import com.springboot.project.enumerate.SystemPermissionEnum;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -15,7 +15,7 @@ public class PermissionUtilGetOrganizeIdListByAnyRoleTest extends BaseTest {
 
     @Test
     public void test() {
-        var result = this.permissionUtil.getOrganizeIdListByAnyRole(this.request, SystemRoleEnum.ORGANIZE_ADMIN);
+        var result = this.permissionUtil.getOrganizeIdListByAnyPermission(this.request, SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION);
         assertEquals(0, result.size());
     }
 

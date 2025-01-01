@@ -20,7 +20,7 @@ public class UserFormatter extends BaseService {
                 .where(s -> s.getId().equals(userId))
                 .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() == null)
-                .where(s -> s.getUserRole().getOrganize() == null)
+                .where(s -> s.getRole().getOrganize() == null)
                 .distinct()
                 .map(s -> this.userRoleRelationFormatter.format(s))
                 .toList();
@@ -29,7 +29,7 @@ public class UserFormatter extends BaseService {
                 .where(s -> s.getId().equals(userId))
                 .selectAllList(s -> s.getUserRoleRelationList())
                 .where(s -> s.getOrganize() != null)
-                .where(s -> s.getUserRole().getOrganize() != null)
+                .where(s -> s.getRole().getOrganize() != null)
                 .map(s -> this.userRoleRelationFormatter.format(s))
                 .toList();
         userModel.setOrganizeRoleRelationList(organizeRoleRelationList);
