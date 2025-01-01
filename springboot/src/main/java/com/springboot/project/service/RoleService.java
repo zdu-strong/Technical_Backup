@@ -14,6 +14,7 @@ import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumerate.SystemRoleEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.RoleModel;
 
@@ -88,24 +89,42 @@ public class RoleService extends BaseService {
     }
 
     public void refreshForCompany(String companyId) {
-        for (var permissionEnum : SystemPermissionEnum.values()) {
-            if (!permissionEnum.getIsOrganizeRole()) {
+        for (var systemRoleEnum : SystemRoleEnum.values()) {
+            if (!systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
-            var permissionName = permissionEnum.name();
-            if (!this.streamAll(PermissionEntity.class)
-                    .where(s -> s.getName().equals(permissionName))
-                    .exists()) {
-                continue;
+            var roleName = systemRoleEnum.name();
+            if (JinqStream.from(systemRoleEnum.getPermissionList()).select(s -> s.name())
+                    .anyMatch(permissionName -> !this.streamAll(PermissionEntity.class)
+                            .where(s -> s.getName().equals(permissionName))
+                            .exists())) {
+                return;
             }
             var roleEntity = this.streamAll(RoleEntity.class)
                     .where(s -> s.getOrganize().getId().equals(companyId))
-                    .selectAllList(s -> s.getRolePermissionRelationList())
-                    .where(s -> s.getPermission().getName().equals(permissionName))
+                    .where(s -> s.getName().equals(roleName))
                     .findFirst()
                     .orElse(null);
             if (roleEntity == null) {
-                this.create(permissionName, List.of(permissionEnum), companyId);
+                this.create(roleName, systemRoleEnum.getPermissionList(), companyId);
+            } else {
+                var roleModel = this.roleFormatter.format(roleEntity);
+                if (JinqStream.from(systemRoleEnum.getPermissionList())
+                        .allMatch(permissionEnum -> JinqStream.from(roleModel.getPermissionList())
+                                .anyMatch(s -> s.getName().equals(permissionEnum.name())))) {
+                    return;
+                }
+                for (var permissionEnum : systemRoleEnum.getPermissionList()) {
+                    var permissionName = permissionEnum.name();
+                    if (JinqStream.from(roleModel.getPermissionList())
+                            .anyMatch(s -> s.getName().equals(permissionName))) {
+                        continue;
+                    }
+                    roleModel.getPermissionList()
+                            .add(this.permissionFormatter.format(this.streamAll(PermissionEntity.class)
+                                    .where(s -> s.getName().equals(permissionName)).getOnlyValue()));
+                }
+                this.update(roleModel);
             }
         }
     }
@@ -135,17 +154,15 @@ public class RoleService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
-        var roles = Arrays.stream(SystemPermissionEnum.values())
+        var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
                 .map(s -> s.name())
                 .toList();
-        var userRoleList = this.streamAll(PermissionEntity.class)
+        var userRoleList = this.streamAll(RoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
-                .selectAllList(s -> s.getRolePermissionRelationList())
-                .select(s -> s.getRole())
                 .where(s -> s.getIsActive())
                 .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(s -> Arrays.stream(SystemRoleEnum.values())
                         .anyMatch(m -> m.name().equals(s.getName()) && !m.getIsOrganizeRole()))
                 .toList();
         var stream = JinqStream.from(userRoleList);
@@ -154,18 +171,16 @@ public class RoleService extends BaseService {
 
     @Transactional(readOnly = true)
     public List<RoleModel> getUserRoleListForSuperAdmin() {
-        var roles = Arrays.stream(SystemPermissionEnum.values())
+        var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
-                .filter(s -> s.getIsSuperAdmin())
+                .filter(s -> s.getPermissionList().stream().anyMatch(m -> m.getIsSuperAdmin()))
                 .map(s -> s.name())
                 .toList();
-        var userRoleList = this.streamAll(PermissionEntity.class)
+        var userRoleList = this.streamAll(RoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
-                .selectAllList(s -> s.getRolePermissionRelationList())
-                .select(s -> s.getRole())
                 .where(s -> s.getIsActive())
                 .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(s -> Arrays.stream(SystemRoleEnum.values())
                         .anyMatch(m -> m.name().equals(s.getName()) && !m.getIsOrganizeRole()))
                 .map(s -> this.roleFormatter.format(s))
                 .toList();
@@ -184,24 +199,20 @@ public class RoleService extends BaseService {
     }
 
     private boolean createUserRoleList() {
-        var roleList = Arrays.stream(SystemPermissionEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.name())
-                .toList();
-        var systemRoleEntity = this.streamAll(PermissionEntity.class)
-                .where(s -> roleList.contains(s.getName()))
-                .leftOuterJoinList(s -> s.getRolePermissionRelationList())
-                .leftOuterJoin((s, t) -> JinqStream.of(s.getTwo().getRole()),
-                        (s, t) -> t.getIsActive() && t.getOrganize() == null)
-                .where(s -> s.getTwo() == null)
-                .select(s -> s.getOne().getOne())
-                .findFirst()
-                .orElse(null);
-        if (systemRoleEntity != null) {
-            this.create(systemRoleEntity.getName(),
-                    List.of(SystemPermissionEnum.valueOf(systemRoleEntity.getName())),
-                    null);
-            return true;
+        for (var systemRoleEnum : SystemRoleEnum.values()) {
+            if (systemRoleEnum.getIsOrganizeRole()) {
+                continue;
+            }
+            var roleName = systemRoleEnum.name();
+            if (!this.streamAll(RoleEntity.class)
+                    .where(s -> s.getName().equals(roleName))
+                    .where(s -> s.getOrganize() == null)
+                    .exists()) {
+                this.create(roleName,
+                        systemRoleEnum.getPermissionList(),
+                        null);
+                return true;
+            }
         }
         return false;
     }
@@ -225,26 +236,24 @@ public class RoleService extends BaseService {
     }
 
     private boolean createOrganizeRoleList() {
-        for (var systemRoleEnum : SystemPermissionEnum.values()) {
+        for (var systemRoleEnum : SystemRoleEnum.values()) {
             if (!systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
-            var systemRoleName = systemRoleEnum.name();
+            var roleName = systemRoleEnum.name();
             var organizeId = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getParent() == null)
                     .where(s -> s.getIsActive())
-                    .leftOuterJoin(s -> JinqStream.from(s.getUserRoleList()))
-                    .leftOuterJoin(s -> JinqStream.from(s.getTwo().getRolePermissionRelationList()))
-                    .leftOuterJoin((s, t) -> JinqStream.of(s.getTwo().getPermission()),
-                            (s, t) -> t.getName().equals(systemRoleName))
-                    .select((s, t) -> new Pair<>(s.getOne().getOne().getOne().getId(), s.getTwo() == null ? 0 : 1))
+                    .leftOuterJoin((s, t) -> JinqStream.from(s.getUserRoleList()),
+                            (s, t) -> t.getName().equals(roleName))
+                    .select((s, t) -> new Pair<>(s.getOne().getId(), s.getTwo() == null ? 0 : 1))
                     .group((s) -> s.getOne(), (s, t) -> t.sumInteger(m -> m.getTwo()))
                     .where(s -> s.getTwo() == 0)
                     .select(s -> s.getOne())
                     .findFirst()
                     .orElse(null);
             if (StringUtils.isNotBlank(organizeId)) {
-                this.create(systemRoleName, List.of(systemRoleEnum), organizeId);
+                this.create(roleName, systemRoleEnum.getPermissionList(), organizeId);
                 return true;
             }
         }
@@ -267,14 +276,12 @@ public class RoleService extends BaseService {
             }
         }
         {
-            var roleList = Arrays.stream(SystemPermissionEnum.values()).filter(s -> !s.getIsOrganizeRole())
+            var roleList = Arrays.stream(SystemRoleEnum.values()).filter(s -> !s.getIsOrganizeRole())
                     .map(s -> s.name()).toList();
             var userRoleEntity = this.streamAll(RoleEntity.class)
                     .where(s -> s.getIsActive())
                     .where(s -> s.getOrganize() == null)
-                    .joinList(s -> s.getRolePermissionRelationList())
-                    .where(s -> !roleList.contains(s.getTwo().getPermission().getName()))
-                    .select(s -> s.getOne())
+                    .where(s -> !roleList.contains(s.getName()))
                     .findFirst()
                     .orElse(null);
             if (userRoleEntity != null) {
