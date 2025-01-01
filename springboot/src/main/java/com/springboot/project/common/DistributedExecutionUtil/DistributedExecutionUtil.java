@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.service.DistributedExecutionMainService;
+import cn.hutool.core.thread.ThreadUtil;
 import com.springboot.project.service.DistributedExecutionDetailService;
 import io.reactivex.rxjava3.core.Flowable;
 
@@ -18,7 +19,7 @@ import io.reactivex.rxjava3.core.Flowable;
 public class DistributedExecutionUtil {
 
     @Autowired
-    private DistributedExecutionMainService distributedExecutionService;
+    private DistributedExecutionMainService distributedExecutionMainService;
 
     @Autowired
     private DistributedExecutionDetailService distributedExecutionTaskService;
@@ -26,11 +27,38 @@ public class DistributedExecutionUtil {
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
         var now = new Date();
         while (true) {
-            var isDone = this.refreshSingleData(distributedExecutionEnum, now);
-            if (isDone) {
-                return;
+            // The execution time interval has not expired, take a break
+            var distributedExecutionMainModel = this.distributedExecutionMainService
+                    .getLastSuccessDistributedExecution(distributedExecutionEnum);
+            if (distributedExecutionMainModel != null) {
+                if (!distributedExecutionMainModel.getCreateDate().before(now)) {
+                    break;
+                }
+                if (DateUtils
+                        .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
+                                (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
+                        .after(now)) {
+                    ThreadUtil.sleep(DateUtils
+                            .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
+                                    (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
+                            .getTime() - now.getTime());
+                    continue;
+                }
             }
+            var distributedExecutionMainId = getId(distributedExecutionEnum);
+            this.refreshSingleData(distributedExecutionMainId, distributedExecutionEnum);
         }
+    }
+
+    private String getId(DistributedExecutionEnum distributedExecutionEnum) {
+        var distributedExecutionMainModel = this.distributedExecutionMainService
+                .getDistributedExecutionWithInprogress(distributedExecutionEnum);
+        if (distributedExecutionMainModel != null) {
+            return distributedExecutionMainModel.getId();
+        }
+        var id = this.distributedExecutionMainService
+                .create(distributedExecutionEnum, distributedExecutionEnum.getTotalRecord()).getId();
+        return id;
     }
 
     /**
@@ -38,44 +66,21 @@ public class DistributedExecutionUtil {
      * @param distributedExecutionEnum
      * @return isDone boolean
      */
-    private boolean refreshSingleData(DistributedExecutionEnum distributedExecutionEnum, Date now) {
-        var lastDistributedExecutionModel = distributedExecutionService
-                .getLastDistributedExecution(distributedExecutionEnum);
-        if (lastDistributedExecutionModel != null && lastDistributedExecutionModel.getIsDone()) {
-            var lastExecutionDate = DateUtils.addMilliseconds(lastDistributedExecutionModel.getUpdateDate(),
-                    (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis());
-            if (new Date().before(lastExecutionDate)) {
-                if (!now.after(lastDistributedExecutionModel.getCreateDate())) {
-                    return true;
-                } else {
-                    ThreadUtils.sleepQuietly(
-                            Duration.ofMillis(Math.max(lastExecutionDate.getTime() - new Date().getTime(), 0)));
-                    return false;
-                }
-            }
-        }
-        if (lastDistributedExecutionModel == null || lastDistributedExecutionModel.getIsDone()) {
-            lastDistributedExecutionModel = this.distributedExecutionService.create(distributedExecutionEnum,
-                    distributedExecutionEnum.getTotalRecord());
-        }
-
-        if (lastDistributedExecutionModel.getIsDone()) {
-            return false;
-        }
-
+    private void refreshSingleData(String distributedExecutionMainId,
+            DistributedExecutionEnum distributedExecutionEnum) {
         var pageNum = this.distributedExecutionTaskService
-                .getPageNumForExecution(lastDistributedExecutionModel.getId());
+                .getPageNumForExecution(distributedExecutionMainId);
         if (pageNum == null) {
             ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
-            return false;
+            return;
         }
 
         String id;
         try {
-            id = this.distributedExecutionTaskService.create(lastDistributedExecutionModel.getId(), pageNum).getId();
+            id = this.distributedExecutionTaskService.create(distributedExecutionMainId, pageNum).getId();
         } catch (DataIntegrityViolationException | JpaSystemException e) {
             ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
-            return false;
+            return;
         }
 
         var subscription = Flowable.timer(5, TimeUnit.SECONDS)
@@ -101,7 +106,6 @@ public class DistributedExecutionUtil {
                 this.distributedExecutionTaskService.updateByErrorMessage(id);
             }
         }
-        return false;
     }
 
 }

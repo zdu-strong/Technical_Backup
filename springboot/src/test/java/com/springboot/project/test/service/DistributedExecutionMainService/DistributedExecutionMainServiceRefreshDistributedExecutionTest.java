@@ -20,7 +20,7 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void test() {
         this.distributedExecutionMainService.refreshDistributedExecution(this.distributedExecutionMainModel.getId());
         var result = this.distributedExecutionMainService
-                .getLastDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+                .getLastSuccessDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
@@ -37,9 +37,9 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
         this.distributedExecutionMainModel = this.distributedExecutionMainService
                 .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, 1);
-        var distributedExecutionTaskModel = this.distributedExecutionDetailService
+        var distributedExecutionDetailModel = this.distributedExecutionDetailService
                 .create(this.distributedExecutionMainModel.getId(), 1);
-        this.distributedExecutionDetailService.updateByResult(distributedExecutionTaskModel.getId());
+        this.distributedExecutionDetailService.updateByResult(distributedExecutionDetailModel.getId());
     }
 
 }

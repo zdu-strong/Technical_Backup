@@ -12,15 +12,14 @@ import com.springboot.project.model.DistributedExecutionMainModel;
 public class DistributedExecutionMainService extends BaseService {
 
     @Transactional(readOnly = true)
-    public DistributedExecutionMainModel getLastSuccessDistributedExecution(
+    public DistributedExecutionMainModel getDistributedExecutionWithInprogress(
             DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.name();
         var distributedExecutionMainModel = this.streamAll(DistributedExecutionMainEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
-                .where(s -> s.getIsDone())
-                .where(s -> !s.getHasError())
-                .sortedDescendingBy(s -> s.getId())
-                .sortedDescendingBy(s -> s.getCreateDate())
+                .where(s -> !s.getIsDone())
+                .sortedBy(s -> s.getId())
+                .sortedBy(s -> s.getCreateDate())
                 .findFirst()
                 .map(s -> this.distributedExecutionMainFormatter.format(s))
                 .orElse(null);
@@ -28,10 +27,13 @@ public class DistributedExecutionMainService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public DistributedExecutionMainModel getLastDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
+    public DistributedExecutionMainModel getLastSuccessDistributedExecution(
+            DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.name();
         var distributedExecutionMainModel = this.streamAll(DistributedExecutionMainEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
+                .where(s -> s.getIsDone())
+                .where(s -> !s.getHasError())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
                 .findFirst()

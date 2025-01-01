@@ -113,7 +113,7 @@ public abstract class BaseService {
     protected SystemRoleRelationService systemRoleRelationService;
 
     @Autowired
-    protected DistributedExecutionMainService distributedExecutionService;
+    protected DistributedExecutionMainService distributedExecutionMainService;
 
     @Autowired
     protected UserRoleService userRoleService;

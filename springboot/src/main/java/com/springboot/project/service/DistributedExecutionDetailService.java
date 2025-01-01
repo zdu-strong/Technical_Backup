@@ -111,7 +111,7 @@ public class DistributedExecutionDetailService extends BaseService {
             }
         }
 
-        this.distributedExecutionService.refreshDistributedExecution(distributedExecutionMainId);
+        this.distributedExecutionMainService.refreshDistributedExecution(distributedExecutionMainId);
 
         return null;
     }
