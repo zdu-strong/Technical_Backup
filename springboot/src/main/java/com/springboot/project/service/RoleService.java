@@ -3,6 +3,7 @@ package com.springboot.project.service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
@@ -22,11 +23,11 @@ import com.springboot.project.model.RoleModel;
 public class RoleService extends BaseService {
 
     public RoleModel create(String role, List<SystemPermissionEnum> permissionList, String organizeId) {
-        OrganizeEntity organizeEntity = StringUtils.isNotBlank(organizeId)
-                ? this.streamAll(OrganizeEntity.class)
-                        .where(s -> s.getId().equals(organizeId))
-                        .getOnlyValue()
-                : null;
+        var organizeEntity = Optional.ofNullable(organizeId).filter(StringUtils::isNotBlank)
+                .map(s -> this.streamAll(OrganizeEntity.class)
+                        .where(m -> m.getId().equals(organizeId))
+                        .getOnlyValue())
+                .orElse(null);
 
         var roleEntity = new RoleEntity();
         roleEntity.setId(newId());
@@ -54,9 +55,8 @@ public class RoleService extends BaseService {
         roleEntity.setUpdateDate(new Date());
         this.merge(roleEntity);
 
-        var rolePermissionRelationList = this.streamAll(RoleEntity.class)
-                .where(s -> s.getId().equals(id))
-                .selectAllList(s -> s.getRolePermissionRelationList())
+        var rolePermissionRelationList = this.streamAll(RolePermissionRelationEntity.class)
+                .where(s -> s.getRole().getId().equals(id))
                 .toList();
         for (var rolePermissionRelationEntity : rolePermissionRelationList) {
             this.remove(rolePermissionRelationEntity);
@@ -93,39 +93,17 @@ public class RoleService extends BaseService {
             if (!systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
+
             var roleName = systemRoleEnum.name();
-            if (JinqStream.from(systemRoleEnum.getPermissionList()).select(s -> s.name())
-                    .anyMatch(permissionName -> !this.streamAll(PermissionEntity.class)
-                            .where(s -> s.getName().equals(permissionName))
-                            .exists())) {
-                return;
-            }
-            var roleEntity = this.streamAll(RoleEntity.class)
+            var exist = this.streamAll(RoleEntity.class)
                     .where(s -> s.getOrganize().getId().equals(companyId))
                     .where(s -> s.getName().equals(roleName))
-                    .findFirst()
-                    .orElse(null);
-            if (roleEntity == null) {
-                this.create(roleName, systemRoleEnum.getPermissionList(), companyId);
-            } else {
-                var roleModel = this.roleFormatter.format(roleEntity);
-                if (JinqStream.from(systemRoleEnum.getPermissionList())
-                        .allMatch(permissionEnum -> JinqStream.from(roleModel.getPermissionList())
-                                .anyMatch(s -> s.getName().equals(permissionEnum.name())))) {
-                    return;
-                }
-                for (var permissionEnum : systemRoleEnum.getPermissionList()) {
-                    var permissionName = permissionEnum.name();
-                    if (JinqStream.from(roleModel.getPermissionList())
-                            .anyMatch(s -> s.getName().equals(permissionName))) {
-                        continue;
-                    }
-                    roleModel.getPermissionList()
-                            .add(this.permissionFormatter.format(this.streamAll(PermissionEntity.class)
-                                    .where(s -> s.getName().equals(permissionName)).getOnlyValue()));
-                }
-                this.update(roleModel);
+                    .where(s -> s.getIsActive())
+                    .exists();
+            if (exist) {
+                continue;
             }
+            this.create(roleName, systemRoleEnum.getPermissionList(), companyId);
         }
     }
 
@@ -140,6 +118,12 @@ public class RoleService extends BaseService {
             return true;
         }
         if (this.createOrganizeRoleList()) {
+            return true;
+        }
+        if (this.refreshDefaultUserRoleList()) {
+            return true;
+        }
+        if (this.refreshDefaultOrganizeRoleList()) {
             return true;
         }
         return false;
@@ -198,40 +182,47 @@ public class RoleService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.roleFormatter.format(s));
     }
 
+    private boolean deleteUserRoleList() {
+        var roles = Arrays.stream(SystemRoleEnum.values())
+                .filter(s -> !s.getIsOrganizeRole())
+                .map(s -> s.name())
+                .toList();
+        var id = this.streamAll(RoleEntity.class)
+                .where(s -> s.getOrganize() == null)
+                .where(s -> s.getIsActive())
+                .where(s -> !roles.contains(s.getName()))
+                .select(s -> s.getId())
+                .findFirst()
+                .orElse(null);
+        if (StringUtils.isNotBlank(id)) {
+            this.delete(id);
+            return true;
+        }
+        return false;
+    }
+
     private boolean createUserRoleList() {
         for (var systemRoleEnum : SystemRoleEnum.values()) {
             if (systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
             var roleName = systemRoleEnum.name();
-            if (!this.streamAll(RoleEntity.class)
+            if (this.streamAll(RoleEntity.class)
                     .where(s -> s.getName().equals(roleName))
                     .where(s -> s.getOrganize() == null)
+                    .where(s -> s.getIsActive())
                     .exists()) {
-                this.create(roleName,
-                        systemRoleEnum.getPermissionList(),
-                        null);
-                return true;
+                continue;
             }
+            this.create(roleName,
+                    systemRoleEnum.getPermissionList(),
+                    null);
+            return true;
         }
         return false;
     }
 
     private boolean deleteOrganizeRoleList() {
-        var userRoleEntity = this.streamAll(RoleEntity.class)
-                .where(s -> s.getOrganize() != null)
-                .where(s -> s.getIsActive())
-                .leftOuterJoinList(s -> s.getRolePermissionRelationList())
-                .leftOuterJoinList(s -> s.getOne().getUserRoleRelationList())
-                .where(s -> s.getTwo() == null)
-                .where(s -> s.getOne().getTwo() == null)
-                .select(s -> s.getOne().getOne())
-                .findFirst()
-                .orElse(null);
-        if (userRoleEntity != null) {
-            this.delete(userRoleEntity.getId());
-        }
-
         return false;
     }
 
@@ -260,60 +251,24 @@ public class RoleService extends BaseService {
         return false;
     }
 
-    private boolean deleteUserRoleList() {
-        {
-            var userRoleEntity = this.streamAll(RoleEntity.class)
-                    .where(s -> s.getIsActive())
-                    .leftOuterJoinList(s -> s.getRolePermissionRelationList())
-                    .where(s -> s.getOne().getOrganize() == null)
-                    .where(s -> s.getTwo() == null)
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (userRoleEntity != null) {
-                this.delete(userRoleEntity.getId());
-                return true;
-            }
-        }
-        {
-            var roleList = Arrays.stream(SystemRoleEnum.values()).filter(s -> !s.getIsOrganizeRole())
-                    .map(s -> s.name()).toList();
-            var userRoleEntity = this.streamAll(RoleEntity.class)
-                    .where(s -> s.getIsActive())
-                    .where(s -> s.getOrganize() == null)
-                    .where(s -> !roleList.contains(s.getName()))
-                    .findFirst()
-                    .orElse(null);
-            if (userRoleEntity != null) {
-                this.delete(userRoleEntity.getId());
-                return true;
-            }
-        }
-
-        {
-            var role = this.streamAll(RoleEntity.class)
-                    .where(s -> s.getIsActive())
-                    .where(s -> s.getOrganize() == null)
-                    .group(s -> s.getName(), (s, t) -> t.count())
-                    .where(s -> s.getTwo() > 1)
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (StringUtils.isNotBlank(role)) {
-                var userRoleEntity = this.streamAll(RoleEntity.class)
-                        .where(s -> s.getIsActive())
-                        .where(s -> s.getOrganize() == null)
-                        .where(s -> s.getName().equals(role))
-                        .sortedBy(s -> s.getCreateDate())
-                        .skip(1)
-                        .findFirst()
-                        .orElse(null);
-                if (userRoleEntity != null) {
-                    this.delete(userRoleEntity.getId());
-                }
+    private boolean refreshDefaultUserRoleList() {
+        for (var systemRoleEnum : SystemRoleEnum.values()) {
+            if (systemRoleEnum.getIsOrganizeRole()) {
+                continue;
             }
         }
 
         return false;
     }
+
+    private boolean refreshDefaultOrganizeRoleList() {
+        for (var systemRoleEnum : SystemRoleEnum.values()) {
+            if (!systemRoleEnum.getIsOrganizeRole()) {
+                continue;
+            }
+
+        }
+        return false;
+    }
+
 }

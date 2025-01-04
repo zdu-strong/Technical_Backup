@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.PermissionEntity;
+import com.springboot.project.entity.RolePermissionRelationEntity;
 import com.springboot.project.enumerate.SystemPermissionEnum;
 import com.springboot.project.model.PermissionModel;
 
@@ -38,9 +39,9 @@ public class PermissionService extends BaseService {
 
     private boolean createDefaultPermissionList() {
         for (var permissionEnum : SystemPermissionEnum.values()) {
-            var role = permissionEnum.name();
+            var permissionName = permissionEnum.name();
             var exists = this.streamAll(PermissionEntity.class)
-                    .where(s -> s.getName().equals(role))
+                    .where(s -> s.getName().equals(permissionName))
                     .exists();
             if (exists) {
                 continue;
@@ -52,23 +53,22 @@ public class PermissionService extends BaseService {
     }
 
     private boolean deleteDefaultPermissionList() {
-        var roleList = Arrays.stream(SystemPermissionEnum.values()).map(s -> s.name()).toList();
-        var systemRoleEntity = this.streamAll(PermissionEntity.class)
-                .where(s -> !roleList.contains(s.getName()))
+        var permissionNameList = Arrays.stream(SystemPermissionEnum.values()).map(s -> s.name()).toList();
+        var permissionEntity = this.streamAll(PermissionEntity.class)
+                .where(s -> !permissionNameList.contains(s.getName()))
                 .findFirst()
                 .orElse(null);
-        if (systemRoleEntity != null) {
-            var idOfSystemRoleEntity = systemRoleEntity.getId();
-            var rolePermissionRelationEntity = this.streamAll(PermissionEntity.class)
-                    .where(s -> s.getId().equals(idOfSystemRoleEntity))
-                    .selectAllList(s -> s.getRolePermissionRelationList())
+        if (permissionEntity != null) {
+            var idOfPermission = permissionEntity.getId();
+            var rolePermissionRelationEntity = this.streamAll(RolePermissionRelationEntity.class)
+                    .where(s -> s.getPermission().getId().equals(idOfPermission))
                     .findFirst()
                     .orElse(null);
             if (rolePermissionRelationEntity != null) {
                 this.remove(rolePermissionRelationEntity);
                 return true;
             }
-            this.remove(systemRoleEntity);
+            this.remove(permissionEntity);
             return true;
         }
         return false;

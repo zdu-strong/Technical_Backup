@@ -9,13 +9,13 @@ import com.springboot.project.enumerate.SystemPermissionEnum;
 @Service
 public class RolePermissionRelationService extends BaseService {
 
-    public void create(String userRoleId, SystemPermissionEnum permissionEnum) {
+    public void create(String roleId, SystemPermissionEnum permissionEnum) {
         var permissionName = permissionEnum.name();
         var permissionEntity = this.streamAll(PermissionEntity.class)
                 .where(s -> s.getName().equals(permissionName))
                 .getOnlyValue();
         var roleEntity = this.streamAll(RoleEntity.class)
-                .where(s -> s.getId().equals(userRoleId))
+                .where(s -> s.getId().equals(roleId))
                 .getOnlyValue();
 
         var rolePermissionRelationEntity = new RolePermissionRelationEntity();
