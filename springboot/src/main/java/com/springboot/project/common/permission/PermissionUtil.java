@@ -76,13 +76,8 @@ public class PermissionUtil {
         return hasAnyRole;
     }
 
-    public void checkAnyPermission(HttpServletRequest request, SystemPermissionEnum... permissionList) {
-        if (!this.hasAnyPermission(request, permissionList)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
-    }
-
-    public void checkAnyPermission(HttpServletRequest request, String organizeId, SystemPermissionEnum... permissionList) {
+    public boolean hasAnyPermission(HttpServletRequest request, String organizeId,
+            SystemPermissionEnum... permissionList) {
         if (StringUtils.isBlank(organizeId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeId Cannot be empty");
         }
@@ -100,7 +95,7 @@ public class PermissionUtil {
                         .selectAllList(s -> s.getRole().getPermissionList())
                         .select(s -> SystemPermissionEnum.valueOf(s.getName()))
                         .anyMatch(s -> s.getIsSuperAdmin())) {
-            return;
+            return true;
         }
         if (!Arrays.stream(permissionList)
                 .anyMatch(s -> JinqStream.from(user.getOrganizeRoleRelationList())
@@ -108,16 +103,32 @@ public class PermissionUtil {
                         .select(t -> SystemPermissionEnum.valueOf(t.getName()))
                         .toList()
                         .contains(s))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            return false;
         }
         var organizeIdList = getOrganizeIdListByAnyPermission(request, permissionList);
         var ancestorIdList = this.organizeService.getAccestorIdList(organizeId);
         if (!JinqStream.from(ancestorIdList).anyMatch(s -> organizeIdList.contains(s))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void checkAnyPermission(HttpServletRequest request, SystemPermissionEnum... permissionList) {
+        if (!this.hasAnyPermission(request, permissionList)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
-    public List<String> getOrganizeIdListByAnyPermission(HttpServletRequest request, SystemPermissionEnum... permissionList) {
+    public void checkAnyPermission(HttpServletRequest request, String organizeId,
+            SystemPermissionEnum... permissionList) {
+        if (!this.hasAnyPermission(request, organizeId, permissionList)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public List<String> getOrganizeIdListByAnyPermission(HttpServletRequest request,
+            SystemPermissionEnum... permissionList) {
         if (permissionList.length == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleList cannot be empty");
         }
