@@ -50,7 +50,7 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
         response.getWriter()
                 .write(this.objectMapper.writeValueAsString(this.objectMapper
                         .readTree(new String(Base64.getDecoder().decode(this.longTermTaskFormatter
-                                .formatThrowable(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hello"))),
+                                .formatThrowable(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate nonce detected"))),
                                 StandardCharsets.UTF_8))
                         .get("body")));
         response.getWriter().flush();
