@@ -3,7 +3,6 @@ package com.springboot.project.common.config;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.format.LongTermTaskFormatter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,8 +34,7 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
         if (StringUtils.isBlank(nonce)) {
             return true;
         }
-        var noneceValue = Generators.timeBasedReorderedGenerator().generate().toString();
-        if (nonceMap.putIfAbsent(nonce, noneceValue).equals(noneceValue)) {
+        if (StringUtils.isBlank(nonceMap.putIfAbsent(nonce, nonce))) {
             return true;
         }
         // Invalid nonce
@@ -50,7 +47,8 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
         response.getWriter()
                 .write(this.objectMapper.writeValueAsString(this.objectMapper
                         .readTree(new String(Base64.getDecoder().decode(this.longTermTaskFormatter
-                                .formatThrowable(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate nonce detected"))),
+                                .formatThrowable(new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                        "Duplicate nonce detected"))),
                                 StandardCharsets.UTF_8))
                         .get("body")));
         response.getWriter().flush();
