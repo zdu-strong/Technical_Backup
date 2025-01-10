@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,6 +40,7 @@ public class LongTermTaskFormatter extends BaseService {
     }
 
     @SneakyThrows
+    @Transactional(readOnly = true)
     public String formatThrowable(Throwable e) {
         var map = new HashMap<String, Object>();
         if (e instanceof ResponseStatusException) {
