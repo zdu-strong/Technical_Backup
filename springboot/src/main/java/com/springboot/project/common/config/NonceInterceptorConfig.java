@@ -83,10 +83,6 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
 
     @SneakyThrows
     private boolean writeErrorMessageToReponse(String message, HttpServletResponse response) {
-        // Invalid nonce
-        // Nonce already used
-        // Duplicate nonce detected
-        // Nonce has expired
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
