@@ -3,14 +3,15 @@ package com.springboot.project.common.config;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.constant.NonceConstant;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.properties.DateFormatProperties;
+import com.springboot.project.service.NonceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -35,7 +37,8 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
     @Autowired
     private DateFormatProperties dateFormatProperties;
 
-    private ConcurrentHashMap<String, String> nonceMap = new ConcurrentHashMap<>();
+    @Autowired
+    private NonceService nonceService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -66,11 +69,13 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
             return writeErrorMessageToReponse("Invalid nonce", response);
         }
 
-        if (StringUtils.isBlank(nonceMap.putIfAbsent(nonce, nonce))) {
-            return true;
+        try {
+            this.nonceService.create(nonce);
+        } catch (DataIntegrityViolationException | JpaSystemException e) {
+            return writeErrorMessageToReponse("Duplicate nonce detected", response);
         }
 
-        return writeErrorMessageToReponse("Duplicate nonce detected", response);
+        return true;
     }
 
     private Date convertDateStringToDate(String timestampString) {

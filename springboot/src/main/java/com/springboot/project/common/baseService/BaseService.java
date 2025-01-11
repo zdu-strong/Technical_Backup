@@ -28,6 +28,7 @@ import com.springboot.project.format.DistributedExecutionMainFormatter;
 import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
+import com.springboot.project.format.NonceFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
 import com.springboot.project.format.PermissionFormatter;
@@ -147,6 +148,9 @@ public abstract class BaseService {
 
     @Autowired
     protected LoggerFormatter loggerFormatter;
+
+    @Autowired
+    protected NonceFormatter nonceFormatter;
 
     @Autowired
     protected VerificationCodeEmailFormatter verificationCodeEmailFormatter;

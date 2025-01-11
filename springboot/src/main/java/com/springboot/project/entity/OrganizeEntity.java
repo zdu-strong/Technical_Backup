@@ -23,7 +23,8 @@ import lombok.experimental.Accessors;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = { "parentId", "name", "deactiveKey" })
 }, indexes = {
-        @Index(columnList = "parentId, isActive")
+        @Index(columnList = "parentId, isActive"),
+        @Index(columnList = "createDate, id")
 })
 public class OrganizeEntity {
 

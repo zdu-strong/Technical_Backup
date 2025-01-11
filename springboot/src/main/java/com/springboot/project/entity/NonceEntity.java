@@ -17,13 +17,13 @@ import lombok.experimental.Accessors;
 @Table(indexes = {
         @Index(columnList = "createDate, id")
 })
-public class StorageSpaceEntity {
+public class NonceEntity {
 
     @Id
     private String id;
 
     @Column(nullable = false, unique = true)
-    private String folderName;
+    private String nonce;
 
     @Column(nullable = false)
     private Date createDate;

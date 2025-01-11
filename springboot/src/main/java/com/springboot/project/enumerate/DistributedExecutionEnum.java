@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
+import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
@@ -29,6 +30,23 @@ public enum DistributedExecutionEnum {
                         1L);
                 for (var storageSpaceModel : paginationModel.getList()) {
                     SpringUtil.getBean(StorageSpaceService.class).refresh(storageSpaceModel.getFolderName());
+                }
+            }),
+
+    /**
+     * Clean outdated nonce data in the database
+     */
+    NONCE_CLEAN(
+            Duration.ofHours(12),
+            () -> {
+                var totalRecord = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalRecord();
+                return totalRecord;
+            },
+            (pageNum) -> {
+                var paginationModel = SpringUtil.getBean(NonceService.class).getNonceByPagination(pageNum,
+                        1L);
+                for (var nonceModel : paginationModel.getList()) {
+                    SpringUtil.getBean(NonceService.class).delete(nonceModel.getId());
                 }
             }),
 
