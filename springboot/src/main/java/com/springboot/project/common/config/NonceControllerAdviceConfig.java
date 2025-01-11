@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,8 +21,9 @@ import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.service.NonceService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 @ControllerAdvice
 public class NonceControllerAdviceConfig {
 
@@ -36,10 +36,13 @@ public class NonceControllerAdviceConfig {
     @Autowired
     private NonceService nonceService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @ModelAttribute
     @SneakyThrows
     public void checkNonce(@RequestHeader(name = "X-Nonce", required = false) String nonce,
-            @RequestHeader(name = "X-Timestamp", required = false) String timestampString, HttpServletRequest request) {
+            @RequestHeader(name = "X-Timestamp", required = false) String timestampString) {
         if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
             return;
         }
