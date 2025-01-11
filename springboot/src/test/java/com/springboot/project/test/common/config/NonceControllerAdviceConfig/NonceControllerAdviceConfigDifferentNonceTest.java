@@ -1,11 +1,10 @@
-package com.springboot.project.test.common.config.NonceInterceptorConfig;
+package com.springboot.project.test.common.config.NonceControllerAdviceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class NonceInterceptorConfigEmptyNonceTest extends BaseTest {
+public class NonceControllerAdviceConfigDifferentNonceTest extends BaseTest {
 
     private String nonce;
     private String timestamp;
@@ -48,6 +47,6 @@ public class NonceInterceptorConfigEmptyNonceTest extends BaseTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(13, response.getBody().length());
         assertEquals("Hello, World!", response.getBody());
-        this.nonce = StringUtils.EMPTY;
+        this.nonce = UUID.randomUUID().toString();
     }
 }

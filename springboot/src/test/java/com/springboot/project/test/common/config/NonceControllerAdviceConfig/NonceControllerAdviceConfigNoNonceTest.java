@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.config.NonceInterceptorConfig;
+package com.springboot.project.test.common.config.NonceControllerAdviceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class NonceInterceptorConfigNoNonceTest extends BaseTest {
+public class NonceControllerAdviceConfigNoNonceTest extends BaseTest {
 
     private String nonce;
     private String timestamp;

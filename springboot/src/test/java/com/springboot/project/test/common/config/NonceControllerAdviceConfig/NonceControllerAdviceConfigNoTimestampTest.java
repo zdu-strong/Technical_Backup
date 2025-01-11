@@ -1,4 +1,4 @@
-package com.springboot.project.test.common.config.NonceInterceptorConfig;
+package com.springboot.project.test.common.config.NonceControllerAdviceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class NonceInterceptorConfigTest extends BaseTest {
+public class NonceControllerAdviceConfigNoTimestampTest extends BaseTest {
 
     private String nonce;
     private String timestamp;
@@ -26,7 +26,6 @@ public class NonceInterceptorConfigTest extends BaseTest {
         URI url = new URIBuilder("/").build();
         var httpHeaders = new HttpHeaders();
         httpHeaders.set("X-Nonce", nonce);
-        httpHeaders.set("X-Timestamp", timestamp);
         ResponseEntity<String> response = this.testRestTemplate.exchange(url, HttpMethod.GET,
                 new HttpEntity<>(httpHeaders), String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -38,5 +37,14 @@ public class NonceInterceptorConfigTest extends BaseTest {
     public void beforeEach() throws URISyntaxException {
         this.nonce = UUID.randomUUID().toString();
         this.timestamp = FastDateFormat.getInstance(this.dateFormatProperties.getUTC()).format(new Date());
+        URI url = new URIBuilder("/").build();
+        var httpHeaders = new HttpHeaders();
+        httpHeaders.set("X-Nonce", nonce);
+        httpHeaders.set("X-Timestamp", timestamp);
+        ResponseEntity<String> response = this.testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<>(httpHeaders), String.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(13, response.getBody().length());
+        assertEquals("Hello, World!", response.getBody());
     }
 }

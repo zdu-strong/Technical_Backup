@@ -10,29 +10,25 @@ import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.constant.NonceConstant;
-import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.service.NonceService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 
 @Component
-public class NonceInterceptorConfig implements HandlerInterceptor {
+@ControllerAdvice
+public class NonceControllerAdviceConfig {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private LongTermTaskFormatter longTermTaskFormatter;
 
     @Autowired
     private DateFormatProperties dateFormatProperties;
@@ -40,45 +36,42 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
     @Autowired
     private NonceService nonceService;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
-        var nonce = request.getHeader("X-Nonce");
-        var timestampString = request.getHeader("X-Timestamp");
+    @ModelAttribute
+    @SneakyThrows
+    public void checkNonce(@RequestHeader(name = "X-Nonce", required = false) String nonce,
+            @RequestHeader(name = "X-Timestamp", required = false) String timestampString, HttpServletRequest request) {
         if (StringUtils.isBlank(nonce)) {
-            return true;
+            return;
         }
         if (StringUtils.isBlank(timestampString)) {
-            return true;
+            return;
         }
         if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
-            return true;
+            return;
         }
         var timestamp = convertDateStringToDate(timestampString);
         if (timestamp == null) {
-            return writeErrorMessageToReponse("Invalid timestamp", response);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid timestamp");
         }
         if (timestamp
                 .after(DateUtils.addMilliseconds(new Date(), (int) NonceConstant.NONCE_SURVIVAL_DURATION.toMillis()))) {
-            return writeErrorMessageToReponse("Nonce has expired", response);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nonce has expired");
         }
         if (timestamp.before(
                 DateUtils.addMilliseconds(new Date(), (int) -NonceConstant.NONCE_SURVIVAL_DURATION.toMillis()))) {
-            return writeErrorMessageToReponse("Nonce has expired", response);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nonce has expired");
         }
         nonce = Base64.getEncoder().encodeToString(
                 this.objectMapper.writeValueAsString(new Pair<>(timestamp, nonce)).getBytes(StandardCharsets.UTF_8));
         if (nonce.length() > 255) {
-            return writeErrorMessageToReponse("Invalid nonce", response);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid nonce");
         }
 
         try {
             this.nonceService.create(nonce);
         } catch (DataIntegrityViolationException | JpaSystemException e) {
-            return writeErrorMessageToReponse("Duplicate nonce detected", response);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate nonce detected");
         }
-
-        return true;
     }
 
     private Date convertDateStringToDate(String timestampString) {
@@ -89,30 +82,4 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
         }
     }
 
-    @SneakyThrows
-    private boolean writeErrorMessageToReponse(String message, HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter()
-                .write(this.objectMapper.writeValueAsString(this.objectMapper
-                        .readTree(new String(Base64.getDecoder().decode(this.longTermTaskFormatter
-                                .formatThrowable(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                        message))),
-                                StandardCharsets.UTF_8))
-                        .get("body")));
-        response.getWriter().flush();
-        response.getWriter().close();
-        return false;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-            ModelAndView modelAndView) throws Exception {
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-            throws Exception {
-    }
 }
