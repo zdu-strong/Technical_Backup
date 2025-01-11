@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.UUID;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class NonceInterceptorConfigNoTimestampTest extends BaseTest {
@@ -35,7 +35,7 @@ public class NonceInterceptorConfigNoTimestampTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
-        this.nonce = Generators.timeBasedReorderedGenerator().generate().toString();
+        this.nonce = UUID.randomUUID().toString();
         this.timestamp = FastDateFormat.getInstance(this.dateFormatProperties.getUTC()).format(new Date());
         URI url = new URIBuilder("/").build();
         var httpHeaders = new HttpHeaders();

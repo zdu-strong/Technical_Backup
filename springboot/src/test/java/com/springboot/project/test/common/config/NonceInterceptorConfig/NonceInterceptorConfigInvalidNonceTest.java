@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.core.Flowable;
 
@@ -37,7 +37,7 @@ public class NonceInterceptorConfigInvalidNonceTest extends BaseTest {
     @BeforeEach
     public void beforeEach() throws URISyntaxException {
         this.nonce = StringUtils.join(Flowable.range(1, 4)
-                .map(s -> Generators.timeBasedReorderedGenerator().generate().toString())
+                .map(s -> UUID.randomUUID().toString())
                 .toList()
                 .blockingGet());
         this.timestamp = FastDateFormat.getInstance(this.dateFormatProperties.getUTC()).format(new Date());
