@@ -40,13 +40,13 @@ public class NonceControllerAdviceConfig {
     @SneakyThrows
     public void checkNonce(@RequestHeader(name = "X-Nonce", required = false) String nonce,
             @RequestHeader(name = "X-Timestamp", required = false) String timestampString, HttpServletRequest request) {
+        if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
+            return;
+        }
         if (StringUtils.isBlank(nonce)) {
             return;
         }
         if (StringUtils.isBlank(timestampString)) {
-            return;
-        }
-        if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
             return;
         }
         var timestamp = convertDateStringToDate(timestampString);
