@@ -3,6 +3,7 @@ import qs from 'qs';
 import { ServerAddress } from '@/common/Server/get_server_address'
 import { GlobalUserInfo } from '@/common/Server/get_global_user_info';
 import { handleErrorWhenNotSignInToSignIn } from '@/common/Server/handleErrorWhenNotSignInToSignin';
+import { v4 } from 'uuid';
 
 axios.defaults.baseURL = ServerAddress;
 
@@ -31,6 +32,8 @@ axios.interceptors.response.use(undefined, async (error) => {
 
 axios.interceptors.request.use((config) => {
   if (config.url?.startsWith("/") || config.url?.startsWith(ServerAddress + "/") || config.url === ServerAddress) {
+    config.headers!["X-nonce"] = v4();
+    config.headers!["X-Timestamp"] = JSON.stringify(new Date()).replaceAll("\"", "");
     const accessToken = GlobalUserInfo.accessToken;
     if (accessToken) {
       config.headers!["Authorization"] = 'Bearer ' + accessToken;

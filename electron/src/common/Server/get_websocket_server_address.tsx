@@ -1,12 +1,12 @@
 import qs from 'qs';
 import { ServerAddress } from '@/common/Server/get_server_address';
-import { getAccessToken } from '@/common/Server/get_global_user_info'
+import { GlobalUserInfo } from '@/common/Server/get_global_user_info'
 
 export function getWebSocketServerAddress(url: string, params?: Record<string, any>) {
   let tempParams = {
 
   } as Record<string, any>;
-  const accessToken = getAccessToken();
+  const accessToken = GlobalUserInfo.accessToken;
   if (accessToken) {
     tempParams.accessToken = accessToken;
   }
