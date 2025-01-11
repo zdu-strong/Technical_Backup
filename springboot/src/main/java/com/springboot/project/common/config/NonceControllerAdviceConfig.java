@@ -50,9 +50,6 @@ public class NonceControllerAdviceConfig {
             return;
         }
         var timestamp = convertDateStringToDate(timestampString);
-        if (timestamp == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid timestamp");
-        }
         if (timestamp
                 .after(DateUtils.addMilliseconds(new Date(), (int) NonceConstant.NONCE_SURVIVAL_DURATION.toMillis()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nonce has expired");
@@ -78,7 +75,7 @@ public class NonceControllerAdviceConfig {
         try {
             return FastDateFormat.getInstance(this.dateFormatProperties.getUTC()).parse(timestampString);
         } catch (Throwable e) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid timestamp");
         }
     }
 
