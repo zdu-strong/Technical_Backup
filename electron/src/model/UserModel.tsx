@@ -12,27 +12,22 @@ export class UserModel {
   username!: string;
 
   @jsonMember(String)
-  publicKeyOfRSA!: string;
-
-  @jsonMember(String)
-  privateKeyOfRSA!: string;
-
-  @jsonMember(String)
   password!: string;
 
   @jsonArrayMember(UserEmailModel)
   userEmailList!: UserEmailModel[];
 
-  encryptByPublicKeyOfRSA!: (data: string) => Promise<string>;
-
-  decryptByPrivateKeyOfRSA!: (data: string) => Promise<string>;
-
-  encryptByPrivateKeyOfRSA!: (data: string) => Promise<string>;
-
-  decryptByPublicKeyOfRSA!: (data: string) => Promise<string>;
-
   @jsonMember(String)
   accessToken!: string;
+
+  @jsonMember(Boolean)
+  menuOpen!: boolean;
+
+  @jsonMember(Date)
+  createDate!: Date;
+
+  @jsonMember(Date)
+  updateDate!: Date;
 
   constructor() {
     makeAutoObservable(this);
