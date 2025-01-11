@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.GitProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.enumerate.LongTermTaskTypeEnum;
@@ -19,6 +19,7 @@ import com.springboot.project.service.DistributedExecutionMainService;
 import cn.hutool.core.thread.ThreadUtil;
 import com.springboot.project.service.DistributedExecutionDetailService;
 import io.reactivex.rxjava3.core.Flowable;
+import lombok.SneakyThrows;
 
 @Component
 public class DistributedExecutionUtil {
@@ -33,12 +34,13 @@ public class DistributedExecutionUtil {
     private LongTermTaskUtil longTermTaskUtil;
 
     @Autowired
-    private GitProperties gitProperties;
+    private ObjectMapper objectMapper;
 
+    @SneakyThrows
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
                 .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
-                .setUniqueKey(distributedExecutionEnum.name() + gitProperties.getCommitId());
+                .setUniqueKey(this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), 1)));
         this.longTermTaskUtil.run(() -> {
             this.refreshDataByDistributedExecutionEnum(
                     DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);

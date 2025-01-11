@@ -3,7 +3,6 @@ package com.springboot.project.enumerate;
 import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
@@ -83,7 +82,7 @@ public enum DistributedExecutionEnum {
     private Consumer<Long> callbackOfExecuteTask;
 
     @Getter
-    private int maxNumberOfParallel;
+    private Integer maxNumberOfParallel;
 
     private DistributedExecutionEnum(Duration theIntervalBetweenTwoExecutions,
             int maxNumberOfParallel,
