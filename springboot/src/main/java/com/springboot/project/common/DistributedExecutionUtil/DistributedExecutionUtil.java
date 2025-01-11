@@ -42,8 +42,7 @@ public class DistributedExecutionUtil {
                 .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
                 .setUniqueKey(this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), 1)));
         this.longTermTaskUtil.run(() -> {
-            this.refreshDataByDistributedExecutionEnum(
-                    DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
+            this.refreshDataByDistributedExecutionEnum(distributedExecutionEnum);
         }, null, longTermTaskUniqueKeyModel);
     }
 
