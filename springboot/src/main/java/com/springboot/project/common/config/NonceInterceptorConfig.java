@@ -51,6 +51,9 @@ public class NonceInterceptorConfig implements HandlerInterceptor {
         if (StringUtils.isBlank(timestampString)) {
             return true;
         }
+        if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
+            return true;
+        }
         var timestamp = convertDateStringToDate(timestampString);
         if (timestamp == null) {
             return writeErrorMessageToReponse("Invalid timestamp", response);
