@@ -20,6 +20,7 @@ public enum DistributedExecutionEnum {
      */
     STORAGE_SPACE_CLEAN_DATABASE_STORAGE(
             Duration.ofHours(12),
+            1,
             () -> {
                 var totalRecord = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
                         .getTotalRecord();
@@ -38,6 +39,7 @@ public enum DistributedExecutionEnum {
      */
     NONCE_CLEAN(
             Duration.ofHours(12),
+            1,
             () -> {
                 var totalRecord = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalRecord();
                 return totalRecord;
@@ -55,6 +57,7 @@ public enum DistributedExecutionEnum {
      */
     ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY(
             Duration.ofMinutes(1),
+            1,
             () -> {
                 var totalRecord = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
                         .getTotalRecord();
@@ -79,11 +82,16 @@ public enum DistributedExecutionEnum {
 
     private Consumer<Long> callbackOfExecuteTask;
 
+    @Getter
+    private int maxNumberOfParallel;
+
     private DistributedExecutionEnum(Duration theIntervalBetweenTwoExecutions,
+            int maxNumberOfParallel,
             Supplier<Long> callbackOfGetTotalRecord, Consumer<Long> callbackOfExecuteTask) {
         this.theIntervalBetweenTwoExecutions = theIntervalBetweenTwoExecutions;
         this.callbackOfGetTotalRecord = callbackOfGetTotalRecord;
         this.callbackOfExecuteTask = callbackOfExecuteTask;
+        this.maxNumberOfParallel = maxNumberOfParallel;
     }
 
     public long getTotalRecord() {

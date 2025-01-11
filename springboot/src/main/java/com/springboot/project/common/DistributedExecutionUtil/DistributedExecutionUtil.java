@@ -6,10 +6,15 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.GitProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
+
+import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
+import com.springboot.project.enumerate.LongTermTaskTypeEnum;
+import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.DistributedExecutionMainService;
 import cn.hutool.core.thread.ThreadUtil;
 import com.springboot.project.service.DistributedExecutionDetailService;
@@ -24,7 +29,23 @@ public class DistributedExecutionUtil {
     @Autowired
     private DistributedExecutionDetailService distributedExecutionTaskService;
 
+    @Autowired
+    private LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    private GitProperties gitProperties;
+
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
+        var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
+                .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
+                .setUniqueKey(distributedExecutionEnum.name() + gitProperties.getCommitId());
+        this.longTermTaskUtil.run(() -> {
+            this.refreshDataByDistributedExecutionEnum(
+                    DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
+        }, null, longTermTaskUniqueKeyModel);
+    }
+
+    private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
         var now = new Date();
         while (true) {
             // The execution time interval has not expired, take a break
