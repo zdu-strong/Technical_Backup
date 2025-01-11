@@ -43,15 +43,18 @@ public class NonceControllerAdviceConfig {
     @SneakyThrows
     public void checkNonce(@RequestHeader(name = "X-Nonce", required = false) String nonce,
             @RequestHeader(name = "X-Timestamp", required = false) String timestampString) {
-        if (StringUtils.equalsIgnoreCase(request.getRequestURI(), "/error")) {
-            return;
-        }
         if (StringUtils.isBlank(nonce)) {
             return;
         }
         if (StringUtils.isBlank(timestampString)) {
             return;
         }
+        if (request.getAttribute("X-Nonce") != null) {
+            return;
+        } else {
+            request.setAttribute("X-Nonce", nonce);
+        }
+
         var timestamp = convertDateStringToDate(timestampString);
         if (timestamp
                 .after(DateUtils.addMilliseconds(new Date(), (int) NonceConstant.NONCE_SURVIVAL_DURATION.toMillis()))) {
