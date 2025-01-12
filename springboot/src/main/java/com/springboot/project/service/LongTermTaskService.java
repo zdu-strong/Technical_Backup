@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.uuid.Generators;
+import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.entity.LongTermTaskEntity;
@@ -51,7 +52,7 @@ public class LongTermTaskService extends BaseService {
         for (var uniqueKeyJsonString : longTermTaskUniqueKeyList) {
             var longTermTaskList = this.streamAll(LongTermTaskEntity.class)
                     .where(s -> s.getUniqueKeyJsonString().equals(uniqueKeyJsonString))
-                    .where(s -> s.getUpdateDate().before(expiredDate))
+                    .where(s -> s.getUpdateDate().before(expiredDate) || s.getIsDone())
                     .toList();
             for (var longTermTask : longTermTaskList) {
                 this.remove(longTermTask);
@@ -120,6 +121,33 @@ public class LongTermTaskService extends BaseService {
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         return this.longTermTaskFormatter.format(longTermTaskEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public LongTermTaskUniqueKeyModel findOneNotRunning(LongTermTaskUniqueKeyModel... longTermTaskUniqueKey) {
+        var expiredDate = DateUtils.addMilliseconds(new Date(),
+                (int) -LongTermTaskTempWaitDurationConstant.TEMP_TASK_SURVIVAL_DURATION.toMillis());
+        for (var longTermTaskUniqueKeyList : Lists.partition(Arrays.asList(longTermTaskUniqueKey), 100)) {
+            var uniqueKeyJsonStringList = longTermTaskUniqueKeyList.stream()
+                    .map(this.longTermTaskFormatter::formatLongTermTaskUniqueKey)
+                    .distinct()
+                    .toList();
+            var runningUniqueKeyJsonStringList = this.streamAll(LongTermTaskEntity.class)
+                    .where(s -> uniqueKeyJsonStringList.contains(s.getUniqueKeyJsonString()))
+                    .where(s -> expiredDate.before(s.getUpdateDate()))
+                    .where(s -> !s.getIsDone())
+                    .select(s -> s.getUniqueKeyJsonString())
+                    .toList();
+            if (uniqueKeyJsonStringList.size() == runningUniqueKeyJsonStringList.size()) {
+                continue;
+            }
+            return longTermTaskUniqueKeyList.stream()
+                    .filter(s -> !runningUniqueKeyJsonStringList
+                            .contains(this.longTermTaskFormatter.formatLongTermTaskUniqueKey(s)))
+                    .findFirst()
+                    .get();
+        }
+        return null;
     }
 
     @Transactional(readOnly = true)

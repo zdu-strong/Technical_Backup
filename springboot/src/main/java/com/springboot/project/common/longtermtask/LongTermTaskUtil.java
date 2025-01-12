@@ -45,7 +45,8 @@ public class LongTermTaskUtil {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
         Thread.startVirtualThread(() -> {
             var subscription = Flowable
-                    .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
+                    .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(),
+                            TimeUnit.MILLISECONDS)
                     .doOnNext((a) -> {
                         Thread.startVirtualThread(() -> {
                             synchronized (idOfLongTermTask) {
@@ -71,6 +72,10 @@ public class LongTermTaskUtil {
             }
         });
         return ResponseEntity.ok(this.encryptDecryptService.encryptByAES(idOfLongTermTask));
+    }
+
+    public void runSkipWhenExists(Runnable runnable, LongTermTaskUniqueKeyModel... uniqueKey) {
+        this.run(runnable, false, null, uniqueKey);
     }
 
     public void run(

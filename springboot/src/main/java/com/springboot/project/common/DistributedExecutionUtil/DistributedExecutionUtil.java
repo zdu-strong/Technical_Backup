@@ -16,6 +16,7 @@ import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.enumerate.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.DistributedExecutionMainService;
+import com.springboot.project.service.LongTermTaskService;
 import cn.hutool.core.thread.ThreadUtil;
 import com.springboot.project.service.DistributedExecutionDetailService;
 import io.reactivex.rxjava3.core.Flowable;
@@ -36,14 +37,30 @@ public class DistributedExecutionUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private LongTermTaskService longTermTaskService;
+
     @SneakyThrows
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
-        var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
-                .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
-                .setUniqueKey(this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), 1)));
-        this.longTermTaskUtil.run(() -> {
+        var longTermTaskUniqueKeyModel = this.findOne(distributedExecutionEnum);
+        if (longTermTaskUniqueKeyModel == null) {
+            return;
+        }
+        this.longTermTaskUtil.runSkipWhenExists(() -> {
             this.refreshDataByDistributedExecutionEnum(distributedExecutionEnum);
-        }, null, longTermTaskUniqueKeyModel);
+        }, longTermTaskUniqueKeyModel);
+    }
+
+    private LongTermTaskUniqueKeyModel findOne(DistributedExecutionEnum distributedExecutionEnum) {
+        var longTermTaskUniqueKeyModelList = Flowable.range(1, distributedExecutionEnum.getMaxNumberOfParallel())
+                .map(s -> new LongTermTaskUniqueKeyModel()
+                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
+                        .setUniqueKey(
+                                this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), s))))
+                .toList()
+                .blockingGet()
+                .toArray(new LongTermTaskUniqueKeyModel[0]);
+        return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
     }
 
     private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
