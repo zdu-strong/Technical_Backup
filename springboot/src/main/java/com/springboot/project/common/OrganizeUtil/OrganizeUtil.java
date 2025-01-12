@@ -35,11 +35,11 @@ public class OrganizeUtil {
         var expectException = new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Too many requests to move the organize, please wait a minute and try again");
         var uniqueKeyList = this.getUniqueKeyList(id, parentId);
-        this.longTermTaskUtil.run(() -> {
+        this.longTermTaskUtil.runRetryWhenExists(() -> {
             this.checkUniqueKeyList(id, parentId, uniqueKeyList);
             this.organizeService.checkCanBeMoveOfOrganize(id, parentId);
             this.organizeService.move(id, parentId);
-        }, true, expectException, uniqueKeyList);
+        }, expectException, uniqueKeyList);
 
         this.refresh(id);
     }

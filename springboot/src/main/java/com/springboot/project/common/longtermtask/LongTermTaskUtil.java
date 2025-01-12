@@ -78,11 +78,10 @@ public class LongTermTaskUtil {
         this.run(runnable, false, null, uniqueKey);
     }
 
-    public void run(
-            Runnable runnable,
+    public void runRetryWhenExists(Runnable runnable,
             ResponseStatusException expectException,
             LongTermTaskUniqueKeyModel... uniqueKey) {
-        this.run(runnable, false, expectException, uniqueKey);
+        this.run(runnable, true, expectException, uniqueKey);
     }
 
     /**
@@ -94,7 +93,7 @@ public class LongTermTaskUtil {
      * @param runnable
      * @return
      */
-    public void run(
+    private void run(
             Runnable runnable,
             boolean isRetry,
             ResponseStatusException expectException,

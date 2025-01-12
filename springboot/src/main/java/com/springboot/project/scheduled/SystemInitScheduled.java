@@ -105,7 +105,7 @@ public class SystemInitScheduled {
     }
 
     private void initUserRole() {
-        this.longTermTaskUtil.run(() -> {
+        this.longTermTaskUtil.runSkipWhenExists(() -> {
             while (true) {
                 if (!permissionService.refresh()) {
                     break;
@@ -116,7 +116,7 @@ public class SystemInitScheduled {
                     break;
                 }
             }
-        }, null, new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.INIT_SYSTEM_ROLE.name())
+        }, new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.INIT_SYSTEM_ROLE.name())
                 .setUniqueKey(gitProperties.getCommitId()));
     }
 
