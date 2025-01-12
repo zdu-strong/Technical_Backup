@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import com.google.common.collect.Lists;
 import com.springboot.project.model.LoggerModel;
 import com.springboot.project.service.LoggerService;
@@ -54,7 +55,9 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                     .from(Lists.newArrayList(eventObject.getThrowableProxy().getStackTraceElementProxyArray()))
                     .select(s -> s.getSTEAsString()).toList());
             loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
-            if (loggerModel.getExceptionClassName().equals("org.springframework.web.server.ResponseStatusException")) {
+            if (loggerModel.getExceptionClassName().equals("org.springframework.web.server.ResponseStatusException")
+                    && !((ResponseStatusException) eventObject.getThrowableProxy()).getStatusCode()
+                            .is5xxServerError()) {
                 return;
             }
         }
