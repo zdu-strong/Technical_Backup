@@ -1,13 +1,13 @@
 package com.springboot.project.test.scheduled.OrganizeRelationRefreshScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+import io.reactivex.rxjava3.core.Flowable;
 
 public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
@@ -42,6 +42,21 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
             result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
             assertEquals(0, result.getTotalRecord());
             this.organizeId = parentOrganize.getId();
+        }
+        {
+            Flowable.interval(1, TimeUnit.MILLISECONDS)
+                    .concatMap(s -> {
+                        this.organizeRelationRefreshScheduled.scheduled();
+                        var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
+                        if (result.getTotalRecord() == 1) {
+                            return Flowable.just("");
+                        } else {
+                            return Flowable.empty();
+                        }
+                    })
+                    .take(1)
+                    .timeout(2, TimeUnit.MINUTES)
+                    .blockingSubscribe();
         }
     }
 

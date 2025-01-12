@@ -14,7 +14,6 @@ public class NonceScheduled {
 
     @Scheduled(initialDelay = 12 * 60 * 60 * 1000, fixedDelay = 12 * 60 * 60 * 1000)
     public void scheduled() {
-
         this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.NONCE_CLEAN);
     }
 

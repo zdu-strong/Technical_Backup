@@ -17,7 +17,6 @@ import com.springboot.project.enumerate.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.LongTermTaskService;
-import cn.hutool.core.thread.ThreadUtil;
 import com.springboot.project.service.DistributedExecutionDetailService;
 import io.reactivex.rxjava3.core.Flowable;
 import lombok.SneakyThrows;
@@ -51,39 +50,21 @@ public class DistributedExecutionUtil {
         }, longTermTaskUniqueKeyModel);
     }
 
-    private LongTermTaskUniqueKeyModel findOne(DistributedExecutionEnum distributedExecutionEnum) {
-        var longTermTaskUniqueKeyModelList = Flowable.range(1, distributedExecutionEnum.getMaxNumberOfParallel())
-                .map(s -> new LongTermTaskUniqueKeyModel()
-                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
-                        .setUniqueKey(
-                                this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), s))))
-                .toList()
-                .blockingGet()
-                .toArray(new LongTermTaskUniqueKeyModel[0]);
-        return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
-    }
-
     private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
         var now = new Date();
         while (true) {
             // The execution time interval has not expired, take a break
             var distributedExecutionMainModel = this.distributedExecutionMainService
                     .getLastSuccessDistributedExecution(distributedExecutionEnum);
-            if (distributedExecutionMainModel != null) {
-                if (!distributedExecutionMainModel.getCreateDate().before(now)) {
-                    break;
-                }
-                if (DateUtils
-                        .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
-                                (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
-                        .after(now)) {
-                    ThreadUtil.sleep(DateUtils
-                            .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
-                                    (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
-                            .getTime() - now.getTime());
-                    continue;
-                }
+            if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getCreateDate().before(now)) {
+                return;
+            } else if (distributedExecutionMainModel != null && !DateUtils
+                    .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
+                            (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
+                    .after(now)) {
+                return;
             }
+
             var distributedExecutionMainId = getId(distributedExecutionEnum);
             this.refreshSingleData(distributedExecutionMainId, distributedExecutionEnum);
         }
@@ -145,6 +126,18 @@ public class DistributedExecutionUtil {
                 this.distributedExecutionTaskService.updateByErrorMessage(id);
             }
         }
+    }
+
+    private LongTermTaskUniqueKeyModel findOne(DistributedExecutionEnum distributedExecutionEnum) {
+        var longTermTaskUniqueKeyModelList = Flowable.range(1, distributedExecutionEnum.getMaxNumberOfParallel())
+                .map(s -> new LongTermTaskUniqueKeyModel()
+                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.name())
+                        .setUniqueKey(
+                                this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), s))))
+                .toList()
+                .blockingGet()
+                .toArray(new LongTermTaskUniqueKeyModel[0]);
+        return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
     }
 
 }
