@@ -220,41 +220,33 @@ public class BaseTest {
 
     @SneakyThrows
     protected UserModel createAccountOfCompanyAdmin(String email) {
-        var password = email;
-        if (!hasExistUser(email)) {
-            signUp(email, password);
+        var userModel = createAccountOfSuperAdmin(email);
+        {
+            var company = this.organizeService
+                    .create(new OrganizeModel()
+                            .setName(Generators.timeBasedReorderedGenerator().generate().toString()));
+            userModel.getOrganizeRoleRelationList().addAll(
+                    this.roleService.getOrganizeRoleListByCompanyId(company.getId())
+                            .stream()
+                            .map(s -> new UserRoleRelationModel().setRole(s).setOrganize(company))
+                            .toList());
+            this.userService.update(userModel);
         }
-        var company = this.organizeService
-                .create(new OrganizeModel().setName(Generators.timeBasedReorderedGenerator().generate().toString()));
-        var userInfo = signIn(email, password);
-        userInfo.getUserRoleRelationList()
-                .addAll(this.roleService.getUserRoleListForSuperAdmin()
-                        .stream()
-                        .map(s -> new UserRoleRelationModel().setRole(s))
-                        .toList());
-        userInfo.getOrganizeRoleRelationList()
-                .addAll(this.roleService.getOrganizeRoleListByCompanyId(company.getId())
-                        .stream()
-                        .map(s -> new UserRoleRelationModel().setRole(s).setOrganize(company))
-                        .toList());
-        this.userService.update(userInfo);
-        return signIn(email, password);
+        return signIn(email, email);
     }
 
     @SneakyThrows
     protected UserModel createAccountOfSuperAdmin(String email) {
-        var password = email;
-        if (!hasExistUser(email)) {
-            signUp(email, password);
+        var userModel = createAccount(email);
+        {
+            userModel.getUserRoleRelationList()
+                    .addAll(this.roleService.getUserRoleListForSuperAdmin()
+                            .stream()
+                            .map(s -> new UserRoleRelationModel().setRole(s))
+                            .toList());
+            this.userService.update(userModel);
         }
-        var userInfo = signIn(email, password);
-        userInfo.getUserRoleRelationList()
-                .addAll(this.roleService.getUserRoleListForSuperAdmin()
-                        .stream()
-                        .map(s -> new UserRoleRelationModel().setRole(s))
-                        .toList());
-        this.userService.update(userInfo);
-        return signIn(email, password);
+        return signIn(email, email);
     }
 
     @SneakyThrows
