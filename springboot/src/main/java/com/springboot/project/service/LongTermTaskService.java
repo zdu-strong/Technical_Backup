@@ -124,11 +124,11 @@ public class LongTermTaskService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public LongTermTaskUniqueKeyModel findOneNotRunning(LongTermTaskUniqueKeyModel... longTermTaskUniqueKey) {
+    public LongTermTaskUniqueKeyModel findOneNotRunning(List<LongTermTaskUniqueKeyModel> longTermTaskUniqueKeyList) {
         var expiredDate = DateUtils.addMilliseconds(new Date(),
                 (int) -LongTermTaskTempWaitDurationConstant.TEMP_TASK_SURVIVAL_DURATION.toMillis());
-        for (var longTermTaskUniqueKeyList : Lists.partition(Arrays.asList(longTermTaskUniqueKey), 100)) {
-            var uniqueKeyJsonStringList = longTermTaskUniqueKeyList.stream()
+        for (var longTermTaskUniqueKeyOneList : Lists.partition(longTermTaskUniqueKeyList, 100)) {
+            var uniqueKeyJsonStringList = longTermTaskUniqueKeyOneList.stream()
                     .map(this.longTermTaskFormatter::formatLongTermTaskUniqueKey)
                     .distinct()
                     .toList();
@@ -141,7 +141,7 @@ public class LongTermTaskService extends BaseService {
             if (uniqueKeyJsonStringList.size() == runningUniqueKeyJsonStringList.size()) {
                 continue;
             }
-            return longTermTaskUniqueKeyList.stream()
+            return longTermTaskUniqueKeyOneList.stream()
                     .filter(s -> !runningUniqueKeyJsonStringList
                             .contains(this.longTermTaskFormatter.formatLongTermTaskUniqueKey(s)))
                     .findFirst()

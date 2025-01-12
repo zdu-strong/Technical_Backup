@@ -134,8 +134,7 @@ public class DistributedExecutionUtil {
                         .setUniqueKey(
                                 this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), s))))
                 .toList()
-                .blockingGet()
-                .toArray(new LongTermTaskUniqueKeyModel[0]);
+                .blockingGet();
         return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
     }
 
