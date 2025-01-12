@@ -53,7 +53,6 @@ public class DistributedExecutionUtil {
     private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
         var now = new Date();
         while (true) {
-            // The execution time interval has not expired, take a break
             var distributedExecutionMainModel = this.distributedExecutionMainService
                     .getLastDoneDistributedExecution(distributedExecutionEnum);
             if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getCreateDate().before(now)) {
