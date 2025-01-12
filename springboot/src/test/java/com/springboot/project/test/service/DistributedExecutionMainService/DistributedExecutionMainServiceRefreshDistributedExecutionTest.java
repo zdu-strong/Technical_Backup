@@ -20,7 +20,7 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void test() {
         this.distributedExecutionMainService.refreshDistributedExecution(this.distributedExecutionMainModel.getId());
         var result = this.distributedExecutionMainService
-                .getLastSuccessDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,

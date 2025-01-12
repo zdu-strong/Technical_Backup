@@ -27,13 +27,12 @@ public class DistributedExecutionMainService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public DistributedExecutionMainModel getLastSuccessDistributedExecution(
+    public DistributedExecutionMainModel getLastDoneDistributedExecution(
             DistributedExecutionEnum distributedExecutionEnum) {
         var distributedExecutionType = distributedExecutionEnum.name();
         var distributedExecutionMainModel = this.streamAll(DistributedExecutionMainEntity.class)
                 .where(s -> s.getExecutionType().equals(distributedExecutionType))
                 .where(s -> s.getIsDone())
-                .where(s -> !s.getHasError())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate())
                 .findFirst()

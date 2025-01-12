@@ -12,12 +12,12 @@ import org.springframework.core.io.ClassPathResource;
 import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class DistributedExecutionMainServiceGetLastSuccessDistributedExecutionTest extends BaseTest {
+public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest extends BaseTest {
 
     @Test
     public void test() {
         var result = this.distributedExecutionMainService
-                .getLastSuccessDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));
