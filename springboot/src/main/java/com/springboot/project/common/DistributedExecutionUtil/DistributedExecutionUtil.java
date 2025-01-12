@@ -59,7 +59,7 @@ public class DistributedExecutionUtil {
             if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getCreateDate().before(now)) {
                 return;
             } else if (distributedExecutionMainModel != null && !DateUtils
-                    .addMilliseconds(distributedExecutionMainModel.getCreateDate(),
+                    .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                             (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
                     .after(now)) {
                 return;
