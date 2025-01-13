@@ -17,17 +17,3 @@ impl PhoneEnum {
         };
     }
 }
-
-impl IPhoneModel {
-    #[async_recursion]
-    pub async fn buy(&mut self) {
-        println!("{} cost {} buy iphone", self.owner, self.price);
-    }
-}
-
-impl PixelModel {
-    #[async_recursion]
-    pub async fn buy(&mut self) {
-        println!("{} cost {} buy pixel", self.owner, self.price);
-    }
-}
