@@ -7,6 +7,6 @@ public enum LongTermTaskTypeEnum {
 
     COMMON,
     MOVE_ORGANIZE,
-    INIT_SYSTEM_ROLE,
+    INIT_SYSTEM_DATABASE_DATA,
     DISTRIBUTED_EXECUTION;
 }

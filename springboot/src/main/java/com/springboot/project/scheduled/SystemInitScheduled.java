@@ -14,6 +14,7 @@ import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.service.EncryptDecryptService;
+import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.PermissionService;
 import com.springboot.project.service.RoleService;
 import com.springboot.project.service.UserService;
@@ -48,6 +49,9 @@ public class SystemInitScheduled {
     @Autowired
     private VerificationCodeEmailService verificationCodeEmailService;
 
+    @Autowired
+    private LongTermTaskService longTermTaskService;
+
     @Getter
     private Boolean hasInit = false;
 
@@ -57,7 +61,14 @@ public class SystemInitScheduled {
             if (hasInit) {
                 return;
             }
-            this.init();
+            var uniqueKeyModel = new LongTermTaskUniqueKeyModel()
+                    .setType(LongTermTaskTypeEnum.INIT_SYSTEM_DATABASE_DATA.name())
+                    .setUniqueKey(gitProperties.getCommitId());
+            if (this.longTermTaskService.findOneNotRunning(List.of(uniqueKeyModel)) != null) {
+                this.longTermTaskUtil.runSkipWhenExists(() -> {
+                    this.init();
+                }, uniqueKeyModel);
+            }
             this.hasInit = true;
         }
     }
@@ -105,19 +116,16 @@ public class SystemInitScheduled {
     }
 
     private void initUserRole() {
-        this.longTermTaskUtil.runSkipWhenExists(() -> {
-            while (true) {
-                if (!permissionService.refresh()) {
-                    break;
-                }
+        while (true) {
+            if (!permissionService.refresh()) {
+                break;
             }
-            while (true) {
-                if (!userRoleService.refresh()) {
-                    break;
-                }
+        }
+        while (true) {
+            if (!userRoleService.refresh()) {
+                break;
             }
-        }, new LongTermTaskUniqueKeyModel().setType(LongTermTaskTypeEnum.INIT_SYSTEM_ROLE.name())
-                .setUniqueKey(gitProperties.getCommitId()));
+        }
     }
 
 }
