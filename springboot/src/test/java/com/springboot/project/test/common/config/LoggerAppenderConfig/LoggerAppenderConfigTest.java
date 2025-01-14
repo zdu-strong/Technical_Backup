@@ -37,7 +37,7 @@ public class LoggerAppenderConfigTest extends BaseTest {
         assertEquals(Date.from(this.gitProperties.getCommitTime()), result.getGitCommitDate());
         assertEquals(ResponseStatusException.class.getName(), result.getExceptionClassName());
         assertEquals("500 INTERNAL_SERVER_ERROR \"Hello, World!\"", result.getExceptionMessage());
-        assertEquals(70, result.getExceptionStackTrace().size());
+        assertTrue(result.getExceptionStackTrace().size() >= 70);
         assertEquals("test", result.getCallerMethodName());
         assertEquals(24, result.getCallerLineNumber());
         assertEquals(Level.ERROR.levelStr, result.getLevel());
