@@ -88,7 +88,7 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                 })
                 .retry()
                 .subscribe();
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        var context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLoggerList()
                 .stream()
                 .filter(logger -> Logger.ROOT_LOGGER_NAME.equals(logger.getName()))
