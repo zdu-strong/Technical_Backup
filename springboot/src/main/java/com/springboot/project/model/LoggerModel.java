@@ -17,6 +17,8 @@ public class LoggerModel {
 
     private Date createDate;
 
+    private Date updateDate;
+
     private String level;
 
     private Boolean hasException;

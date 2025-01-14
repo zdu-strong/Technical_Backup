@@ -1,14 +1,18 @@
 package com.springboot.project.test.common.config.LoggerAppenderConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+
+import ch.qos.logback.classic.Level;
 import io.reactivex.rxjava3.core.Flowable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +29,22 @@ public class LoggerAppenderConfigTest extends BaseTest {
                 .map(s -> s.getList().getFirst())
                 .blockingSingle();
         assertTrue(StringUtils.isNotBlank(result.getId()));
+        assertNotNull(result.getCreateDate());
+        assertNotNull(result.getUpdateDate());
+        assertTrue(result.getHasException());
         assertEquals("Hello, World!", result.getMessage());
+        assertEquals(this.gitProperties.getCommitId(), result.getGitCommitId());
+        assertEquals(Date.from(this.gitProperties.getCommitTime()), result.getGitCommitDate());
+        assertEquals(ResponseStatusException.class.getName(), result.getExceptionClassName());
+        assertEquals("500 INTERNAL_SERVER_ERROR \"Hello, World!\"", result.getExceptionMessage());
+        assertEquals(70, result.getExceptionStackTrace().size());
+        assertEquals("test", result.getCallerMethodName());
+        assertEquals(24, result.getCallerLineNumber());
+        assertEquals(Level.ERROR.levelStr, result.getLevel());
+        assertEquals("com.springboot.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
+                result.getLoggerName());
+        assertEquals("com.springboot.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
+                result.getCallerClassName());
     }
 
 }
