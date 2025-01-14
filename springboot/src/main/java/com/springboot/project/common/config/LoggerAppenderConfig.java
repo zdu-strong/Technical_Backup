@@ -1,6 +1,7 @@
 package com.springboot.project.common.config;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,20 +61,24 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             loggerModel.setMessage(StringUtils.EMPTY);
         }
         if (eventObject.getThrowableProxy() != null) {
-            loggerModel.setHasException(true);
-            if (StringUtils.isBlank(loggerModel.getMessage())) {
-                loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
+            if (Optional.of(eventObject.getThrowableProxy())
+                    .filter(s -> eventObject.getThrowableProxy().getClassName()
+                            .equals(ResponseStatusException.class.getName()))
+                    .map(s -> ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
+                            "throwable"))
+                    .filter(s -> s instanceof ResponseStatusException)
+                    .map(s -> (ResponseStatusException) s)
+                    .map(s -> s.getStatusCode())
+                    .filter(s -> !s.is5xxServerError())
+                    .isPresent()) {
+                return;
             }
+            loggerModel.setHasException(true);
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
             setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
-            if (loggerModel.getExceptionClassName().equals(ResponseStatusException.class.getName())
-                    && ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
-                            "throwable") instanceof ResponseStatusException
-                    && !((ResponseStatusException) ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
-                            "throwable")).getStatusCode()
-                            .is5xxServerError()) {
-                return;
+            if (StringUtils.isBlank(loggerModel.getMessage())) {
+                loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
             }
         }
 
