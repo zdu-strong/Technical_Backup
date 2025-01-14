@@ -1,7 +1,7 @@
 package com.springboot.project.common.config;
 
 import java.util.Date;
-import java.util.function.Consumer;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -21,6 +21,8 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.processors.PublishProcessor;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -31,6 +33,8 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
 
     @Autowired
     protected GitProperties gitProperties;
+
+    private final PublishProcessor<LoggerModel> subject = PublishProcessor.create();
 
     @Override
     protected void append(ILoggingEvent eventObject) {
@@ -61,6 +65,8 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
             setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
             if (loggerModel.getExceptionClassName().equals(ResponseStatusException.class.getName())
+                    && ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
+                            "throwable") instanceof ResponseStatusException
                     && !((ResponseStatusException) ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
                             "throwable")).getStatusCode()
                             .is5xxServerError()) {
@@ -69,28 +75,24 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         }
 
         setCaller(loggerModel, eventObject);
-        Thread.startVirtualThread(() -> {
-            try {
-                loggerService.createLogger(loggerModel);
-            } catch (Throwable e) {
-                // do nothing
-            }
-        });
+        subject.onNext(loggerModel);
     }
 
     @PostConstruct
     public void init() {
+        subject.delay(1, TimeUnit.MILLISECONDS)
+                .concatMap((loggerModel) -> {
+                    return Flowable.just(StringUtils.EMPTY)
+                            .map((s) -> loggerService.createLogger(loggerModel))
+                            .onErrorComplete();
+                })
+                .retry()
+                .subscribe();
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.getLoggerList().forEach(new Consumer<Logger>() {
-
-            @Override
-            public void accept(Logger logger) {
-                if (Logger.ROOT_LOGGER_NAME.equals(logger.getName())) {
-                    logger.addAppender(LoggerAppenderConfig.this);
-                }
-            }
-        });
-
+        context.getLoggerList()
+                .stream()
+                .filter(logger -> Logger.ROOT_LOGGER_NAME.equals(logger.getName()))
+                .forEach(logger -> logger.addAppender(this));
         setContext(context);
         start();
     }
