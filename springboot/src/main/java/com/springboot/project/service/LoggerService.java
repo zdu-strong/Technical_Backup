@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LoggerEntity;
 import com.springboot.project.model.LoggerModel;
+import com.springboot.project.model.PaginationModel;
+
 import lombok.SneakyThrows;
 
 @Service
@@ -33,6 +35,12 @@ public class LoggerService extends BaseService {
         this.persist(loggerEntity);
 
         return this.loggerFormatter.format(loggerEntity);
+    }
+
+    public PaginationModel<LoggerModel> searchByPagination(long pageNum, long pageSize, String message) {
+        var stream = this.streamAll(LoggerEntity.class)
+                .where(s -> s.getMessage().contains(message));
+        return new PaginationModel<>(pageNum, pageSize, stream, this.loggerFormatter::format);
     }
 
 }

@@ -1,0 +1,31 @@
+package com.springboot.project.test.common.config.LoggerAppenderConfig;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.net.URISyntaxException;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import com.springboot.project.test.common.BaseTest.BaseTest;
+import io.reactivex.rxjava3.core.Flowable;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class LoggerAppenderConfigTest extends BaseTest {
+
+    @Test
+    public void test() throws URISyntaxException {
+        log.error("Hello, World!", new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Hello, World!"));
+        var result = Flowable.interval(1, TimeUnit.MILLISECONDS)
+                .map(s -> this.loggerService.searchByPagination(1, 1, ""))
+                .filter(s -> !s.getList().isEmpty())
+                .take(1)
+                .map(s -> s.getList().getFirst())
+                .blockingSingle();
+        assertTrue(StringUtils.isNotBlank(result.getId()));
+        assertEquals("Hello, World!", result.getMessage());
+    }
+
+}

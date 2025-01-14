@@ -47,7 +47,8 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                 .setMessage(eventObject.getMessage())
                 .setHasException(false)
                 .setExceptionClassName(StringUtils.EMPTY)
-                .setExceptionMessage(StringUtils.EMPTY).setExceptionStackTrace(Lists.newArrayList())
+                .setExceptionMessage(StringUtils.EMPTY)
+                .setExceptionStackTrace(Lists.newArrayList())
                 .setLoggerName(eventObject.getLoggerName())
                 .setGitCommitId(gitProperties.getCommitId())
                 .setGitCommitDate(Date.from(gitProperties.getCommitTime()))
@@ -60,7 +61,9 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         }
         if (eventObject.getThrowableProxy() != null) {
             loggerModel.setHasException(true);
-            loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
+            if (StringUtils.isBlank(loggerModel.getMessage())) {
+                loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
+            }
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
             setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
