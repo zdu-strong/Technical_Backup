@@ -30,8 +30,8 @@ public class UserMessageService extends BaseService {
         userMessageEntity.setContent(userMessageModel.getContent());
         userMessageEntity.setIsRecall(false);
         userMessageEntity.setUser(userEntity);
-        userMessageEntity.setFolderName("");
-        userMessageEntity.setFileName("");
+        userMessageEntity.setFolderName(StringUtils.EMPTY);
+        userMessageEntity.setFileName(StringUtils.EMPTY);
         userMessageEntity.setFolderSize(0L);
 
         if (StringUtils.isNotBlank(userMessageModel.getUrl())) {
@@ -39,7 +39,7 @@ public class UserMessageService extends BaseService {
             userMessageEntity.setFolderName(storageFileModel.getFolderName())
                     .setFolderSize(storageFileModel.getFolderSize())
                     .setFileName(storageFileModel.getFileName())
-                    .setContent("");
+                    .setContent(StringUtils.EMPTY);
         }
         this.persist(userMessageEntity);
 

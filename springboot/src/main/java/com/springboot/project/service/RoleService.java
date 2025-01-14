@@ -35,7 +35,7 @@ public class RoleService extends BaseService {
         roleEntity.setUpdateDate(new Date());
         roleEntity.setName(role);
         roleEntity.setIsActive(true);
-        roleEntity.setDeactiveKey("");
+        roleEntity.setDeactiveKey(StringUtils.EMPTY);
         roleEntity.setOrganize(organizeEntity);
         this.persist(roleEntity);
 

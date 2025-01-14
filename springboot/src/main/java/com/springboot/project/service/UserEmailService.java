@@ -28,7 +28,7 @@ public class UserEmailService extends BaseService {
         userEmailEntity.setCreateDate(new Date());
         userEmailEntity.setUpdateDate(new Date());
         userEmailEntity.setIsActive(true);
-        userEmailEntity.setDeactiveKey("");
+        userEmailEntity.setDeactiveKey(StringUtils.EMPTY);
 
         this.persist(userEmailEntity);
     }

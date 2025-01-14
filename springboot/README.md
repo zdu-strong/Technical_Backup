@@ -207,7 +207,7 @@ All data can be obtained and set to the model, support any structure
                 .sortedDescendingBy(s -> s.getUpdateDate())
                 .select(s -> s.getEmail())
                 .findFirst()
-                .orElse("");
+                .orElse(StringUtils.EMPTY);
         var userModel = new UserModel().setId(userEntity.getId()).setUsername(userEntity.getUsername()).setEmail(email);
         return userModel;
     }

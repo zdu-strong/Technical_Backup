@@ -295,7 +295,7 @@ public class UserMessageWebSocket {
                 .where(s -> s.getName().equals("accessToken"))
                 .select(s -> s.getValue())
                 .findOne()
-                .orElse("");
+                .orElse(StringUtils.EMPTY);
         var request = new MockHttpServletRequest();
         var httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(accessToken);
@@ -358,7 +358,7 @@ public class UserMessageWebSocket {
 
     private void checkIsSignIn() {
         if (this.checkIsSignInPublishProcessor != null) {
-            this.checkIsSignInPublishProcessor.onNext("");
+            this.checkIsSignInPublishProcessor.onNext(StringUtils.EMPTY);
             return;
         }
         synchronized (this) {

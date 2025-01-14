@@ -2,6 +2,8 @@ package com.springboot.project.test.scheduled.OrganizeRelationRefreshScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,7 +51,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
                         this.organizeRelationRefreshScheduled.scheduled();
                         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
                         if (result.getTotalRecord() == 1) {
-                            return Flowable.just("");
+                            return Flowable.just(StringUtils.EMPTY);
                         } else {
                             return Flowable.empty();
                         }

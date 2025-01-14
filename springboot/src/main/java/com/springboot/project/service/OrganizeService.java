@@ -25,7 +25,7 @@ public class OrganizeService extends BaseService {
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setIsActive(true);
         organizeEntity
-                .setDeactiveKey("");
+                .setDeactiveKey(StringUtils.EMPTY);
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);

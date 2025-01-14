@@ -2,6 +2,7 @@ package com.springboot.project.common.config;
 
 import java.util.Date;
 import java.util.function.Consumer;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,10 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.ReflectUtil;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -38,39 +42,33 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         var loggerModel = new LoggerModel().setLevel(eventObject.getLevel().levelStr)
                 .setMessage(eventObject.getMessage())
                 .setHasException(false)
-                .setExceptionClassName("")
-                .setExceptionMessage("").setExceptionStackTrace(Lists.newArrayList())
+                .setExceptionClassName(StringUtils.EMPTY)
+                .setExceptionMessage(StringUtils.EMPTY).setExceptionStackTrace(Lists.newArrayList())
                 .setLoggerName(eventObject.getLoggerName())
                 .setGitCommitId(gitProperties.getCommitId())
-                .setGitCommitDate(Date.from(gitProperties.getCommitTime()));
+                .setGitCommitDate(Date.from(gitProperties.getCommitTime()))
+                .setCallerClassName(StringUtils.EMPTY)
+                .setCallerMethodName(StringUtils.EMPTY)
+                .setCallerLineNumber(1L);
 
         if (StringUtils.isBlank(loggerModel.getMessage())) {
-            loggerModel.setMessage("");
+            loggerModel.setMessage(StringUtils.EMPTY);
         }
         if (eventObject.getThrowableProxy() != null) {
             loggerModel.setHasException(true);
+            loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
-            loggerModel.setExceptionStackTrace(JinqStream
-                    .from(Lists.newArrayList(eventObject.getThrowableProxy().getStackTraceElementProxyArray()))
-                    .select(s -> s.getSTEAsString()).toList());
-            loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
-            if (loggerModel.getExceptionClassName().equals("org.springframework.web.server.ResponseStatusException")
-                    && !((ResponseStatusException) eventObject.getThrowableProxy()).getStatusCode()
+            setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
+            if (loggerModel.getExceptionClassName().equals(ResponseStatusException.class.getName())
+                    && !((ResponseStatusException) ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
+                            "throwable")).getStatusCode()
                             .is5xxServerError()) {
                 return;
             }
         }
 
-        var stackTraceElementList = new Throwable().getStackTrace();
-        var stackTraceElement = JinqStream.from(Lists.newArrayList(stackTraceElementList)).skip(9)
-                .findFirst().get();
-        var callerClassName = stackTraceElement.getClassName();
-        var callerMethodName = stackTraceElement.getMethodName();
-        var callerLineNumber = Integer.valueOf(stackTraceElement.getLineNumber()).longValue();
-        loggerModel.setCallerClassName(callerClassName);
-        loggerModel.setCallerMethodName(callerMethodName);
-        loggerModel.setCallerLineNumber(callerLineNumber);
+        setCaller(loggerModel, eventObject);
         Thread.startVirtualThread(() -> {
             try {
                 loggerService.createLogger(loggerModel);
@@ -95,5 +93,29 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
 
         setContext(context);
         start();
+    }
+
+    private void setCaller(LoggerModel loggerModel, ILoggingEvent eventObject) {
+        if (ArrayUtils.isEmpty(eventObject.getCallerData())) {
+            return;
+        }
+        var callData = eventObject.getCallerData()[0];
+        loggerModel.setCallerClassName(callData.getClassName());
+        loggerModel.setCallerMethodName(callData.getMethodName());
+        loggerModel.setCallerLineNumber((long) callData.getLineNumber());
+    }
+
+    private void setExceptionStackTrace(LoggerModel loggerModel, IThrowableProxy nextError) {
+        loggerModel.getExceptionStackTrace().add(
+                StrFormatter.format("{}{}: {}",
+                        loggerModel.getExceptionStackTrace().isEmpty() ? StringUtils.EMPTY : "Caused by: ",
+                        nextError.getClassName(), nextError.getMessage()));
+        loggerModel.getExceptionStackTrace().addAll(JinqStream
+                .from(Lists.newArrayList(nextError.getStackTraceElementProxyArray()))
+                .select(s -> s.getSTEAsString()).toList());
+        var cause = nextError.getCause();
+        if (cause != null) {
+            setExceptionStackTrace(loggerModel, cause);
+        }
     }
 }

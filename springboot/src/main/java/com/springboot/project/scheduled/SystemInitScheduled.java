@@ -84,7 +84,7 @@ public class SystemInitScheduled {
         var hasExists = !Flowable.fromCallable(() -> {
             return this.userService.getUserId(email);
         })
-                .onErrorReturnItem("")
+                .onErrorReturnItem(StringUtils.EMPTY)
                 .filter(s -> StringUtils.isNotBlank(s))
                 .firstElement()
                 .isEmpty()

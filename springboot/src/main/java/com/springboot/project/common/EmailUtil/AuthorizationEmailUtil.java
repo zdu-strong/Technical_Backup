@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -67,7 +68,7 @@ public class AuthorizationEmailUtil {
 
         if (!this.isDevelopmentMockModeProperties.getIsDevelopmentMockMode()) {
             this.sendEmail(email, verificationCodeEmailModel.getVerificationCode());
-            verificationCodeEmailModel.setVerificationCode("");
+            verificationCodeEmailModel.setVerificationCode(StringUtils.EMPTY);
         }
 
         return verificationCodeEmailModel;
