@@ -4,12 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
+import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
@@ -45,21 +47,28 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     @Override
     @SneakyThrows
     public void storageResource(File sourceFileOrSourceFolder, String key) {
+        var arrayDeque = new ArrayDeque<Pair<File, String>>();
+        arrayDeque.add(new Pair<>(sourceFileOrSourceFolder, key));
         var ossClient = this.getOssClientClient();
         try {
-            if (sourceFileOrSourceFolder.isDirectory()) {
-                key += "/";
-                ossClient.putObject(this.aliyunCloudStorageProperties.getBucketName(), key,
-                        new ByteArrayInputStream(new byte[] {}));
-                for (var childOfSourceFileOrSourceFolder : sourceFileOrSourceFolder.listFiles()) {
-                    this.storageResource(childOfSourceFileOrSourceFolder,
-                            key + this.getFileNameFromResource(
-                                    new FileSystemResource(childOfSourceFileOrSourceFolder)));
-                }
-            } else {
-                try (var input = new FileSystemResource(sourceFileOrSourceFolder).getInputStream()) {
+            while (!arrayDeque.isEmpty()) {
+                var pair = arrayDeque.pop();
+                sourceFileOrSourceFolder = pair.getOne();
+                key = pair.getTwo();
+
+                if (sourceFileOrSourceFolder.isDirectory()) {
+                    key += "/";
                     ossClient.putObject(this.aliyunCloudStorageProperties.getBucketName(), key,
-                            input);
+                            new ByteArrayInputStream(new byte[] {}));
+                    for (var childOfSourceFileOrSourceFolder : sourceFileOrSourceFolder.listFiles()) {
+                        arrayDeque.add(new Pair<>(childOfSourceFileOrSourceFolder, key + this.getFileNameFromResource(
+                                new FileSystemResource(childOfSourceFileOrSourceFolder))));
+                    }
+                } else {
+                    try (var input = new FileSystemResource(sourceFileOrSourceFolder).getInputStream()) {
+                        ossClient.putObject(this.aliyunCloudStorageProperties.getBucketName(), key,
+                                input);
+                    }
                 }
             }
         } finally {

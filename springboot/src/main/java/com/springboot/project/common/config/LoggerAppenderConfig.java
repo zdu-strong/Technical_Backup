@@ -44,22 +44,6 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             return;
         }
 
-        var loggerModel = new LoggerModel().setLevel(eventObject.getLevel().levelStr)
-                .setMessage(eventObject.getMessage())
-                .setHasException(false)
-                .setExceptionClassName(StringUtils.EMPTY)
-                .setExceptionMessage(StringUtils.EMPTY)
-                .setExceptionStackTrace(Lists.newArrayList())
-                .setLoggerName(eventObject.getLoggerName())
-                .setGitCommitId(gitProperties.getCommitId())
-                .setGitCommitDate(Date.from(gitProperties.getCommitTime()))
-                .setCallerClassName(StringUtils.EMPTY)
-                .setCallerMethodName(StringUtils.EMPTY)
-                .setCallerLineNumber(1L);
-
-        if (StringUtils.isBlank(loggerModel.getMessage())) {
-            loggerModel.setMessage(StringUtils.EMPTY);
-        }
         if (eventObject.getThrowableProxy() != null) {
             if (Optional.of(eventObject.getThrowableProxy())
                     .filter(s -> eventObject.getThrowableProxy().getClassName()
@@ -73,6 +57,25 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                     .isPresent()) {
                 return;
             }
+        }
+
+        var loggerModel = new LoggerModel()
+                .setLevel(eventObject.getLevel().levelStr)
+                .setMessage(Optional.ofNullable(eventObject.getMessage())
+                        .filter(StringUtils::isNotBlank)
+                        .orElse(StringUtils.EMPTY))
+                .setHasException(false)
+                .setExceptionClassName(StringUtils.EMPTY)
+                .setExceptionMessage(StringUtils.EMPTY)
+                .setExceptionStackTrace(Lists.newArrayList())
+                .setLoggerName(eventObject.getLoggerName())
+                .setGitCommitId(gitProperties.getCommitId())
+                .setGitCommitDate(Date.from(gitProperties.getCommitTime()))
+                .setCallerClassName(StringUtils.EMPTY)
+                .setCallerMethodName(StringUtils.EMPTY)
+                .setCallerLineNumber(1L);
+        setCaller(loggerModel, eventObject);
+        if (eventObject.getThrowableProxy() != null) {
             loggerModel.setHasException(true);
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
@@ -82,7 +85,6 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             }
         }
 
-        setCaller(loggerModel, eventObject);
         subject.onNext(loggerModel);
     }
 
@@ -113,16 +115,16 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
     }
 
     private void setExceptionStackTrace(LoggerModel loggerModel, IThrowableProxy nextError) {
-        loggerModel.getExceptionStackTrace().add(
-                StrFormatter.format("{}{}: {}",
-                        loggerModel.getExceptionStackTrace().isEmpty() ? StringUtils.EMPTY : "Caused by: ",
-                        nextError.getClassName(), nextError.getMessage()));
-        loggerModel.getExceptionStackTrace().addAll(JinqStream
-                .from(Lists.newArrayList(nextError.getStackTraceElementProxyArray()))
-                .select(s -> s.getSTEAsString()).toList());
-        var cause = nextError.getCause();
-        if (cause != null) {
-            setExceptionStackTrace(loggerModel, cause);
+        while (nextError != null) {
+            loggerModel.getExceptionStackTrace().add(
+                    StrFormatter.format("{}{}: {}",
+                            loggerModel.getExceptionStackTrace().isEmpty() ? StringUtils.EMPTY : "Caused by: ",
+                            nextError.getClassName(), nextError.getMessage()));
+            loggerModel.getExceptionStackTrace().addAll(JinqStream
+                    .from(Lists.newArrayList(nextError.getStackTraceElementProxyArray()))
+                    .select(s -> s.getSTEAsString()).toList());
+            nextError = nextError.getCause();
         }
     }
+
 }
