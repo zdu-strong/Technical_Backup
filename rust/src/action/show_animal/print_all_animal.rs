@@ -9,13 +9,15 @@ pub async fn print_all_animal() {
         serde_json::to_string(animal_list).unwrap()
     );
     println!(
-        "{} is {} year old",
+        "{} is {} year{} old",
         AnimalEnum::Tiger.name(),
-        AnimalEnum::Tiger.age()
+        AnimalEnum::Tiger.age(),
+        if AnimalEnum::Tiger.age() > 1 { "s" } else { "" }
     );
     println!(
-        "{} is {} years old",
+        "{} is {} year{} old",
         AnimalEnum::Dog.name(),
-        AnimalEnum::Dog.age()
+        AnimalEnum::Dog.age(),
+        if AnimalEnum::Dog.age() > 1 { "s" } else { "" }
     );
 }
