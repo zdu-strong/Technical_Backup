@@ -1,8 +1,10 @@
 use crate::model::iphone_model::IPhoneModel;
 use crate::model::pixel_model::PixelModel;
 use async_recursion::async_recursion;
+use serde::Deserialize;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PhoneEnum {
     Pixel(PixelModel),
     IPhone(IPhoneModel),

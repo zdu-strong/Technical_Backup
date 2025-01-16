@@ -4,6 +4,7 @@ use crate::action::eat_food::tom_eat_apple::tom_eat_apple;
 use crate::action::print_global_username::print_username::print_username;
 use crate::action::json_example::user_json::json_to_string;
 use crate::action::json_example::user_json::string_to_json;
+use crate::action::show_animal::print_all_animal::print_all_animal;
 pub mod model;
 pub mod enumable;
 pub mod action;
@@ -18,4 +19,5 @@ async fn main() {
     tom_eat_apple().await;
     json_to_string().await;
     string_to_json().await;
+    print_all_animal().await;
 }

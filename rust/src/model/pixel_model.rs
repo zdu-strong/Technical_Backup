@@ -1,8 +1,8 @@
+use async_recursion::async_recursion;
 use serde::Deserialize;
 use serde::Serialize;
-use async_recursion::async_recursion;
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PixelModel {
     pub price: String,
     pub owner: String,
