@@ -1,8 +1,10 @@
 package com.springboot.diff;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum SupportDatabaseTypeEnum {
 
     MYSQL("mysql", "com.mysql.cj.jdbc.Driver", "CustomMySQLDialect"),
@@ -14,11 +16,5 @@ public enum SupportDatabaseTypeEnum {
     private String type;
     private String driver;
     private String platform;
-
-    private SupportDatabaseTypeEnum(String type, String driver, String platform) {
-        this.type = type;
-        this.driver = driver;
-        this.platform = platform;
-    }
 
 }
