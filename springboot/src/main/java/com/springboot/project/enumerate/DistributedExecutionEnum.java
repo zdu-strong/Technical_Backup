@@ -9,9 +9,11 @@ import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import cn.hutool.extra.spring.SpringUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum DistributedExecutionEnum {
 
     /**
@@ -77,21 +79,12 @@ public enum DistributedExecutionEnum {
 
     private Duration theIntervalBetweenTwoExecutions;
 
-    private Supplier<Long> callbackOfGetTotalRecord;
-
-    private Consumer<Long> callbackOfExecuteTask;
-
     @Getter
     private Integer maxNumberOfParallel;
 
-    private DistributedExecutionEnum(Duration theIntervalBetweenTwoExecutions,
-            int maxNumberOfParallel,
-            Supplier<Long> callbackOfGetTotalRecord, Consumer<Long> callbackOfExecuteTask) {
-        this.theIntervalBetweenTwoExecutions = theIntervalBetweenTwoExecutions;
-        this.callbackOfGetTotalRecord = callbackOfGetTotalRecord;
-        this.callbackOfExecuteTask = callbackOfExecuteTask;
-        this.maxNumberOfParallel = maxNumberOfParallel;
-    }
+    private Supplier<Long> callbackOfGetTotalRecord;
+
+    private Consumer<Long> callbackOfExecuteTask;
 
     public long getTotalRecord() {
         return this.callbackOfGetTotalRecord.get();
