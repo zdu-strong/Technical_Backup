@@ -1,4 +1,4 @@
-import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
+import api from '@/api';
 import { encryptByPublicKeyOfRSA } from "@/common/RSAUtils";
 import { GlobalUserInfo, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
 import { UserEmailModel } from "@/model/UserEmailModel";
@@ -29,7 +29,7 @@ export async function signIn(username: string, password: string): Promise<void> 
   const { data } = await axios.post(`/sign_in/one_time_password`, null, {
     params: {
       username: username,
-      password: await encryptByPublicKeyOfRSA(password, await getKeyOfRSAPublicKey()),
+      password: await encryptByPublicKeyOfRSA(password, await api.EncryptDecrypt.getKeyOfRSAPublicKey()),
     }
   });
   const user = new TypedJSON(UserModel).parse(data)!;

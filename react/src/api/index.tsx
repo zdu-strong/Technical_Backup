@@ -5,6 +5,9 @@ import * as Resource from '@/api/Resource'
 import * as Friendship from '@/api/Friendship'
 import * as SuperAdminSystemRoleQuery from '@/api/SuperAdminUserRoleQuery'
 import * as SuperAdminUserQuery from '@/api/SuperAdminUserQuery'
+import * as EncryptDecrypt from '@/api/EncryptDecrypt'
+import * as LongTermTask from '@/api/LongTermTask'
+import * as User from '@/api/User'
 
 export default {
   Authorization,
@@ -14,9 +17,7 @@ export default {
   Resource,
   SuperAdminSystemRoleQuery,
   SuperAdminUserQuery,
+  EncryptDecrypt,
+  LongTermTask,
+  User,
 }
-
-
-
-
-
