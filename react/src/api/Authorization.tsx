@@ -8,31 +8,31 @@ import axios from "axios";
 import { TypedJSON } from "typedjson";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
-  let { data: user } = await axios.post<UserModel>(`/sign_up`, {
+  const { data } = await axios.post(`/sign_up`, {
     username: nickname,
     password: password,
     userEmailList: userEmailList,
   });
-  user = new TypedJSON(UserModel).parse(user)!;
+  const user = new TypedJSON(UserModel).parse(data)!;
   user.menuOpen = true;
   await signOut();
   await setGlobalUserInfo(user);
 }
 
 export async function sendVerificationCode(email: string) {
-  const { data } = await axios.post<VerificationCodeEmailModel>("/email/send_verification_code", null, { params: { email } });
+  const { data } = await axios.post("/email/send_verification_code", null, { params: { email } });
   return new TypedJSON(VerificationCodeEmailModel).parse(data)!;
 }
 
 export async function signIn(username: string, password: string): Promise<void> {
   await signOut();
-  let { data: user } = await axios.post<UserModel>(`/sign_in/one_time_password`, null, {
+  const { data } = await axios.post(`/sign_in/one_time_password`, null, {
     params: {
       username: username,
       password: await encryptByPublicKeyOfRSA(password, await getKeyOfRSAPublicKey()),
     }
   });
-  user = new TypedJSON(UserModel).parse(user)!;
+  const user = new TypedJSON(UserModel).parse(data)!;
   user.menuOpen = true;
   await setGlobalUserInfo(user);
 }

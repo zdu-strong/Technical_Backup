@@ -16,16 +16,16 @@ export async function deleteFromBlacklist(friendId: string) {
 }
 
 export async function getFriendList() {
-  const { data } = await axios.get<FriendshipPaginationModel>("/friendship/get_friend_list", { params: { pageNum: 1, pageSize: 100 } });
+  const { data } = await axios.get("/friendship/get_friend_list", { params: { pageNum: 1, pageSize: 100 } });
   return new TypedJSON(FriendshipPaginationModel).parse(data)!;
 }
 
 export async function getStrangerList() {
-  const { data } = await axios.get<FriendshipPaginationModel>("/friendship/get_stranger_list", { params: { pageNum: 1, pageSize: 100 } });
+  const { data } = await axios.get("/friendship/get_stranger_list", { params: { pageNum: 1, pageSize: 100 } });
   return new TypedJSON(FriendshipPaginationModel).parse(data)!;
 }
 
 export async function getFriendship(friendId: string) {
-  const { data } = await axios.get<FriendshipModel>("/friendship/get_friendship", { params: { friendId } });
+  const { data } = await axios.get("/friendship/get_friendship", { params: { friendId } });
   return new TypedJSON(FriendshipModel).parse(data)!;
 }

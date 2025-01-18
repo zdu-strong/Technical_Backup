@@ -14,6 +14,8 @@ export class PaginationModel<T> {
 
   list!: T[];
 
+  constructor();
+
   constructor(
     pageNum: number,
     pageSize: number,

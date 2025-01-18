@@ -10,7 +10,7 @@ export async function sendMessage(body: {
   content?: string,
   url?: string,
 }) {
-  const { data } = await axios.post<UserMessageModel>("/user_message/send", { content: body.content, url: body.url });
+  const { data } = await axios.post("/user_message/send", { content: body.content, url: body.url });
   return new TypedJSON(UserMessageModel).parse(data)!;
 }
 
