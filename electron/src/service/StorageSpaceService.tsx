@@ -1,4 +1,4 @@
-import { PaginationModel } from "@/model";
+import { PaginationModel } from "@/model/PaginationMode";
 import linq from "linq";
 import { v1 } from "uuid";
 import { addMilliseconds } from "date-fns";
