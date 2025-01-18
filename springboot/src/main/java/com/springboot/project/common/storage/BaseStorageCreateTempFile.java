@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jinq.tuples.Pair;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -112,30 +114,37 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
 
     @SneakyThrows
     private void writeToFolderByRelativePath(File tempFolder, String relativePathOfResource) {
-        var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
-        var request = new MockHttpServletRequest();
-        request.setRequestURI(this.getResoureUrlFromResourcePath(relativePath));
-        try (var input = this.getResourceFromRequest(request).getInputStream()) {
-            var jsonString = IOUtils.toString(input, StandardCharsets.UTF_8);
-            var nameListOfChildFileAndChildFolder = this.objectMapper.readValue(jsonString,
-                    new TypeReference<List<String>>() {
+        var arrayDeque = new ArrayDeque<Pair<File, String>>();
+        arrayDeque.add(new Pair<File, String>(tempFolder, relativePathOfResource));
+        while (!arrayDeque.isEmpty()) {
+            var pair = arrayDeque.pop();
+            tempFolder = pair.getOne();
+            relativePathOfResource = pair.getTwo();
+            var relativePath = this.getRelativePathFromResourcePath(relativePathOfResource);
+            var request = new MockHttpServletRequest();
+            request.setRequestURI(this.getResoureUrlFromResourcePath(relativePath));
+            try (var input = this.getResourceFromRequest(request).getInputStream()) {
+                var jsonString = IOUtils.toString(input, StandardCharsets.UTF_8);
+                var nameListOfChildFileAndChildFolder = this.objectMapper.readValue(jsonString,
+                        new TypeReference<List<String>>() {
 
-                    });
-            for (var nameOfChildFileAndChildFolder : nameListOfChildFileAndChildFolder) {
-                if (nameOfChildFileAndChildFolder.endsWith("/")) {
-                    var tempFolderOfChildFileAndChildFolder = new File(tempFolder, nameOfChildFileAndChildFolder);
-                    tempFolderOfChildFileAndChildFolder.mkdirs();
-                    this.writeToFolderByRelativePath(tempFolderOfChildFileAndChildFolder,
-                            Paths.get(relativePath, nameOfChildFileAndChildFolder).toString());
-                } else {
-                    var requestOfChildFileAndChildFolder = new MockHttpServletRequest();
-                    requestOfChildFileAndChildFolder.setRequestURI(this.getResoureUrlFromResourcePath(
-                            Paths.get(relativePath, nameOfChildFileAndChildFolder).toString()));
-                    try (var inputOfChildFileAndChildFolder = this
-                            .getResourceFromRequest(requestOfChildFileAndChildFolder).getInputStream()) {
-                        var tempFileOfChildFileAndChildFolder = new File(tempFolder, nameOfChildFileAndChildFolder);
-                        FileUtils.copyInputStreamToFile(inputOfChildFileAndChildFolder,
-                                tempFileOfChildFileAndChildFolder);
+                        });
+                for (var nameOfChildFileAndChildFolder : nameListOfChildFileAndChildFolder) {
+                    if (nameOfChildFileAndChildFolder.endsWith("/")) {
+                        var tempFolderOfChildFileAndChildFolder = new File(tempFolder, nameOfChildFileAndChildFolder);
+                        tempFolderOfChildFileAndChildFolder.mkdirs();
+                        arrayDeque.add(new Pair<File, String>(tempFolderOfChildFileAndChildFolder,
+                                Paths.get(relativePath, nameOfChildFileAndChildFolder).toString()));
+                    } else {
+                        var requestOfChildFileAndChildFolder = new MockHttpServletRequest();
+                        requestOfChildFileAndChildFolder.setRequestURI(this.getResoureUrlFromResourcePath(
+                                Paths.get(relativePath, nameOfChildFileAndChildFolder).toString()));
+                        try (var inputOfChildFileAndChildFolder = this
+                                .getResourceFromRequest(requestOfChildFileAndChildFolder).getInputStream()) {
+                            var tempFileOfChildFileAndChildFolder = new File(tempFolder, nameOfChildFileAndChildFolder);
+                            FileUtils.copyInputStreamToFile(inputOfChildFileAndChildFolder,
+                                    tempFileOfChildFileAndChildFolder);
+                        }
                     }
                 }
             }
