@@ -15,15 +15,18 @@ export class PaginationModel<T> {
   list!: T[];
 
   constructor(
-    pageNum: number,
-    pageSize: number,
-    stream: linq.IEnumerable<T>
+    pageNum?: number,
+    pageSize?: number,
+    stream?: linq.IEnumerable<T>
   ) {
     makeAutoObservable(this);
+    if (!(typeof pageNum === "number" && typeof pageNum === "number" && typeof stream === "object")) {
+      return;
+    }
     if (pageNum < 1) {
       throw new Error("The page number cannot be less than 1");
     }
-    if (pageSize < 1) {
+    if (pageSize! < 1) {
       throw new Error("The page size cannot be less than 1");
     }
 
@@ -31,13 +34,13 @@ export class PaginationModel<T> {
       throw new Error("The page number must be an integer");
     }
 
-    if (pageSize !== Math.floor(pageSize)) {
+    if (pageSize !== Math.floor(pageSize!)) {
       throw new Error("The page size must be an integer");
     }
 
-    const totalRecord = stream.count();
-    const totalPage = Math.ceil(mathjs.divide(Math.floor(totalRecord), Math.floor(pageSize)));
-    const list = stream
+    const totalRecord = (stream as linq.IEnumerable<T>).count();
+    const totalPage = Math.floor(mathjs.divide(totalRecord, pageSize)) + mathjs.mod(totalRecord, pageSize) > 0 ? 1 : 0;
+    const list = (stream as linq.IEnumerable<T>)
       .skip(mathjs.multiply(pageNum - 1, pageSize))
       .take(pageSize)
       .toArray();
