@@ -1,5 +1,6 @@
 package com.springboot.project.common.OrganizeUtil;
 
+import java.util.ArrayDeque;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -46,32 +47,21 @@ public class OrganizeUtil {
 
     public void refresh(String organizeId) {
         var deadline = this.getDeadline();
-        var maxDeep = 1000L;
-        this.refresh(organizeId, deadline, maxDeep);
-    }
+        var arrayDeque = new ArrayDeque<String>();
+        arrayDeque.add(organizeId);
+        while (!arrayDeque.isEmpty() && !new Date().after(deadline)) {
+            organizeId = arrayDeque.pop();
 
-    private void refresh(String organizeId, Date deadline, Long maxDeep) {
-        if (maxDeep <= 0) {
-            return;
-        }
-
-        while (true) {
-            if (new Date().after(deadline)) {
-                return;
-            }
             var hasNext = this.organizeRelationService.refresh(organizeId);
-            if (!hasNext) {
-                break;
+            if (hasNext) {
+                arrayDeque.addFirst(organizeId);
+                continue;
             }
-        }
 
-        var childIdList = this.organizeService.getChildIdList(organizeId);
-
-        for (var childId : childIdList) {
-            if (new Date().after(deadline)) {
-                return;
+            var childIdList = this.organizeService.getChildIdList(organizeId);
+            for (var childId : childIdList) {
+                arrayDeque.add(childId);
             }
-            this.refresh(childId, deadline, maxDeep - 1);
         }
     }
 
