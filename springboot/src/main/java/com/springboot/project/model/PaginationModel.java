@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
+import org.jinq.tuples.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.database.JPQLFunction;
@@ -41,18 +42,29 @@ public class PaginationModel<T> {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
-            this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
-                    .orElse(0L);
-            this.setList(
-                    stream.skip((pageNum - 1) * pageSize).limit(pageSize).toList());
+            var list = stream.select(s -> new Pair<>(JPQLFunction.foundTotalRowsForGroupBy(), s))
+                    .skip((pageNum - 1) * pageSize)
+                    .limit(pageSize)
+                    .toList();
+            if (!list.isEmpty() || pageNum == 1) {
+                this.totalRecord = JinqStream.from(list).select(Pair::getOne).findFirst().orElse(0L);
+                this.setList(list.stream().map(Pair::getTwo).toList());
+            } else {
+                this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
+                        .orElse(0L);
+                this.setList(list.stream().map(Pair::getTwo).toList());
+            }
         } else {
             var dataList = stream.select(s -> s).toList();
             this.totalRecord = Long.valueOf(dataList.size());
             this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize)
                     .toList());
         }
-        this.totalPage = new BigDecimal(this.totalRecord).divide(new BigDecimal(pageSize), 100, RoundingMode.FLOOR)
-                .setScale(0, RoundingMode.CEILING).longValue();
+
+        this.totalPage = new BigDecimal(this.totalRecord)
+                .divide(new BigDecimal(pageSize), 0, RoundingMode.FLOOR)
+                .longValue()
+                + new BigDecimal(this.totalRecord).remainder(new BigDecimal(pageSize)).compareTo(BigDecimal.ZERO);
     }
 
     public <U> PaginationModel(Long pageNum, Long pageSize, JinqStream<U> stream, Function<U, T> formatCallback) {
@@ -69,19 +81,28 @@ public class PaginationModel<T> {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
         if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
-            this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
-                    .orElse(0L);
-            this.setList(
-                    stream.skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
-                            .toList());
+            var list = stream.select(s -> new Pair<>(JPQLFunction.foundTotalRowsForGroupBy(), s))
+                    .skip((pageNum - 1) * pageSize)
+                    .limit(pageSize)
+                    .toList();
+            if (!list.isEmpty() || pageNum == 1) {
+                this.totalRecord = JinqStream.from(list).select(Pair::getOne).findFirst().orElse(0L);
+                this.setList(list.stream().map(Pair::getTwo).map(formatCallback).toList());
+            } else {
+                this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
+                        .orElse(0L);
+                this.setList(list.stream().map(Pair::getTwo).map(formatCallback).toList());
+            }
         } else {
             var dataList = stream.select(s -> s).toList();
             this.totalRecord = Long.valueOf(dataList.size());
             this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
         }
-        this.totalPage = new BigDecimal(this.totalRecord).divide(new BigDecimal(pageSize), 100, RoundingMode.FLOOR)
-                .setScale(0, RoundingMode.CEILING).longValue();
+        this.totalPage = new BigDecimal(this.totalRecord)
+                .divide(new BigDecimal(pageSize), 0, RoundingMode.FLOOR)
+                .longValue()
+                + new BigDecimal(this.totalRecord).remainder(new BigDecimal(pageSize)).compareTo(BigDecimal.ZERO);
     }
 
     private boolean isSpannerEmulator() {
