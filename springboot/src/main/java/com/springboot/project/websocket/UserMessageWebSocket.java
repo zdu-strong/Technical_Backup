@@ -68,7 +68,7 @@ public class UserMessageWebSocket {
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageReceiveDateMap = new ConcurrentHashMap<>();
     private PublishProcessor<String> checkIsSignInPublishProcessor;
-    private Session webWosketSession;
+    private Session webSocketSession;
 
     /**
      * @param session
@@ -79,7 +79,7 @@ public class UserMessageWebSocket {
         this.objectMapper = SpringUtil.getBean(ObjectMapper.class);
         this.permissionUtil = SpringUtil.getBean(PermissionUtil.class);
         this.userMessageService = SpringUtil.getBean(UserMessageService.class);
-        this.webWosketSession = session;
+        this.webSocketSession = session;
         this.request = this.getRequest(session);
         this.permissionUtil.checkIsSignIn(request);
         staticWebSocketList.add(this);
@@ -136,7 +136,7 @@ public class UserMessageWebSocket {
                     }
                 }
             } catch (Throwable e) {
-                this.OnError(this.webWosketSession, e);
+                this.OnError(this.webSocketSession, e);
             }
         });
     }
@@ -184,7 +184,7 @@ public class UserMessageWebSocket {
             }
             this.ready = true;
         } catch (Throwable e) {
-            this.OnError(webWosketSession, e);
+            this.OnError(webSocketSession, e);
         }
     }
 
@@ -315,7 +315,7 @@ public class UserMessageWebSocket {
                 && userMessageWebSocketSendNewModel.getList().isEmpty()) {
             return;
         }
-        this.webWosketSession.getBasicRemote()
+        this.webSocketSession.getBasicRemote()
                 .sendText(this.objectMapper
                         .writeValueAsString(userMessageWebSocketSendNewModel));
         for (var userMessage : userMessageWebSocketSendNewModel.getList()) {
@@ -373,7 +373,7 @@ public class UserMessageWebSocket {
                         try {
                             this.permissionUtil.checkIsSignIn(request);
                         } catch (Throwable e) {
-                            this.OnError(webWosketSession, e);
+                            this.OnError(webSocketSession, e);
                         }
                     })
                     .retry()
