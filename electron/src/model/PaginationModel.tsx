@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx-react-use-autorun';
 import linq from "linq";
 import * as mathjs from 'mathjs';
+import { jsonArrayMember, jsonMember, jsonObject, Serializable, TypedJSON } from 'typedjson';
 
 export class PaginationModel<T> {
 
@@ -14,34 +15,31 @@ export class PaginationModel<T> {
 
   list!: T[];
 
-  constructor();
-
   constructor(
     pageNum: number,
     pageSize: number,
     stream: linq.IEnumerable<T>
   );
 
-  constructor(otherPaginationModel: any);
+  constructor(jsonString: string, rootConstructor: Serializable<T>);
+
+  constructor(jsonObject: object, rootConstructor: Serializable<T>);
 
   constructor(
-    pageNum?: number,
-    pageSize?: number,
-    stream?: linq.IEnumerable<T>
+    arg1?: any,
+    arg2?: any,
+    arg3?: any
   ) {
     makeAutoObservable(this);
-    if (typeof pageNum === "object" && typeof pageSize === "undefined" && typeof stream === "undefined") {
-      const otherPaginationModel = pageNum as any;
-      this.pageNum = otherPaginationModel.pageNum;
-      this.pageSize = otherPaginationModel.pageSize;
-      this.totalRecord = otherPaginationModel.totalRecord;
-      this.totalPage = otherPaginationModel.totalPage;
-      this.list = otherPaginationModel.list;
-      if (!(typeof this.pageNum === "number" && typeof this.pageSize === "number" && typeof this.totalRecord === "number" && typeof this.totalPage === "number" && typeof this.list === "object" && this.list instanceof Array)) {
-        throw new Error("Incorrect paging behavior");
-      }
-      return;
-    }
+    this.handleStream(arg1, arg2, arg3);
+    this.handleJsonString(arg1, arg2);
+  }
+
+  private handleStream(
+    pageNum: number,
+    pageSize: number,
+    stream: linq.IEnumerable<T>
+  ) {
     if (!(typeof pageNum === "number" && typeof pageSize === "number" && typeof stream === "object")) {
       return;
     }
@@ -71,6 +69,36 @@ export class PaginationModel<T> {
     this.totalPage = totalPage;
     this.totalRecord = totalRecord;
     this.list = list;
+  }
+
+  private handleJsonString(jsonString: string, rootConstructor: Serializable<T>) {
+    if (!(["string", "object"].includes(typeof jsonString) && typeof rootConstructor === "function")) {
+      return;
+    }
+
+    @jsonObject
+    class CustomerPaginationModel {
+      @jsonMember(Number)
+      pageNum!: number;
+
+      @jsonMember(Number)
+      pageSize!: number;
+
+      @jsonMember(Number)
+      totalRecord!: number;
+
+      @jsonMember(Number)
+      totalPage!: number;
+
+      @jsonArrayMember(rootConstructor)
+      list!: T[];
+    }
+    const customerPaginationModel = new TypedJSON(CustomerPaginationModel).parse(jsonString)!;
+    this.pageNum = customerPaginationModel.pageNum;
+    this.pageSize = customerPaginationModel.pageSize;
+    this.totalPage = customerPaginationModel.totalPage;
+    this.totalRecord = customerPaginationModel.totalRecord;
+    this.list = customerPaginationModel.list;
   }
 
 }

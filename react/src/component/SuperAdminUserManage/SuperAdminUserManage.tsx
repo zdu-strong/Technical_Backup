@@ -7,10 +7,10 @@ import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { UserPaginationModel } from "@/model/UserPaginationModel";
 import { UserModel } from "@/model/UserModel";
 import SuperAdminUserDetailButton from "@/component/SuperAdminUserManage/SuperAdminUserDetailButton";
 import { FormattedMessage } from "react-intl";
+import { PaginationModel } from "@/model/PaginationModel";
 
 export default observer(() => {
 
@@ -18,7 +18,7 @@ export default observer(() => {
     ready: false,
     loading: true,
     error: null as any,
-    userPaginationModel: null as any as UserPaginationModel,
+    userPaginationModel: null as any as PaginationModel<UserModel>,
     columns: [
       {
         headerName: 'ID',

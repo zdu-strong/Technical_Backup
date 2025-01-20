@@ -1,5 +1,5 @@
 import { FriendshipModel } from "@/model/FriendshipModel";
-import { FriendshipPaginationModel } from "@/model/FriendshipPaginationModel";
+import { PaginationModel } from "@/model/PaginationModel";
 import axios from "axios";
 import { TypedJSON } from "typedjson";
 
@@ -17,12 +17,12 @@ export async function deleteFromBlacklist(friendId: string) {
 
 export async function getFriendList() {
   const { data } = await axios.get("/friendship/get_friend_list", { params: { pageNum: 1, pageSize: 100 } });
-  return new TypedJSON(FriendshipPaginationModel).parse(data)!;
+  return new PaginationModel(data, FriendshipModel);
 }
 
 export async function getStrangerList() {
   const { data } = await axios.get("/friendship/get_stranger_list", { params: { pageNum: 1, pageSize: 100 } });
-  return new TypedJSON(FriendshipPaginationModel).parse(data)!;
+  return new PaginationModel(data, FriendshipModel);
 }
 
 export async function getFriendship(friendId: string) {

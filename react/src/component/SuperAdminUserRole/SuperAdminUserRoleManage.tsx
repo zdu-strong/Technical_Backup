@@ -3,13 +3,13 @@ import { DataGrid, GridColDef, useGridApiRef } from '@mui/x-data-grid';
 import { Box, Button } from "@mui/material";
 import { format } from "date-fns";
 import { AutoSizer } from "react-virtualized";
-import { SystemRolePaginationModel } from "@/model/SystemRolePaginationModel";
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 import { SystemRoleModel } from "@/model/SystemRoleModel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FormattedMessage } from "react-intl";
+import { PaginationModel } from "@/model/PaginationModel";
 
 const columns: GridColDef<SystemRoleModel>[] = [
   {
@@ -42,7 +42,7 @@ export default observer(() => {
     ready: false,
     loading: true,
     error: null as any,
-    systemRolePaginationModel: null as any as SystemRolePaginationModel,
+    systemRolePaginationModel: null as any as PaginationModel<SystemRoleModel>,
   }, {
     dataGridRef: useGridApiRef(),
   });
