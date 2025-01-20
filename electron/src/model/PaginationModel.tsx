@@ -59,7 +59,7 @@ export class PaginationModel<T> {
     }
 
     const totalRecord = (stream as linq.IEnumerable<T>).count();
-    const totalPage = Math.floor(mathjs.divide(totalRecord, pageSize)) + mathjs.mod(totalRecord, pageSize) > 0 ? 1 : 0;
+    const totalPage = Math.floor(mathjs.divide(totalRecord, pageSize)) + (mathjs.mod(totalRecord, pageSize) > 0 ? 1 : 0);
     const list = (stream as linq.IEnumerable<T>)
       .skip(mathjs.multiply(pageNum - 1, pageSize))
       .take(pageSize)
