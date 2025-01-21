@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,18 @@ import cn.hutool.core.text.StrFormatter;
 
 @Service
 public class UserService extends BaseService {
+
+    @Autowired
+    private EncryptDecryptService encryptDecryptService;
+
+    @Autowired
+    private UserRoleRelationService userRoleRelationService;
+
+    @Autowired
+    private VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    private UserEmailService userEmailService;
 
     public UserModel create(UserModel userModel) {
         var id = newId();

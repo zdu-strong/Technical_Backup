@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
@@ -11,6 +12,9 @@ import com.springboot.project.model.DistributedExecutionDetailModel;
 
 @Service
 public class DistributedExecutionDetailService extends BaseService {
+
+    @Autowired
+    private DistributedExecutionMainService distributedExecutionMainService;
 
     public DistributedExecutionDetailModel create(
             String distributedExecutionMainId, long pageNum) {

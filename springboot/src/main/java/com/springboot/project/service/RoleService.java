@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,9 @@ import com.springboot.project.model.RoleModel;
 
 @Service
 public class RoleService extends BaseService {
+
+    @Autowired
+    private RolePermissionRelationService rolePermissionRelationService;
 
     public RoleModel create(String role, List<SystemPermissionEnum> permissionList, String organizeId) {
         var organizeEntity = Optional.ofNullable(organizeId).filter(StringUtils::isNotBlank)

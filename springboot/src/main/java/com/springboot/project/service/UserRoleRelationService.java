@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserRoleRelationService extends BaseService {
+
+    @Autowired
+    private UserService userService;
 
     public void create(String userId, String userRoleId, String organizeId) {
         var userEntity = this.streamAll(UserEntity.class)

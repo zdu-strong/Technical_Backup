@@ -40,16 +40,6 @@ import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.UserRoleRelationFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
-import com.springboot.project.service.DistributedExecutionMainService;
-import com.springboot.project.service.EncryptDecryptService;
-import com.springboot.project.service.OrganizeService;
-import com.springboot.project.service.RolePermissionRelationService;
-import com.springboot.project.service.RoleService;
-import com.springboot.project.service.UserEmailService;
-import com.springboot.project.service.UserMessageDeactivateService;
-import com.springboot.project.service.UserRoleRelationService;
-import com.springboot.project.service.UserService;
-import com.springboot.project.service.VerificationCodeEmailService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -91,36 +81,6 @@ public abstract class BaseService {
 
     @Autowired
     protected IsDevelopmentMockModeProperties isDevelopmentMockModeProperties;
-
-    @Autowired
-    protected OrganizeService organizeService;
-
-    @Autowired
-    protected UserService userService;
-
-    @Autowired
-    protected UserEmailService userEmailService;
-
-    @Autowired
-    protected EncryptDecryptService encryptDecryptService;
-
-    @Autowired
-    protected VerificationCodeEmailService verificationCodeEmailService;
-
-    @Autowired
-    protected UserMessageDeactivateService userMessageDeactivateService;
-
-    @Autowired
-    protected RolePermissionRelationService rolePermissionRelationService;
-
-    @Autowired
-    protected DistributedExecutionMainService distributedExecutionMainService;
-
-    @Autowired
-    protected RoleService roleService;
-
-    @Autowired
-    protected UserRoleRelationService userRoleRelationService;
 
     @Autowired
     protected TokenFormatter tokenFormatter;

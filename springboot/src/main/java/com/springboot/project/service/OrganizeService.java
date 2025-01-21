@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,9 @@ import com.springboot.project.model.PaginationModel;
 
 @Service
 public class OrganizeService extends BaseService {
+
+    @Autowired
+    private RoleService roleService;
 
     public OrganizeModel create(OrganizeModel organizeModel) {
         var parentOrganize = this.getParentOrganize(organizeModel);
@@ -167,7 +171,7 @@ public class OrganizeService extends BaseService {
         if (id.equals(parentId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Organize cannot be moved");
         }
-        if (this.organizeService.isChildOfOrganize(parentId, id)) {
+        if (this.isChildOfOrganize(parentId, id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Organize cannot be moved");
         }
     }

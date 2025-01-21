@@ -29,7 +29,8 @@ public class VerificationCodeEmailService extends BaseService {
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> !s.getHasUsed() || !s.getIsPassed())
                     .count();
-            if (retryCount > 1000 && verificationCodeLength < VerificationCodeEmailConstant.MAX_VERIFICATION_CODE_LENGTH) {
+            if (retryCount > 1000
+                    && verificationCodeLength < VerificationCodeEmailConstant.MAX_VERIFICATION_CODE_LENGTH) {
                 verificationCodeLength = VerificationCodeEmailConstant.MAX_VERIFICATION_CODE_LENGTH;
             }
         }
@@ -166,8 +167,7 @@ public class VerificationCodeEmailService extends BaseService {
 
         var verificationCodeEmailEntity = verificationCodeEmailEntityOptional.get();
 
-        if (!this.verificationCodeEmailService
-                .isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailEntity.getId())) {
+        if (!this.isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailEntity.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "The verification code is wrong! Email: " + verificationCodeEmailModel.getEmail() + ".");
         }

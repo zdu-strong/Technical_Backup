@@ -5,6 +5,7 @@ import java.util.Base64;
 import java.util.Date;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.TokenModel;
-
 import cn.hutool.crypto.CryptoException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class TokenService extends BaseService {
+
+    @Autowired
+    private EncryptDecryptService encryptDecryptService;
 
     public void deleteTokenEntity(String id) {
         var tokenEntity = this.streamAll(TokenEntity.class)
