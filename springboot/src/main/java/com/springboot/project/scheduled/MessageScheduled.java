@@ -15,7 +15,7 @@ public class MessageScheduled {
 
     private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
-    @Scheduled(initialDelay = 0, fixedDelay = 1)
+    @Scheduled(initialDelay = 0, fixedDelay = 10)
     public void scheduled() {
         sendMessage();
     }
