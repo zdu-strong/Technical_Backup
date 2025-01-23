@@ -19,7 +19,7 @@ public class DistributedExecutionMainServiceGetDistributedExecutionWithInprogres
     @BeforeEach
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
-        this.storageSpaceScheduled.scheduled();
+        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
     }
 
 }

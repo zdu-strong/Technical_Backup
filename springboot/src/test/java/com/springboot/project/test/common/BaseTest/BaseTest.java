@@ -11,7 +11,6 @@ import org.apache.commons.lang3.ThreadUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.apache.tika.Tika;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.devtools.remote.client.HttpHeaderInterceptor;
 import org.springframework.boot.info.GitProperties;
@@ -27,12 +26,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.DistributedExecutionUtil.DistributedExecutionUtil;
 import com.springboot.project.common.EmailUtil.AuthorizationEmailUtil;
 import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
@@ -53,8 +52,6 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.scheduled.MessageScheduled;
-import com.springboot.project.scheduled.OrganizeRelationRefreshScheduled;
-import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
 import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.DistributedExecutionDetailService;
@@ -113,6 +110,9 @@ public class BaseTest {
 
     @Autowired
     protected PermissionUtil permissionUtil;
+
+    @Autowired
+    protected DistributedExecutionUtil distributedExecutionUtil;
 
     @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
@@ -193,12 +193,6 @@ public class BaseTest {
     protected MessageScheduled messageScheduled;
 
     @Autowired
-    protected StorageSpaceScheduled storageSpaceScheduled;
-
-    @MockitoSpyBean
-    protected OrganizeRelationRefreshScheduled organizeRelationRefreshScheduled;
-
-    @Autowired
     protected SystemInitScheduled systemInitScheduled;
 
     @BeforeEach
@@ -206,7 +200,6 @@ public class BaseTest {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         this.systemInitScheduled.scheduled();
-        Mockito.doNothing().when(this.organizeRelationRefreshScheduled).scheduled();
     }
 
     @SneakyThrows

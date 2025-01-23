@@ -205,7 +205,7 @@ public class EncryptDecryptService extends BaseService {
         Flowable.interval(100, TimeUnit.MILLISECONDS)
                 .filter(s -> this.ready)
                 .take(1)
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(1, TimeUnit.DAYS)
                 .blockingSubscribe();
     }
 

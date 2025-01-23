@@ -1,13 +1,16 @@
 package com.springboot.project.scheduled;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import com.springboot.project.common.DistributedExecutionUtil.DistributedExecutionUtil;
 import com.springboot.project.common.EmailUtil.AuthorizationEmailUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
+import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.enumerate.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.model.UserEmailModel;
@@ -52,6 +55,9 @@ public class SystemInitScheduled {
     @Autowired
     private LongTermTaskService longTermTaskService;
 
+    @Autowired
+    private DistributedExecutionUtil distributedExecutionUtil;
+
     @Getter
     private Boolean hasInit = false;
 
@@ -61,6 +67,7 @@ public class SystemInitScheduled {
             if (hasInit) {
                 return;
             }
+            initDistributedExecution();
             var uniqueKeyModel = new LongTermTaskUniqueKeyModel()
                     .setType(LongTermTaskTypeEnum.INIT_SYSTEM_DATABASE_DATA.name())
                     .setUniqueKey(gitProperties.getCommitId());
@@ -125,6 +132,19 @@ public class SystemInitScheduled {
             if (!userRoleService.refresh()) {
                 break;
             }
+        }
+    }
+
+    private void initDistributedExecution() {
+        for (var distributedExecutionEnum : DistributedExecutionEnum.values()) {
+            Flowable.interval(distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis(),
+                    TimeUnit.MILLISECONDS)
+                    .doOnNext(s -> {
+                        this.distributedExecutionUtil
+                                .refreshData(distributedExecutionEnum);
+                    })
+                    .retry()
+                    .subscribe();
         }
     }
 
