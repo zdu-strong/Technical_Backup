@@ -55,6 +55,10 @@
         <org-tukaani-xz.version>1.10</org-tukaani-xz.version>
         <sneakyfun.version>1.0.0</sneakyfun.version>
         <commons-exec.version>1.4.0</commons-exec.version>
+        <deeplearning4j-core.version>1.0.0-M2.1</deeplearning4j-core.version>
+        <nd4j-native-platform.version>1.0.0-M2.1</nd4j-native-platform.version>
+        <nd4j-api.version>1.0.0-M2.1</nd4j-api.version>
+        <datavec-api.version>1.0.0-M2.1</datavec-api.version>
     </properties>
 
     <dependencies>
@@ -226,6 +230,26 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-exec</artifactId>
             <version>${commons-exec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>${deeplearning4j-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native-platform</artifactId>
+            <version>${nd4j-native-platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-api</artifactId>
+            <version>${nd4j-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.datavec</groupId>
+            <artifactId>datavec-api</artifactId>
+            <version>${datavec-api.version}</version>
         </dependency>
     </dependencies>
 
