@@ -3,3 +3,4 @@ pub mod eat_food;
 pub mod json_example;
 pub mod print_global_username;
 pub mod show_animal;
+pub mod pagination;

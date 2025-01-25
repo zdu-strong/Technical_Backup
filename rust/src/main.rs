@@ -5,6 +5,7 @@ use crate::action::print_global_username::print_username::print_username;
 use crate::action::json_example::user_json::json_to_string;
 use crate::action::json_example::user_json::string_to_json;
 use crate::action::show_animal::print_all_animal::print_all_animal;
+use crate::action::pagination::pagination::pagination_example;
 pub mod model;
 pub mod enumable;
 pub mod action;
@@ -20,4 +21,5 @@ async fn main() {
     json_to_string().await;
     string_to_json().await;
     print_all_animal().await;
+    pagination_example().await;
 }
