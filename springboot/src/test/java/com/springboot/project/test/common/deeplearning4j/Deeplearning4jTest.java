@@ -1,90 +1,81 @@
 package com.springboot.project.test.common.deeplearning4j;
 
-import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
-import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.datasets.iterator.utilty.ListDataSetIterator;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.junit.jupiter.api.Test;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import com.springboot.project.test.common.BaseTest.BaseTest;
+import cn.hutool.core.text.StrFormatter;
 import lombok.SneakyThrows;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.dataset.DataSet;
-import org.deeplearning4j.eval.Evaluation;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.Sgd;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class Deeplearning4jTest extends BaseTest {
 
     @Test
-    @SuppressWarnings("deprecation")
     @SneakyThrows
     public void test() {
-        // 定义超参数
-        int batchSize = 64; // 每次处理的样本数
-        int epochs = 5; // 训练轮数
-        int inputSize = 28 * 28; // MNIST 图像的输入大小 (28x28 像素)
-        int outputSize = 10; // 输出类别数 (数字 0-9)
+        // 1. Prepare data
+        double[][] features = new double[][] {
+                { 50 }, { 60 }, { 70 }, { 80 }, { 90 }, { 100 }, { 110 }, { 120 }, { 130 }, { 140 }
+        }; // Area (square meters)
+        double[][] labels = new double[][] {
+                { 150000 }, { 180000 }, { 210000 }, { 240000 }, { 270000 }, { 300000 }, { 330000 }, { 360000 },
+                { 390000 }, { 420000 }
+        }; // Price (in currency units)
 
-        // 加载 MNIST 数据集
-        DataSetIterator mnistTrain = new MnistDataSetIterator(batchSize, true, 12345);
-        DataSetIterator mnistTest = new MnistDataSetIterator(batchSize, false, 12345);
+        INDArray featureMatrix = Nd4j.create(features);
+        INDArray labelMatrix = Nd4j.create(labels);
 
-        // 构建神经网络
-        MultiLayerConfiguration config = new NeuralNetConfiguration.Builder()
-                .seed(123) // 随机种子，确保结果可复现
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(new Adam(0.001)) // 使用 Adam 优化器，学习率为 0.001
+        DataSet dataSet = new DataSet(featureMatrix, labelMatrix);
+
+        // Split data into mini-batches for training
+        int batchSize = 5;
+        List<DataSet> listDataSet = dataSet.asList();
+        ListDataSetIterator<DataSet> iterator = new ListDataSetIterator<>(listDataSet, batchSize);
+
+        // 2. Build the model
+        MultiLayerNetwork model = new MultiLayerNetwork(new NeuralNetConfiguration.Builder()
+                .seed(12345)
+                .updater(new Sgd(0.0000001)) // Learning rate
                 .list()
-                .layer(new DenseLayer.Builder()
-                        .nIn(inputSize) // 输入大小
-                        .nOut(128) // 第一层的神经元数量
-                        .activation(Activation.RELU) // 激活函数
+                .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+                        .nIn(1) // Number of input neurons (area)
+                        .nOut(1) // Number of output neurons (price)
+                        .activation(Activation.IDENTITY) // Linear activation function
                         .build())
-                .layer(new DenseLayer.Builder()
-                        .nIn(128) // 第二层输入大小
-                        .nOut(64) // 第二层的神经元数量
-                        .activation(Activation.RELU)
-                        .build())
-                .layer(new OutputLayer.Builder()
-                        .nIn(64) // 输出层输入大小
-                        .nOut(outputSize) // 输出类别数
-                        .activation(Activation.SOFTMAX) // Softmax 激活，用于多分类任务
-                        .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD) // 负对数似然损失函数
-                        .build())
-                .build();
+                .build());
 
-        // 初始化网络
-        MultiLayerNetwork model = new MultiLayerNetwork(config);
         model.init();
+        model.setListeners(new ScoreIterationListener(1)); // Print loss value every iteration
 
-        // 添加监听器以显示每 100 次迭代的损失值
-        model.setListeners(new ScoreIterationListener(100));
-
-        // 开始训练
-        System.out.println("Start training...");
-        for (int epoch = 1; epoch <= epochs; epoch++) {
-            model.fit(mnistTrain); // 训练网络
-            System.out.println("Epoch " + epoch + " completed.");
+        // 3. Train the model
+        int epochs = 1000;
+        for (int i = 0; i < epochs; i++) {
+            iterator.reset();
+            model.fit(iterator);
         }
 
-        // 评估模型性能
-        System.out.println("Start evaluating...");
-        var eval = new Evaluation(outputSize); // 创建评估对象
-        while (mnistTest.hasNext()) {
-            DataSet testData = mnistTest.next();
-            INDArray output = model.output(testData.getFeatures()); // 模型预测
-            eval.eval(testData.getLabels(), output); // 比较预测值与真实标签
+        // 4. Predict using the model
+        System.out.println("Area (square meters) -> Predicted Price (USD $)");
+        for (var area : List.of(55, 85, 125)) {
+            var predictedPrice = model.output(Nd4j.create(new double[][] {
+                    { area }
+            })).getDouble(0, 0);
+            // 5. Output predictions
+            System.out
+                    .println(StrFormatter.format("Area:{}(square meters) -> Predicted Price:${}",
+                            new BigDecimal(area).longValue(), new BigDecimal(predictedPrice).longValue()));
         }
-
-        // 输出评估结果
-        System.out.println(eval.stats());
-
     }
 
 }
