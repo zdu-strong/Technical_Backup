@@ -1,6 +1,6 @@
 use crate::model::user_model::UserModel;
 use async_recursion::async_recursion;
-use chrono::Utc;
+use chrono::Local;
 use uuid::Uuid;
 
 #[async_recursion]
@@ -8,8 +8,8 @@ pub async fn json_to_string() -> String {
     let ref mut user_list = [UserModel {
         id: Uuid::new_v4().to_string(),
         name: "Tom".to_string(),
-        create_date: Some(Utc::now()),
-        update_date: Some(Utc::now()),
+        create_date: Some(Local::now()),
+        update_date: Some(Local::now()),
     }]
     .to_vec();
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
@@ -22,8 +22,8 @@ pub async fn string_to_json() {
     let ref mut user_list = [UserModel {
         id: Uuid::new_v4().to_string(),
         name: "Jerry".to_string(),
-        create_date: Some(Utc::now()),
-        update_date: Some(Utc::now()),
+        create_date: Some(Local::now()),
+        update_date: Some(Local::now()),
     }]
     .to_vec();
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
