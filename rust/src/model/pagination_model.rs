@@ -2,6 +2,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct PaginationModel<T> {
     pub page_num: usize,
     pub page_size: usize,

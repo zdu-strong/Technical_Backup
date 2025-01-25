@@ -3,6 +3,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct PixelModel {
     pub price: String,
     pub owner: String,
