@@ -25,16 +25,16 @@ public class Deeplearning4jTest extends BaseTest {
     @SneakyThrows
     public void test() {
         // 1. Prepare data
-        double[][] features = new double[][] {
+        double[][] areaList = new double[][] {
                 { 50 }, { 60 }, { 70 }, { 80 }, { 90 }, { 100 }, { 110 }, { 120 }, { 130 }, { 140 }
         }; // Area (square meters)
-        double[][] labels = new double[][] {
+        double[][] priceList = new double[][] {
                 { 150000 }, { 180000 }, { 210000 }, { 240000 }, { 270000 }, { 300000 }, { 330000 }, { 360000 },
                 { 390000 }, { 420000 }
         }; // Price (in currency units)
 
-        INDArray featureMatrix = Nd4j.create(features);
-        INDArray labelMatrix = Nd4j.create(labels);
+        INDArray featureMatrix = Nd4j.create(areaList);
+        INDArray labelMatrix = Nd4j.create(priceList);
 
         DataSet dataSet = new DataSet(featureMatrix, labelMatrix);
 
