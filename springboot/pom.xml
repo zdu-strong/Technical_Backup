@@ -59,6 +59,7 @@
         <nd4j-native-platform.version>1.0.0-M2.1</nd4j-native-platform.version>
         <nd4j-api.version>1.0.0-M2.1</nd4j-api.version>
         <datavec-api.version>1.0.0-M2.1</datavec-api.version>
+        <deeplearning4j-zoo.version>1.0.0-M2.1</deeplearning4j-zoo.version>
     </properties>
 
     <dependencies>
@@ -250,6 +251,11 @@
             <groupId>org.datavec</groupId>
             <artifactId>datavec-api</artifactId>
             <version>${datavec-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-zoo</artifactId>
+            <version>${deeplearning4j-zoo.version}</version>
         </dependency>
     </dependencies>
 
