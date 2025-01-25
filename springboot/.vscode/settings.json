@@ -36,4 +36,12 @@
     "java.autobuild.enabled": true,
     "java.server.launchMode": "Standard",
     "workbench.editor.enablePreview": false,
+    "java.debug.settings.exceptionBreakpoint.skipClasses": [
+        "$JDK", // Skip the JDK classes from the default system bootstrap classpath, such as rt.jar, jrt-fs.jar.
+        "$Libraries", // Skip the classes from application libraries, such as Maven, Gradle dependencies.
+    ],
+    "java.debug.settings.stepping.skipClasses": [
+        "$JDK", // Skip the JDK classes from the default system bootstrap classpath, such as rt.jar, jrt-fs.jar.
+        "$Libraries", // Skip the classes from application libraries, such as Maven, Gradle dependencies.
+    ]
 }
