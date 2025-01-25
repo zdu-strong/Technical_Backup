@@ -15,28 +15,28 @@ jobs:
     steps:
     - uses: actions/checkout@main
     - name: Build the AliyunCloud
-      run: docker build . --file docker/src/AliyunCloud/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/AliyunCloud/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the client
-      run: docker build . --file docker/src/client/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/client/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the server
-      run: docker build . --file docker/src/server/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/server/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the ffcreator
-      run: docker build . --file docker/src/ffcreator/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/ffcreator/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the capacitor
-      run: docker build . --file docker/src/capacitor/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/capacitor/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the electron
-      run: docker build . --file docker/src/electron/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/electron/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
 
     - uses: actions/checkout@main
     - name: Build the rust
-      run: docker build . --file docker/src/rust/Dockerfile --tag my-image-name:$(date +%s) && docker image prune --all --force
+      run: docker build . --file docker/src/rust/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
