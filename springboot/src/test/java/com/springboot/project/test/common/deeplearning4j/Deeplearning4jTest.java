@@ -8,6 +8,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.NumberUtil;
 import lombok.SneakyThrows;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -15,8 +16,6 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Sgd;
-
-import java.math.BigDecimal;
 import java.util.List;
 
 public class Deeplearning4jTest extends BaseTest {
@@ -65,16 +64,17 @@ public class Deeplearning4jTest extends BaseTest {
             model.fit(iterator);
         }
 
-        // 4. Predict using the model
         System.out.println("Area (square meters) -> Predicted Price (USD $)");
         for (var area : List.of(55, 85, 125)) {
+            // 4. Predict using the model
             var predictedPrice = model.output(Nd4j.create(new double[][] {
                     { area }
             })).getDouble(0, 0);
             // 5. Output predictions
             System.out
                     .println(StrFormatter.format("Area:{}(square meters) -> Predicted Price:${}",
-                            new BigDecimal(area).longValue(), new BigDecimal(predictedPrice).longValue()));
+                            NumberUtil.decimalFormat("#,###", area),
+                            NumberUtil.decimalFormat("#,###", predictedPrice)));
         }
     }
 

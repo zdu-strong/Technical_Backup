@@ -32,6 +32,23 @@
     "java.configuration.detectJdksAtStart": true,
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     "debug.inlineValues": "on",
+    "java.maxConcurrentBuilds": 1,
+    "java.typeHierarchy.lazyLoad": false,
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": true,
+    "java.autobuild.enabled": true,
     "java.server.launchMode": "Standard",
     "workbench.editor.enablePreview": false,
+    "java.debug.settings.exceptionBreakpoint.skipClasses": [
+        "$JDK", // Skip the JDK classes from the default system bootstrap classpath, such as rt.jar, jrt-fs.jar.
+        "$Libraries", // Skip the classes from application libraries, such as Maven, Gradle dependencies.
+    ],
+    "java.debug.settings.stepping.skipClasses": [
+        "$JDK", // Skip the JDK classes from the default system bootstrap classpath, such as rt.jar, jrt-fs.jar.
+        "$Libraries", // Skip the classes from application libraries, such as Maven, Gradle dependencies.
+    ],
+    "java.debug.settings.stepping.skipConstructors": true,
+    "java.debug.settings.stepping.skipStaticInitializers": true,
+    "java.debug.settings.stepping.skipSynthetics": true,
+
 }
