@@ -1,17 +1,17 @@
 use crate::action::buy_phone::jerry_buy_phone::jerry_buy_phone;
 use crate::action::buy_phone::tom_buy_phone::tom_buy_phone;
 use crate::action::eat_food::tom_eat_apple::tom_eat_apple;
-use crate::action::print_global_username::print_username::print_username;
 use crate::action::json_example::user_json::json_to_string;
 use crate::action::json_example::user_json::string_to_json;
-use crate::action::show_animal::print_all_animal::print_all_animal;
 use crate::action::pagination::pagination::pagination_example;
-pub mod model;
-pub mod enumable;
+use crate::action::print_global_username::print_username::print_username;
+use crate::action::show_animal::print_all_animal::print_all_animal;
 pub mod action;
 pub mod constant;
+pub mod enumable;
+pub mod model;
 
-#[tokio::main]
+#[tokio::main(flavor = "multi_thread")]
 async fn main() {
     println!("Hello, world!");
     print_username().await;
