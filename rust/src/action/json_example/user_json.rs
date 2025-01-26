@@ -1,9 +1,7 @@
 use crate::model::user_model::UserModel;
-use async_recursion::async_recursion;
 use chrono::Local;
 use uuid::Uuid;
 
-#[async_recursion]
 pub async fn json_to_string() -> String {
     let ref mut user_list = [UserModel {
         id: Uuid::new_v4().to_string(),
@@ -17,7 +15,6 @@ pub async fn json_to_string() -> String {
     return json_string.clone();
 }
 
-#[async_recursion]
 pub async fn string_to_json() {
     let ref mut user_list = [UserModel {
         id: Uuid::new_v4().to_string(),

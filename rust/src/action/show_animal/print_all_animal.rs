@@ -1,7 +1,5 @@
 use crate::enumable::animal_enum::AnimalEnum;
-use async_recursion::async_recursion;
 
-#[async_recursion]
 pub async fn print_all_animal() {
     let ref mut animal_list = AnimalEnum::values();
     println!(

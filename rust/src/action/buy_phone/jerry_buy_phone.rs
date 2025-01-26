@@ -1,11 +1,9 @@
 use crate::enumable::phone_enum::PhoneEnum;
 use crate::model::iphone_model::IPhoneModel;
 use crate::model::pixel_model::PixelModel;
-use async_recursion::async_recursion;
 use futures::stream::iter;
 use futures::StreamExt;
 
-#[async_recursion]
 pub async fn jerry_buy_phone() {
     let ref mut phone_list = [
         PhoneEnum::IPhone(IPhoneModel {

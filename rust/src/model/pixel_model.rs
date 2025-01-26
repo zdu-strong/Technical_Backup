@@ -1,4 +1,3 @@
-use async_recursion::async_recursion;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -10,7 +9,6 @@ pub struct PixelModel {
 }
 
 impl PixelModel {
-    #[async_recursion]
     pub async fn buy(&mut self) {
         println!("{} cost {} buy pixel", self.owner, self.price);
     }

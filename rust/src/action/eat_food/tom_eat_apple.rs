@@ -1,7 +1,5 @@
 use crate::action::eat_food::eat_apple::eat_apple;
-use async_recursion::async_recursion;
 
-#[async_recursion]
 pub async fn tom_eat_apple() {
     let ref mut username = "tom".to_string();
     let ref mut max_apple_count = 10;
