@@ -29,7 +29,9 @@ export async function setGlobalUserInfo(user?: UserModel): Promise<void> {
   GlobalUserInfo.username = user!.username;
   GlobalUserInfo.accessToken = user!.accessToken;
   GlobalUserInfo.userEmailList = user!.userEmailList;
-  GlobalUserInfo.menuOpen = user!.menuOpen;
+  if (typeof user!.menuOpen === "boolean") {
+    GlobalUserInfo.menuOpen = user!.menuOpen;
+  }
   if (hasParam) {
     window.localStorage.setItem(keyOfGlobalUserInfoOfLocalStorage, JSON.stringify(GlobalUserInfo));
   }

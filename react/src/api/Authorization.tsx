@@ -8,14 +8,13 @@ import { TypedJSON } from "typedjson";
 import { getKeyOfRSAPublicKey } from "@/api/EncryptDecrypt";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
+  await signOut();
   const { data } = await axios.post(`/sign_up`, {
     username: nickname,
     password: password,
     userEmailList: userEmailList,
   });
   const user = new TypedJSON(UserModel).parse(data)!;
-  user.menuOpen = true;
-  await signOut();
   await setGlobalUserInfo(user);
 }
 
@@ -33,7 +32,6 @@ export async function signIn(username: string, password: string): Promise<void> 
     }
   });
   const user = new TypedJSON(UserModel).parse(data)!;
-  user.menuOpen = true;
   await setGlobalUserInfo(user);
 }
 
