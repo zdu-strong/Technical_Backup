@@ -1,27 +1,25 @@
 use serde::Deserialize;
 use serde::Serialize;
-use strum::IntoEnumIterator;
+use strum_macros::AsRefStr;
 use strum_macros::EnumIter;
+use strum_macros::EnumString;
 
-#[derive(Debug, Clone, Serialize, Deserialize, EnumIter)]
+#[derive(Debug, Clone, Serialize, Deserialize, EnumIter, EnumString, AsRefStr)]
 #[serde(rename_all = "camelCase")]
 pub enum AnimalEnum {
-    Tiger = 1,
-    Dog = 2,
+    #[strum(serialize = "tiger")]
+    Tiger,
+
+    #[strum(serialize = "dog")]
+    Dog,
 }
 
 impl AnimalEnum {
-    pub fn values() -> Vec<AnimalEnum> {
-        AnimalEnum::iter().collect::<Vec<_>>()
-    }
+    // pub fn values() -> Vec<AnimalEnum> {
+    //     AnimalEnum::iter().collect::<Vec<_>>()
+    // }
 
-    pub fn of(id: usize) -> AnimalEnum {
-        AnimalEnum::values()
-            .into_iter()
-            .filter(|s| (s.clone() as usize) == id)
-            .next()
-            .unwrap()
-    }
+   
 
     pub fn name(&mut self) -> String {
         return match self {

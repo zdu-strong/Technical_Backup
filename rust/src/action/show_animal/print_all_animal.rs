@@ -1,10 +1,16 @@
 use crate::enumable::animal_enum::AnimalEnum;
+use strum::IntoEnumIterator;
 
 pub async fn print_all_animal() {
-    let ref mut animal_list = AnimalEnum::values();
+    let ref mut animal_list = AnimalEnum::iter().collect::<Vec<_>>();
     println!(
         "All animal is {}",
         serde_json::to_string(animal_list).unwrap()
+    );
+    println!(
+        "dog to string: {}, string to dog: {}",
+        AnimalEnum::Dog.as_ref(),
+        ("dog".parse::<AnimalEnum>().unwrap()).as_ref()
     );
     println!(
         "{} is {} year{} old",
