@@ -7,10 +7,10 @@ use strum_macros::EnumString;
 #[derive(Debug, Clone, Serialize, Deserialize, EnumIter, EnumString, AsRefStr)]
 #[serde(rename_all = "camelCase")]
 pub enum AnimalEnum {
-    #[strum(serialize = "tiger")]
+    #[strum(serialize = "1")]
     Tiger,
 
-    #[strum(serialize = "dog")]
+    #[strum(serialize = "2")]
     Dog,
 }
 
