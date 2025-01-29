@@ -10,7 +10,7 @@ pub async fn print_all_animal() {
     println!(
         "dog to string: {}, string to dog: {}",
         AnimalEnum::Dog.as_ref(),
-        ("1".parse::<AnimalEnum>().unwrap()).as_ref()
+        ("DOG".parse::<AnimalEnum>().unwrap()).as_ref()
     );
     println!(
         "{} is {} year{} old",
