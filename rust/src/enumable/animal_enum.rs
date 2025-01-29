@@ -1,7 +1,9 @@
 use serde::Deserialize;
 use serde::Serialize;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, EnumIter)]
 #[serde(rename_all = "camelCase")]
 pub enum AnimalEnum {
     Tiger,
@@ -10,11 +12,9 @@ pub enum AnimalEnum {
 
 impl AnimalEnum {
     pub fn values() -> Vec<AnimalEnum> {
-        return [AnimalEnum::Tiger, AnimalEnum::Dog].to_vec();
+        AnimalEnum::iter().collect::<Vec<_>>()
     }
-}
 
-impl AnimalEnum {
     pub fn name(&mut self) -> String {
         return match self {
             AnimalEnum::Tiger => "Tiger".to_string(),
