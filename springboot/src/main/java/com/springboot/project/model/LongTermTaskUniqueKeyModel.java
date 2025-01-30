@@ -1,5 +1,6 @@
 package com.springboot.project.model;
 
+import com.springboot.project.enumerate.LongTermTaskTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -9,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class LongTermTaskUniqueKeyModel {
 
-    private String type;
+    private LongTermTaskTypeEnum type;
 
     private String uniqueKey;
 
