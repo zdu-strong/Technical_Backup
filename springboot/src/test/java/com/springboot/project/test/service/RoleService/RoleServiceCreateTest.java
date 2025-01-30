@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class RoleServiceCreateTest extends BaseTest {

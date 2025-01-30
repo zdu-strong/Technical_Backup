@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.springboot.project.common.baseController.BaseController;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 import com.springboot.project.model.RoleModel;
 
 @RestController

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.fasterxml.uuid.Generators;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 

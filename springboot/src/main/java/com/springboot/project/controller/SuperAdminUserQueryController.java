@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.springboot.project.common.baseController.BaseController;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 
 @RestController
 public class SuperAdminUserQueryController extends BaseController {

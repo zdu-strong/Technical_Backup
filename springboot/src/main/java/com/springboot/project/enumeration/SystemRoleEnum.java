@@ -1,4 +1,4 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.enumeration;
 
 import java.util.Arrays;
 import java.util.List;

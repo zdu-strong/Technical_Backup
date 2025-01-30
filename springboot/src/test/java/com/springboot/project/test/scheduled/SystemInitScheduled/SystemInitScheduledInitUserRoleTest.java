@@ -5,8 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.enumerate.SystemPermissionEnum;
-import com.springboot.project.enumerate.SystemRoleEnum;
+
+import com.springboot.project.enumeration.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemRoleEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class SystemInitScheduledInitUserRoleTest extends BaseTest {

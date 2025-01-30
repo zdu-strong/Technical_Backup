@@ -1,4 +1,4 @@
-package com.springboot.project.enumerate;
+package com.springboot.project.enumeration;
 
 import java.time.Duration;
 import java.util.function.Consumer;

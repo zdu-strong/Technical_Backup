@@ -6,7 +6,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.enumerate.DistributedExecutionEnum;
+
+import com.springboot.project.enumeration.DistributedExecutionEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.core.Flowable;

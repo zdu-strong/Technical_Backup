@@ -4,7 +4,7 @@ import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 
 @Service
 public class RolePermissionRelationService extends BaseService {

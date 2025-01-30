@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import com.springboot.project.enumerate.DistributedExecutionEnum;
+
+import com.springboot.project.enumeration.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class DistributedExecutionMainServiceCreateTest extends BaseTest {

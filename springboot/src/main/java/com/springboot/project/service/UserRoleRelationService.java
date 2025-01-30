@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumerate.SystemPermissionEnum;
+import com.springboot.project.enumeration.SystemPermissionEnum;
 import com.springboot.project.model.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 
