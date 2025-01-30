@@ -1,9 +1,7 @@
 package com.springboot.project.enumerate;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
 public enum LongTermTaskTypeEnum {
 
@@ -12,6 +10,6 @@ public enum LongTermTaskTypeEnum {
     INIT_SYSTEM_DATABASE_DATA("INIT_SYSTEM_DATABASE_DATA"),
     DISTRIBUTED_EXECUTION("DISTRIBUTED_EXECUTION");
 
-    private String value;
+    public String value;
 
 }
