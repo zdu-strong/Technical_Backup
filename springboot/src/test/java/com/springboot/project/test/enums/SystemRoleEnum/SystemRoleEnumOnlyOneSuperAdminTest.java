@@ -1,4 +1,4 @@
-package com.springboot.project.test.enumerate.SystemRoleEnum;
+package com.springboot.project.test.enums.SystemRoleEnum;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
