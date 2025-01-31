@@ -1,4 +1,4 @@
-use crate::enumable::animal_enum::AnimalEnum;
+use crate::enums::animal_enum::AnimalEnum;
 use strum::IntoEnumIterator;
 
 pub async fn print_all_animal() {

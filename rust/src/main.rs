@@ -8,7 +8,7 @@ use crate::action::print_global_username::print_username::print_username;
 use crate::action::show_animal::print_all_animal::print_all_animal;
 pub mod action;
 pub mod constant;
-pub mod enumable;
+pub mod enums;
 pub mod model;
 
 #[tokio::main(flavor = "multi_thread")]
