@@ -10,6 +10,7 @@ pub mod action;
 pub mod constant;
 pub mod enums;
 pub mod model;
+pub mod service;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() {

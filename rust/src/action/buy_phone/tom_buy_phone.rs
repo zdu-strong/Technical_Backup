@@ -1,14 +1,14 @@
-use crate::model::phone_trait::PhoneTrait;
-use crate::model::iphone_model::IPhoneModel;
-use crate::model::pixel_model::PixelModel;
+use crate::service::phone_service::iphone_service::IPhoneService;
+use crate::service::phone_service::phone_service::PhoneService;
+use crate::service::phone_service::pixel_service::PixelService;
 
 pub async fn tom_buy_phone() {
     let ref mut phone_list = [
-        PhoneTrait::IPhone(IPhoneModel {
+        PhoneService::IPhone(IPhoneService {
             price: "10,000".to_string(),
             owner: "Tom".to_string(),
         }),
-        PhoneTrait::Pixel(PixelModel {
+        PhoneService::Pixel(PixelService {
             price: "3,000".to_string(),
             owner: "Tom".to_string(),
         }),
