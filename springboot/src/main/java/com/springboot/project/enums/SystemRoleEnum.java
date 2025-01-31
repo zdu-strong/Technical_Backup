@@ -20,7 +20,7 @@ public enum SystemRoleEnum {
 
     private List<SystemPermissionEnum> permissionList;
 
-    public static SystemRoleEnum parseValue(String value) {
+    public static SystemRoleEnum parse(String value) {
         return Optional.ofNullable(EnumUtil.getBy(SystemRoleEnum::getValue, value)).get();
     }
 

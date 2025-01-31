@@ -16,7 +16,7 @@ public enum LongTermTaskTypeEnum {
 
     public String value;
 
-    public static LongTermTaskTypeEnum parseValue(String value) {
+    public static LongTermTaskTypeEnum parse(String value) {
         return Optional.ofNullable(EnumUtil.getBy(LongTermTaskTypeEnum::getValue, value)).get();
     }
 

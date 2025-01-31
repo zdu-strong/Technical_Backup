@@ -66,7 +66,7 @@ public class RoleService extends BaseService {
             this.remove(rolePermissionRelationEntity);
         }
         for (var permissionEnum : roleModel.getPermissionList().stream()
-                .map(s -> SystemPermissionEnum.parseValue(s.getName()))
+                .map(s -> SystemPermissionEnum.parse(s.getName()))
                 .toList()) {
             this.rolePermissionRelationService.create(id, permissionEnum);
         }

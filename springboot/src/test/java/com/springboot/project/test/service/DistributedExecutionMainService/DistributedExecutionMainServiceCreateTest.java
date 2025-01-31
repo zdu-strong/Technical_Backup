@@ -20,7 +20,7 @@ public class DistributedExecutionMainServiceCreateTest extends BaseTest {
                 .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
-                DistributedExecutionEnum.parseValue(result.getExecutionType()));
+                DistributedExecutionEnum.parse(result.getExecutionType()));
         assertFalse(result.getIsDone());
         assertFalse(result.getHasError());
         assertEquals(1, result.getTotalRecord());

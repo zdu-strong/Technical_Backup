@@ -17,7 +17,7 @@ public enum SystemPermissionEnum {
     private Boolean isSuperAdmin;
     private Boolean isOrganizeRole;
 
-    public static SystemPermissionEnum parseValue(String value) {
+    public static SystemPermissionEnum parse(String value) {
         return Optional.ofNullable(EnumUtil.getBy(SystemPermissionEnum::getValue, value)).get();
     }
 }

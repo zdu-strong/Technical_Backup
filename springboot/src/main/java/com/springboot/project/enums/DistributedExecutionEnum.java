@@ -110,7 +110,7 @@ public enum DistributedExecutionEnum {
         return this.theIntervalBetweenTwoExecutions;
     }
 
-    public static DistributedExecutionEnum parseValue(String value) {
+    public static DistributedExecutionEnum parse(String value) {
         return Optional.ofNullable(EnumUtil.getBy(DistributedExecutionEnum::getValue, value)).get();
     }
 
