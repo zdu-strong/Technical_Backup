@@ -8,10 +8,10 @@ use strum_macros::EnumString;
 #[serde(rename_all = "camelCase")]
 pub enum AnimalEnum {
     #[strum(serialize = "TIGER")]
-    Tiger,
+    TIGER,
 
     #[strum(serialize = "DOG")]
-    Dog,
+    DOG,
 }
 
 impl AnimalEnum {
