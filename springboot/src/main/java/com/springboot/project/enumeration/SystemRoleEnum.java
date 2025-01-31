@@ -2,6 +2,7 @@ package com.springboot.project.enumeration;
 
 import java.util.Arrays;
 import java.util.List;
+import org.jinq.orm.stream.JinqStream;
 import lombok.Getter;
 
 @Getter
@@ -21,6 +22,12 @@ public enum SystemRoleEnum {
         this.value = value;
         this.isOrganizeRole = isOrganizeRole;
         this.permissionList = Arrays.asList(permissionArray);
+    }
+
+    public static SystemRoleEnum parseValue(String value) {
+        return JinqStream.from(List.of(SystemRoleEnum.values()))
+                .where(s -> s.getValue().equals(value))
+                .getOnlyValue();
     }
 
 }

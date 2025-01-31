@@ -1,8 +1,12 @@
 package com.springboot.project.enumeration;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.jinq.orm.stream.JinqStream;
+
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
@@ -20,6 +24,7 @@ public enum DistributedExecutionEnum {
      * Storage space cleans up the stored data in the database
      */
     STORAGE_SPACE_CLEAN_DATABASE_STORAGE(
+            "STORAGE_SPACE_CLEAN",
             Duration.ofHours(12),
             1,
             () -> {
@@ -39,6 +44,7 @@ public enum DistributedExecutionEnum {
      * Clean outdated nonce data in the database
      */
     NONCE_CLEAN(
+            "NONCE_CLEAN",
             Duration.ofHours(12),
             1,
             () -> {
@@ -57,6 +63,7 @@ public enum DistributedExecutionEnum {
      * The OrganizeEntity refreshes the data of the OrganizeRelationEntity.
      */
     ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY(
+            "ORGANIZE_CLOSURE_REFRESH",
             Duration.ofMinutes(1),
             1,
             () -> {
@@ -76,6 +83,9 @@ public enum DistributedExecutionEnum {
                     }
                 }
             });
+
+    @Getter
+    private String value;
 
     private Duration theIntervalBetweenTwoExecutions;
 
@@ -101,6 +111,12 @@ public enum DistributedExecutionEnum {
             }
         }
         return this.theIntervalBetweenTwoExecutions;
+    }
+
+    public static DistributedExecutionEnum parseValue(String value) {
+        return JinqStream.from(List.of(DistributedExecutionEnum.values()))
+                .where(s -> s.getValue().equals(value))
+                .getOnlyValue();
     }
 
 }

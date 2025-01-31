@@ -1,8 +1,13 @@
 package com.springboot.project.enumeration;
 
+import java.util.List;
+import org.jinq.orm.stream.JinqStream;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
+
 public enum LongTermTaskTypeEnum {
 
     COMMON("COMMON"),
@@ -11,5 +16,11 @@ public enum LongTermTaskTypeEnum {
     DISTRIBUTED_EXECUTION("DISTRIBUTED_EXECUTION");
 
     public String value;
+
+    public static LongTermTaskTypeEnum parseValue(String value) {
+        return JinqStream.from(List.of(LongTermTaskTypeEnum.values()))
+                .where(s -> s.getValue().equals(value))
+                .getOnlyValue();
+    }
 
 }
