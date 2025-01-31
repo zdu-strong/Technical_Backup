@@ -5,16 +5,16 @@ use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub enum PhoneEnum {
+pub enum PhoneTrait {
     Pixel(PixelModel),
     IPhone(IPhoneModel),
 }
 
-impl PhoneEnum {
+impl PhoneTrait {
     pub async fn buy(&mut self) {
         match self {
-            PhoneEnum::IPhone(iphone) => iphone.buy().await,
-            PhoneEnum::Pixel(pixel) => pixel.buy().await,
+            PhoneTrait::IPhone(iphone) => iphone.buy().await,
+            PhoneTrait::Pixel(pixel) => pixel.buy().await,
         };
     }
 }
