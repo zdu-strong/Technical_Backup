@@ -14,7 +14,6 @@ import cn.hutool.extra.spring.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
 public enum DistributedExecutionEnum {
 
