@@ -130,7 +130,7 @@ public class DistributedExecutionUtil {
     private LongTermTaskUniqueKeyModel findOne(DistributedExecutionEnum distributedExecutionEnum) {
         var longTermTaskUniqueKeyModelList = Flowable.range(1, distributedExecutionEnum.getMaxNumberOfParallel())
                 .map(s -> new LongTermTaskUniqueKeyModel()
-                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.value)
+                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.getValue())
                         .setUniqueKey(
                                 this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.name(), s))))
                 .toList()

@@ -69,7 +69,7 @@ public class SystemInitScheduled {
             }
             initDistributedExecution();
             var uniqueKeyModel = new LongTermTaskUniqueKeyModel()
-                    .setType(LongTermTaskTypeEnum.INIT_SYSTEM_DATABASE_DATA.value)
+                    .setType(LongTermTaskTypeEnum.INIT_SYSTEM_DATABASE_DATA.getValue())
                     .setUniqueKey(gitProperties.getCommitId());
             if (this.longTermTaskService.findOneNotRunning(List.of(uniqueKeyModel)) != null) {
                 this.longTermTaskUtil.runSkipWhenExists(() -> {

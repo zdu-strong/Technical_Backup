@@ -86,7 +86,7 @@ public class OrganizeUtil {
                 .map(s -> this.organizeService.getTopOrganize(s))
                 .map(s -> {
                     var longTermTaskUniqueKey = new LongTermTaskUniqueKeyModel();
-                    longTermTaskUniqueKey.setType(LongTermTaskTypeEnum.MOVE_ORGANIZE.value);
+                    longTermTaskUniqueKey.setType(LongTermTaskTypeEnum.MOVE_ORGANIZE.getValue());
                     longTermTaskUniqueKey.setUniqueKey(s.getId());
                     return longTermTaskUniqueKey;
                 })
