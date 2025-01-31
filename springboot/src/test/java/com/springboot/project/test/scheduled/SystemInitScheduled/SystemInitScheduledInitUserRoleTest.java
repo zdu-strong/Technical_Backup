@@ -6,8 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.Test;
 
-import com.springboot.project.enumeration.SystemPermissionEnum;
-import com.springboot.project.enumeration.SystemRoleEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
+import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class SystemInitScheduledInitUserRoleTest extends BaseTest {
@@ -27,7 +27,7 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
         assertEquals(1, userRole.getPermissionList().size());
         var permission = JinqStream.from(userRole.getPermissionList()).getOnlyValue();
         assertEquals(36, permission.getId().length());
-        assertEquals(SystemPermissionEnum.SUPER_ADMIN_PERMISSION.name(), permission.getName());
+        assertEquals(SystemPermissionEnum.SUPER_ADMIN.name(), permission.getName());
         assertNotNull(permission.getCreateDate());
         assertNotNull(permission.getUpdateDate());
     }

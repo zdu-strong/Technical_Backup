@@ -5,7 +5,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.springboot.project.enumeration.SystemRoleEnum;
+import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 

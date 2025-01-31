@@ -15,8 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumeration.SystemPermissionEnum;
-import com.springboot.project.enumeration.SystemRoleEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
+import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.RoleModel;
 

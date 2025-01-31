@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -21,10 +21,10 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void test() {
         this.distributedExecutionMainService.refreshDistributedExecution(this.distributedExecutionMainModel.getId());
         var result = this.distributedExecutionMainService
-                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
-        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
+        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
@@ -37,7 +37,7 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
         this.distributedExecutionMainModel = this.distributedExecutionMainService
-                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, 1);
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
         var distributedExecutionDetailModel = this.distributedExecutionDetailService
                 .create(this.distributedExecutionMainModel.getId(), 1);
         this.distributedExecutionDetailService.updateByResult(distributedExecutionDetailModel.getId());

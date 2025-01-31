@@ -13,7 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumeration.SystemPermissionEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.model.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -78,16 +78,16 @@ public class UserRoleRelationService extends BaseService {
     private void checkRoleRelationForCreate(UserModel user, HttpServletRequest request) {
 
         for (var organizeRoleRelation : user.getOrganizeRoleRelationList()) {
-            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION)) {
+            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN)) {
                 break;
             }
 
             this.permissionUtil.checkAnyPermission(request, organizeRoleRelation.getOrganize().getId(),
-                    SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION);
+                    SystemPermissionEnum.ORGANIZE_MANAGE);
         }
 
         if (!user.getUserRoleRelationList().isEmpty()) {
-            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION);
+            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
         }
     }
 
@@ -107,7 +107,7 @@ public class UserRoleRelationService extends BaseService {
                                 .anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).toList()) {
-            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION)) {
+            if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN)) {
                 break;
             }
 
@@ -116,7 +116,7 @@ public class UserRoleRelationService extends BaseService {
                     .where(s -> s.getId().equals(organizeRoleId))
                     .getOnlyValue();
             this.permissionUtil.checkAnyPermission(request, userRoleEntity.getOrganize().getId(),
-                    SystemPermissionEnum.ORGANIZE_MANAGE_PERMISSION);
+                    SystemPermissionEnum.ORGANIZE_MANAGE);
         }
 
         if (JinqStream.from(List.of(
@@ -130,7 +130,7 @@ public class UserRoleRelationService extends BaseService {
                         .filter(s -> user.getUserRoleRelationList().stream().anyMatch(t -> s.getId().equals(t.getId())))
                         .toList()))
                 .selectAllList(s -> s).exists()) {
-            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN_PERMISSION);
+            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
         }
     }
 

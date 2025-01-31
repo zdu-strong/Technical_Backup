@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import io.reactivex.rxjava3.core.Flowable;
@@ -18,7 +18,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
     @Test
     public void test() {
-        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
+        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_CLOSURE_REFRESH);
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
         assertEquals(1, result.getTotalRecord());
     }
@@ -48,7 +48,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
         {
             Flowable.interval(1, TimeUnit.MILLISECONDS)
                     .concatMap(s -> {
-                        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY);
+                        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_CLOSURE_REFRESH);
                         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
                         if (result.getTotalRecord() == 1) {
                             return Flowable.just(StringUtils.EMPTY);

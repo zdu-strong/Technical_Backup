@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
-import com.springboot.project.enumeration.LongTermTaskTypeEnum;
+import com.springboot.project.enums.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;

@@ -1,4 +1,4 @@
-package com.springboot.project.enumeration;
+package com.springboot.project.enums;
 
 import java.util.List;
 import org.jinq.orm.stream.JinqStream;
@@ -9,9 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SystemPermissionEnum {
 
-    SUPER_ADMIN_PERMISSION("SUPER_ADMIN", true, false),
-    ORGANIZE_MANAGE_PERMISSION("ORGANIZE_MANAGE", false, true),
-    ORGANIZE_VIEW_PERMISSION("ORGANIZE_VIEW", false, true);
+    SUPER_ADMIN("SUPER_ADMIN", true, false),
+    ORGANIZE_MANAGE("ORGANIZE_MANAGE", false, true),
+    ORGANIZE_VIEW("ORGANIZE_VIEW", false, true);
 
     private String value;
     private Boolean isSuperAdmin;

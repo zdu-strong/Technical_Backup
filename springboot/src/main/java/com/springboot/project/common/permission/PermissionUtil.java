@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.springboot.project.enumeration.SystemPermissionEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.TokenService;

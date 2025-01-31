@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 
 @Service

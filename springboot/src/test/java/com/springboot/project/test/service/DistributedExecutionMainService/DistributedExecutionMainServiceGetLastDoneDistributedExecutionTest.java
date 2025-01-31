@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest extends BaseTest {
@@ -17,9 +17,9 @@ public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest 
     @Test
     public void test() {
         var result = this.distributedExecutionMainService
-                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
-        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
+        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
@@ -31,7 +31,7 @@ public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest 
     @BeforeEach
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
-        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE);
+        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
     }
 
 }

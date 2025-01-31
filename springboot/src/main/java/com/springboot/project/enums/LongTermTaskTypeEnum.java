@@ -1,4 +1,4 @@
-package com.springboot.project.enumeration;
+package com.springboot.project.enums;
 
 import java.util.List;
 import org.jinq.orm.stream.JinqStream;

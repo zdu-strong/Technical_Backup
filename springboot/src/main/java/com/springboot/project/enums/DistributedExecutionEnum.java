@@ -1,4 +1,4 @@
-package com.springboot.project.enumeration;
+package com.springboot.project.enums;
 
 import java.time.Duration;
 import java.util.List;
@@ -23,7 +23,7 @@ public enum DistributedExecutionEnum {
     /**
      * Storage space cleans up the stored data in the database
      */
-    STORAGE_SPACE_CLEAN_DATABASE_STORAGE(
+    STORAGE_SPACE_CLEAN(
             "STORAGE_SPACE_CLEAN",
             Duration.ofHours(12),
             1,
@@ -62,7 +62,7 @@ public enum DistributedExecutionEnum {
     /**
      * The OrganizeEntity refreshes the data of the OrganizeRelationEntity.
      */
-    ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY(
+    ORGANIZE_CLOSURE_REFRESH(
             "ORGANIZE_CLOSURE_REFRESH",
             Duration.ofMinutes(1),
             1,

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class DistributedExecutionMainServiceCreateTest extends BaseTest {
@@ -17,9 +17,9 @@ public class DistributedExecutionMainServiceCreateTest extends BaseTest {
     @Test
     public void test() {
         var result = this.distributedExecutionMainService
-                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, 1);
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
         assertTrue(StringUtils.isNotBlank(result.getId()));
-        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
+        assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.valueOf(result.getExecutionType()));
         assertFalse(result.getIsDone());
         assertFalse(result.getHasError());

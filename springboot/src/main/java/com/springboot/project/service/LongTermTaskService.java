@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.constant.LongTermTaskTempWaitDurationConstant;
 import com.springboot.project.entity.LongTermTaskEntity;
-import com.springboot.project.enumeration.LongTermTaskTypeEnum;
+import com.springboot.project.enums.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 
 @Service

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -34,7 +34,7 @@ public class DistributedExecutionDetailServiceRefreshDistributedExecutionTest ex
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
         this.distributedExecutionMainModel = this.distributedExecutionMainService
-                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, 1);
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
     }
 
 }

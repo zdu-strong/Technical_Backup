@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.PermissionEntity;
 import com.springboot.project.entity.RolePermissionRelationEntity;
-import com.springboot.project.enumeration.SystemPermissionEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.model.PermissionModel;
 
 @Service

@@ -6,14 +6,14 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
-import com.springboot.project.enumeration.SystemPermissionEnum;
+import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class RoleServiceCreateTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var result = this.roleService.create(Generators.timeBasedReorderedGenerator().generate().toString(), List.of(SystemPermissionEnum.SUPER_ADMIN_PERMISSION), null);
+        var result = this.roleService.create(Generators.timeBasedReorderedGenerator().generate().toString(), List.of(SystemPermissionEnum.SUPER_ADMIN), null);
         assertTrue(StringUtils.isNotBlank(result.getId()));
     }
 
