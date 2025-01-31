@@ -7,7 +7,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-
 public enum LongTermTaskTypeEnum {
 
     COMMON("COMMON"),
