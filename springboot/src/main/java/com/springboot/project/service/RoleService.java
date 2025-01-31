@@ -98,7 +98,7 @@ public class RoleService extends BaseService {
                 continue;
             }
 
-            var roleName = systemRoleEnum.name();
+            var roleName = systemRoleEnum.getValue();
             var exist = this.streamAll(RoleEntity.class)
                     .where(s -> s.getOrganize().getId().equals(companyId))
                     .where(s -> s.getName().equals(roleName))
@@ -210,7 +210,7 @@ public class RoleService extends BaseService {
             if (systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
-            var roleName = systemRoleEnum.name();
+            var roleName = systemRoleEnum.getValue();
             if (this.streamAll(RoleEntity.class)
                     .where(s -> s.getName().equals(roleName))
                     .where(s -> s.getOrganize() == null)
@@ -235,7 +235,7 @@ public class RoleService extends BaseService {
             if (!systemRoleEnum.getIsOrganizeRole()) {
                 continue;
             }
-            var roleName = systemRoleEnum.name();
+            var roleName = systemRoleEnum.getValue();
             var organizeId = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getParent() == null)
                     .where(s -> s.getIsActive())
