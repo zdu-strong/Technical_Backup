@@ -20,7 +20,7 @@ public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest 
                 .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
-                DistributedExecutionEnum.valueOf(result.getExecutionType()));
+                DistributedExecutionEnum.parseValue(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
         assertEquals(1, result.getTotalRecord());

@@ -25,7 +25,7 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
-                DistributedExecutionEnum.valueOf(result.getExecutionType()));
+                DistributedExecutionEnum.parseValue(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
         assertEquals(1, result.getTotalRecord());
