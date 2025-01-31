@@ -10,7 +10,7 @@ import com.springboot.project.enums.SystemPermissionEnum;
 public class RolePermissionRelationService extends BaseService {
 
     public void create(String roleId, SystemPermissionEnum permissionEnum) {
-        var permissionName = permissionEnum.name();
+        var permissionName = permissionEnum.getValue();
         var permissionEntity = this.streamAll(PermissionEntity.class)
                 .where(s -> s.getName().equals(permissionName))
                 .getOnlyValue();

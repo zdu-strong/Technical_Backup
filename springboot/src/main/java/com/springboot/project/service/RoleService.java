@@ -66,7 +66,7 @@ public class RoleService extends BaseService {
             this.remove(rolePermissionRelationEntity);
         }
         for (var permissionEnum : roleModel.getPermissionList().stream()
-                .map(s -> SystemPermissionEnum.valueOf(s.getName()))
+                .map(s -> SystemPermissionEnum.parseValue(s.getName()))
                 .toList()) {
             this.rolePermissionRelationService.create(id, permissionEnum);
         }
@@ -144,14 +144,14 @@ public class RoleService extends BaseService {
     public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
         var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.name())
+                .map(s -> s.getValue())
                 .toList();
         var userRoleList = this.streamAll(RoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
                 .where(s -> s.getIsActive())
                 .where(s -> s.getOrganize() == null)
                 .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.name().equals(s.getName()) && !m.getIsOrganizeRole()))
+                        .anyMatch(m -> m.getValue().equals(s.getName()) && !m.getIsOrganizeRole()))
                 .toList();
         var stream = JinqStream.from(userRoleList);
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.roleFormatter.format(s));
@@ -162,14 +162,14 @@ public class RoleService extends BaseService {
         var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
                 .filter(s -> s.getPermissionList().stream().anyMatch(m -> m.getIsSuperAdmin()))
-                .map(s -> s.name())
+                .map(s -> s.getValue())
                 .toList();
         var userRoleList = this.streamAll(RoleEntity.class)
                 .where(s -> roles.contains(s.getName()))
                 .where(s -> s.getIsActive())
                 .where(s -> s.getOrganize() == null)
                 .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.name().equals(s.getName()) && !m.getIsOrganizeRole()))
+                        .anyMatch(m -> m.getValue().equals(s.getName()) && !m.getIsOrganizeRole()))
                 .map(s -> this.roleFormatter.format(s))
                 .toList();
         return userRoleList;
@@ -189,7 +189,7 @@ public class RoleService extends BaseService {
     private boolean deleteUserRoleList() {
         var roles = Arrays.stream(SystemRoleEnum.values())
                 .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.name())
+                .map(s -> s.getValue())
                 .toList();
         var id = this.streamAll(RoleEntity.class)
                 .where(s -> s.getOrganize() == null)

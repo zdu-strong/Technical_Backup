@@ -39,7 +39,7 @@ public class PermissionService extends BaseService {
 
     private boolean createDefaultPermissionList() {
         for (var permissionEnum : SystemPermissionEnum.values()) {
-            var permissionName = permissionEnum.name();
+            var permissionName = permissionEnum.getValue();
             var exists = this.streamAll(PermissionEntity.class)
                     .where(s -> s.getName().equals(permissionName))
                     .exists();
@@ -53,7 +53,7 @@ public class PermissionService extends BaseService {
     }
 
     private boolean deleteDefaultPermissionList() {
-        var permissionNameList = Arrays.stream(SystemPermissionEnum.values()).map(s -> s.name()).toList();
+        var permissionNameList = Arrays.stream(SystemPermissionEnum.values()).map(s -> s.getValue()).toList();
         var permissionEntity = this.streamAll(PermissionEntity.class)
                 .where(s -> !permissionNameList.contains(s.getName()))
                 .findFirst()
@@ -77,7 +77,7 @@ public class PermissionService extends BaseService {
     private void create(SystemPermissionEnum permissionEnum) {
         var permissionEntity = new PermissionEntity();
         permissionEntity.setId(newId());
-        permissionEntity.setName(permissionEnum.name());
+        permissionEntity.setName(permissionEnum.getValue());
         permissionEntity.setCreateDate(new Date());
         permissionEntity.setUpdateDate(new Date());
         this.persist(permissionEntity);
