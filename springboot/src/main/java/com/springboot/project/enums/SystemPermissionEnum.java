@@ -1,7 +1,7 @@
 package com.springboot.project.enums;
 
-import java.util.List;
-import org.jinq.orm.stream.JinqStream;
+import org.nd4j.common.primitives.Optional;
+import cn.hutool.core.util.EnumUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,8 +18,6 @@ public enum SystemPermissionEnum {
     private Boolean isOrganizeRole;
 
     public static SystemPermissionEnum parseValue(String value) {
-        return JinqStream.from(List.of(SystemPermissionEnum.values()))
-                .where(s -> s.getValue().equals(value))
-                .getOnlyValue();
+        return Optional.ofNullable(EnumUtil.getBy(SystemPermissionEnum::getValue, value)).get();
     }
 }

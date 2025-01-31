@@ -1,17 +1,15 @@
 package com.springboot.project.enums;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import org.jinq.orm.stream.JinqStream;
-
+import org.nd4j.common.primitives.Optional;
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -114,9 +112,7 @@ public enum DistributedExecutionEnum {
     }
 
     public static DistributedExecutionEnum parseValue(String value) {
-        return JinqStream.from(List.of(DistributedExecutionEnum.values()))
-                .where(s -> s.getValue().equals(value))
-                .getOnlyValue();
+        return Optional.ofNullable(EnumUtil.getBy(DistributedExecutionEnum::getValue, value)).get();
     }
 
 }

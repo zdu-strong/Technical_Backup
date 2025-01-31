@@ -2,7 +2,8 @@ package com.springboot.project.enums;
 
 import java.util.Arrays;
 import java.util.List;
-import org.jinq.orm.stream.JinqStream;
+import org.nd4j.common.primitives.Optional;
+import cn.hutool.core.util.EnumUtil;
 import lombok.Getter;
 
 @Getter
@@ -25,9 +26,7 @@ public enum SystemRoleEnum {
     }
 
     public static SystemRoleEnum parseValue(String value) {
-        return JinqStream.from(List.of(SystemRoleEnum.values()))
-                .where(s -> s.getValue().equals(value))
-                .getOnlyValue();
+        return Optional.ofNullable(EnumUtil.getBy(SystemRoleEnum::getValue, value)).get();
     }
 
 }
