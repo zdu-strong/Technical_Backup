@@ -1,6 +1,8 @@
 package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +39,8 @@ public class ResourceControllerGetRangeClassPathResourceGetDirectoryTest extends
         assertEquals(11, response.getBody().length);
         assertEquals(Integer.valueOf(91).byteValue(),
                 JinqStream.from(Lists.newArrayList(ArrayUtils.toObject(response.getBody()))).findFirst().get());
-        assertEquals("[\"email.xml", IOUtils.toString(response.getBody(), StandardCharsets.UTF_8.name()));
+        assertEquals("[\"email.xml",
+                IOUtils.toString(new ByteArrayInputStream(response.getBody()), StandardCharsets.UTF_8));
     }
 
     @BeforeEach
