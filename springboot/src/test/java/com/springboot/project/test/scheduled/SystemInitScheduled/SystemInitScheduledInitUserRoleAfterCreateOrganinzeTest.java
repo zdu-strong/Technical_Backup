@@ -17,10 +17,10 @@ public class SystemInitScheduledInitUserRoleAfterCreateOrganinzeTest extends Bas
     public void test() {
         var organizeRoleList = this.roleService.getOrganizeRoleListByCompanyId(this.organizeId);
         assertEquals(2, organizeRoleList.size());
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.parseValue(s.getName()))
                 .toList()
                 .contains(SystemRoleEnum.ORGANIZE_VIEW));
-        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.valueOf(s.getName()))
+        assertTrue(JinqStream.from(organizeRoleList).map(s -> SystemRoleEnum.parseValue(s.getName()))
                 .toList()
                 .contains(SystemRoleEnum.ORGANIZE_MANAGE));
         assertEquals(this.organizeId,
