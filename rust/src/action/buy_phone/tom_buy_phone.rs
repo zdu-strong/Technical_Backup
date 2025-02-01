@@ -13,6 +13,7 @@ pub async fn tom_buy_phone() {
             owner: "Tom".to_string(),
         }),
     ];
+    println!("{:?}", phone_list);
     for phone in phone_list {
         phone.buy().await;
     }
