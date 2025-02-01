@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ThreadUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.apache.tika.Tika;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.devtools.remote.client.HttpHeaderInterceptor;
 import org.springframework.boot.info.GitProperties;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +48,7 @@ import com.springboot.project.properties.SchedulingPoolSizeProperties;
 import com.springboot.project.properties.ServerAddressProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
+import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
@@ -111,7 +114,7 @@ public class BaseTest {
     @Autowired
     protected PermissionUtil permissionUtil;
 
-    @Autowired
+    @MockitoSpyBean
     protected DistributedExecutionUtil distributedExecutionUtil;
 
     @Autowired
@@ -200,6 +203,7 @@ public class BaseTest {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         this.systemInitScheduled.scheduled();
+        Mockito.doNothing().when(this.distributedExecutionUtil).refreshData(Mockito.any(DistributedExecutionEnum.class));
     }
 
     @SneakyThrows

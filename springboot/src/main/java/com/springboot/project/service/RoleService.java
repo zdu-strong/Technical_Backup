@@ -237,7 +237,7 @@ public class RoleService extends BaseService {
             }
             var roleName = systemRoleEnum.getValue();
             var organizeId = this.streamAll(OrganizeEntity.class)
-                    .where(s -> s.getParent() == null)
+                    .where(s -> s.getIsCompany())
                     .where(s -> s.getIsActive())
                     .leftOuterJoin((s, t) -> JinqStream.from(s.getUserRoleList()),
                             (s, t) -> t.getName().equals(roleName))

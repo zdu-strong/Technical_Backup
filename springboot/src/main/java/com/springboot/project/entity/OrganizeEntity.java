@@ -24,7 +24,8 @@ import lombok.experimental.Accessors;
         @UniqueConstraint(columnNames = { "parentId", "name", "deactiveKey" })
 }, indexes = {
         @Index(columnList = "parentId, isActive"),
-        @Index(columnList = "createDate, id")
+        @Index(columnList = "createDate, id"),
+        @Index(columnList = "isCompany, isActive")
 })
 public class OrganizeEntity {
 
@@ -42,6 +43,9 @@ public class OrganizeEntity {
 
     @Column(nullable = false)
     private Boolean isActive;
+
+    @Column(nullable = false)
+    private Boolean isCompany;
 
     @Column(nullable = false)
     private String deactiveKey;

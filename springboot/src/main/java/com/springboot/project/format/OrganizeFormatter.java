@@ -21,8 +21,12 @@ public class OrganizeFormatter extends BaseService {
         organizeModel.setChildCount(0L)
                 .setDescendantCount(0L)
                 .setChildList(Lists.newArrayList())
-                .setParent(new OrganizeModel().setId(Optional.ofNullable(organizeEntity.getParent())
-                        .map(OrganizeEntity::getId).orElse(StringUtils.EMPTY)))
+                .setParent(new OrganizeModel().setId(
+                        Optional.ofNullable(
+                                organizeEntity.getParent())
+                                .map(OrganizeEntity::getId)
+                                .filter(s -> StringUtils.isNotBlank(s))
+                                .orElse(StringUtils.EMPTY)))
                 .setLevel(this.getLevel(organizeEntity));
 
         var id = organizeEntity.getId();
@@ -44,16 +48,16 @@ public class OrganizeFormatter extends BaseService {
     public boolean isActive(OrganizeEntity organizeEntity) {
         var organizeIdList = new ArrayList<String>();
         while (true) {
-            if (organizeEntity == null) {
-                break;
+            if (!organizeEntity.getIsActive()) {
+                return false;
             }
             if (organizeIdList.contains(organizeEntity.getId())) {
                 break;
             }
-            if (!organizeEntity.getIsActive()) {
-                return false;
-            }
             organizeIdList.add(organizeEntity.getId());
+            if (organizeEntity.getIsCompany()) {
+                break;
+            }
             organizeEntity = organizeEntity.getParent();
         }
         return true;
@@ -67,13 +71,13 @@ public class OrganizeFormatter extends BaseService {
     public List<String> getAncestorIdList(OrganizeEntity organizeEntity) {
         var organizeIdList = new ArrayList<String>();
         while (true) {
-            if (organizeEntity == null) {
-                break;
-            }
             if (organizeIdList.contains(organizeEntity.getId())) {
                 break;
             }
             organizeIdList.add(organizeEntity.getId());
+            if (organizeEntity.getIsCompany()) {
+                break;
+            }
             organizeEntity = organizeEntity.getParent();
         }
         return Lists.reverse(organizeIdList);

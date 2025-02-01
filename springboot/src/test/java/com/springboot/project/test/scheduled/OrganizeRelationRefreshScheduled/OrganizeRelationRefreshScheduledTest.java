@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.OrganizeModel;
@@ -25,6 +26,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
+        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any());
         {
             var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);

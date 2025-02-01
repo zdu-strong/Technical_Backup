@@ -80,7 +80,8 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
             loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
             setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
-            if (StringUtils.isBlank(loggerModel.getMessage())) {
+            if (StringUtils.isBlank(loggerModel.getMessage())
+                    && StringUtils.isNotBlank(eventObject.getThrowableProxy().getMessage())) {
                 loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
             }
         }
