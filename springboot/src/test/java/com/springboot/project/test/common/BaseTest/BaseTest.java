@@ -49,10 +49,10 @@ import com.springboot.project.properties.ServerAddressProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.enums.DistributedExecutionEnum;
+import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
@@ -203,7 +203,8 @@ public class BaseTest {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         this.systemInitScheduled.scheduled();
-        Mockito.doNothing().when(this.distributedExecutionUtil).refreshData(Mockito.any(DistributedExecutionEnum.class));
+        Mockito.doNothing().when(this.distributedExecutionUtil)
+                .refreshData(Mockito.any(DistributedExecutionEnum.class));
     }
 
     @SneakyThrows
@@ -219,14 +220,16 @@ public class BaseTest {
     protected UserModel createAccountOfCompanyAdmin(String email) {
         var userModel = createAccountOfSuperAdmin(email);
         {
-            var company = this.organizeService
-                    .create(new OrganizeModel()
-                            .setName(Generators.timeBasedReorderedGenerator().generate().toString()));
-            userModel.getOrganizeRoleRelationList().addAll(
-                    this.roleService.getOrganizeRoleListByCompanyId(company.getId())
-                            .stream()
-                            .map(s -> new UserRoleRelationModel().setRole(s).setOrganize(company))
-                            .toList());
+            var url = new URIBuilder("/organize/create").build();
+            var response = this.testRestTemplate.postForEntity(url, new OrganizeModel()
+                    .setName(Generators.timeBasedReorderedGenerator().generate().toString()), OrganizeModel.class);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            var company = response.getBody();
+            var roleList = this.roleService
+                    .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, company.getId(),
+                            false)
+                    .getList();
+            userModel.getRoleList().addAll(roleList);
             this.userService.update(userModel);
         }
         return signIn(email, email);
@@ -236,11 +239,10 @@ public class BaseTest {
     protected UserModel createAccountOfSuperAdmin(String email) {
         var userModel = createAccount(email);
         {
-            userModel.getUserRoleRelationList()
-                    .addAll(this.roleService.getUserRoleListForSuperAdmin()
-                            .stream()
-                            .map(s -> new UserRoleRelationModel().setRole(s))
-                            .toList());
+            var roleList = this.roleService
+                    .searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length)
+                    .getList();
+            userModel.getRoleList().addAll(roleList);
             this.userService.update(userModel);
         }
         return signIn(email, email);

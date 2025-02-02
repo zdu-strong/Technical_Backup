@@ -16,7 +16,7 @@ public class SuperAdminOrganizeRoleQueryController extends BaseController {
         this.permissionUtil.checkIsSignIn(request);
         this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
 
-        var paginationModel = this.roleService.searchOrganizeRoleForSuperAdminByPagination(pageNum, pageSize, organizeId);
+        var paginationModel = this.roleService.searchOrganizeRoleForSuperAdminByPagination(pageNum, pageSize, organizeId, true);
 
         return ResponseEntity.ok(paginationModel);
     }

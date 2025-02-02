@@ -19,8 +19,10 @@ public class RoleModel {
 
     private Date updateDate;
 
-    private OrganizeModel organize;
+    private Boolean isOrganizeRole;
 
-    private List<PermissionModel> permissionList;
+    private List<OrganizeModel> organizeList;
+
+    private List<String> permissionList;
 
 }

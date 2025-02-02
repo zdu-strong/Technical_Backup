@@ -65,7 +65,6 @@ public class AuthorizationController extends BaseController {
         this.userService.checkCannotEmptyOfUsername(userModel);
         this.userService.checkValidEmailForSignUp(userModel);
         this.userRoleRelationService.checkUserRoleRelationListMustBeEmpty(userModel);
-        this.userRoleRelationService.checkOrganizeRoleRelationListMustBeEmpty(userModel);
         this.userService.checkCannotEmptyOfPassword(userModel);
 
         var user = this.userService.create(userModel);

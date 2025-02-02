@@ -17,6 +17,5 @@ public class UserModel {
     private String password;
     private String accessToken;
     private List<UserEmailModel> userEmailList;
-    private List<UserRoleRelationModel> userRoleRelationList;
-    private List<UserRoleRelationModel> organizeRoleRelationList;
+    private List<RoleModel> roleList;
 }

@@ -7,10 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -19,7 +16,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "organizeId", "name", "deactiveKey" }) })
 public class RoleEntity {
 
     @Id
@@ -40,13 +36,16 @@ public class RoleEntity {
     @Column(nullable = false)
     private String deactiveKey;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
-    private OrganizeEntity organize;
+    @Column(nullable = false)
+    private Boolean isOrganizeRole;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<RolePermissionRelationEntity> rolePermissionRelationList;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserRoleRelationEntity> userRoleRelationList;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<RoleOrganizeRelationEntity> roleOrganizeRelationList;
 
 }

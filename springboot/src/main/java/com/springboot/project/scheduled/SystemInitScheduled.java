@@ -12,10 +12,10 @@ import com.springboot.project.common.EmailUtil.AuthorizationEmailUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.enums.LongTermTaskTypeEnum;
+import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.model.UserRoleRelationModel;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.PermissionService;
@@ -35,7 +35,7 @@ public class SystemInitScheduled {
     private PermissionService permissionService;
 
     @Autowired
-    private RoleService userRoleService;
+    private RoleService roleService;
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
@@ -107,11 +107,8 @@ public class SystemInitScheduled {
                 this.verificationCodeEmailService.getById(verificationCodeEmailModel.getId()).getVerificationCode());
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
-        superAdminUser.setOrganizeRoleRelationList(List.of());
-        superAdminUser.setUserRoleRelationList(this.userRoleService.getUserRoleListForSuperAdmin()
-                .stream()
-                .map(s -> new UserRoleRelationModel().setRole(s))
-                .toList());
+        superAdminUser.setRoleList(
+                this.roleService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getList());
         this.userService.create(superAdminUser);
     }
 
@@ -129,7 +126,7 @@ public class SystemInitScheduled {
             }
         }
         while (true) {
-            if (!userRoleService.refresh()) {
+            if (!roleService.refresh()) {
                 break;
             }
         }

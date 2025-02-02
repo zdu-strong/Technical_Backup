@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -15,14 +14,20 @@ public class SystemInitScheduledInitUserRoleAfterMoveOrganinzeTest extends BaseT
 
     @Test
     public void test() {
-        var userRoleList = this.roleService.getOrganizeRoleListByCompanyId(this.organizeId);
-        assertEquals(2, userRoleList.size());
-        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.parse(s.getName())).toList()
+        var roleList = this.roleService
+                .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, organizeId, false)
+                .getList();
+        assertEquals(2, roleList.size());
+        assertTrue(JinqStream.from(roleList).map(s -> SystemRoleEnum.parse(s.getName())).toList()
                 .contains(SystemRoleEnum.ORGANIZE_VIEW));
-        assertTrue(JinqStream.from(userRoleList).map(s -> SystemRoleEnum.parse(s.getName())).toList()
+        assertTrue(JinqStream.from(roleList).map(s -> SystemRoleEnum.parse(s.getName())).toList()
                 .contains(SystemRoleEnum.ORGANIZE_MANAGE));
         assertEquals(this.organizeId,
-                JinqStream.from(userRoleList).select(s -> s.getOrganize().getId()).distinct().getOnlyValue());
+                JinqStream.from(roleList)
+                        .selectAllList(s -> s.getOrganizeList())
+                        .select(s -> s.getId())
+                        .distinct()
+                        .getOnlyValue());
     }
 
     @BeforeEach

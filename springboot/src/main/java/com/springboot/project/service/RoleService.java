@@ -3,7 +3,7 @@ package com.springboot.project.service;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
@@ -19,6 +19,7 @@ import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.RoleModel;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class RoleService extends BaseService {
@@ -26,13 +27,10 @@ public class RoleService extends BaseService {
     @Autowired
     private RolePermissionRelationService rolePermissionRelationService;
 
-    public RoleModel create(String role, List<SystemPermissionEnum> permissionList, String organizeId) {
-        var organizeEntity = Optional.ofNullable(organizeId).filter(StringUtils::isNotBlank)
-                .map(s -> this.streamAll(OrganizeEntity.class)
-                        .where(m -> m.getId().equals(organizeId))
-                        .getOnlyValue())
-                .orElse(null);
+    @Autowired
+    private RoleOrganizeRelationService roleOrganizeRelationService;
 
+    public RoleModel create(String role, List<SystemPermissionEnum> permissionList, List<String> organizeIdList) {
         var roleEntity = new RoleEntity();
         roleEntity.setId(newId());
         roleEntity.setCreateDate(new Date());
@@ -40,11 +38,15 @@ public class RoleService extends BaseService {
         roleEntity.setName(role);
         roleEntity.setIsActive(true);
         roleEntity.setDeactiveKey(StringUtils.EMPTY);
-        roleEntity.setOrganize(organizeEntity);
+        roleEntity.setIsOrganizeRole(!organizeIdList.isEmpty());
         this.persist(roleEntity);
 
         for (var permissionEnum : permissionList) {
             this.rolePermissionRelationService.create(roleEntity.getId(), permissionEnum);
+        }
+
+        for (var organizeId : organizeIdList) {
+            this.roleOrganizeRelationService.create(roleEntity.getId(), organizeId);
         }
 
         return this.roleFormatter.format(roleEntity);
@@ -62,14 +64,26 @@ public class RoleService extends BaseService {
         var rolePermissionRelationList = this.streamAll(RolePermissionRelationEntity.class)
                 .where(s -> s.getRole().getId().equals(id))
                 .toList();
+
         for (var rolePermissionRelationEntity : rolePermissionRelationList) {
+            if (roleModel.getPermissionList().contains(rolePermissionRelationEntity.getPermission().getName())) {
+                continue;
+            }
             this.remove(rolePermissionRelationEntity);
         }
+
         for (var permissionEnum : roleModel.getPermissionList().stream()
-                .map(s -> SystemPermissionEnum.parse(s.getName()))
+                .map(s -> SystemPermissionEnum.parse(s))
                 .toList()) {
+            if (JinqStream.from(rolePermissionRelationList)
+                    .select(s -> s.getPermission().getName())
+                    .toList()
+                    .contains(permissionEnum.getValue())) {
+                continue;
+            }
             this.rolePermissionRelationService.create(id, permissionEnum);
         }
+
     }
 
     public void delete(String id) {
@@ -83,13 +97,79 @@ public class RoleService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoleModel> getOrganizeRoleListByCompanyId(String companyId) {
-        var roleList = this.streamAll(RoleEntity.class)
-                .where(s -> s.getOrganize().getId().equals(companyId))
-                .where(s -> s.getIsActive())
-                .map(s -> this.roleFormatter.format(s))
-                .toList();
-        return roleList;
+    public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
+        var stream = this.streamAll(RoleEntity.class)
+                .where(s -> !s.getIsOrganizeRole())
+                .where(s -> s.getIsActive());
+        return new PaginationModel<>(pageNum, pageSize, stream, this.roleFormatter::format);
+    }
+
+    @Transactional(readOnly = true)
+    public PaginationModel<RoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
+            String organizeId, boolean isIncludeDescendant) {
+        var roleOrganizeRelationStream = this.streamAll(RoleOrganizeRelationEntity.class)
+                .joinList(s -> s.getOrganize().getAncestorList())
+                .where(s -> s.getTwo().getAncestor().getId().equals(organizeId));
+        if (!isIncludeDescendant) {
+            roleOrganizeRelationStream = roleOrganizeRelationStream
+                    .where(s -> s.getTwo().getDescendant().getId().equals(organizeId));
+        }
+        var stream = roleOrganizeRelationStream.select(s -> s.getOne().getRole());
+        return new PaginationModel<>(pageNum, pageSize, stream, this.roleFormatter::format);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCannotBeEmptyOfName(RoleModel roleModel) {
+        if (StringUtils.isBlank(roleModel.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCannotBeEmptyOfPermissionList(RoleModel roleModel) {
+        if (CollectionUtils.isEmpty(roleModel.getPermissionList())) {
+            roleModel.setPermissionList(List.of());
+        }
+        if (CollectionUtils.isEmpty(roleModel.getOrganizeList())) {
+            roleModel.setOrganizeList(List.of());
+        }
+        if (roleModel.getPermissionList().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Permission list cannot be empty");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCanCreateUserRole(RoleModel roleModel, HttpServletRequest request) {
+        if (!roleModel.getPermissionList().stream().anyMatch(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(m -> !m.getIsOrganizeRole()).map(m -> m.getValue()).toList().contains(s))) {
+            return;
+        }
+        if (roleModel.getPermissionList().stream().anyMatch(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(m -> m.getIsOrganizeRole()).map(m -> m.getValue()).toList().contains(s))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role cannot have organization permissions");
+        }
+        this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCanCreateOrganizeRole(RoleModel roleModel, HttpServletRequest request) {
+        if (!roleModel.getPermissionList().stream().anyMatch(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(m -> m.getIsOrganizeRole()).map(m -> m.getValue()).toList().contains(s))) {
+            return;
+        }
+        if (roleModel.getPermissionList().stream().anyMatch(s -> Arrays.stream(SystemPermissionEnum.values())
+                .filter(m -> !m.getIsOrganizeRole()).map(m -> m.getValue()).toList().contains(s))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role cannot have system permissions");
+        }
+        if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN)) {
+            return;
+        }
+        for (var permissionName : roleModel.getPermissionList()) {
+            for (var organizeModel : roleModel.getOrganizeList()) {
+                this.permissionUtil.checkAnyPermission(request, organizeModel.getId(),
+                        SystemPermissionEnum.parse(permissionName));
+            }
+        }
     }
 
     public void refreshForCompany(String companyId) {
@@ -99,15 +179,15 @@ public class RoleService extends BaseService {
             }
 
             var roleName = systemRoleEnum.getValue();
-            var exist = this.streamAll(RoleEntity.class)
+            var exist = this.streamAll(RoleOrganizeRelationEntity.class)
                     .where(s -> s.getOrganize().getId().equals(companyId))
-                    .where(s -> s.getName().equals(roleName))
-                    .where(s -> s.getIsActive())
+                    .where(s -> s.getRole().getName().equals(roleName))
                     .exists();
+
             if (exist) {
                 continue;
             }
-            this.create(roleName, systemRoleEnum.getPermissionList(), companyId);
+            this.create(roleName, systemRoleEnum.getPermissionList(), List.of(companyId));
         }
     }
 
@@ -133,76 +213,24 @@ public class RoleService extends BaseService {
         return false;
     }
 
-    @Transactional(readOnly = true)
-    public void checkCannotBeEmptyOfName(RoleModel userRoleModel) {
-        if (StringUtils.isBlank(userRoleModel.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
-        var roles = Arrays.stream(SystemRoleEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.getValue())
-                .toList();
-        var userRoleList = this.streamAll(RoleEntity.class)
-                .where(s -> roles.contains(s.getName()))
-                .where(s -> s.getIsActive())
-                .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.getValue().equals(s.getName()) && !m.getIsOrganizeRole()))
-                .toList();
-        var stream = JinqStream.from(userRoleList);
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.roleFormatter.format(s));
-    }
-
-    @Transactional(readOnly = true)
-    public List<RoleModel> getUserRoleListForSuperAdmin() {
-        var roles = Arrays.stream(SystemRoleEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .filter(s -> s.getPermissionList().stream().anyMatch(m -> m.getIsSuperAdmin()))
-                .map(s -> s.getValue())
-                .toList();
-        var userRoleList = this.streamAll(RoleEntity.class)
-                .where(s -> roles.contains(s.getName()))
-                .where(s -> s.getIsActive())
-                .where(s -> s.getOrganize() == null)
-                .filter(s -> Arrays.stream(SystemRoleEnum.values())
-                        .anyMatch(m -> m.getValue().equals(s.getName()) && !m.getIsOrganizeRole()))
-                .map(s -> this.roleFormatter.format(s))
-                .toList();
-        return userRoleList;
-    }
-
-    @Transactional(readOnly = true)
-    public PaginationModel<RoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
-            String organizeId) {
-        var stream = this.streamAll(RoleEntity.class)
-                .joinList(s -> s.getOrganize().getAncestorList())
-                .where(s -> s.getTwo().getAncestor().getId().equals(organizeId))
-                .where(s -> s.getOne().getOrganize().getIsActive())
-                .select(s -> s.getOne());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.roleFormatter.format(s));
-    }
-
     private boolean deleteUserRoleList() {
-        var roles = Arrays.stream(SystemRoleEnum.values())
-                .filter(s -> !s.getIsOrganizeRole())
-                .map(s -> s.getValue())
-                .toList();
-        var id = this.streamAll(RoleEntity.class)
-                .where(s -> s.getOrganize() == null)
-                .where(s -> s.getIsActive())
-                .where(s -> !roles.contains(s.getName()))
-                .select(s -> s.getId())
-                .findFirst()
-                .orElse(null);
-        if (StringUtils.isNotBlank(id)) {
-            this.delete(id);
-            return true;
-        }
         return false;
+        // var roles = Arrays.stream(SystemRoleEnum.values())
+        // .filter(s -> !s.getIsOrganizeRole())
+        // .map(s -> s.getValue())
+        // .toList();
+        // var id = this.streamAll(RoleEntity.class)
+        // .where(s -> s.getOrganize() == null)
+        // .where(s -> s.getIsActive())
+        // .where(s -> !roles.contains(s.getName()))
+        // .select(s -> s.getId())
+        // .findFirst()
+        // .orElse(null);
+        // if (StringUtils.isNotBlank(id)) {
+        // this.delete(id);
+        // return true;
+        // }
+        // return false;
     }
 
     private boolean createUserRoleList() {
@@ -212,15 +240,14 @@ public class RoleService extends BaseService {
             }
             var roleName = systemRoleEnum.getValue();
             if (this.streamAll(RoleEntity.class)
+                    .where(s -> !s.getIsOrganizeRole())
                     .where(s -> s.getName().equals(roleName))
-                    .where(s -> s.getOrganize() == null)
-                    .where(s -> s.getIsActive())
                     .exists()) {
                 continue;
             }
             this.create(roleName,
                     systemRoleEnum.getPermissionList(),
-                    null);
+                    List.of());
             return true;
         }
         return false;
@@ -239,16 +266,17 @@ public class RoleService extends BaseService {
             var organizeId = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getIsCompany())
                     .where(s -> s.getIsActive())
-                    .leftOuterJoin((s, t) -> JinqStream.from(s.getUserRoleList()),
+                    .leftOuterJoinList(s -> s.getRoleOrganizeRelationList())
+                    .leftOuterJoin((s, t) -> JinqStream.of(s.getTwo().getRole()),
                             (s, t) -> t.getName().equals(roleName))
-                    .select((s, t) -> new Pair<>(s.getOne().getId(), s.getTwo() == null ? 0 : 1))
+                    .select((s, t) -> new Pair<>(s.getOne().getOne().getId(), s.getTwo() == null ? 0 : 1))
                     .group((s) -> s.getOne(), (s, t) -> t.sumInteger(m -> m.getTwo()))
                     .where(s -> s.getTwo() == 0)
                     .select(s -> s.getOne())
                     .findFirst()
                     .orElse(null);
             if (StringUtils.isNotBlank(organizeId)) {
-                this.create(roleName, systemRoleEnum.getPermissionList(), organizeId);
+                this.create(roleName, systemRoleEnum.getPermissionList(), List.of(organizeId));
                 return true;
             }
         }

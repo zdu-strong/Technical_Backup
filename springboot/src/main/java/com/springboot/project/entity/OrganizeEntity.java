@@ -63,15 +63,6 @@ public class OrganizeEntity {
     private List<OrganizeRelationEntity> ancestorList;
 
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserBlackOrganizeEntity> userBlackOrganizeList;
-
-    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
-
-    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<RoleEntity> userRoleList;
-
-    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserRoleRelationEntity> UserRoleRelationList;
+    private List<RoleOrganizeRelationEntity> roleOrganizeRelationList;
 
 }

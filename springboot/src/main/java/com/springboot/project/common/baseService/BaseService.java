@@ -31,14 +31,11 @@ import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.NonceFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
-import com.springboot.project.format.PermissionFormatter;
 import com.springboot.project.format.RoleFormatter;
 import com.springboot.project.format.TokenFormatter;
-import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
 import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
-import com.springboot.project.format.UserRoleRelationFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -119,19 +116,10 @@ public abstract class BaseService {
     protected DistributedExecutionMainFormatter distributedExecutionMainFormatter;
 
     @Autowired
-    protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
-
-    @Autowired
     protected RoleFormatter roleFormatter;
 
     @Autowired
-    protected PermissionFormatter permissionFormatter;
-
-    @Autowired
     protected DistributedExecutionDetailFormatter distributedExecutionDetailFormatter;
-
-    @Autowired
-    protected UserRoleRelationFormatter userRoleRelationFormatter;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);

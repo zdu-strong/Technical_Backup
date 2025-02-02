@@ -3,13 +3,10 @@ package com.springboot.project.service;
 import java.util.Arrays;
 import java.util.Date;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.PermissionEntity;
 import com.springboot.project.entity.RolePermissionRelationEntity;
 import com.springboot.project.enums.SystemPermissionEnum;
-import com.springboot.project.model.PermissionModel;
 
 @Service
 public class PermissionService extends BaseService {
@@ -26,15 +23,6 @@ public class PermissionService extends BaseService {
             return true;
         }
         return false;
-    }
-
-    @Transactional(readOnly = true)
-    public PermissionModel getById(String id) {
-        var permissionEntity = this.streamAll(PermissionEntity.class)
-                .where(s -> s.getId().equals(id))
-                .getOnlyValue();
-
-        return this.permissionFormatter.format(permissionEntity);
     }
 
     private boolean createDefaultPermissionList() {

@@ -64,13 +64,9 @@ public class PermissionUtil {
         }
         var userId = this.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
-        var hasAnyRole = JinqStream.from(List.of(
-                user.getUserRoleRelationList(),
-                user.getOrganizeRoleRelationList()))
-                .selectAllList(s -> s)
-                .select(s -> s.getRole())
+        var hasAnyRole = JinqStream.from(user.getRoleList())
                 .selectAllList(s -> s.getPermissionList())
-                .select(s -> SystemPermissionEnum.parse(s.getName()))
+                .select(s -> SystemPermissionEnum.parse(s))
                 .where(s -> ArrayUtils.contains(permissionList, s))
                 .exists();
         return hasAnyRole;
@@ -91,16 +87,17 @@ public class PermissionUtil {
         var user = this.userService.getUserWithMoreInformation(userId);
 
         if (Arrays.stream(permissionList).anyMatch(s -> s.getIsSuperAdmin())
-                && JinqStream.from(user.getUserRoleRelationList())
-                        .selectAllList(s -> s.getRole().getPermissionList())
-                        .select(s -> SystemPermissionEnum.parse(s.getName()))
+                && JinqStream.from(user.getRoleList())
+                        .where(s -> !s.getIsOrganizeRole())
+                        .selectAllList(s -> s.getPermissionList())
+                        .select(s -> SystemPermissionEnum.parse(s))
                         .anyMatch(s -> s.getIsSuperAdmin())) {
             return true;
         }
         if (!Arrays.stream(permissionList)
-                .anyMatch(s -> JinqStream.from(user.getOrganizeRoleRelationList())
-                        .selectAllList(t -> t.getRole().getPermissionList())
-                        .select(t -> SystemPermissionEnum.parse(t.getName()))
+                .anyMatch(s -> JinqStream.from(user.getRoleList())
+                        .selectAllList(t -> t.getPermissionList())
+                        .select(t -> SystemPermissionEnum.parse(t))
                         .toList()
                         .contains(s))) {
             return false;
@@ -117,6 +114,15 @@ public class PermissionUtil {
     public void checkAnyPermission(HttpServletRequest request, SystemPermissionEnum... permissionList) {
         if (!this.hasAnyPermission(request, permissionList)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public void checkAnyPermission(HttpServletRequest request, List<String> organizeIdList,
+            SystemPermissionEnum... permissionList) {
+        for (var organizeId : organizeIdList) {
+            if (!this.hasAnyPermission(request, organizeId, permissionList)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            }
         }
     }
 
@@ -137,11 +143,13 @@ public class PermissionUtil {
         }
         var userId = this.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
-        var organizeIdList = JinqStream.from(user.getOrganizeRoleRelationList())
-                .where(s -> JinqStream.from(s.getRole().getPermissionList())
+        var organizeIdList = JinqStream.from(user.getRoleList())
+                .where(s -> s.getIsOrganizeRole())
+                .where(s -> JinqStream.from(s.getPermissionList())
                         .anyMatch(t -> ArrayUtils.contains(permissionList,
-                                SystemPermissionEnum.parse(t.getName()))))
-                .select(s -> s.getOrganize().getId())
+                                SystemPermissionEnum.parse(t))))
+                .selectAllList(s -> s.getOrganizeList())
+                .select(s -> s.getId())
                 .toList();
         return organizeIdList;
     }

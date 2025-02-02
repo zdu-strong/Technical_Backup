@@ -13,7 +13,7 @@ public class RoleServiceCreateTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var result = this.roleService.create(Generators.timeBasedReorderedGenerator().generate().toString(), List.of(SystemPermissionEnum.SUPER_ADMIN), null);
+        var result = this.roleService.create(Generators.timeBasedReorderedGenerator().generate().toString(), List.of(SystemPermissionEnum.SUPER_ADMIN), List.of());
         assertTrue(StringUtils.isNotBlank(result.getId()));
     }
 

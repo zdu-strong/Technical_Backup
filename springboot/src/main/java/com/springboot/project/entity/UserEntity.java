@@ -56,12 +56,6 @@ public class UserEntity {
     private List<FriendshipEntity> reverseFridendList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserBlackOrganizeEntity> userBlackOrganizeList;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserMessageDeactivateEntity> userMessageDeactivateList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)

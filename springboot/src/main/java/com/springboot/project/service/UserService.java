@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,17 +43,12 @@ public class UserService extends BaseService {
         userEntity.setUpdateDate(new Date());
         this.persist(userEntity);
 
-        for (var userEmail : userModel.getUserEmailList()) {
-            this.userEmailService.createUserEmail(userEmail.getEmail(), userEntity.getId());
+        for (var userEmailModel : userModel.getUserEmailList()) {
+            this.userEmailService.createUserEmail(userEmailModel.getEmail(), userEntity.getId());
         }
 
-        for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), userRoleRelation.getRole().getId(), null);
-        }
-
-        for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userEntity.getId(), organizeRelation.getRole().getId(),
-                    organizeRelation.getOrganize().getId());
+        for (var roleModel : userModel.getRoleList()) {
+            this.userRoleRelationService.create(userEntity.getId(), roleModel.getId());
         }
 
         return this.userFormatter.formatWithMoreInformation(userEntity);
@@ -63,21 +59,31 @@ public class UserService extends BaseService {
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
+        this.merge(userEntity);
 
-        for (var userRoleRelationEntity : userEntity.getUserRoleRelationList()) {
+        var userRoleRelationList = this.streamAll(UserEntity.class)
+                .where(s -> s.getId().equals(userId))
+                .selectAllList(s -> s.getUserRoleRelationList())
+                .toList();
+        for (var userRoleRelationEntity : userRoleRelationList) {
+            if (JinqStream.from(userModel.getRoleList())
+                    .select(s -> s.getId())
+                    .toList()
+                    .contains(userRoleRelationEntity.getRole().getId())) {
+                continue;
+            }
             this.remove(userRoleRelationEntity);
         }
 
-        for (var userRoleRelation : userModel.getUserRoleRelationList()) {
-            this.userRoleRelationService.create(userId, userRoleRelation.getRole().getId(), null);
+        for (var roleModel : userModel.getRoleList()) {
+            if (JinqStream.from(userRoleRelationList)
+                    .select(s -> s.getRole().getId())
+                    .toList()
+                    .contains(roleModel.getId())) {
+                continue;
+            }
+            this.userRoleRelationService.create(userId, roleModel.getId());
         }
-
-        for (var organizeRelation : userModel.getOrganizeRoleRelationList()) {
-            this.userRoleRelationService.create(userId, organizeRelation.getRole().getId(),
-                    organizeRelation.getOrganize().getId());
-        }
-
-        this.merge(userEntity);
     }
 
     @Transactional(readOnly = true)

@@ -1,11 +1,8 @@
 package com.springboot.project.test.scheduled.SystemInitScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.Test;
-
 import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.enums.SystemRoleEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -15,21 +12,18 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
     @Test
     public void test() {
         this.systemInitScheduled.scheduled();
-        var paginationModel = this.roleService.searchUserRoleForSuperAdminByPagination(1, 200);
-        var userRoleList = paginationModel.getList();
-        assertEquals(1, userRoleList.size());
-        var userRole = JinqStream.from(userRoleList).getOnlyValue();
-        assertEquals(36, userRole.getId().length());
-        assertEquals(SystemRoleEnum.SUPER_ADMIN.getValue(), userRole.getName());
-        assertNotNull(userRole.getCreateDate());
-        assertNotNull(userRole.getUpdateDate());
-        assertTrue(StringUtils.isBlank(userRole.getOrganize().getId()));
-        assertEquals(1, userRole.getPermissionList().size());
-        var permission = JinqStream.from(userRole.getPermissionList()).getOnlyValue();
-        assertEquals(36, permission.getId().length());
-        assertEquals(SystemPermissionEnum.SUPER_ADMIN.getValue(), permission.getName());
-        assertNotNull(permission.getCreateDate());
-        assertNotNull(permission.getUpdateDate());
+        var paginationModel = this.roleService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length);
+        var roleList = paginationModel.getList();
+        assertEquals(1, roleList.size());
+        var roleModel = JinqStream.from(roleList).getOnlyValue();
+        assertEquals(36, roleModel.getId().length());
+        assertEquals(SystemRoleEnum.SUPER_ADMIN.getValue(), roleModel.getName());
+        assertNotNull(roleModel.getCreateDate());
+        assertNotNull(roleModel.getUpdateDate());
+        assertTrue(roleModel.getOrganizeList().isEmpty());
+        assertEquals(1, roleModel.getPermissionList().size());
+        var permission = JinqStream.from(roleModel.getPermissionList()).getOnlyValue();
+        assertEquals(SystemPermissionEnum.SUPER_ADMIN.getValue(), permission);
     }
 
 }
