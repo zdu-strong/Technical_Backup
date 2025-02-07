@@ -134,12 +134,13 @@ public class SystemInitScheduled {
 
     private void initDistributedExecution() {
         for (var distributedExecutionEnum : DistributedExecutionEnum.values()) {
-            Flowable.interval(distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis(),
+            Flowable.timer(distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis(),
                     TimeUnit.MILLISECONDS)
                     .doOnNext(s -> {
                         this.distributedExecutionUtil
                                 .refreshData(distributedExecutionEnum);
                     })
+                    .repeat()
                     .retry()
                     .subscribe();
         }
