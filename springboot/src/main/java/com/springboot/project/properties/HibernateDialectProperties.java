@@ -10,7 +10,7 @@ public class HibernateDialectProperties {
     private String hibernateDialect;
 
     public boolean getIsCockroachDB() {
-        if (this.hibernateDialect.contains("CustomCockroachdbDialect")) {
+        if (this.hibernateDialect.contains("CustomCockroachDBDialect")) {
             return true;
         }
         return false;
