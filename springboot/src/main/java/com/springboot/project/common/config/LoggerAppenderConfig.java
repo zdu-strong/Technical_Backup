@@ -2,7 +2,6 @@ package com.springboot.project.common.config;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -22,8 +21,6 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.processors.PublishProcessor;
 import jakarta.annotation.PostConstruct;
 
 @Component
@@ -34,8 +31,6 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
 
     @Autowired
     protected GitProperties gitProperties;
-
-    private final PublishProcessor<LoggerModel> subject = PublishProcessor.create();
 
     @Override
     protected void append(ILoggingEvent eventObject) {
@@ -86,19 +81,17 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             }
         }
 
-        subject.onNext(loggerModel);
+        try {
+            Thread.startVirtualThread(() -> {
+                this.loggerService.create(loggerModel);
+            }).join();
+        } catch (Throwable e) {
+            // do nothing
+        }
     }
 
     @PostConstruct
     public void init() {
-        subject.delay(1, TimeUnit.MILLISECONDS)
-                .concatMap((loggerModel) -> {
-                    return Flowable.just(StringUtils.EMPTY)
-                            .map((s) -> loggerService.createLogger(loggerModel))
-                            .onErrorComplete();
-                })
-                .retry()
-                .subscribe();
         var context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(this);
         setContext(context);

@@ -21,7 +21,7 @@ public class LoggerServiceCreateLoggerTest extends BaseTest {
 
     @Test
     public void test() throws JsonProcessingException {
-        var result = this.loggerService.createLogger(loggerModel);
+        var result = this.loggerService.create(loggerModel);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertTrue(result.getHasException());
         assertEquals("Hello, World!", result.getMessage());

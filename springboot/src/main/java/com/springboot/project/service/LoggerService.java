@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 public class LoggerService extends BaseService {
 
     @SneakyThrows
-    public LoggerModel createLogger(LoggerModel loggerModel) {
+    public LoggerModel create(LoggerModel loggerModel) {
         var loggerEntity = new LoggerEntity();
         loggerEntity.setId(newId());
         loggerEntity.setCreateDate(new Date());
