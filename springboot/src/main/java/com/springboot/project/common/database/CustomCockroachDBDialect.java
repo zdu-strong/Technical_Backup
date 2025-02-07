@@ -9,7 +9,7 @@ import org.hibernate.dialect.CockroachDialect;
 import org.hibernate.dialect.DatabaseVersion;
 import org.hibernate.dialect.PostgreSQLDriverKind;
 
-public class CustomCockroachDBADialect extends CockroachDialect {
+public class CustomCockroachDBDialect extends CockroachDialect {
 
     @Override
     public void initializeFunctionRegistry(FunctionContributions functionContributions) {
@@ -48,23 +48,23 @@ public class CustomCockroachDBADialect extends CockroachDialect {
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
     }
 
-    public CustomCockroachDBADialect() {
+    public CustomCockroachDBDialect() {
         super();
     }
 
-    public CustomCockroachDBADialect(DialectResolutionInfo info) {
+    public CustomCockroachDBDialect(DialectResolutionInfo info) {
         super(info);
     }
 
-    public CustomCockroachDBADialect(DialectResolutionInfo info, String versionString) {
+    public CustomCockroachDBDialect(DialectResolutionInfo info, String versionString) {
         super(info, versionString);
     }
 
-    public CustomCockroachDBADialect(DatabaseVersion version) {
+    public CustomCockroachDBDialect(DatabaseVersion version) {
         super(version);
     }
 
-    public CustomCockroachDBADialect(DatabaseVersion version, PostgreSQLDriverKind driverKind) {
+    public CustomCockroachDBDialect(DatabaseVersion version, PostgreSQLDriverKind driverKind) {
         super(version, driverKind);
     }
 
