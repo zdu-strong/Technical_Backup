@@ -202,9 +202,9 @@ public class BaseTest {
     public void beforeEachOfBaseTest() {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
-        this.systemInitScheduled.scheduled();
         Mockito.doNothing().when(this.distributedExecutionUtil)
                 .refreshData(Mockito.any(DistributedExecutionEnum.class));
+        this.systemInitScheduled.scheduled();
     }
 
     @SneakyThrows

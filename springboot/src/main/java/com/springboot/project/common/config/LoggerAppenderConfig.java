@@ -84,7 +84,7 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         try {
             Thread.startVirtualThread(() -> {
                 this.loggerService.create(loggerModel);
-            }).join();
+            });
         } catch (Throwable e) {
             // do nothing
         }

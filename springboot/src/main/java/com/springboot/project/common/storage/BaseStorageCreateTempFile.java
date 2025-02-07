@@ -98,7 +98,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
         var folderName = Generators.timeBasedReorderedGenerator().generate().toString();
         Thread.startVirtualThread(() -> {
             this.storageSpaceService.refresh(folderName);
-        }).join();
+        });
         File tempFolder = new File(this.getRootPath(), folderName);
         tempFolder.mkdirs();
         return tempFolder;
