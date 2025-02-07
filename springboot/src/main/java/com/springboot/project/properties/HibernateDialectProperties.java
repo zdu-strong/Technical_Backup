@@ -9,8 +9,11 @@ public class HibernateDialectProperties {
     @Value("${spring.jpa.database-platform}")
     private String hibernateDialect;
 
-    public boolean getIsNewSqlDatabase() {
-        return !this.getIsMysql() && !this.getIsH2();
+    public boolean getIsCockroachDB() {
+        if (this.hibernateDialect.contains("CustomCockroachdbDialect")) {
+            return true;
+        }
+        return false;
     }
 
     public boolean getIsSpanner() {
@@ -20,14 +23,14 @@ public class HibernateDialectProperties {
         return false;
     }
 
-    private boolean getIsMysql() {
+    public boolean getIsMysql() {
         if (this.hibernateDialect.contains("CustomMySQLDialect")) {
             return true;
         }
         return false;
     }
 
-    private boolean getIsH2() {
+    public boolean getIsH2() {
         if (this.hibernateDialect.contains("CustomH2Dialect")) {
             return true;
         }

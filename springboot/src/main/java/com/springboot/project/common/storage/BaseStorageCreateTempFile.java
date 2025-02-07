@@ -6,6 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +20,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.uuid.Generators;
 import cn.hutool.extra.compress.CompressUtil;
 import lombok.SneakyThrows;
+import static eu.ciechanowiec.sneakyfun.SneakyConsumer.sneaky;
 
 @Component
 public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
@@ -96,9 +99,13 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
     @SneakyThrows
     public File createTempFolder() {
         var folderName = Generators.timeBasedReorderedGenerator().generate().toString();
-        Thread.startVirtualThread(() -> {
+        Optional.of(CompletableFuture.runAsync(() -> {
             this.storageSpaceService.refresh(folderName);
-        });
+        }))
+                .filter(s -> this.databaseJdbcProperties.getIsSupportParallelWrite())
+                .ifPresent(sneaky(s -> {
+                    s.get();
+                }));
         File tempFolder = new File(this.getRootPath(), folderName);
         tempFolder.mkdirs();
         return tempFolder;

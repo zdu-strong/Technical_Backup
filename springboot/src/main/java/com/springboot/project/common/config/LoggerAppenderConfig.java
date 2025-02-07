@@ -2,6 +2,10 @@ package com.springboot.project.common.config;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import com.google.common.collect.Lists;
 import com.springboot.project.model.LoggerModel;
+import com.springboot.project.properties.DatabaseJdbcProperties;
 import com.springboot.project.service.LoggerService;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -22,6 +27,7 @@ import ch.qos.logback.core.AppenderBase;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
 import jakarta.annotation.PostConstruct;
+import static eu.ciechanowiec.sneakyfun.SneakyConsumer.sneaky;
 
 @Component
 public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
@@ -30,7 +36,12 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
     private LoggerService loggerService;
 
     @Autowired
-    protected GitProperties gitProperties;
+    private GitProperties gitProperties;
+
+    @Autowired
+    private DatabaseJdbcProperties databaseJdbcProperties;
+
+    private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     @Override
     protected void append(ILoggingEvent eventObject) {
@@ -81,13 +92,17 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             }
         }
 
-        try {
-            Thread.startVirtualThread(() -> {
-                this.loggerService.create(loggerModel);
-            });
-        } catch (Throwable e) {
-            // do nothing
-        }
+        Optional.of(CompletableFuture.runAsync(() -> {
+            this.loggerService.create(loggerModel);
+        }, executor))
+                .filter(s -> this.databaseJdbcProperties.getIsSupportParallelWrite())
+                .ifPresent(sneaky(s -> {
+                    try {
+                        s.get();
+                    } catch (Throwable e) {
+                        // do nothing
+                    }
+                }));
     }
 
     @PostConstruct

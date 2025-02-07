@@ -19,8 +19,8 @@ import com.google.cloud.spanner.AbortedException;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.permission.PermissionUtil;
+import com.springboot.project.properties.DatabaseJdbcProperties;
 import com.springboot.project.properties.DateFormatProperties;
-import com.springboot.project.properties.HibernateDialectProperties;
 import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.format.DistributedExecutionDetailFormatter;
@@ -74,7 +74,7 @@ public abstract class BaseService {
     protected DateFormatProperties dateFormatProperties;
 
     @Autowired
-    private HibernateDialectProperties HibernateDialectProperties;
+    private DatabaseJdbcProperties databaseJdbcProperties;
 
     @Autowired
     protected IsDevelopmentMockModeProperties isDevelopmentMockModeProperties;
@@ -142,7 +142,7 @@ public abstract class BaseService {
     }
 
     protected String newId() {
-        if (!this.HibernateDialectProperties.getIsNewSqlDatabase()) {
+        if (!this.databaseJdbcProperties.getIsNewSqlDatabase()) {
             return Generators.timeBasedReorderedGenerator().generate().toString();
         } else {
             return new StringBuilder(Generators.timeBasedReorderedGenerator().generate().toString()).reverse()

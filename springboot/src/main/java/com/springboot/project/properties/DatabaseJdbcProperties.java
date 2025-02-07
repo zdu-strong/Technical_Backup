@@ -21,4 +21,12 @@ public class DatabaseJdbcProperties {
         }
         return false;
     }
+
+    public boolean getIsSupportParallelWrite() {
+        return this.getIsSpannerEmulator() || this.hibernateDialectProperties.getIsH2();
+    }
+
+    public boolean getIsNewSqlDatabase() {
+        return this.hibernateDialectProperties.getIsSpanner() || this.hibernateDialectProperties.getIsCockroachDB();
+    }
 }

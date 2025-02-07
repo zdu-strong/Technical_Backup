@@ -5,6 +5,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -20,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.CloudStorage.CloudStorageImplement;
+import com.springboot.project.properties.DatabaseJdbcProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.model.ResourceAccessLegalModel;
 import com.springboot.project.service.EncryptDecryptService;
@@ -36,6 +39,9 @@ public class BaseStorage {
     protected StorageRootPathProperties storageRootPathProperties;
 
     @Autowired
+    protected DatabaseJdbcProperties databaseJdbcProperties;
+
+    @Autowired
     protected StorageSpaceService storageSpaceService;
 
     @Autowired
@@ -43,6 +49,8 @@ public class BaseStorage {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    protected ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     private String storageRootPath;
 
