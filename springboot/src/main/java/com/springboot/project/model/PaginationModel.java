@@ -29,42 +29,7 @@ public class PaginationModel<T> {
     private List<T> list;
 
     public PaginationModel(Long pageNum, Long pageSize, JinqStream<T> stream) {
-        if (pageNum < 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page num must be greater than 1");
-        }
-        if (pageSize < 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be greater than 1");
-        }
-        if (pageSize > 200) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be less than or equal to 200");
-        }
-
-        this.pageNum = pageNum;
-        this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
-            var list = stream.select(s -> new Pair<>(JPQLFunction.foundTotalRowsForGroupBy(), s))
-                    .skip((pageNum - 1) * pageSize)
-                    .limit(pageSize)
-                    .toList();
-            if (!list.isEmpty() || pageNum == 1) {
-                this.totalRecord = JinqStream.from(list).select(Pair::getOne).findFirst().orElse(0L);
-                this.setList(list.stream().map(Pair::getTwo).toList());
-            } else {
-                this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
-                        .orElse(0L);
-                this.setList(list.stream().map(Pair::getTwo).toList());
-            }
-        } else {
-            var dataList = stream.select(s -> s).toList();
-            this.totalRecord = Long.valueOf(dataList.size());
-            this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize)
-                    .toList());
-        }
-
-        this.totalPage = new BigDecimal(this.totalRecord)
-                .divide(new BigDecimal(pageSize), 0, RoundingMode.FLOOR)
-                .longValue()
-                + new BigDecimal(this.totalRecord).remainder(new BigDecimal(pageSize)).compareTo(BigDecimal.ZERO);
+        this(pageNum, pageSize, stream, s -> s);
     }
 
     public <U> PaginationModel(Long pageNum, Long pageSize, JinqStream<U> stream, Function<U, T> formatCallback) {
@@ -74,13 +39,14 @@ public class PaginationModel<T> {
         if (pageSize < 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be greater than 1");
         }
-        if (pageSize > 200) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must be less than or equal to 200");
-        }
-
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream && !isSpannerEmulator()) {
+        if (stream instanceof JPAJinqStream
+                && !SpringUtil.getBean(DatabaseJdbcProperties.class).getIsSpannerEmulator()) {
+            if (pageSize > 200) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Page size must be less than or equal to 200");
+            }
             var list = stream.select(s -> new Pair<>(JPQLFunction.foundTotalRowsForGroupBy(), s))
                     .skip((pageNum - 1) * pageSize)
                     .limit(pageSize)
@@ -103,11 +69,6 @@ public class PaginationModel<T> {
                 .divide(new BigDecimal(pageSize), 0, RoundingMode.FLOOR)
                 .longValue()
                 + new BigDecimal(this.totalRecord).remainder(new BigDecimal(pageSize)).compareTo(BigDecimal.ZERO);
-    }
-
-    private boolean isSpannerEmulator() {
-        var isSpannerEmulator = SpringUtil.getBean(DatabaseJdbcProperties.class).getIsSpannerEmulator();
-        return isSpannerEmulator;
     }
 
 }
