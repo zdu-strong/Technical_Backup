@@ -23,7 +23,7 @@ public class DatabaseJdbcProperties {
     }
 
     public boolean getIsSupportParallelWrite() {
-        return this.getIsSpannerEmulator() || this.hibernateDialectProperties.getIsH2();
+        return !this.getIsSpannerEmulator() && !this.hibernateDialectProperties.getIsH2();
     }
 
     public boolean getIsNewSqlDatabase() {
