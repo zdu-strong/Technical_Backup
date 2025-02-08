@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.nd4j.common.primitives.Optional;
-import com.springboot.project.properties.IsDevelopmentMockModeProperties;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
@@ -84,6 +83,7 @@ public enum DistributedExecutionEnum {
     @Getter
     private String value;
 
+    @Getter
     private Duration theIntervalBetweenTwoExecutions;
 
     @Getter
@@ -99,15 +99,6 @@ public enum DistributedExecutionEnum {
 
     public void executeTask(long pageNum) {
         this.callbackOfExecuteTask.accept(pageNum);
-    }
-
-    public Duration getTheIntervalBetweenTwoExecutions() {
-        if (SpringUtil.getBean(IsDevelopmentMockModeProperties.class).getIsDevelopmentMockMode()) {
-            if (Duration.ofMinutes(1).compareTo(this.theIntervalBetweenTwoExecutions) < 0) {
-                return Duration.ofMinutes(1);
-            }
-        }
-        return this.theIntervalBetweenTwoExecutions;
     }
 
     public static DistributedExecutionEnum parse(String value) {
