@@ -16,6 +16,7 @@ const css = stylesheet({
     display: "flex",
     flex: "1 1 auto",
     flexDirection: "column",
+    position: "relative",
     $nest: {
 
     }
@@ -55,41 +56,44 @@ export default observer((props: {
   }
 
   return <div className={css.mainMenuContainer}>
-    <div className='flex flex-row justify-between'>
-      <IconButton
-        color="primary"
-        style={{ margin: "10px", marginLeft: "20px" }}
-        onClick={switchMenuOpen}
-      >
-        <FontAwesomeIcon icon={GlobalUserInfo.menuOpen ? faTentArrowTurnLeft : faBars} />
-      </IconButton>
-      <div className='flex flex-row items-center'>
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<FontAwesomeIcon icon={faUser} />}
-          style={{
-            marginLeft: "1em",
-          }}
+    <div className={`flex flex-col ${GlobalUserInfo.menuOpen ? "sticky top-0 bg-white" : ""}`}>
+      <div className="flex flex-row justify-between">
+        <IconButton
+          color="primary"
+          style={{ margin: "10px", marginLeft: "20px" }}
+          onClick={switchMenuOpen}
         >
-          {GlobalUserInfo.username}
-        </Button>
+          <FontAwesomeIcon icon={GlobalUserInfo.menuOpen ? faTentArrowTurnLeft : faBars} />
+        </IconButton>
+        <div className='flex flex-row items-center'>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<FontAwesomeIcon icon={faUser} />}
+            style={{
+              marginLeft: "1em",
+            }}
+          >
+            {GlobalUserInfo.username}
+          </Button>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<FontAwesomeIcon icon={state.signOut.loading ? faSpinner : faArrowRightFromBracket} spin={state.signOut.loading} />}
-          onClick={signOut}
-          style={{
-            marginLeft: "1em",
-            marginRight: "1em",
-          }}
-        >
-          <FormattedMessage id="SignOut" defaultMessage="Sign out" />
-        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<FontAwesomeIcon icon={state.signOut.loading ? faSpinner : faArrowRightFromBracket} spin={state.signOut.loading} />}
+            onClick={signOut}
+            style={{
+              marginLeft: "1em",
+              marginRight: "1em",
+            }}
+          >
+            <FormattedMessage id="SignOut" defaultMessage="Sign out" />
+          </Button>
+        </div>
+
       </div>
+      <Divider />
     </div>
-    <Divider />
     <div className='flex flex-row flex-auto'>
       <Slide
         direction="right"
