@@ -4,7 +4,7 @@ import { stylesheet } from 'typestyle';
 import { useNavigate } from 'react-router-dom'
 import { Button, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, MenuList } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightFromBracket, faBars, faCloud, faMessage, faPaste, faSpinner, faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faBars, faCloud, faMessage, faPaste, faSpinner, faSquareMinus, faUser } from '@fortawesome/free-solid-svg-icons';
 import api from '@/api';
 import { MessageService } from '@/common/MessageService';
 import { FormattedMessage } from 'react-intl';
@@ -61,7 +61,7 @@ export default observer((props: {
         style={{ margin: "10px" }}
         onClick={switchMenuOpen}
       >
-        <FontAwesomeIcon icon={GlobalUserInfo.menuOpen ? faXmark : faBars} />
+        <FontAwesomeIcon icon={GlobalUserInfo.menuOpen ? faSquareMinus : faBars} />
       </IconButton>
       <div className='flex flex-row items-center'>
         <Button
