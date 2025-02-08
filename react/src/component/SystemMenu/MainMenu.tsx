@@ -91,7 +91,13 @@ export default observer((props: {
     </div>
     <Divider />
     <div className='flex flex-row flex-auto'>
-      <Slide direction="right" in={GlobalUserInfo.menuOpen} mountOnEnter unmountOnExit>
+      <Slide
+        direction="right"
+        in={GlobalUserInfo.menuOpen}
+        appear={false}
+        mountOnEnter
+        unmountOnExit
+      >
         <div className='flex flex-row'>
           <MenuList>
             <MenuItem onClick={() => state.navigate("/chat")}>
