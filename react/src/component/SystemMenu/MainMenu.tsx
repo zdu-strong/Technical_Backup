@@ -94,7 +94,7 @@ export default observer((props: {
       </div>
       <Divider />
       <div className='relative'>
-        <div className='absolute'>
+        <div className='fixed bg-white'>
           <Slide
             direction="right"
             in={GlobalUserInfo.menuOpen}
@@ -102,8 +102,8 @@ export default observer((props: {
             mountOnEnter
             unmountOnExit
           >
-            <div className='flex flex-row'>
-              <MenuList style={{ width: "250px" }}>
+            <div className='flex flex-row h-screen' style={{ width: "250px" }}>
+              <MenuList>
                 <MenuItem onClick={() => state.navigate("/chat")}>
                   <ListItemIcon >
                     <FontAwesomeIcon icon={faMessage} />
@@ -142,6 +142,7 @@ export default observer((props: {
                   <ListItemText><FormattedMessage id="WebClipboard" defaultMessage="Web Clipboard" /></ListItemText>
                 </MenuItem>
               </MenuList>
+              <Divider orientation="vertical" />
             </div>
           </Slide>
         </div>
@@ -155,8 +156,7 @@ export default observer((props: {
         mountOnEnter
         unmountOnExit
       >
-        <div className='flex flex-row'>
-          <Divider orientation="vertical" style={{ marginLeft: "250px" }} />
+        <div className='flex flex-row' style={{ width: "250px" }}>
         </div>
       </Slide>
 
