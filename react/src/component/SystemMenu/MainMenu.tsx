@@ -2,7 +2,7 @@ import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { ReactNode } from 'react';
 import { stylesheet } from 'typestyle';
 import { useNavigate } from 'react-router-dom'
-import { Button, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, MenuList, Typography } from '@mui/material';
+import { Button, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, MenuList } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightFromBracket, faBars, faCloud, faMessage, faPaste, faSpinner, faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
 import api from '@/api';
@@ -98,45 +98,30 @@ export default observer((props: {
               <FontAwesomeIcon icon={faMessage} />
             </ListItemIcon>
             <ListItemText><FormattedMessage id="Chat" defaultMessage="Chat" /></ListItemText>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              ⌘X
-            </Typography>
           </MenuItem>
           <MenuItem onClick={() => state.navigate("/git")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faGitAlt} />
             </ListItemIcon>
             <ListItemText><FormattedMessage id="Git" defaultMessage="Git" /></ListItemText>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              ⌘C
-            </Typography>
           </MenuItem>
           <MenuItem onClick={() => state.navigate("/super_admin/user_role/manage")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
             <ListItemText><FormattedMessage id="UserRoleManage" defaultMessage="User Role Manage" /></ListItemText>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              ⌘V
-            </Typography>
           </MenuItem>
           <MenuItem onClick={() => state.navigate("/super_admin/organize_role/manage")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
             <ListItemText><FormattedMessage id="OrganizeRoleManage" defaultMessage="Organize Role Manage" /></ListItemText>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              ⌘V
-            </Typography>
           </MenuItem>
           <MenuItem onClick={() => state.navigate("/super_admin/user/manage")}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faPaste} />
             </ListItemIcon>
             <ListItemText><FormattedMessage id="UserManage" defaultMessage="User Manage" /></ListItemText>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              ⌘V
-            </Typography>
           </MenuItem>
           <Divider />
           <MenuItem>

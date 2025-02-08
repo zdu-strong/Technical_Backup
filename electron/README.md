@@ -65,7 +65,7 @@ typescript (Dependency incompatibility)<br/>
 2. mobx-react-use-autorun (https://www.npmjs.com/package/mobx-react-use-autorun)
 3. typestyle (https://www.npmjs.com/package/typestyle)<br/>
 4. Material UI Components (https://material-ui.com)<br/>
-5. Icons (https://fontawesome.com/search?o=r&m=free)<br/>
+5. Icons (https://fontawesome.com/search?o=r&ic=free)<br/>
 6. Electron (https://www.electronjs.org)<br/>
 7. axios (https://axios-http.com)
 8. typedjson (https://www.npmjs.com/package/typedjson)
