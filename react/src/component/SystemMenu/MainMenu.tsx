@@ -93,6 +93,59 @@ export default observer((props: {
 
       </div>
       <Divider />
+      <div className='relative'>
+        <div className='absolute'>
+          <Slide
+            direction="right"
+            in={GlobalUserInfo.menuOpen}
+            appear={false}
+            mountOnEnter
+            unmountOnExit
+          >
+            <div className='flex flex-row'>
+              <MenuList style={{ width: "250px" }}>
+                <MenuItem onClick={() => state.navigate("/chat")}>
+                  <ListItemIcon >
+                    <FontAwesomeIcon icon={faMessage} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="Chat" defaultMessage="Chat" /></ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => state.navigate("/git")}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faGitAlt} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="Git" defaultMessage="Git" /></ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => state.navigate("/super_admin/user_role/manage")}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faPaste} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="UserRoleManage" defaultMessage="User Role Manage" /></ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => state.navigate("/super_admin/organize_role/manage")}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faPaste} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="OrganizeRoleManage" defaultMessage="Organize Role Manage" /></ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => state.navigate("/super_admin/user/manage")}>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faPaste} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="UserManage" defaultMessage="User Manage" /></ListItemText>
+                </MenuItem>
+                <Divider />
+                <MenuItem>
+                  <ListItemIcon>
+                    <FontAwesomeIcon icon={faCloud} />
+                  </ListItemIcon>
+                  <ListItemText><FormattedMessage id="WebClipboard" defaultMessage="Web Clipboard" /></ListItemText>
+                </MenuItem>
+              </MenuList>
+            </div>
+          </Slide>
+        </div>
+      </div>
     </div>
     <div className='flex flex-row flex-auto'>
       <Slide
@@ -103,46 +156,7 @@ export default observer((props: {
         unmountOnExit
       >
         <div className='flex flex-row'>
-          <MenuList>
-            <MenuItem onClick={() => state.navigate("/chat")}>
-              <ListItemIcon >
-                <FontAwesomeIcon icon={faMessage} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="Chat" defaultMessage="Chat" /></ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => state.navigate("/git")}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faGitAlt} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="Git" defaultMessage="Git" /></ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => state.navigate("/super_admin/user_role/manage")}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faPaste} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="UserRoleManage" defaultMessage="User Role Manage" /></ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => state.navigate("/super_admin/organize_role/manage")}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faPaste} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="OrganizeRoleManage" defaultMessage="Organize Role Manage" /></ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => state.navigate("/super_admin/user/manage")}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faPaste} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="UserManage" defaultMessage="User Manage" /></ListItemText>
-            </MenuItem>
-            <Divider />
-            <MenuItem>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faCloud} />
-              </ListItemIcon>
-              <ListItemText><FormattedMessage id="WebClipboard" defaultMessage="Web Clipboard" /></ListItemText>
-            </MenuItem>
-          </MenuList>
-          <Divider orientation="vertical" />
+          <Divider orientation="vertical" style={{ marginLeft: "250px" }} />
         </div>
       </Slide>
 
