@@ -119,7 +119,9 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         if (eventObject.getThrowableProxy() != null) {
             loggerModel.setHasException(true);
             loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
-            loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
+            loggerModel.setExceptionMessage(Optional.ofNullable(eventObject.getThrowableProxy().getMessage())
+                    .filter(StringUtils::isNotBlank)
+                    .orElse(StringUtils.EMPTY));
             setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
             if (StringUtils.isBlank(loggerModel.getMessage())
                     && StringUtils.isNotBlank(eventObject.getThrowableProxy().getMessage())) {
@@ -143,7 +145,9 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
             loggerModel.getExceptionStackTrace().add(
                     StrFormatter.format("{}{}: {}",
                             loggerModel.getExceptionStackTrace().isEmpty() ? StringUtils.EMPTY : "Caused by: ",
-                            nextError.getClassName(), nextError.getMessage()));
+                            nextError.getClassName(), Optional.ofNullable(nextError.getMessage())
+                                    .filter(StringUtils::isNotBlank)
+                                    .orElse(StringUtils.EMPTY)));
             loggerModel.getExceptionStackTrace().addAll(JinqStream
                     .from(Lists.newArrayList(nextError.getStackTraceElementProxyArray()))
                     .select(s -> s.getSTEAsString()).toList());
