@@ -67,6 +67,18 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         setCaller(loggerModel, eventObject);
         setException(loggerModel, eventObject);
 
+        saveLoggerModel(loggerModel);
+    }
+
+    @PostConstruct
+    public void init() {
+        var context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(this);
+        setContext(context);
+        start();
+    }
+
+    private void saveLoggerModel(LoggerModel loggerModel) {
         Optional.of(CompletableFuture.runAsync(() -> {
             this.loggerService.create(loggerModel);
         }, executor))
@@ -78,14 +90,6 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                         // do nothing
                     }
                 }));
-    }
-
-    @PostConstruct
-    public void init() {
-        var context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(this);
-        setContext(context);
-        start();
     }
 
     private boolean isNeedRecord(ILoggingEvent eventObject) {
