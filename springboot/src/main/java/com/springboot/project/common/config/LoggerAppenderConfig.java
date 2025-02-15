@@ -45,24 +45,8 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-
-        if (Level.ERROR != eventObject.getLevel()) {
+        if (!isNeedRecord(eventObject)) {
             return;
-        }
-
-        if (eventObject.getThrowableProxy() != null) {
-            if (Optional.of(eventObject.getThrowableProxy())
-                    .filter(s -> eventObject.getThrowableProxy().getClassName()
-                            .equals(ResponseStatusException.class.getName()))
-                    .map(s -> ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
-                            "throwable"))
-                    .filter(s -> s instanceof ResponseStatusException)
-                    .map(s -> (ResponseStatusException) s)
-                    .map(s -> s.getStatusCode())
-                    .filter(s -> !s.is5xxServerError())
-                    .isPresent()) {
-                return;
-            }
         }
 
         var loggerModel = new LoggerModel()
@@ -81,16 +65,7 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
                 .setCallerMethodName(StringUtils.EMPTY)
                 .setCallerLineNumber(1L);
         setCaller(loggerModel, eventObject);
-        if (eventObject.getThrowableProxy() != null) {
-            loggerModel.setHasException(true);
-            loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
-            loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
-            setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
-            if (StringUtils.isBlank(loggerModel.getMessage())
-                    && StringUtils.isNotBlank(eventObject.getThrowableProxy().getMessage())) {
-                loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
-            }
-        }
+        setException(loggerModel, eventObject);
 
         Optional.of(CompletableFuture.runAsync(() -> {
             this.loggerService.create(loggerModel);
@@ -111,6 +86,42 @@ public class LoggerAppenderConfig extends AppenderBase<ILoggingEvent> {
         context.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(this);
         setContext(context);
         start();
+    }
+
+    private boolean isNeedRecord(ILoggingEvent eventObject) {
+        if (Level.ERROR != eventObject.getLevel()) {
+            return false;
+        }
+
+        if (eventObject.getThrowableProxy() != null) {
+            if (Optional.of(eventObject.getThrowableProxy())
+                    .filter(s -> eventObject.getThrowableProxy().getClassName()
+                            .equals(ResponseStatusException.class.getName()))
+                    .map(s -> ReflectUtil.getFieldValue(eventObject.getThrowableProxy(),
+                            "throwable"))
+                    .filter(s -> s instanceof ResponseStatusException)
+                    .map(s -> (ResponseStatusException) s)
+                    .map(s -> s.getStatusCode())
+                    .filter(s -> !s.is5xxServerError())
+                    .isPresent()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void setException(LoggerModel loggerModel, ILoggingEvent eventObject) {
+        if (eventObject.getThrowableProxy() != null) {
+            loggerModel.setHasException(true);
+            loggerModel.setExceptionClassName(eventObject.getThrowableProxy().getClassName());
+            loggerModel.setExceptionMessage(eventObject.getThrowableProxy().getMessage());
+            setExceptionStackTrace(loggerModel, eventObject.getThrowableProxy());
+            if (StringUtils.isBlank(loggerModel.getMessage())
+                    && StringUtils.isNotBlank(eventObject.getThrowableProxy().getMessage())) {
+                loggerModel.setMessage(eventObject.getThrowableProxy().getMessage());
+            }
+        }
     }
 
     private void setCaller(LoggerModel loggerModel, ILoggingEvent eventObject) {
