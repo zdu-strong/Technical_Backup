@@ -1,17 +1,12 @@
 package com.springboot.project.test.scheduled.OrganizeRelationRefreshScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
-import io.reactivex.rxjava3.core.Flowable;
 
 public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
@@ -26,7 +21,8 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any(DistributedExecutionEnum.class));
+        Mockito.doCallRealMethod().when(this.distributedExecutionUtil)
+                .refreshData(Mockito.any(DistributedExecutionEnum.class));
         {
             var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);
@@ -48,19 +44,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
             this.organizeId = parentOrganize.getId();
         }
         {
-            Flowable.interval(1, TimeUnit.MILLISECONDS)
-                    .concatMap(s -> {
-                        this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_CLOSURE_REFRESH);
-                        var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
-                        if (result.getTotalRecord() == 1) {
-                            return Flowable.just(StringUtils.EMPTY);
-                        } else {
-                            return Flowable.empty();
-                        }
-                    })
-                    .take(1)
-                    .timeout(2, TimeUnit.MINUTES)
-                    .blockingSubscribe();
+            this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_CLOSURE_REFRESH);
         }
     }
 
