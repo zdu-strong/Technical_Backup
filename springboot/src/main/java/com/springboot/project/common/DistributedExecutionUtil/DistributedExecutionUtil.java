@@ -3,6 +3,8 @@ package com.springboot.project.common.DistributedExecutionUtil;
 import java.time.Duration;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.tuples.Pair;
@@ -51,33 +53,40 @@ public class DistributedExecutionUtil {
     }
 
     private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
-        var now = new Date();
+        var distributedExecutionMainId = getId(distributedExecutionEnum);
+        if (StringUtils.isBlank(distributedExecutionMainId)) {
+            return;
+        }
         while (true) {
-            var distributedExecutionMainModel = this.distributedExecutionMainService
-                    .getLastDoneDistributedExecution(distributedExecutionEnum);
-            if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getCreateDate().before(now)) {
-                return;
-            } else if (distributedExecutionMainModel != null && !DateUtils
-                    .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
-                            (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis())
-                    .after(now)) {
+            if (!StringUtils.equals(distributedExecutionMainId, getId(distributedExecutionEnum))) {
                 return;
             }
-
-            var distributedExecutionMainId = getId(distributedExecutionEnum);
             this.refreshSingleData(distributedExecutionMainId, distributedExecutionEnum);
         }
     }
 
     private String getId(DistributedExecutionEnum distributedExecutionEnum) {
-        var distributedExecutionMainModel = this.distributedExecutionMainService
-                .getDistributedExecutionWithInprogress(distributedExecutionEnum);
-        if (distributedExecutionMainModel != null) {
-            return distributedExecutionMainModel.getId();
+        {
+            var distributedExecutionMainModel = this.distributedExecutionMainService
+                    .getLastDoneDistributedExecution(distributedExecutionEnum);
+            if (distributedExecutionMainModel != null && !new Date().after(DateUtils
+                    .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
+                            (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {
+                return null;
+            }
         }
-        var id = this.distributedExecutionMainService
-                .create(distributedExecutionEnum, distributedExecutionEnum.getTotalRecord()).getId();
-        return id;
+        {
+            var distributedExecutionMainModel = this.distributedExecutionMainService
+                    .getDistributedExecutionWithInprogress(distributedExecutionEnum);
+            if (distributedExecutionMainModel != null) {
+                return distributedExecutionMainModel.getId();
+            }
+        }
+        {
+            var id = this.distributedExecutionMainService
+                    .create(distributedExecutionEnum, distributedExecutionEnum.getTotalRecord()).getId();
+            return id;
+        }
     }
 
     /**
@@ -132,7 +141,8 @@ public class DistributedExecutionUtil {
                 .map(s -> new LongTermTaskUniqueKeyModel()
                         .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.getValue())
                         .setUniqueKey(
-                                this.objectMapper.writeValueAsString(new Pair<>(distributedExecutionEnum.getValue(), s))))
+                                this.objectMapper
+                                        .writeValueAsString(new Pair<>(distributedExecutionEnum.getValue(), s))))
                 .toList()
                 .blockingGet();
         return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
