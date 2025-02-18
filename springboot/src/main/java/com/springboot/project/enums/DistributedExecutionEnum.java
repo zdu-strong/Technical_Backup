@@ -1,9 +1,9 @@
 package com.springboot.project.enums;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import org.nd4j.common.primitives.Optional;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
