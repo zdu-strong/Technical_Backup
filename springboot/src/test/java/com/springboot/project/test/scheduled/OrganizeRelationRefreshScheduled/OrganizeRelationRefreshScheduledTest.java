@@ -26,7 +26,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any());
+        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any(DistributedExecutionEnum.class));
         {
             var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);

@@ -37,7 +37,7 @@ public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest 
     @BeforeEach
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
-        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any());
+        Mockito.doCallRealMethod().when(this.distributedExecutionUtil).refreshData(Mockito.any(DistributedExecutionEnum.class));
         {
             Flowable.interval(1, TimeUnit.MILLISECONDS)
                     .concatMap(s -> {
