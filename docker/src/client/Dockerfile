@@ -16,6 +16,7 @@ RUN npm install --location=global serve
 FROM first_docker AS second_docker
 RUN dnf install -y git
 RUN dnf install -y java-21-openjdk-devel
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
 RUN dnf install -y procps-ng
 RUN dnf install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel nss libXScrnSaver alsa-lib
 COPY . /all_code

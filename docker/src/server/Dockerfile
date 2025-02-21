@@ -8,6 +8,7 @@ ENV LANG="en_US.UTF-8"
 
 # Install java
 RUN dnf install -y java-21-openjdk-devel
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
 
 # compile code
 FROM first_docker AS second_docker
