@@ -8,8 +8,8 @@ const fs = require('fs')
 async function main() {
   const isRunAndroid = await getIsRunAndroid();
   const androidSdkRootPath = getAndroidSdkRootPath();
-  await addPlatformSupport(isRunAndroid);
-  const deviceList = await getDeviceList(isRunAndroid);
+  await addPlatformSupport(isRunAndroid, androidSdkRootPath);
+  const deviceList = await getDeviceList(isRunAndroid, androidSdkRootPath);
   await buildReact();
   await runAndroidOrIOS(isRunAndroid, androidSdkRootPath, deviceList);
   process.exit();
@@ -27,7 +27,7 @@ async function runAndroidOrIOS(isRunAndroid, androidSdkRootPath, deviceList) {
       cwd: path.join(__dirname, ".."),
       extendEnv: true,
       env: (isRunAndroid ? {
-        "ANDROID_HOME": `${androidSdkRootPath}`
+        "ANDROID_HOME": `${androidSdkRootPath}`,
       } : {
       }),
     }
@@ -114,7 +114,7 @@ async function getIsRunAndroid() {
   return isRunAndroid;
 }
 
-async function addPlatformSupport(isRunAndroid) {
+async function addPlatformSupport(isRunAndroid, androidSdkRootPath) {
   await execa.command(
     [
       `cap add`,
@@ -123,11 +123,15 @@ async function addPlatformSupport(isRunAndroid) {
     {
       stdio: "inherit",
       cwd: path.join(__dirname, ".."),
+      env: (isRunAndroid ? {
+        "ANDROID_HOME": `${androidSdkRootPath}`,
+      } : {
+      }),
     }
   );
 }
 
-async function getDeviceList(isRunAndroid) {
+async function getDeviceList(isRunAndroid, androidSdkRootPath) {
   let deviceList = [];
   if (isRunAndroid) {
     await execa.command(
@@ -139,6 +143,10 @@ async function getDeviceList(isRunAndroid) {
       {
         stdio: "inherit",
         cwd: path.join(__dirname, ".."),
+        env: (isRunAndroid ? {
+          "ANDROID_HOME": `${androidSdkRootPath}`,
+        } : {
+        }),
       }
     );
     const { stdout: androidDeviceOutput } = await execa.command(
@@ -150,6 +158,10 @@ async function getDeviceList(isRunAndroid) {
       {
         stdio: "pipe",
         cwd: path.join(__dirname, ".."),
+        env: (isRunAndroid ? {
+          "ANDROID_HOME": `${androidSdkRootPath}`,
+        } : {
+        }),
       }
     );
 
@@ -164,16 +176,11 @@ async function getDeviceList(isRunAndroid) {
         .select(item => item.trim()).toArray()
       )
       .where(s => s.some(m => m.trim() === "API 35"))
-      .groupBy(() => "")
-      .selectMany(s => {
-        if (s.count() > 1) {
-          return s.where(m => m.some(n => n.includes("Pixel 9"))).toArray();
-        }
-        return s.toArray();
-      })
-      .select(s => linq.from(s)
-        .last()
-      )
+      .orderByDescending(s => linq.from(s).first())
+      .orderByDescending(s => s.some(m => m.includes("Pixel 8")))
+      .orderByDescending(s => s.some(m => m.includes("Pixel 9")))
+      .select(s => linq.from(s).last())
+      .take(1)
       .toArray();
     if (!deviceList.length) {
       throw new Error("No available Device!")

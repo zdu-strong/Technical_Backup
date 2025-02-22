@@ -11,7 +11,7 @@ const CapacitorConfig = require('../capacitor.config')
 async function main() {
   const isRunAndroid = await getIsRunAndroid();
   const androidSdkRootPath = await getAndroidSdkRootPath();
-  await addPlatformSupport(isRunAndroid);
+  await addPlatformSupport(isRunAndroid, androidSdkRootPath);
   await buildReact();
   await runAndroidOrIOS(isRunAndroid, androidSdkRootPath);
   await copySignedApk(isRunAndroid);
@@ -30,7 +30,7 @@ async function runAndroidOrIOS(isRunAndroid, androidSdkRootPath) {
       cwd: path.join(__dirname, ".."),
       extendEnv: true,
       env: (isRunAndroid ? {
-        "ANDROID_HOME": `${androidSdkRootPath}`
+        "ANDROID_HOME": `${androidSdkRootPath}`,
       } : {
       }),
     }
@@ -87,7 +87,7 @@ async function buildReact() {
 
 async function getAndroidSdkRootPath() {
   let androidSdkRootPath = path.join(os.homedir(), "AppData/Local/Android/sdk").replace(new RegExp("\\\\", "g"), "/");
-  if (os.platform() === "darwin") {
+  if (os.platform() !== "win32") {
     androidSdkRootPath = path.join(os.homedir(), "Android/Sdk").replace(new RegExp("\\\\", "g"), "/");
   }
   return androidSdkRootPath;
@@ -147,7 +147,7 @@ async function copySignedApk(isRunAndroid) {
   }
 }
 
-async function addPlatformSupport(isRunAndroid) {
+async function addPlatformSupport(isRunAndroid, androidSdkRootPath) {
   await execa.command(
     [
       `cap add`,
@@ -156,6 +156,10 @@ async function addPlatformSupport(isRunAndroid) {
     {
       stdio: "inherit",
       cwd: path.join(__dirname, ".."),
+      env: (isRunAndroid ? {
+        "ANDROID_HOME": `${androidSdkRootPath}`,
+      } : {
+      }),
     }
   );
 }
