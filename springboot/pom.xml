@@ -33,24 +33,24 @@
             jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
         </database.liquibase.maven.plugin.reference.url>
         <is.development.mock.mode>true</is.development.mock.mode>
-        <google-cloud-spanner-jdbc.version>2.26.0</google-cloud-spanner-jdbc.version>
+        <google-cloud-spanner-jdbc.version>2.27.0</google-cloud-spanner-jdbc.version>
         <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
         <commons-io.version>2.18.0</commons-io.version>
-        <tika-core.version>3.0.0</tika-core.version>
-        <java-jwt.version>4.4.0</java-jwt.version>
+        <tika-core.version>3.1.0</tika-core.version>
+        <java-jwt.version>4.5.0</java-jwt.version>
         <guava.version>33.4.0-jre</guava.version>
         <com-google-zxing-core.version>3.5.3</com-google-zxing-core.version>
         <com-google-zxing-javase.version>3.5.3</com-google-zxing-javase.version>
-        <hutool-crypto.version>5.8.35</hutool-crypto.version>
-        <hutool-extra.version>5.8.35</hutool-extra.version>
+        <hutool-crypto.version>5.8.36</hutool-crypto.version>
+        <hutool-extra.version>5.8.36</hutool-extra.version>
         <java-uuid-generator.version>5.1.0</java-uuid-generator.version>
         <j3d-core-utils.version>1.3.1</j3d-core-utils.version>
         <gdx-bullet.version>1.13.1</gdx-bullet.version>
         <aliyun-sdk-oss.version>3.18.1</aliyun-sdk-oss.version>
         <google-cloud-spanner-hibernate-dialect.version>3.7.1</google-cloud-spanner-hibernate-dialect.version>
         <liquibase-spanner.version>4.30.0.1</liquibase-spanner.version>
-        <opentelemetry-api.version>1.46.0</opentelemetry-api.version>
+        <opentelemetry-api.version>1.47.0</opentelemetry-api.version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <org-tukaani-xz.version>1.10</org-tukaani-xz.version>
         <sneakyfun.version>1.0.0</sneakyfun.version>
@@ -229,7 +229,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.2</version>
+        <version>3.4.3</version>
     </parent>
 
     <build>
