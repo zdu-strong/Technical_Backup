@@ -10,6 +10,6 @@ pub struct PixelTrait {
 #[async_trait]
 impl PhoneTrait for PixelTrait {
     async fn buy(&mut self) {
-        println!("{:?} cost {:?} buy pixel", self.owner, self.price);
+        println!("{} cost {} buy pixel", self.owner, self.price);
     }
 }

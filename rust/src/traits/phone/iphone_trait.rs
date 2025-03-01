@@ -10,6 +10,6 @@ pub struct IPhoneTrait {
 #[async_trait]
 impl PhoneTrait for IPhoneTrait {
     async fn buy(&mut self) {
-        println!("{:?} cost {:?} buy iphone", self.owner, self.price);
+        println!("{} cost {} buy iphone", self.owner, self.price);
     }
 }
