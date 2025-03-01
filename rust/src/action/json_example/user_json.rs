@@ -23,5 +23,5 @@ pub async fn string_to_json() {
     }];
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
     let ref mut user_list: Vec<UserModel> = serde_json::from_str(json_string).unwrap();
-    println!("{:?}", serde_json::to_string(user_list).unwrap());
+    println!("{:?}", user_list);
 }
