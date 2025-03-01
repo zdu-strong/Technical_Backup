@@ -85,7 +85,7 @@ async function startServer() {
         "SPRING_DATASOURCE_URL": `jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE`,
         "SERVER_PORT": `${availableServerPort}`,
         "SPRING_DATASOURCE_DRIVER_CLASS_NAME": `org.h2.Driver`,
-        "SPRING_JPA_HIBERNATE_DDL_AUTO": `create-drop`,
+        "SPRING_JPA_HIBERNATE_DDL_AUTO": `update`,
         "SPRING_JPA_DATABASE_PLATFORM": `com.springboot.project.common.database.CustomH2Dialect`,
         "SPRING_LIQUIBASE_ENABLED": `false`,
         "PROPERTIES_STORAGE_ROOT_PATH": `defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a`,
