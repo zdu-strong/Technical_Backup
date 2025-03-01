@@ -22,7 +22,7 @@ pub async fn eat_apple(
         }
         *surplus_apple_count -= 1;
         println!(
-            "{} eat {}{} {}",
+            "{:?} eat {:?}{:?} {:?}",
             username,
             *max_apple_count - *surplus_apple_count,
             match *max_apple_count - *surplus_apple_count {
