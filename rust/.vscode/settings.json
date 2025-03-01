@@ -13,4 +13,5 @@
     "extensions.ignoreRecommendations": true,
     "editor.inlayHints.enabled": "on",
     "workbench.editor.enablePreview": false,
+    "git.openRepositoryInParentFolders": "never",
 }

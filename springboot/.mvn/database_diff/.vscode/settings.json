@@ -50,5 +50,5 @@
     "java.debug.settings.stepping.skipConstructors": true,
     "java.debug.settings.stepping.skipStaticInitializers": true,
     "java.debug.settings.stepping.skipSynthetics": true,
-
+    "git.openRepositoryInParentFolders": "never",
 }
