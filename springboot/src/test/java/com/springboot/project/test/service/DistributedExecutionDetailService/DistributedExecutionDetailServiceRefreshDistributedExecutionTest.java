@@ -21,7 +21,6 @@ public class DistributedExecutionDetailServiceRefreshDistributedExecutionTest ex
     public void test() {
         var result = this.distributedExecutionDetailService.createByResult(distributedExecutionMainModel.getId(), 1, 1);
         assertTrue(StringUtils.isNotBlank(result.getId()));
-        assertFalse(result.getIsDone());
         assertFalse(result.getHasError());
         assertEquals(1, result.getPageNum());
         assertEquals(1, result.getPartitionNum());

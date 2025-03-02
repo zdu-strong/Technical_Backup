@@ -65,7 +65,6 @@ public class DistributedExecutionMainService extends BaseService {
 
         var totalPageOfDistributedExecutionTaskWithDone = this.streamAll(DistributedExecutionDetailEntity.class)
                 .where(s -> s.getDistributedExecutionMain().getId().equals(id))
-                .where(s -> s.getIsDone())
                 .count();
         if (totalPageOfDistributedExecutionTaskWithDone < distributedExecutionMainEntity.getTotalPage()) {
             return;

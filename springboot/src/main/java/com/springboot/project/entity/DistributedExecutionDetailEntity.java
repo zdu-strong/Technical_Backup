@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -15,7 +16,13 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "distributedExecutionMainId", "pageNum" }) })
+        @UniqueConstraint(columnNames = {
+                "distributedExecutionMainId", "pageNum" }),
+        @UniqueConstraint(columnNames = {
+                "distributedExecutionMainId", "partitionNum", "pageNum" })
+}, indexes = {
+        @Index(columnList = "distributedExecutionMainId, hasError"),
+})
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -29,12 +36,6 @@ public class DistributedExecutionDetailEntity {
 
     @Column(nullable = false)
     private Long partitionNum;
-
-    /**
-     * Is it running or has ended
-     */
-    @Column(nullable = false)
-    private Boolean isDone;
 
     /**
      * Whether an exception occurs

@@ -3,12 +3,11 @@ package com.springboot.project.common.DistributedExecutionUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.GitProperties;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
@@ -18,10 +17,8 @@ import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.LongTermTaskService;
-
 import cn.hutool.core.util.RandomUtil;
 import io.reactivex.rxjava3.core.Flowable;
-
 import com.springboot.project.service.DistributedExecutionDetailService;
 import lombok.SneakyThrows;
 
@@ -36,9 +33,6 @@ public class DistributedExecutionUtil {
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
-
-    @Autowired
-    private GitProperties gitProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -121,7 +115,7 @@ public class DistributedExecutionUtil {
                 list.add(distributedExecutionMainModel);
             }, new LongTermTaskUniqueKeyModel()
                     .setType(LongTermTaskTypeEnum.CREATE_DISTRIBUTED_EXECUTION_MAIN.getValue())
-                    .setUniqueKey(this.gitProperties.getCommitId()));
+                    .setUniqueKey(StringUtils.EMPTY));
             return JinqStream.from(list).findOne().orElse(null);
         }
     }

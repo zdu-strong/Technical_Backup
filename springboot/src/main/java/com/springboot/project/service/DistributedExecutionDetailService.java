@@ -62,7 +62,6 @@ public class DistributedExecutionDetailService extends BaseService {
         distributedExecutionDetailEntity.setUpdateDate(new Date());
         distributedExecutionDetailEntity.setPartitionNum(partitionNum);
         distributedExecutionDetailEntity.setPageNum(pageNum);
-        distributedExecutionDetailEntity.setIsDone(true);
         distributedExecutionDetailEntity.setHasError(hasError);
         distributedExecutionDetailEntity.setDistributedExecutionMain(distributedExecutionMainEntity);
 

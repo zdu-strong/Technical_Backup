@@ -17,11 +17,6 @@ public class DistributedExecutionDetailModel {
     private Long partitionNum;
 
     /**
-     * Is it running or has ended
-     */
-    private Boolean isDone;
-
-    /**
      * Whether an exception occurs
      */
     private Boolean hasError;
