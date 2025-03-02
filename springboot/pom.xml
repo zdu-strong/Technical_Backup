@@ -33,7 +33,7 @@
             jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
         </database.liquibase.maven.plugin.reference.url>
         <is.development.mock.mode>true</is.development.mock.mode>
-        <google-cloud-spanner-jdbc.version>2.27.0</google-cloud-spanner-jdbc.version>
+        <google-cloud-spanner-jdbc.version>2.27.1</google-cloud-spanner-jdbc.version>
         <sql-maven-plugin.version>3.0.0</sql-maven-plugin.version>
         <jinq-jpa.version>2.0.2</jinq-jpa.version>
         <commons-io.version>2.18.0</commons-io.version>
@@ -49,7 +49,7 @@
         <gdx-bullet.version>1.13.1</gdx-bullet.version>
         <aliyun-sdk-oss.version>3.18.1</aliyun-sdk-oss.version>
         <google-cloud-spanner-hibernate-dialect.version>3.7.1</google-cloud-spanner-hibernate-dialect.version>
-        <liquibase-spanner.version>4.30.0.1</liquibase-spanner.version>
+        <liquibase-spanner.version>4.31.1</liquibase-spanner.version>
         <opentelemetry-api.version>1.47.0</opentelemetry-api.version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <org-tukaani-xz.version>1.10</org-tukaani-xz.version>
