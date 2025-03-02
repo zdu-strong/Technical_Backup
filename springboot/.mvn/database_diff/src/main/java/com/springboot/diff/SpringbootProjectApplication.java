@@ -45,7 +45,7 @@ public class SpringbootProjectApplication {
      * @param args
      */
     public static void main(String[] args) throws Throwable {
-        if (isTestEnviroment()) {
+        if (isTestEnvironment()) {
             return;
         }
 
@@ -427,13 +427,13 @@ public class SpringbootProjectApplication {
         return newDatabaseName;
     }
 
-    public static boolean isTestEnviroment() throws IOException {
+    public static boolean isTestEnvironment() throws IOException {
         try (var input = new ClassPathResource("application.yml").getInputStream()) {
-            var isTestEnviromentString = new YAMLMapper()
+            var isTestEnvironmentString = new YAMLMapper()
                     .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("properties")
                     .get("storage").get("root").get("path").asText();
-            var isTestEnviroment = "defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a".equals(isTestEnviromentString);
-            return isTestEnviroment;
+            var isTestEnvironment = "defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a".equals(isTestEnvironmentString);
+            return isTestEnvironment;
         }
     }
 
