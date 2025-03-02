@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -21,14 +20,15 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void test() {
         this.distributedExecutionMainService.refreshDistributedExecution(this.distributedExecutionMainModel.getId());
         var result = this.distributedExecutionMainService
-                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
+                .getLastDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(this.distributedExecutionMainModel.getId(), result.getId());
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.parse(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalPage());
+        assertEquals(1, result.getTotalPartition());
         assertNotNull(result.getCreateDate());
         assertNotNull(result.getUpdateDate());
     }
@@ -37,10 +37,9 @@ public class DistributedExecutionMainServiceRefreshDistributedExecutionTest exte
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
         this.distributedExecutionMainModel = this.distributedExecutionMainService
-                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
-        var distributedExecutionDetailModel = this.distributedExecutionDetailService
-                .create(this.distributedExecutionMainModel.getId(), 1);
-        this.distributedExecutionDetailService.updateByResult(distributedExecutionDetailModel.getId());
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
+        this.distributedExecutionDetailService
+                .createByResult(this.distributedExecutionMainModel.getId(), 1L, 1L);
     }
 
 }

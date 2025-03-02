@@ -17,13 +17,14 @@ public class DistributedExecutionMainServiceCreateTest extends BaseTest {
     @Test
     public void test() {
         var result = this.distributedExecutionMainService
-                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN, 1);
+                .create(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.parse(result.getExecutionType()));
         assertFalse(result.getIsDone());
         assertFalse(result.getHasError());
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalPage());
+        assertEquals(1, result.getTotalPartition());
         assertNotNull(result.getCreateDate());
         assertNotNull(result.getUpdateDate());
     }

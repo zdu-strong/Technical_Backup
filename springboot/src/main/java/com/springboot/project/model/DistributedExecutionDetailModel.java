@@ -14,6 +14,8 @@ public class DistributedExecutionDetailModel {
 
     private Long pageNum;
 
+    private Long partitionNum;
+
     /**
      * Is it running or has ended
      */

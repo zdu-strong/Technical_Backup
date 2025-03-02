@@ -12,18 +12,19 @@ import org.springframework.core.io.ClassPathResource;
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class DistributedExecutionMainServiceGetLastDoneDistributedExecutionTest extends BaseTest {
+public class DistributedExecutionMainServiceGetLastDistributedExecutionTest extends BaseTest {
 
     @Test
     public void test() {
         var result = this.distributedExecutionMainService
-                .getLastDoneDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
+                .getLastDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(DistributedExecutionEnum.STORAGE_SPACE_CLEAN,
                 DistributedExecutionEnum.parse(result.getExecutionType()));
         assertTrue(result.getIsDone());
         assertFalse(result.getHasError());
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalPage());
+        assertEquals(1, result.getTotalPartition());
         assertNotNull(result.getCreateDate());
         assertNotNull(result.getUpdateDate());
     }

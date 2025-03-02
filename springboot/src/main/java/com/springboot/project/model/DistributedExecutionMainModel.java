@@ -14,7 +14,9 @@ public class DistributedExecutionMainModel {
 
     private String executionType;
 
-    private Long totalRecord;
+    private Long totalPage;
+
+    private Long totalPartition;
 
     /**
      * Is it running or has ended

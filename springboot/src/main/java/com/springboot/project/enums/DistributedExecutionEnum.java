@@ -22,11 +22,11 @@ public enum DistributedExecutionEnum {
     STORAGE_SPACE_CLEAN(
             "STORAGE_SPACE_CLEAN",
             Duration.ofHours(12),
-            1,
+            1L,
             () -> {
-                var totalRecord = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
-                        .getTotalRecord();
-                return totalRecord;
+                var totalPage = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
+                        .getTotalPage();
+                return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(pageNum,
@@ -42,10 +42,10 @@ public enum DistributedExecutionEnum {
     NONCE_CLEAN(
             "NONCE_CLEAN",
             Duration.ofHours(12),
-            1,
+            1L,
             () -> {
-                var totalRecord = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalRecord();
-                return totalRecord;
+                var totalPage = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalPage();
+                return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(NonceService.class).getNonceByPagination(pageNum,
@@ -61,11 +61,11 @@ public enum DistributedExecutionEnum {
     ORGANIZE_CLOSURE_REFRESH(
             "ORGANIZE_CLOSURE_REFRESH",
             Duration.ofMinutes(1),
-            1,
+            1L,
             () -> {
-                var totalRecord = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
-                        .getTotalRecord();
-                return totalRecord;
+                var totalPage = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
+                        .getTotalPage();
+                return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(pageNum,
@@ -87,14 +87,14 @@ public enum DistributedExecutionEnum {
     private Duration theIntervalBetweenTwoExecutions;
 
     @Getter
-    private Integer maxNumberOfParallel;
+    private long maxNumberOfParallel;
 
-    private Supplier<Long> callbackOfGetTotalRecord;
+    private Supplier<Long> callbackOfGetTotalPage;
 
     private Consumer<Long> callbackOfExecuteTask;
 
-    public long getTotalRecord() {
-        return this.callbackOfGetTotalRecord.get();
+    public long getTotalPage() {
+        return this.callbackOfGetTotalPage.get();
     }
 
     public void executeTask(long pageNum) {

@@ -27,6 +27,9 @@ public class DistributedExecutionDetailEntity {
     @Column(nullable = false)
     private Long pageNum;
 
+    @Column(nullable = false)
+    private Long partitionNum;
+
     /**
      * Is it running or has ended
      */

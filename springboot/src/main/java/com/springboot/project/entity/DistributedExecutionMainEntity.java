@@ -25,7 +25,10 @@ public class DistributedExecutionMainEntity {
     private String executionType;
 
     @Column(nullable = false)
-    private Long totalRecord;
+    private Long totalPage;
+
+    @Column(nullable = false)
+    private Long totalPartition;
 
     /**
      * Is it running or has ended

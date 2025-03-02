@@ -1,26 +1,28 @@
 package com.springboot.project.common.DistributedExecutionUtil;
 
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.boot.info.GitProperties;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enums.DistributedExecutionEnum;
 import com.springboot.project.enums.LongTermTaskTypeEnum;
+import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.DistributedExecutionMainService;
 import com.springboot.project.service.LongTermTaskService;
-import com.springboot.project.service.DistributedExecutionDetailService;
+
+import cn.hutool.core.util.RandomUtil;
 import io.reactivex.rxjava3.core.Flowable;
+
+import com.springboot.project.service.DistributedExecutionDetailService;
 import lombok.SneakyThrows;
 
 @Component
@@ -30,10 +32,13 @@ public class DistributedExecutionUtil {
     private DistributedExecutionMainService distributedExecutionMainService;
 
     @Autowired
-    private DistributedExecutionDetailService distributedExecutionTaskService;
+    private DistributedExecutionDetailService distributedExecutionDetailService;
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    private GitProperties gitProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -43,109 +48,118 @@ public class DistributedExecutionUtil {
 
     @SneakyThrows
     public void refreshData(DistributedExecutionEnum distributedExecutionEnum) {
-        var longTermTaskUniqueKeyModel = this.findOne(distributedExecutionEnum);
-        if (longTermTaskUniqueKeyModel == null) {
-            return;
-        }
-        this.longTermTaskUtil.runSkipWhenExists(() -> {
-            this.refreshDataByDistributedExecutionEnum(distributedExecutionEnum);
-        }, longTermTaskUniqueKeyModel);
-    }
-
-    private void refreshDataByDistributedExecutionEnum(DistributedExecutionEnum distributedExecutionEnum) {
-        var distributedExecutionMainId = getId(distributedExecutionEnum);
-        if (StringUtils.isBlank(distributedExecutionMainId)) {
+        var distributedExecutionMainModel = this.getDistributedExecution(distributedExecutionEnum);
+        if (distributedExecutionMainModel == null) {
             return;
         }
         while (true) {
-            if (!StringUtils.equals(distributedExecutionMainId, getId(distributedExecutionEnum))) {
-                return;
+            var partitionNum = this.getPartitionNum(distributedExecutionMainModel, distributedExecutionEnum);
+            if (partitionNum == null) {
+                this.distributedExecutionMainService.refreshDistributedExecution(distributedExecutionMainModel.getId());
+                break;
             }
-            this.refreshSingleData(distributedExecutionMainId, distributedExecutionEnum);
+
+            var longTermTaskUniqueKeyModel = this.getLongTermTaskUniqueKeyModelByPartitionNum(partitionNum,
+                    distributedExecutionEnum);
+            this.longTermTaskUtil.runSkipWhenExists(() -> {
+                var pageNum = this.distributedExecutionDetailService
+                        .getPageNumByPartitionNum(distributedExecutionMainModel, partitionNum);
+                if (pageNum == null) {
+                    return;
+                }
+                while (true) {
+                    if (pageNum < 1) {
+                        break;
+                    }
+
+                    try {
+                        distributedExecutionEnum.executeTask(pageNum);
+                        this.distributedExecutionDetailService.createByResult(distributedExecutionMainModel.getId(),
+                                partitionNum, pageNum);
+                    } catch (Throwable e) {
+                        this.distributedExecutionDetailService
+                                .createByErrorMessage(distributedExecutionMainModel.getId(), partitionNum, pageNum);
+                    }
+                    pageNum -= distributedExecutionEnum.getMaxNumberOfParallel();
+                }
+            }, longTermTaskUniqueKeyModel);
         }
     }
 
-    private String getId(DistributedExecutionEnum distributedExecutionEnum) {
+    private DistributedExecutionMainModel getDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
         {
             var distributedExecutionMainModel = this.distributedExecutionMainService
-                    .getLastDoneDistributedExecution(distributedExecutionEnum);
-            if (distributedExecutionMainModel != null && !new Date().after(DateUtils
-                    .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
-                            (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {
+                    .getLastDistributedExecution(distributedExecutionEnum);
+            if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getIsDone()
+                    && distributedExecutionEnum
+                            .getMaxNumberOfParallel() == (long) distributedExecutionMainModel.getTotalPartition()) {
+                return distributedExecutionMainModel;
+            } else if (distributedExecutionMainModel != null && distributedExecutionMainModel.getIsDone()
+                    && !new Date().after(DateUtils
+                            .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
+                                    (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {
                 return null;
             }
         }
+
         {
-            var distributedExecutionMainModel = this.distributedExecutionMainService
-                    .getDistributedExecutionWithInprogress(distributedExecutionEnum);
-            if (distributedExecutionMainModel != null) {
-                return distributedExecutionMainModel.getId();
-            }
-        }
-        {
-            var id = this.distributedExecutionMainService
-                    .create(distributedExecutionEnum, distributedExecutionEnum.getTotalRecord()).getId();
-            return id;
+            var list = new ArrayList<DistributedExecutionMainModel>();
+            this.longTermTaskUtil.runSkipWhenExists(() -> {
+                {
+                    var distributedExecutionMainModel = this.distributedExecutionMainService
+                            .getLastDistributedExecution(distributedExecutionEnum);
+                    if (distributedExecutionMainModel != null && distributedExecutionMainModel.getIsDone()
+                            && !new Date().after(DateUtils
+                                    .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
+                                            (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions()
+                                                    .toMillis()))) {
+                        return;
+                    }
+                }
+                var distributedExecutionMainModel = this.distributedExecutionMainService
+                        .create(distributedExecutionEnum);
+                list.add(distributedExecutionMainModel);
+            }, new LongTermTaskUniqueKeyModel()
+                    .setType(LongTermTaskTypeEnum.CREATE_DISTRIBUTED_EXECUTION_MAIN.getValue())
+                    .setUniqueKey(this.gitProperties.getCommitId()));
+            return JinqStream.from(list).findOne().orElse(null);
         }
     }
 
-    /**
-     * 
-     * @param distributedExecutionEnum
-     * @return isDone boolean
-     */
-    private void refreshSingleData(String distributedExecutionMainId,
+    private Long getPartitionNum(
+            DistributedExecutionMainModel distributedExecutionMainModel,
             DistributedExecutionEnum distributedExecutionEnum) {
-        var pageNum = this.distributedExecutionTaskService
-                .getPageNumForExecution(distributedExecutionMainId);
-        if (pageNum == null) {
-            ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
-            return;
-        }
-
-        String id;
-        try {
-            id = this.distributedExecutionTaskService.create(distributedExecutionMainId, pageNum).getId();
-        } catch (DataIntegrityViolationException | JpaSystemException e) {
-            ThreadUtils.sleepQuietly(Duration.ofMillis(1000));
-            return;
-        }
-
-        var subscription = Flowable.timer(5, TimeUnit.SECONDS)
-                .doOnNext((a) -> {
-                    Thread.startVirtualThread(() -> {
-                        synchronized (id) {
-                            this.distributedExecutionTaskService.refreshUpdateDate(id);
-                        }
-                    }).join();
-                })
-                .repeat()
-                .retry()
-                .subscribe();
-        try {
-            distributedExecutionEnum.executeTask(pageNum);
-            subscription.dispose();
-            synchronized (id) {
-                this.distributedExecutionTaskService.updateByResult(id);
-            }
-        } catch (Throwable e) {
-            subscription.dispose();
-            synchronized (id) {
-                this.distributedExecutionTaskService.updateByErrorMessage(id);
-            }
-        }
-    }
-
-    private LongTermTaskUniqueKeyModel findOne(DistributedExecutionEnum distributedExecutionEnum) {
-        var longTermTaskUniqueKeyModelList = Flowable.range(1, distributedExecutionEnum.getMaxNumberOfParallel())
-                .map(s -> new LongTermTaskUniqueKeyModel()
-                        .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.getValue())
-                        .setUniqueKey(
-                                this.objectMapper
-                                        .writeValueAsString(new Pair<>(distributedExecutionEnum.getValue(), s))))
+        var partitionNumList = Flowable.range(1, distributedExecutionMainModel.getTotalPartition().intValue())
+                .filter(s -> s <= distributedExecutionMainModel.getTotalPage())
                 .toList()
                 .blockingGet();
-        return this.longTermTaskService.findOneNotRunning(longTermTaskUniqueKeyModelList);
+
+        while (!partitionNumList.isEmpty()) {
+            var partitionNum = partitionNumList.get(RandomUtil.randomInt(0, partitionNumList.size()));
+            partitionNumList.removeIf(s -> s == partitionNum);
+
+            var pageNum = this.distributedExecutionDetailService.getPageNumByPartitionNum(distributedExecutionMainModel,
+                    partitionNum);
+            if (pageNum == null) {
+                continue;
+            }
+            var longTermTaskUniqueKeyModel = this.getLongTermTaskUniqueKeyModelByPartitionNum(partitionNum,
+                    distributedExecutionEnum);
+            if (this.longTermTaskService.findOneNotRunning(List.of(longTermTaskUniqueKeyModel)) == null) {
+                continue;
+            }
+            return (long) partitionNum;
+        }
+        return null;
+    }
+
+    @SneakyThrows
+    private LongTermTaskUniqueKeyModel getLongTermTaskUniqueKeyModelByPartitionNum(long partitionNum,
+            DistributedExecutionEnum distributedExecutionEnum) {
+        return new LongTermTaskUniqueKeyModel()
+                .setType(LongTermTaskTypeEnum.DISTRIBUTED_EXECUTION.getValue())
+                .setUniqueKey(this.objectMapper
+                        .writeValueAsString(new Pair<>(distributedExecutionEnum.getValue(), partitionNum)));
     }
 
 }
