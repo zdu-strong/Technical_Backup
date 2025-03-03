@@ -35,7 +35,10 @@ public class DistributedExecutionMainService extends BaseService {
                         .getMaxNumberOfParallel()) {
                     return this.distributedExecutionMainFormatter.format(distributedExecutionMainEntity);
                 } else {
-                    this.remove(distributedExecutionMainEntity);
+                    distributedExecutionMainEntity.setIsDone(true);
+                    distributedExecutionMainEntity.setIsCancel(true);
+                    distributedExecutionMainEntity.setUpdateDate(new Date());
+                    this.merge(distributedExecutionMainEntity);
                 }
             }
         }
@@ -48,6 +51,7 @@ public class DistributedExecutionMainService extends BaseService {
         distributedExecutionMainEntity.setTotalPage(distributedExecutionEnum.getTotalPage());
         distributedExecutionMainEntity.setTotalPartition(distributedExecutionEnum.getMaxNumberOfParallel());
         distributedExecutionMainEntity.setIsDone(distributedExecutionMainEntity.getTotalPage() <= 0);
+        distributedExecutionMainEntity.setIsCancel(false);
         distributedExecutionMainEntity.setHasError(false);
         distributedExecutionMainEntity.setTotalPartition(distributedExecutionEnum.getMaxNumberOfParallel());
         this.persist(distributedExecutionMainEntity);

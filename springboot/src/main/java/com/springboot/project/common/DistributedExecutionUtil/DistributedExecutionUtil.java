@@ -84,11 +84,14 @@ public class DistributedExecutionUtil {
         {
             var distributedExecutionMainModel = this.distributedExecutionMainService
                     .getLastDistributedExecution(distributedExecutionEnum);
-            if (distributedExecutionMainModel != null && !distributedExecutionMainModel.getIsDone()
+            if (distributedExecutionMainModel != null
+                    && !distributedExecutionMainModel.getIsDone()
                     && distributedExecutionEnum
                             .getMaxNumberOfParallel() == (long) distributedExecutionMainModel.getTotalPartition()) {
                 return distributedExecutionMainModel;
-            } else if (distributedExecutionMainModel != null && distributedExecutionMainModel.getIsDone()
+            } else if (distributedExecutionMainModel != null
+                    && distributedExecutionMainModel.getIsDone()
+                    && !distributedExecutionMainModel.getIsCancel()
                     && !new Date().after(DateUtils
                             .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                                     (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {

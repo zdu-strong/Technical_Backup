@@ -43,6 +43,9 @@ public class DistributedExecutionMainEntity {
     @Column(nullable = false)
     private Boolean isDone;
 
+    @Column(nullable = false)
+    private Boolean isCancel;
+
     /**
      * Whether an exception occurs
      */

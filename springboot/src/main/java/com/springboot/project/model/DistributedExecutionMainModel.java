@@ -23,6 +23,8 @@ public class DistributedExecutionMainModel {
      */
     private Boolean isDone;
 
+    private Boolean isCancel;
+
     /**
      * Whether an exception occurs
      */
