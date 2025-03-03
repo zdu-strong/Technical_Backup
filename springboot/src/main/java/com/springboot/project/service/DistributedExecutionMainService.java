@@ -28,8 +28,9 @@ public class DistributedExecutionMainService extends BaseService {
 
     public DistributedExecutionMainModel create(DistributedExecutionEnum distributedExecutionEnum) {
         {
+            var status = DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue();
             var distributedExecutionMainList = this.streamAll(DistributedExecutionMainEntity.class)
-                    .where(s -> DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue().equals(s.getStatus()))
+                    .where(s -> status.equals(s.getStatus()))
                     .toList();
             for (var distributedExecutionMainEntity : distributedExecutionMainList) {
                 if (distributedExecutionMainEntity.getTotalPartition() == distributedExecutionEnum
