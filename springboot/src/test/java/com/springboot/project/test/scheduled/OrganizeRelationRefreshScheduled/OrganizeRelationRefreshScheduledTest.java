@@ -43,7 +43,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
         }
         {
             Mockito.doCallRealMethod().when(this.distributedExecutionUtil)
-                    .refreshData(Mockito.any(DistributedExecutionEnum.class));
+                    .refreshData(Mockito.any());
         }
     }
 

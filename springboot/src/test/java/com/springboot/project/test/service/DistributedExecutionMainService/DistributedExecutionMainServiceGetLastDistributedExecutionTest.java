@@ -32,7 +32,7 @@ public class DistributedExecutionMainServiceGetLastDistributedExecutionTest exte
     public void beforeEach() {
         this.storage.storageResource(new ClassPathResource("email/email.xml"));
         Mockito.doCallRealMethod().when(this.distributedExecutionUtil)
-                .refreshData(Mockito.any(DistributedExecutionEnum.class));
+                .refreshData(Mockito.any());
         this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.STORAGE_SPACE_CLEAN);
     }
 

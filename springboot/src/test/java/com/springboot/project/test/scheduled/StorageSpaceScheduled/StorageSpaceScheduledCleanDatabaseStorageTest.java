@@ -17,7 +17,7 @@ public class StorageSpaceScheduledCleanDatabaseStorageTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         Mockito.doCallRealMethod().when(this.distributedExecutionUtil)
-                .refreshData(Mockito.any(DistributedExecutionEnum.class));
+                .refreshData(Mockito.any());
     }
 
 }

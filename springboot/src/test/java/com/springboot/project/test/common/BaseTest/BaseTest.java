@@ -203,7 +203,7 @@ public class BaseTest {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.distributedExecutionUtil)
-                .refreshData(Mockito.any(DistributedExecutionEnum.class));
+                .refreshData(Mockito.any());
         this.systemInitScheduled.scheduled();
     }
 
