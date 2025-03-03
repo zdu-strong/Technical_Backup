@@ -18,17 +18,7 @@ public class DistributedExecutionMainModel {
 
     private Long totalPartition;
 
-    /**
-     * Is it running or has ended
-     */
-    private Boolean isDone;
-
-    private Boolean isCancel;
-
-    /**
-     * Whether an exception occurs
-     */
-    private Boolean hasError;
+    private String status;
 
     private Date createDate;
 

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.enums.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionMainStatusEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 
 @Service
@@ -28,15 +29,14 @@ public class DistributedExecutionMainService extends BaseService {
     public DistributedExecutionMainModel create(DistributedExecutionEnum distributedExecutionEnum) {
         {
             var distributedExecutionMainList = this.streamAll(DistributedExecutionMainEntity.class)
-                    .where(s -> Boolean.FALSE.equals(s.getIsDone()))
+                    .where(s -> DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue().equals(s.getStatus()))
                     .toList();
             for (var distributedExecutionMainEntity : distributedExecutionMainList) {
                 if (distributedExecutionMainEntity.getTotalPartition() == distributedExecutionEnum
                         .getMaxNumberOfParallel()) {
                     return this.distributedExecutionMainFormatter.format(distributedExecutionMainEntity);
                 } else {
-                    distributedExecutionMainEntity.setIsDone(true);
-                    distributedExecutionMainEntity.setIsCancel(true);
+                    distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.ABORTED.getValue());
                     distributedExecutionMainEntity.setUpdateDate(new Date());
                     this.merge(distributedExecutionMainEntity);
                 }
@@ -50,10 +50,10 @@ public class DistributedExecutionMainService extends BaseService {
         distributedExecutionMainEntity.setExecutionType(distributedExecutionEnum.getValue());
         distributedExecutionMainEntity.setTotalPage(distributedExecutionEnum.getTotalPage());
         distributedExecutionMainEntity.setTotalPartition(distributedExecutionEnum.getMaxNumberOfParallel());
-        distributedExecutionMainEntity.setIsDone(distributedExecutionMainEntity.getTotalPage() <= 0);
-        distributedExecutionMainEntity.setIsCancel(false);
-        distributedExecutionMainEntity.setHasError(false);
-        distributedExecutionMainEntity.setTotalPartition(distributedExecutionEnum.getMaxNumberOfParallel());
+        distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue());
+        if (distributedExecutionMainEntity.getTotalPage() <= 0) {
+            distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE.getValue());
+        }
         this.persist(distributedExecutionMainEntity);
 
         return this.distributedExecutionMainFormatter.format(distributedExecutionMainEntity);
@@ -63,7 +63,9 @@ public class DistributedExecutionMainService extends BaseService {
         var distributedExecutionMainEntity = this.streamAll(DistributedExecutionMainEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
-        if (distributedExecutionMainEntity.getIsDone()) {
+
+        if (!DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue()
+                .equals(distributedExecutionMainEntity.getStatus())) {
             return;
         }
 
@@ -77,8 +79,10 @@ public class DistributedExecutionMainService extends BaseService {
                 .where(s -> s.getDistributedExecutionMain().getId().equals(id))
                 .where(s -> s.getHasError())
                 .exists();
-        distributedExecutionMainEntity.setIsDone(true);
-        distributedExecutionMainEntity.setHasError(hasError);
+        distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE.getValue());
+        if (hasError) {
+            distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.ERROR_END.getValue());
+        }
         distributedExecutionMainEntity.setUpdateDate(new Date());
         this.merge(distributedExecutionMainEntity);
     }

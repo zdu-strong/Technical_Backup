@@ -3,6 +3,7 @@ package com.springboot.project.common.DistributedExecutionUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.enums.DistributedExecutionEnum;
+import com.springboot.project.enums.DistributedExecutionMainStatusEnum;
 import com.springboot.project.enums.LongTermTaskTypeEnum;
 import com.springboot.project.model.DistributedExecutionMainModel;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
@@ -82,16 +84,21 @@ public class DistributedExecutionUtil {
 
     private DistributedExecutionMainModel getDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
         {
+            // Stream.of(null)
             var distributedExecutionMainModel = this.distributedExecutionMainService
                     .getLastDistributedExecution(distributedExecutionEnum);
             if (distributedExecutionMainModel != null
-                    && !distributedExecutionMainModel.getIsDone()
+                    && DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue()
+                            .equals(distributedExecutionMainModel.getStatus())
                     && distributedExecutionEnum
                             .getMaxNumberOfParallel() == (long) distributedExecutionMainModel.getTotalPartition()) {
                 return distributedExecutionMainModel;
             } else if (distributedExecutionMainModel != null
-                    && distributedExecutionMainModel.getIsDone()
-                    && !distributedExecutionMainModel.getIsCancel()
+                    && Stream
+                            .of(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE,
+                                    DistributedExecutionMainStatusEnum.ERROR_END)
+                            .map(DistributedExecutionMainStatusEnum::getValue)
+                            .anyMatch(s -> s.equals(distributedExecutionMainModel.getStatus()))
                     && !new Date().after(DateUtils
                             .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                                     (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {
@@ -105,7 +112,12 @@ public class DistributedExecutionUtil {
                 {
                     var distributedExecutionMainModel = this.distributedExecutionMainService
                             .getLastDistributedExecution(distributedExecutionEnum);
-                    if (distributedExecutionMainModel != null && distributedExecutionMainModel.getIsDone()
+                    if (distributedExecutionMainModel != null
+                            && Stream
+                                    .of(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE,
+                                            DistributedExecutionMainStatusEnum.ERROR_END)
+                                    .map(DistributedExecutionMainStatusEnum::getValue)
+                                    .anyMatch(s -> s.equals(distributedExecutionMainModel.getStatus()))
                             && !new Date().after(DateUtils
                                     .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                                             (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions()

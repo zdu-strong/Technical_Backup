@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Table(indexes = {
         @Index(columnList = "executionType, createDate, id"),
         @Index(columnList = "createDate, id"),
-        @Index(columnList = "executionType, isDone"),
+        @Index(columnList = "executionType, status"),
 })
 public class DistributedExecutionMainEntity {
 
@@ -37,20 +37,8 @@ public class DistributedExecutionMainEntity {
     @Column(nullable = false)
     private Long totalPartition;
 
-    /**
-     * Is it running or has ended
-     */
     @Column(nullable = false)
-    private Boolean isDone;
-
-    @Column(nullable = false)
-    private Boolean isCancel;
-
-    /**
-     * Whether an exception occurs
-     */
-    @Column(nullable = false)
-    private Boolean hasError;
+    private String status;
 
     @Column(nullable = false)
     private Date createDate;

@@ -15,7 +15,7 @@ public enum LongTermTaskTypeEnum {
     DISTRIBUTED_EXECUTION("DISTRIBUTED_EXECUTION"),
     CREATE_DISTRIBUTED_EXECUTION_MAIN("CREATE_DISTRIBUTED_EXECUTION_MAIN");
 
-    public String value;
+    private String value;
 
     public static LongTermTaskTypeEnum parse(String value) {
         return Optional.ofNullable(EnumUtil.getBy(LongTermTaskTypeEnum::getValue, value)).get();
