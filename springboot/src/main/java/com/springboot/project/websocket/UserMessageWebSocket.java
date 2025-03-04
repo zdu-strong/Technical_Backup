@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
@@ -28,6 +30,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.processors.PublishProcessor;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.CloseReason.CloseCodes;
@@ -69,6 +72,7 @@ public class UserMessageWebSocket {
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageReceiveDateMap = new ConcurrentHashMap<>();
     private PublishProcessor<String> checkIsSignInPublishProcessor;
     private Session webSocketSession;
+    private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     /**
      * @param session
@@ -369,6 +373,8 @@ public class UserMessageWebSocket {
             publishProcessorOne
                     .throttleLatest(1, TimeUnit.SECONDS, true)
                     .delay(1, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.from(executor))
+                    .observeOn(Schedulers.from(executor))
                     .doOnNext((s) -> {
                         try {
                             this.permissionUtil.checkIsSignIn(request);

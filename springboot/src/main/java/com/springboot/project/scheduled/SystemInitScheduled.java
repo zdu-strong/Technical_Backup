@@ -1,6 +1,8 @@
 package com.springboot.project.scheduled;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import com.springboot.project.service.RoleService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.Getter;
 
 @Component
@@ -60,6 +63,8 @@ public class SystemInitScheduled {
 
     @Getter
     private Boolean hasInit = false;
+
+    private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     @Scheduled(initialDelay = 0, fixedDelay = 24 * 60 * 60 * 1000)
     public void scheduled() {
@@ -136,6 +141,8 @@ public class SystemInitScheduled {
         for (var distributedExecutionEnum : DistributedExecutionEnum.values()) {
             Flowable.timer(distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis(),
                     TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.from(executor))
+                    .observeOn(Schedulers.from(executor))
                     .doOnNext(s -> {
                         this.distributedExecutionUtil
                                 .refreshData(distributedExecutionEnum);
