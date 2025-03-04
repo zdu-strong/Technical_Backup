@@ -3,6 +3,8 @@ package com.springboot.project.common.longtermtask;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.ThreadUtils;
@@ -20,6 +22,7 @@ import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -31,6 +34,8 @@ public class LongTermTaskUtil {
 
     @Autowired
     private EncryptDecryptService encryptDecryptService;
+
+    private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
     /**
      * The return value of the executed method will be stored in the database as a
@@ -47,12 +52,12 @@ public class LongTermTaskUtil {
             var subscription = Flowable
                     .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(),
                             TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.from(executor))
+                    .observeOn(Schedulers.from(executor))
                     .doOnNext((a) -> {
-                        Thread.startVirtualThread(() -> {
-                            synchronized (idOfLongTermTask) {
-                                this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
-                            }
-                        }).join();
+                        synchronized (idOfLongTermTask) {
+                            this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
+                        }
                     })
                     .repeat()
                     .retry()
@@ -122,14 +127,14 @@ public class LongTermTaskUtil {
         var syncKey = Generators.timeBasedReorderedGenerator().generate().toString();
         var subscription = Flowable
                 .timer(LongTermTaskTempWaitDurationConstant.REFRESH_INTERVAL_DURATION.toMillis(), TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.from(executor))
+                .observeOn(Schedulers.from(executor))
                 .doOnNext((a) -> {
-                    Thread.startVirtualThread(() -> {
-                        synchronized (syncKey) {
-                            for (var id : idList) {
-                                this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(id);
-                            }
+                    synchronized (syncKey) {
+                        for (var id : idList) {
+                            this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(id);
                         }
-                    }).join();
+                    }
                 })
                 .repeat()
                 .retry()
