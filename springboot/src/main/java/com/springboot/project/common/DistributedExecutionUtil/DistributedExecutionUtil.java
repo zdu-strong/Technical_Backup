@@ -97,7 +97,8 @@ public class DistributedExecutionUtil {
                             .of(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE,
                                     DistributedExecutionMainStatusEnum.ERROR_END)
                             .map(DistributedExecutionMainStatusEnum::getValue)
-                            .anyMatch(s -> s.equals(distributedExecutionMainModel.getStatus()))
+                            .toList()
+                            .contains(distributedExecutionMainModel.getStatus())
                     && !new Date().after(DateUtils
                             .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                                     (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis()))) {
@@ -116,7 +117,8 @@ public class DistributedExecutionUtil {
                                     .of(DistributedExecutionMainStatusEnum.SUCCESS_COMPLETE,
                                             DistributedExecutionMainStatusEnum.ERROR_END)
                                     .map(DistributedExecutionMainStatusEnum::getValue)
-                                    .anyMatch(s -> s.equals(distributedExecutionMainModel.getStatus()))
+                                    .toList()
+                                    .contains(distributedExecutionMainModel.getStatus())
                             && !new Date().after(DateUtils
                                     .addMilliseconds(distributedExecutionMainModel.getUpdateDate(),
                                             (int) distributedExecutionEnum.getTheIntervalBetweenTwoExecutions()
