@@ -17,9 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class UserRoleRelationService extends BaseService {
 
-    // @Autowired
-    // private UserService userService;
-
     public void create(String userId, String userRoleId) {
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
@@ -57,62 +54,12 @@ public class UserRoleRelationService extends BaseService {
     }
 
     private void checkRoleRelationForCreate(UserModel user, HttpServletRequest request) {
-
-        // for (var organizeRoleRelation : user.getOrganizeRoleRelationList()) {
-        //     if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN)) {
-        //         break;
-        //     }
-
-        //     this.permissionUtil.checkAnyPermission(request, organizeRoleRelation.getOrganize().getId(),
-        //             SystemPermissionEnum.ORGANIZE_MANAGE);
-        // }
-
         if (!user.getRoleList().isEmpty()) {
             this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
         }
     }
 
     private void checkRoleRelationForUpdate(UserModel user, HttpServletRequest request) {
-        // var userOne = this.userService.getUserWithMoreInformation(user.getId());
-
-        // for (var organizeRole : JinqStream.from(List.of(
-        //         user.getOrganizeRoleRelationList().stream()
-        //                 .filter(s -> !userOne.getOrganizeRoleRelationList()
-        //                         .stream()
-        //                         .anyMatch(t -> s.getId().equals(t.getId())))
-        //                 .toList(),
-        //         userOne.getOrganizeRoleRelationList()
-        //                 .stream()
-        //                 .filter(s -> user.getOrganizeRoleRelationList()
-        //                         .stream()
-        //                         .anyMatch(t -> s.getId().equals(t.getId())))
-        //                 .toList()))
-        //         .selectAllList(s -> s).toList()) {
-        //     if (this.permissionUtil.hasAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN)) {
-        //         break;
-        //     }
-
-        //     var organizeRoleId = organizeRole.getId();
-        //     var roleEntity = this.streamAll(RoleEntity.class)
-        //             .where(s -> s.getId().equals(organizeRoleId))
-        //             .getOnlyValue();
-        //     this.permissionUtil.checkAnyPermission(request, roleEntity.getOrganize().getId(),
-        //             SystemPermissionEnum.ORGANIZE_MANAGE);
-        // }
-
-        // if (JinqStream.from(List.of(
-        //         user.getUserRoleRelationList()
-        //                 .stream()
-        //                 .filter(s -> !userOne.getUserRoleRelationList().stream()
-        //                         .anyMatch(t -> s.getId().equals(t.getId())))
-        //                 .toList(),
-        //         userOne.getUserRoleRelationList()
-        //                 .stream()
-        //                 .filter(s -> user.getUserRoleRelationList().stream().anyMatch(t -> s.getId().equals(t.getId())))
-        //                 .toList()))
-        //         .selectAllList(s -> s).exists()) {
-        //     this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
-        // }
     }
 
 }

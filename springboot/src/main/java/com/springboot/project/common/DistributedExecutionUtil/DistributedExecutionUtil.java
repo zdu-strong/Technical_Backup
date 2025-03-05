@@ -84,7 +84,6 @@ public class DistributedExecutionUtil {
 
     private DistributedExecutionMainModel getDistributedExecution(DistributedExecutionEnum distributedExecutionEnum) {
         {
-            // Stream.of(null)
             var distributedExecutionMainModel = this.distributedExecutionMainService
                     .getLastDistributedExecution(distributedExecutionEnum);
             if (distributedExecutionMainModel != null

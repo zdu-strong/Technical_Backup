@@ -215,22 +215,6 @@ public class RoleService extends BaseService {
 
     private boolean deleteUserRoleList() {
         return false;
-        // var roles = Arrays.stream(SystemRoleEnum.values())
-        // .filter(s -> !s.getIsOrganizeRole())
-        // .map(s -> s.getValue())
-        // .toList();
-        // var id = this.streamAll(RoleEntity.class)
-        // .where(s -> s.getOrganize() == null)
-        // .where(s -> s.getIsActive())
-        // .where(s -> !roles.contains(s.getName()))
-        // .select(s -> s.getId())
-        // .findFirst()
-        // .orElse(null);
-        // if (StringUtils.isNotBlank(id)) {
-        // this.delete(id);
-        // return true;
-        // }
-        // return false;
     }
 
     private boolean createUserRoleList() {
