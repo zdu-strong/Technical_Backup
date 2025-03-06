@@ -372,8 +372,8 @@ public class UserMessageWebSocket {
             PublishProcessor<String> publishProcessorOne = PublishProcessor.create();
             publishProcessorOne
                     .throttleLatest(1, TimeUnit.SECONDS, true)
-                    .delay(1, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.from(executor))
+                    .delay(1, TimeUnit.MILLISECONDS)
                     .observeOn(Schedulers.from(executor))
                     .doOnNext((s) -> {
                         try {
