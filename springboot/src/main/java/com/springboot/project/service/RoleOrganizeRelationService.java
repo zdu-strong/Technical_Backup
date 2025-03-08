@@ -38,7 +38,14 @@ public class RoleOrganizeRelationService extends BaseService {
         this.persist(roleOrganizeRelationEntity);
     }
 
-     @Transactional(readOnly = true)
+    public boolean refresh(String organizeId) {
+        if (this.createDefaultOrganizeRoleList(organizeId)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional(readOnly = true)
     public PaginationModel<RoleModel> searchOrganizeRoleForSuperAdminByPagination(long pageNum, long pageSize,
             String organizeId, boolean isIncludeDescendant) {
         var roleOrganizeRelationStream = this.streamAll(RoleOrganizeRelationEntity.class)
@@ -50,14 +57,6 @@ public class RoleOrganizeRelationService extends BaseService {
         }
         var stream = roleOrganizeRelationStream.select(s -> s.getOne().getRole());
         return new PaginationModel<>(pageNum, pageSize, stream, this.roleFormatter::format);
-    }
-
-
-    public boolean refresh(String organizeId) {
-        if (this.createDefaultOrganizeRoleList(organizeId)) {
-            return true;
-        }
-        return false;
     }
 
     private boolean createDefaultOrganizeRoleList(String organizeId) {
