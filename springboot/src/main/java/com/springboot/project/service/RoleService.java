@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
-import org.jinq.tuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -192,28 +191,9 @@ public class RoleService extends BaseService {
     }
 
     public boolean refresh() {
-        if (this.deleteUserRoleList()) {
-            return true;
-        }
         if (this.createUserRoleList()) {
             return true;
         }
-        if (this.deleteOrganizeRoleList()) {
-            return true;
-        }
-        if (this.createOrganizeRoleList()) {
-            return true;
-        }
-        if (this.refreshDefaultUserRoleList()) {
-            return true;
-        }
-        if (this.refreshDefaultOrganizeRoleList()) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean deleteUserRoleList() {
         return false;
     }
 
@@ -227,6 +207,9 @@ public class RoleService extends BaseService {
                     .where(s -> !s.getIsOrganizeRole())
                     .where(s -> s.getName().equals(roleName))
                     .exists()) {
+                if (this.refreshDefaultUserRoleList(systemRoleEnum)) {
+                    return true;
+                }
                 continue;
             }
             this.create(roleName,
@@ -237,53 +220,31 @@ public class RoleService extends BaseService {
         return false;
     }
 
-    private boolean deleteOrganizeRoleList() {
-        return false;
-    }
-
-    private boolean createOrganizeRoleList() {
-        for (var systemRoleEnum : SystemRoleEnum.values()) {
-            if (!systemRoleEnum.getIsOrganizeRole()) {
+    private boolean refreshDefaultUserRoleList(SystemRoleEnum systemRoleEnum) {
+        var roleName = systemRoleEnum.getValue();
+        var roleList = this.streamAll(RoleEntity.class)
+                .where(s -> !s.getIsOrganizeRole())
+                .where(s -> s.getName().equals(roleName))
+                .toList();
+        for (var roleEntity : roleList) {
+            var roleId = roleEntity.getId();
+            var permissionList = this.streamAll(RolePermissionRelationEntity.class)
+                    .where(s -> s.getRole().getId().equals(roleId))
+                    .toList();
+            if (systemRoleEnum.getPermissionList().size() == permissionList.size()
+                    && systemRoleEnum.getPermissionList().stream().allMatch(m -> permissionList.stream()
+                            .anyMatch(n -> m.getValue().equals(n.getPermission().getName())))) {
                 continue;
             }
-            var roleName = systemRoleEnum.getValue();
-            var organizeId = this.streamAll(OrganizeEntity.class)
-                    .where(s -> s.getIsCompany())
-                    .where(s -> s.getIsActive())
-                    .leftOuterJoinList(s -> s.getRoleOrganizeRelationList())
-                    .leftOuterJoin((s, t) -> JinqStream.of(s.getTwo().getRole()),
-                            (s, t) -> t.getName().equals(roleName))
-                    .select((s, t) -> new Pair<>(s.getOne().getOne().getId(), s.getTwo() == null ? 0 : 1))
-                    .group((s) -> s.getOne(), (s, t) -> t.sumInteger(m -> m.getTwo()))
-                    .where(s -> s.getTwo() == 0)
-                    .select(s -> s.getOne())
-                    .findFirst()
-                    .orElse(null);
-            if (StringUtils.isNotBlank(organizeId)) {
-                this.create(roleName, systemRoleEnum.getPermissionList(), List.of(organizeId));
-                return true;
+            for (var permissionEntity : permissionList) {
+                this.remove(permissionEntity);
             }
-        }
-        return false;
-    }
-
-    private boolean refreshDefaultUserRoleList() {
-        for (var systemRoleEnum : SystemRoleEnum.values()) {
-            if (systemRoleEnum.getIsOrganizeRole()) {
-                continue;
+            for (var permissionEnum : systemRoleEnum.getPermissionList()) {
+                this.rolePermissionRelationService.create(roleEntity.getId(), permissionEnum);
             }
+            return true;
         }
 
-        return false;
-    }
-
-    private boolean refreshDefaultOrganizeRoleList() {
-        for (var systemRoleEnum : SystemRoleEnum.values()) {
-            if (!systemRoleEnum.getIsOrganizeRole()) {
-                continue;
-            }
-
-        }
         return false;
     }
 
