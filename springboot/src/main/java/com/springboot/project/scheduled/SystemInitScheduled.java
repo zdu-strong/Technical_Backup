@@ -21,7 +21,7 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.PermissionService;
-import com.springboot.project.service.RoleService;
+import com.springboot.project.service.UserRoleRelationService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
@@ -36,9 +36,6 @@ public class SystemInitScheduled {
 
     @Autowired
     private PermissionService permissionService;
-
-    @Autowired
-    private RoleService roleService;
 
     @Autowired
     private LongTermTaskUtil longTermTaskUtil;
@@ -60,6 +57,9 @@ public class SystemInitScheduled {
 
     @Autowired
     private DistributedExecutionUtil distributedExecutionUtil;
+
+    @Autowired
+    private UserRoleRelationService userRoleRelationService;
 
     @Getter
     private Boolean hasInit = false;
@@ -113,7 +113,7 @@ public class SystemInitScheduled {
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
         superAdminUser.setRoleList(
-                this.roleService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getList());
+                this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getList());
         this.userService.create(superAdminUser);
     }
 
@@ -126,12 +126,12 @@ public class SystemInitScheduled {
 
     private void initUserRole() {
         while (true) {
-            if (!permissionService.refresh()) {
+            if (!this.permissionService.refresh()) {
                 break;
             }
         }
         while (true) {
-            if (!roleService.refresh()) {
+            if (!this.userRoleRelationService.refresh()) {
                 break;
             }
         }

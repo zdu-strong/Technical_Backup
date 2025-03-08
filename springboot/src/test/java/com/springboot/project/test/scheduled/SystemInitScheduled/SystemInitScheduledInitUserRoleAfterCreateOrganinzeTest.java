@@ -17,7 +17,7 @@ public class SystemInitScheduledInitUserRoleAfterCreateOrganinzeTest extends Bas
 
     @Test
     public void test() {
-        var roleList = this.roleService
+        var roleList = this.roleOrganizeRelationService
                 .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, organizeId, false)
                 .getList();
         assertEquals(2, roleList.size());

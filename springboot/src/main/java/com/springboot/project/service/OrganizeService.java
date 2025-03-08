@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +17,6 @@ import com.springboot.project.model.PaginationModel;
 
 @Service
 public class OrganizeService extends BaseService {
-
-    @Autowired
-    private RoleService roleService;
 
     public OrganizeModel create(OrganizeModel organizeModel) {
         var parentOrganize = this.getParentOrganize(organizeModel);
@@ -35,10 +31,6 @@ public class OrganizeService extends BaseService {
         organizeEntity.setParent(parentOrganize);
         organizeEntity.setIsCompany(organizeEntity.getParent() == null);
         this.persist(organizeEntity);
-
-        if (organizeEntity.getIsCompany()) {
-            this.roleService.refreshForCompany(organizeEntity.getId());
-        }
 
         return this.organizeFormatter.format(organizeEntity);
     }
@@ -93,10 +85,6 @@ public class OrganizeService extends BaseService {
         organizeEntity.setIsCompany(organizeEntity.getParent() == null);
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
-
-        if (organizeEntity.getIsCompany()) {
-            this.roleService.refreshForCompany(organizeEntity.getId());
-        }
     }
 
     @Transactional(readOnly = true)

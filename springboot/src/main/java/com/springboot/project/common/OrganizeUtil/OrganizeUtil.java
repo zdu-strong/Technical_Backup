@@ -15,6 +15,8 @@ import com.springboot.project.enums.LongTermTaskTypeEnum;
 import com.springboot.project.model.LongTermTaskUniqueKeyModel;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.RoleOrganizeRelationService;
+
 import lombok.SneakyThrows;
 
 @Component
@@ -32,6 +34,9 @@ public class OrganizeUtil {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private RoleOrganizeRelationService roleOrganizeRelationService;
+
     public void move(String id, String parentId) {
         var expectException = new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Too many requests to move the organize, please wait a minute and try again");
@@ -47,6 +52,15 @@ public class OrganizeUtil {
 
     public void refresh(String organizeId) {
         var deadline = this.getDeadline();
+
+        while (!new Date().after(deadline)) {
+            var hasNext = this.roleOrganizeRelationService.refresh(organizeId);
+            if (hasNext) {
+                continue;
+            }
+            break;
+        }
+
         var arrayDeque = new ArrayDeque<String>();
         arrayDeque.add(organizeId);
         while (!arrayDeque.isEmpty() && !new Date().after(deadline)) {

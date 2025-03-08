@@ -65,11 +65,13 @@ import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import com.springboot.project.service.PermissionService;
+import com.springboot.project.service.RoleOrganizeRelationService;
 import com.springboot.project.service.RolePermissionRelationService;
 import com.springboot.project.service.RoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
+import com.springboot.project.service.UserRoleRelationService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import io.reactivex.rxjava3.core.Flowable;
@@ -192,6 +194,12 @@ public class BaseTest {
     protected RolePermissionRelationService rolePermissionRelationService;
 
     @Autowired
+    protected UserRoleRelationService userRoleRelationService;
+
+    @Autowired
+    protected RoleOrganizeRelationService roleOrganizeRelationService;
+
+    @Autowired
     protected MessageScheduled messageScheduled;
 
     @Autowired
@@ -224,7 +232,7 @@ public class BaseTest {
                     .setName(Generators.timeBasedReorderedGenerator().generate().toString()), OrganizeModel.class);
             assertEquals(HttpStatus.OK, response.getStatusCode());
             var company = response.getBody();
-            var roleList = this.roleService
+            var roleList = this.roleOrganizeRelationService
                     .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, company.getId(),
                             false)
                     .getList();
@@ -238,7 +246,7 @@ public class BaseTest {
     protected UserModel createAccountOfSuperAdmin(String email) {
         var userModel = createAccount(email);
         {
-            var roleList = this.roleService
+            var roleList = this.userRoleRelationService
                     .searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length)
                     .getList();
             userModel.getRoleList().addAll(roleList);

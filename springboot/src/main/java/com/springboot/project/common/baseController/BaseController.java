@@ -18,6 +18,7 @@ import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LongTermTaskService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.PermissionService;
+import com.springboot.project.service.RoleOrganizeRelationService;
 import com.springboot.project.service.RoleService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
@@ -108,6 +109,9 @@ public class BaseController {
 
     @Autowired
     protected UserRoleRelationService userRoleRelationService;
+
+    @Autowired
+    protected RoleOrganizeRelationService roleOrganizeRelationService;
 
     @Autowired
     protected PermissionService permissionService;
