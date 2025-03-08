@@ -34,7 +34,7 @@ public class UserController extends BaseController {
     @PostMapping("/user/create")
     public ResponseEntity<?> create(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userRoleRelationService.checkRoleRelation(user, request);
+        this.userService.checkRoleRelation(user, request);
         this.userService.checkCannotEmptyOfUsername(user);
         this.userService.checkValidEmailForSignUp(user);
 
@@ -46,7 +46,7 @@ public class UserController extends BaseController {
     public ResponseEntity<?> update(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
         this.userService.checkExistUserById(user.getId());
-        this.userRoleRelationService.checkRoleRelation(user, request);
+        this.userService.checkRoleRelation(user, request);
         this.userService.checkCannotEmptyOfUsername(user);
         this.userService.checkValidEmailForSignUp(user);
 

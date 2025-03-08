@@ -1,19 +1,24 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
+import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserModel;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.text.StrFormatter;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserService extends BaseService {
@@ -218,4 +223,31 @@ public class UserService extends BaseService {
         return exists;
     }
 
+    @Transactional(readOnly = true)
+    public void checkRoleRelation(UserModel user, HttpServletRequest request) {
+        if (StringUtils.isBlank(user.getId())) {
+            checkRoleRelationForCreate(user, request);
+        } else {
+            checkRoleRelationForUpdate(user, request);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkUserRoleRelationListMustBeEmpty(UserModel user) {
+        if (CollectionUtils.isEmpty(user.getRoleList())) {
+            user.setRoleList(List.of());
+        }
+        if (!CollectionUtils.isEmpty(user.getRoleList())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleList must be empty");
+        }
+    }
+
+    private void checkRoleRelationForCreate(UserModel user, HttpServletRequest request) {
+        if (!user.getRoleList().isEmpty()) {
+            this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
+        }
+    }
+
+    private void checkRoleRelationForUpdate(UserModel user, HttpServletRequest request) {
+    }
 }
