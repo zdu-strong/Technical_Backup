@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
+import com.springboot.project.service.RoleOrganizeRelationService;
 import com.springboot.project.service.StorageSpaceService;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -71,6 +72,13 @@ public enum DistributedExecutionEnum {
                 var paginationModel = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(pageNum,
                         1L);
                 for (var organizeModel : paginationModel.getList()) {
+                    while (true) {
+                        var hasNext = SpringUtil.getBean(RoleOrganizeRelationService.class)
+                                .refresh(organizeModel.getId());
+                        if (!hasNext) {
+                            break;
+                        }
+                    }
                     while (true) {
                         var hasNext = SpringUtil.getBean(OrganizeRelationService.class).refresh(organizeModel.getId());
                         if (!hasNext) {
