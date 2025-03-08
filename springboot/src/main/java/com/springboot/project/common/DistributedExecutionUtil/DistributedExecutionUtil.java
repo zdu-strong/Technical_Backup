@@ -136,8 +136,7 @@ public class DistributedExecutionUtil {
         }
     }
 
-    private Long getPartitionNum(
-            DistributedExecutionMainModel distributedExecutionMainModel) {
+    private Long getPartitionNum(DistributedExecutionMainModel distributedExecutionMainModel) {
         var partitionNumList = Flowable.range(1, distributedExecutionMainModel.getTotalPartition().intValue())
                 .filter(s -> s <= distributedExecutionMainModel.getTotalPage())
                 .toList()
