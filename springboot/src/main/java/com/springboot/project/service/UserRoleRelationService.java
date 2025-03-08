@@ -44,7 +44,7 @@ public class UserRoleRelationService extends BaseService {
     @Transactional(readOnly = true)
     public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
         var stream = this.streamAll(RoleEntity.class)
-                .where(s -> !s.getIsOrganizeRole())
+                .where(s -> Boolean.FALSE.equals(s.getIsOrganizeRole()))
                 .where(s -> s.getIsActive());
         return new PaginationModel<>(pageNum, pageSize, stream, this.roleFormatter::format);
     }
@@ -56,7 +56,7 @@ public class UserRoleRelationService extends BaseService {
             }
             var roleName = systemRoleEnum.getValue();
             if (this.streamAll(RoleEntity.class)
-                    .where(s -> !s.getIsOrganizeRole())
+                    .where(s -> Boolean.FALSE.equals(s.getIsOrganizeRole()))
                     .where(s -> s.getName().equals(roleName))
                     .exists()) {
                 if (this.refreshDefaultUserRoleList(systemRoleEnum)) {
@@ -75,7 +75,7 @@ public class UserRoleRelationService extends BaseService {
     private boolean refreshDefaultUserRoleList(SystemRoleEnum systemRoleEnum) {
         var roleName = systemRoleEnum.getValue();
         var roleList = this.streamAll(RoleEntity.class)
-                .where(s -> !s.getIsOrganizeRole())
+                .where(s -> Boolean.FALSE.equals(s.getIsOrganizeRole()))
                 .where(s -> s.getName().equals(roleName))
                 .toList();
         for (var roleEntity : roleList) {

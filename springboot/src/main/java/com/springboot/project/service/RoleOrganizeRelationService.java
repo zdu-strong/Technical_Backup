@@ -63,9 +63,9 @@ public class RoleOrganizeRelationService extends BaseService {
                 continue;
             }
             if (this.streamAll(RoleOrganizeRelationEntity.class)
-                    .where(s -> s.getRole().getIsOrganizeRole())
-                    .where(s -> s.getRole().getName().equals(roleName))
                     .where(s -> s.getOrganize().getId().equals(organizeId))
+                    .where(s -> s.getRole().getName().equals(roleName))
+                    .where(s -> s.getRole().getIsOrganizeRole())
                     .exists()) {
                 if (this.refreshDefaultOrganizeRoleList(organizeId, systemRoleEnum)) {
                     return true;
@@ -83,9 +83,9 @@ public class RoleOrganizeRelationService extends BaseService {
     private boolean refreshDefaultOrganizeRoleList(String organizeId, SystemRoleEnum systemRoleEnum) {
         var roleName = systemRoleEnum.getValue();
         var roleList = this.streamAll(RoleOrganizeRelationEntity.class)
-                .where(s -> s.getRole().getIsOrganizeRole())
-                .where(s -> s.getRole().getName().equals(roleName))
                 .where(s -> s.getOrganize().getId().equals(organizeId))
+                .where(s -> s.getRole().getName().equals(roleName))
+                .where(s -> s.getRole().getIsOrganizeRole())
                 .select(s -> s.getRole())
                 .toList();
         for (var roleEntity : roleList) {
