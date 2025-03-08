@@ -38,10 +38,7 @@ public class UserRoleRelationService extends BaseService {
     }
 
     public boolean refresh() {
-        if (this.createDefaultUserRoleList()) {
-            return true;
-        }
-        return false;
+        return this.createDefaultUserRoleList();
     }
 
     @Transactional(readOnly = true)

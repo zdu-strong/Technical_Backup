@@ -39,10 +39,7 @@ public class RoleOrganizeRelationService extends BaseService {
     }
 
     public boolean refresh(String organizeId) {
-        if (this.createDefaultOrganizeRoleList(organizeId)) {
-            return true;
-        }
-        return false;
+        return this.createDefaultOrganizeRoleList(organizeId);
     }
 
     @Transactional(readOnly = true)
