@@ -29,6 +29,7 @@ async function startPlaywright(avaliablePort) {
       env: {
         "ELECTRON_DISABLE_SECURITY_WARNINGS": "true",
         "ELECTRON_PORT": String(avaliablePort),
+        "ELECTRON_IS_TEST": "true",
         "ELECTRON_IS_TEST_AND_NOT_SHOW": "true",
       }
     }
@@ -49,6 +50,7 @@ async function startElectron() {
       env: {
         "ELECTRON_PORT": String(avaliablePort),
         "ELECTRON_IS_TEST": "true",
+        "ELECTRON_IS_TEST_AND_NOT_SHOW": "true",
       }
     }
   );

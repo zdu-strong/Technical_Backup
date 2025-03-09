@@ -26,13 +26,9 @@ export function useReadyForApplication() {
         });
         if (!remote.isNotShowForTest) {
           remote.getCurrentWindow().maximize();
-        }
-        if (!remote.isNotShowForTest) {
           remote.getCurrentWindow().show();
-        }
-        remote.getCurrentWindow().setAlwaysOnTop(true, "status");
-        remote.getCurrentWindow().focus();
-        if (!remote.isNotShowForTest) {
+          remote.getCurrentWindow().setAlwaysOnTop(true, "status");
+          remote.getCurrentWindow().focus();
           remote.getCurrentWindow().moveTop();
         }
         remote.getCurrentWindow().setAlwaysOnTop(false);

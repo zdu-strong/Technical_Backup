@@ -41,13 +41,12 @@ export default async () => {
 
   if (!isNotShowForTest) {
     win.show();
-  }
-  win.setAlwaysOnTop(true, "status");
-  win.focus();
-  if (!isNotShowForTest) {
+    win.setAlwaysOnTop(true, "status");
+    win.focus();
     win.moveTop();
+    win.setAlwaysOnTop(false);
   }
-  win.setAlwaysOnTop(false);
+
 
   await loadWindowFromRelativeUrl(win, "/");
 }
