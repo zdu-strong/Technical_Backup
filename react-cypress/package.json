@@ -37,24 +37,24 @@
   },
   "devDependencies": {
     "@cypress/xpath": "2.0.3",
-    "@types/node": "22.10.2",
+    "@types/node": "22.13.10",
     "@types/wait-on": "5.3.4",
-    "@typescript-eslint/eslint-plugin": "8.18.1",
-    "@typescript-eslint/parser": "8.18.1",
-    "axios": "1.7.9",
+    "@typescript-eslint/eslint-plugin": "8.26.0",
+    "@typescript-eslint/parser": "8.26.0",
+    "axios": "1.8.2",
     "chokidar": "4.0.3",
     "cli-color": "2.0.4",
-    "cypress": "13.17.0",
+    "cypress": "14.1.0",
     "eslint": "8.57.0",
     "eslint-plugin-cypress": "3.6.0",
     "execa": "5.1.1",
     "get-port": "5.1.1",
     "linq": "4.0.3",
-    "rxjs": "7.8.1",
+    "rxjs": "7.8.2",
     "rxjs-exhaustmap-with-trailing": "2.1.1",
     "tree-kill": "1.2.2",
     "typescript": "5.6.3",
-    "uuid": "11.0.3",
-    "wait-on": "8.0.1"
+    "uuid": "11.1.0",
+    "wait-on": "8.0.2"
   }
 }

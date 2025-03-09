@@ -50,7 +50,7 @@
         <aliyun-sdk-oss.version>3.18.1</aliyun-sdk-oss.version>
         <google-cloud-spanner-hibernate-dialect.version>3.7.1</google-cloud-spanner-hibernate-dialect.version>
         <liquibase-spanner.version>4.31.1</liquibase-spanner.version>
-        <opentelemetry-api.version>1.47.0</opentelemetry-api.version>
+        <opentelemetry-api.version>1.48.0</opentelemetry-api.version>
         <commons-compress.version>1.27.1</commons-compress.version>
         <org-tukaani-xz.version>1.10</org-tukaani-xz.version>
         <sneakyfun.version>1.0.0</sneakyfun.version>
