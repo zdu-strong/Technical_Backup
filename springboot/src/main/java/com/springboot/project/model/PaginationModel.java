@@ -65,10 +65,8 @@ public class PaginationModel<T> {
             this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
         }
-        this.totalPage = new BigDecimal(this.totalRecord)
-                .divide(new BigDecimal(pageSize), 0, RoundingMode.FLOOR)
-                .longValue()
-                + new BigDecimal(this.totalRecord).remainder(new BigDecimal(pageSize)).compareTo(BigDecimal.ZERO);
+        this.totalPage = new BigDecimal(this.totalRecord).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
+                .longValue();
     }
 
 }
