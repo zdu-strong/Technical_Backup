@@ -54,7 +54,6 @@ node-polyfill-webpack-plugin<br/>
 react<br/>
 react-dom<br/>
 react-intl<br/>
-react-router-dom<br/>
 typescript (Dependency incompatibility)<br/>
 @types/react<br/>
 @types/react-dom<br/>
