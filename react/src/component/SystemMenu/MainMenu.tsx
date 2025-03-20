@@ -9,12 +9,26 @@ import { stylesheet } from 'typestyle';
 
 const css = stylesheet({
   dashboardLayoutContainer: {
+    display: "flex",
+    flex: "1 1 auto",
+    flexDirection: "column",
     $nest: {
       "& > div.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
         flexDirection: "column",
         height: "unset",
+        width: "unset",
+      },
+      "& > div.MuiBox-root > div.MuiBox-root": {
+        display: "flex",
+        flex: "1 1 auto",
+        flexDirection: "column",
+      },
+      "& > div.MuiBox-root > div.MuiBox-root > .MuiBox-root": {
+        display: "flex",
+        flex: "1 1 auto",
+        flexDirection: "column",
       }
     }
   }
@@ -32,7 +46,7 @@ export default observer((props: {
     navigation={state.navigation}
     branding={{ title: "", logo: "" }}
   >
-    <div className={`flex flex-col flex-auto ${css.dashboardLayoutContainer}`}>
+    <div className={css.dashboardLayoutContainer}>
       <DashboardLayout
         slots={{ toolbarActions: UserInfoMenu }}
       >
