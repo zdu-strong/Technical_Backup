@@ -23,12 +23,14 @@ const css = stylesheet({
       "& > div.MuiBox-root > div.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
-        flexDirection: "row",
+        flexDirection: "column",
+        height: "unset",
       },
       "& > div.MuiBox-root > div.MuiBox-root > .MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
         flexDirection: "column",
+        height: "unset",
       }
     }
   }
