@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router'
 import UserInfoMenu from '@/component/SystemMenu/UserInfoMenu';
-import getNavigation from '@/component/SystemMenu/js/getNavigation';
+import { useReactRouterAppProviderNavigation } from '@/component/SystemMenu/js/getNavigation';
 import { stylesheet } from 'typestyle';
 
 
@@ -40,9 +40,11 @@ export default observer((props: {
   children: ReactNode
 }) => {
 
-  const state = useMobxState(() => ({
-    navigation: getNavigation(),
-  }))
+  const state = useMobxState({
+
+  }, {
+    navigation: useReactRouterAppProviderNavigation(),
+  })
 
   return <ReactRouterAppProvider
     navigation={state.navigation}
