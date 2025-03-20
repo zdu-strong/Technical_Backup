@@ -7,6 +7,7 @@ import api from '@/api';
 import { MessageService } from '@/common/MessageService';
 import { FormattedMessage } from 'react-intl';
 import { GlobalUserInfo } from '@/common/Server';
+import { ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 
 export default observer(() => {
 
@@ -32,6 +33,8 @@ export default observer(() => {
   }
 
   return <div className='flex flex-row items-center'>
+    <ThemeSwitcher />
+
     <Button
       variant="contained"
       color="secondary"
