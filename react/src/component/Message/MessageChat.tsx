@@ -128,7 +128,7 @@ export default observer((props: {
           multiline={true}
           rows={isMobilePhone ? 1 : 4}
           inputRef={state.textareaRef}
-          autoFocus={true}
+          autoFocus={!isMobilePhone}
         />
         {!isMobilePhone && <Button
           variant="contained"
@@ -199,7 +199,9 @@ export default observer((props: {
     {state.moreActionDialog.open && <MessageMoreActionDialog
       closeDialog={() => {
         state.moreActionDialog.open = false;
-        state.textareaRef.current?.focus();
+        if (!isMobilePhone) {
+          state.textareaRef.current?.focus();
+        }
       }}
       uploadFile={() => state.inputFileRef.current!.click()}
     />}

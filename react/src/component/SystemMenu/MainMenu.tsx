@@ -11,19 +11,19 @@ const css = stylesheet({
   dashboardLayoutContainer: {
     display: "flex",
     flex: "1 1 auto",
-    flexDirection: "column",
+    flexDirection: "row",
     $nest: {
       "& > div.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
-        flexDirection: "column",
+        flexDirection: "row",
         height: "unset",
         width: "unset",
       },
       "& > div.MuiBox-root > div.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
-        flexDirection: "column",
+        flexDirection: "row",
       },
       "& > div.MuiBox-root > div.MuiBox-root > .MuiBox-root": {
         display: "flex",
