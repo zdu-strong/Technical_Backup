@@ -18,7 +18,7 @@ export function useReactRouterAppProviderNavigation() {
     },
     {
       segment: 'dashboard',
-      title: 'Dashboard' as any,
+      title: 'Dashboard',
       icon: <DashboardIcon />,
     },
     {
