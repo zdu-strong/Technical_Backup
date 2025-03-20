@@ -32,7 +32,7 @@ export default observer(() => {
   return <LoadingOrErrorComponent ready={state.ready} error={state.error}>
     {
       state.ready && <>
-        <div className="w-full h-full flex justify-center flex-col items-center">
+        <div className="w-full h-full flex justify-center flex-col items-center flex-auto">
           <div className="flex flex-row">
             <div className="flex flex-row">
               <FormattedMessage id="FrontEndCommitId" defaultMessage="Front-end commit id" />
