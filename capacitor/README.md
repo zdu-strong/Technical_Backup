@@ -59,7 +59,6 @@ typescript (Dependency incompatibility)<br/>
 react<br/>
 react-dom<br/>
 react-intl<br/>
-react-router-dom<br/>
 @types/react<br/>
 @types/react-dom<br/>
 
