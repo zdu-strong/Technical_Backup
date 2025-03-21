@@ -30,17 +30,15 @@ export default observer(() => {
     i18nLocale: useI18nLocale(),
   })
 
-  return <div className={`w-screen h-screen overflow-auto ${css.appContainer}`}>
-    <div style={{ display: "flex", minWidth: "100%", height: "100%" }}>
-      <div className='flex flex-col flex-auto' style={{ height: "max-content", minHeight: "100%" }}>
-        <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={I18nEnum[state.i18nLocale].DateLocale}  >
-          <I18nComponent>
-            <GlobalMessageComponent />
-            {Router}
-          </I18nComponent>
-        </LocalizationProvider>
-      </div>
+  return <div className={`w-screen flex flex-row overflow-auto ${css.appContainer} `}>
+    <div className='flex flex-col flex-auto'>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={I18nEnum[state.i18nLocale].DateLocale}  >
+        <I18nComponent>
+          <GlobalMessageComponent />
+          {Router}
+        </I18nComponent>
+      </LocalizationProvider>
     </div>
   </div>;
 })
