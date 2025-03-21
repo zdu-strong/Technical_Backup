@@ -77,7 +77,7 @@ export default observer(() => {
       </div>
       <div className="flex flex-auto">
         <AutoSizer>
-          {({ width, height }) => <Box width={width} height={height}>
+          {({ width, height }) => <Box width={Math.max(width, 100)} height={Math.max(height, 100)}>
             <DataGrid
               apiRef={state.dataGridRef}
               sortingMode="client"
