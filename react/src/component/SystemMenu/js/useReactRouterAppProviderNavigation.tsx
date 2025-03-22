@@ -47,8 +47,8 @@ export function useReactRouterAppProviderNavigation() {
       icon: <ShoppingCartIcon />,
     },
     {
-      segment: 'super_admin/organize_role/manage',
-      title: formatMessage({ id: "OrganizeRoleManage", defaultMessage: "Organize Role Manage" }),
+      segment: 'super_admin/organize/manage',
+      title: formatMessage({ id: "OrganizeManage", defaultMessage: "Organize Manage" }),
       icon: <ShoppingCartIcon />,
     },
     {

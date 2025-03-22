@@ -1,7 +1,7 @@
 import { observer, useMobxEffect, useMobxState } from "mobx-react-use-autorun";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
 import { useSearchParams } from "react-router-dom";
-import OrganizeRoleManageMain from "./OrganizeRoleManageMain";
+import OrganizeManageMain from "@/component/SuperAdminOrganizeManage/OrganizeManageMain";
 
 export default observer(() => {
 
@@ -26,6 +26,6 @@ export default observer(() => {
   }, [state.urlSearchParams])
 
   return <LoadingOrErrorComponent ready={!!state.companyId} error={state.error}>
-    <OrganizeRoleManageMain companyId={state.companyId} key={state.companyId} />
+    <OrganizeManageMain companyId={state.companyId} key={state.companyId} />
   </LoadingOrErrorComponent>
 })

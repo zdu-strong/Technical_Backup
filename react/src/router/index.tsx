@@ -6,7 +6,7 @@ import SignUpPage from '@/router/page/SignUpPage';
 import GitPage from '@/router/page/GitPage';
 import NotFoundPage from '@/router/page/NotFoundPage';
 import SuperAdminRoleManagePage from '@/router/page/SuperAdminRoleManagePage';
-import SuperAdminOrganizeRoleManagePage from '@/router/page/SuperAdminOrganizeRoleManagePage';
+import SuperAdminOrganizeManagePage from '@/router/page/SuperAdminOrganizeManagePage';
 import SuperAdminUserManagePage from '@/router/page/SuperAdminUserManagePage';
 
 export default (
@@ -20,7 +20,7 @@ export default (
       <Route path="/home" element={<Home />} />
       <Route path="/404" element={NotFoundPage} />
       <Route path="/super_admin/role/manage" element={SuperAdminRoleManagePage} />
-      <Route path="/super_admin/organize_role/manage" element={SuperAdminOrganizeRoleManagePage} />
+      <Route path="/super_admin/organize/manage" element={SuperAdminOrganizeManagePage} />
       <Route path="/super_admin/user/manage" element={SuperAdminUserManagePage} />
       <Route path="*" element={NotFoundPage} />
     </Routes>

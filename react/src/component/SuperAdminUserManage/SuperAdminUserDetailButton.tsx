@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { v1 } from "uuid";
-import SuperAdminUserDetailDialog from "./SuperAdminUserDetailDialog";
+import SuperAdminUserDetailDialog from "@/component/SuperAdminUserManage/SuperAdminUserDetailDialog";
 import { FormattedMessage } from "react-intl";
 
 export default observer((props: { id: string, searchByPagination: () => void }) => {
