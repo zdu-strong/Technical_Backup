@@ -33,7 +33,7 @@ Run unit tests
 
 Generate database version upgrade sql.<br/>
 
-Its source code is in the ".mvn/database_diff" folder.<br/>
+Its source code is in the ".mvn/database-diff" folder.<br/>
 
 ### `java -jar diff.jar --onlyResetDatabase`
 
