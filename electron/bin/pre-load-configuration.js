@@ -90,7 +90,7 @@ async function compileCode() {
 async function copyExeToAppDataForCache() {
   execSync(
     [
-      "node bin/copy_exe_to_app_data_for_cache.js"
+      "node bin/copy-exe-to-app-data-for-cache.js"
     ].join(" "),
     {
       stdio: "inherit",
