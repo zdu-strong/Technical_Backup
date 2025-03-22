@@ -8,7 +8,7 @@ it('', () => {
 })
 
 before(() => {
-  cy.visit("/sign_up")
+  cy.visit("/sign-up")
   action.signUp(email, password)
 })
 

@@ -5,5 +5,5 @@ it('', () => {
 })
 
 before(() => {
-  cy.visit("/any_page")
+  cy.visit("/any-page")
 })

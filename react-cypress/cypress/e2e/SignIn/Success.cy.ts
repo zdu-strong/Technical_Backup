@@ -11,10 +11,10 @@ it('', () => {
 })
 
 before(() => {
-  cy.visit("/sign_up")
+  cy.visit("/sign-up")
   action.signUp(email, password)
   page.Chat.signOutButton().click()
-  cy.location('pathname').should('equal', '/sign_in')
+  cy.location('pathname').should('equal', '/sign-in')
 })
 
 const email = `${v1()}zdu.strong@gmail.com`

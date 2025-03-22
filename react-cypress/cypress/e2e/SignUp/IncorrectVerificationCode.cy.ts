@@ -18,7 +18,7 @@ it('', () => {
 })
 
 before(() => {
-  cy.visit("/sign_up")
+  cy.visit("/sign-up")
 })
 
 const email = `${v1()}zdu.strong@gmail.com`

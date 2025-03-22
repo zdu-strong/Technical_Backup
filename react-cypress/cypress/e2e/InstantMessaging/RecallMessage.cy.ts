@@ -8,7 +8,7 @@ it('', () => {
 })
 
 before(() => {
-  cy.visit("/sign_up")
+  cy.visit("/sign-up")
   action.signUp(email, password)
   page.Chat.MessageContentInput().type(message).type("{enter}")
   page.Chat.Message(message).should("exist")
