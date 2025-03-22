@@ -175,7 +175,7 @@ export default observer(() => {
       </Button>
     </div>
     <div className="w-full" style={{ marginTop: "2em" }}>
-      <Link to="/sign_up">
+      <Link to="/sign-up">
         <FormattedMessage id="SignUp" defaultMessage="SignUp" />
       </Link>
       <Link to="/" style={{ marginLeft: "2em" }}>

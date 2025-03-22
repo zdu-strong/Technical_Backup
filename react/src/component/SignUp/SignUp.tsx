@@ -376,7 +376,7 @@ export default observer(() => {
           >
             <FormattedMessage id="Previous" defaultMessage="Previous" />
           </Button>}
-          <Link to="/sign_in">
+          <Link to="/sign-in">
             <FormattedMessage id="SignIn" defaultMessage="SignIn" />
           </Link>
           {state.activeStep < state.steps.length - 1 && <Button

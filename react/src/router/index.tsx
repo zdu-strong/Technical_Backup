@@ -14,14 +14,14 @@ export default (
     <Routes>
       <Route index element={MessagePage} />
       <Route path="/chat" element={MessagePage} />
-      <Route path="/sign_in" element={SignInPage} />
-      <Route path="/sign_up" element={SignUpPage} />
+      <Route path="/sign-in" element={SignInPage} />
+      <Route path="/sign-up" element={SignUpPage} />
       <Route path="/git" element={GitPage} />
       <Route path="/home" element={<Home />} />
       <Route path="/404" element={NotFoundPage} />
-      <Route path="/super_admin/role/manage" element={SuperAdminRoleManagePage} />
-      <Route path="/super_admin/organize/manage" element={SuperAdminOrganizeManagePage} />
-      <Route path="/super_admin/user/manage" element={SuperAdminUserManagePage} />
+      <Route path="/super-admin/role/manage" element={SuperAdminRoleManagePage} />
+      <Route path="/super-admin/organize/manage" element={SuperAdminOrganizeManagePage} />
+      <Route path="/super-admin/user/manage" element={SuperAdminUserManagePage} />
       <Route path="*" element={NotFoundPage} />
     </Routes>
   </BrowserRouter>

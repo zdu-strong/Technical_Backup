@@ -18,5 +18,5 @@ export function handleErrorWhenNotSignInToSignIn(error: any) {
 
 export function toSignIn() {
   removeGlobalUserInfo();
-  window.location.href = "/sign_in";
+  window.location.href = "/sign-in";
 }
