@@ -29,7 +29,7 @@ const css = stylesheet({
         display: "flex",
         flex: "1 1 auto",
         flexDirection: "column",
-        overflow: "hidden",
+        overflow: "visible",
       }
     }
   }
