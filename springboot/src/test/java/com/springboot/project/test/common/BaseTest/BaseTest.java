@@ -267,7 +267,7 @@ public class BaseTest {
 
     @SneakyThrows
     protected VerificationCodeEmailModel sendVerificationCode(String email) {
-        var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
+        var url = new URIBuilder("/email/send-verification-code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -276,7 +276,7 @@ public class BaseTest {
 
     @SneakyThrows
     protected void signOut() {
-        var url = new URIBuilder("/sign_out").build();
+        var url = new URIBuilder("/sign-out").build();
         var response = this.testRestTemplate.postForEntity(url, null, Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         this.testRestTemplate.getRestTemplate().getInterceptors().clear();
@@ -294,7 +294,7 @@ public class BaseTest {
                         new UserEmailModel()
                                 .setEmail(email)
                                 .setVerificationCodeEmail(verificationCodeEmail)));
-        var url = new URIBuilder("/sign_up").build();
+        var url = new URIBuilder("/sign-up").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
                 String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -311,7 +311,7 @@ public class BaseTest {
 
     @SneakyThrows
     private UserModel signIn(String email, String password) {
-        var url = new URIBuilder("/sign_in/one_time_password")
+        var url = new URIBuilder("/sign-in/one-time-password")
                 .setParameter("username", email)
                 .setParameter("password", this.encryptDecryptService.encryptByPublicKeyOfRSA(password))
                 .build();
@@ -337,7 +337,7 @@ public class BaseTest {
                 .doOnNext((encryptedId) -> {
                     while (true) {
                         var url = new URIBuilder(this.serverAddressProperties.getServerAddress())
-                                .setPath("/long_term_task/is_done")
+                                .setPath("/long-term-task/is-done")
                                 .setParameter("encryptedId", encryptedId)
                                 .build();
                         var isDone = new RestTemplate().getForObject(url, Boolean.class);
@@ -349,7 +349,7 @@ public class BaseTest {
                 })
                 .map(encryptedId -> {
                     var url = new URIBuilder(this.serverAddressProperties.getServerAddress())
-                            .setPath("/long_term_task")
+                            .setPath("/long-term-task")
                             .setParameter("encryptedId", encryptedId)
                             .build();
                     var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),

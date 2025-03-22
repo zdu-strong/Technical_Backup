@@ -31,7 +31,7 @@ public class UserMessageWebSocketTest extends BaseTest {
     public void test() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
             JsonProcessingException {
         URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
-                .setPath("/web_socket/user_message")
+                .setPath("/web-socket/user-message")
                 .setParameter("accessToken", this.user.getAccessToken())
                 .build();
         var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();

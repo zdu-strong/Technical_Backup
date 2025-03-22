@@ -16,7 +16,7 @@ public class AuthorizationAlipayControllerGenerateQrCodeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
-        var url = new URIBuilder("/sign_in/alipay/generate_qr_code").build();
+        var url = new URIBuilder("/sign-in/alipay/generate-qr-code").build();
         var response = this.testRestTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().startsWith("data:image/png;base64,"));

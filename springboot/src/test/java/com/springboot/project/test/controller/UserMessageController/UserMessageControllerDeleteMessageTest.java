@@ -22,7 +22,7 @@ public class UserMessageControllerDeleteMessageTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/user_message/delete").setParameter("id", id).build();
+        var url = new URIBuilder("/user-message/delete").setParameter("id", id).build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

@@ -19,7 +19,7 @@ public class UserMessageControllerSendMessageTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/user_message/send").build();
+        var url = new URIBuilder("/user-message/send").build();
         var body = new UserMessageModel();
         body.setUser(new UserModel().setId(userId));
         body.setContent("Hello, World!");

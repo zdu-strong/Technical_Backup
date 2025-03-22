@@ -14,7 +14,7 @@ public class SystemInitControllerTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/system_init").setParameter("id", userId).build();
+        var url = new URIBuilder("/system-init").setParameter("id", userId).build();
         var response = this.testRestTemplate.getForEntity(url, Boolean.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody());

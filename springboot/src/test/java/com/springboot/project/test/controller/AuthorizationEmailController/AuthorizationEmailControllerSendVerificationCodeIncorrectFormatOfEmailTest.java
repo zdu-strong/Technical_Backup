@@ -18,7 +18,7 @@ public class AuthorizationEmailControllerSendVerificationCodeIncorrectFormatOfEm
 
     @Test
     public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
-        var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
+        var url = new URIBuilder("/email/send-verification-code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 Throwable.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

@@ -10,16 +10,16 @@ export async function sendMessage(body: {
   content?: string,
   url?: string,
 }) {
-  const { data } = await axios.post("/user_message/send", { content: body.content, url: body.url });
+  const { data } = await axios.post("/user-message/send", { content: body.content, url: body.url });
   return new TypedJSON(UserMessageModel).parse(data)!;
 }
 
 export async function recallMessage(id: string) {
-  await axios.post<void>("/user_message/recall", null, { params: { id } })
+  await axios.post<void>("/user-message/recall", null, { params: { id } })
 }
 
 export async function deleteMessage(id: string) {
-  await axios.delete<void>("/user_message/delete", { params: { id } })
+  await axios.delete<void>("/user-message/delete", { params: { id } })
 }
 
 export function getUserMessageWebsocket(webSocketInput?: Subject<{
@@ -34,7 +34,7 @@ export function getUserMessageWebsocket(webSocketInput?: Subject<{
   }
   return of("")
     .pipe(
-      map(() => getWebSocketServerAddress(`/web_socket/user_message`)),
+      map(() => getWebSocketServerAddress(`/web-socket/user-message`)),
       concatMap((url) => makeWebSocketObservable(url)),
       switchMap((getResponses: GetWebSocketResponses) => {
         return getResponses(webSocketInput!.pipe(map(data => JSON.stringify(data))));

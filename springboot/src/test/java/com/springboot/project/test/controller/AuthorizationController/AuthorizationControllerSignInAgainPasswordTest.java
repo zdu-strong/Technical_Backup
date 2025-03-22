@@ -21,7 +21,7 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
     @Test
     public void test()
             throws JsonProcessingException, InvalidKeySpecException, URISyntaxException {
-        var url = new URIBuilder("/sign_in/one_time_password")
+        var url = new URIBuilder("/sign-in/one-time-password")
                 .setParameter("username", username)
                 .setParameter("password", passwordOneTime)
                 .build();
@@ -38,7 +38,7 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
         this.username = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.createAccount(username);
         this.passwordOneTime = this.encryptDecryptService.encryptByPublicKeyOfRSA(this.username);
-        var url = new URIBuilder("/sign_in/one_time_password")
+        var url = new URIBuilder("/sign-in/one-time-password")
                 .setParameter("username", username)
                 .setParameter("password", passwordOneTime)
                 .build();

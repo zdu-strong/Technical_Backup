@@ -13,7 +13,7 @@ import com.springboot.project.model.UserModel;
 @RestController
 public class UserController extends BaseController {
 
-    @GetMapping("/get_user_info")
+    @GetMapping("/get-user-info")
     public ResponseEntity<?> getUserInfo() {
         this.permissionUtil.checkIsSignIn(request);
 

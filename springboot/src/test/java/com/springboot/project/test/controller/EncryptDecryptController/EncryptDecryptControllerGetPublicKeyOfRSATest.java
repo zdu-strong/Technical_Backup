@@ -15,7 +15,7 @@ public class EncryptDecryptControllerGetPublicKeyOfRSATest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        URI url = new URIBuilder("/encrypt_decrypt/rsa/public_key").build();
+        URI url = new URIBuilder("/encrypt-decrypt/rsa/public-key").build();
         ResponseEntity<String> response = this.testRestTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(StringUtils.isNotBlank(response.getBody()));

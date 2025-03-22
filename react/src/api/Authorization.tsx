@@ -9,7 +9,7 @@ import { getKeyOfRSAPublicKey } from "@/api/EncryptDecrypt";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
   await signOut();
-  const { data } = await axios.post(`/sign_up`, {
+  const { data } = await axios.post(`/sign-up`, {
     username: nickname,
     password: password,
     userEmailList: userEmailList,
@@ -19,13 +19,13 @@ export async function signUp(password: string, nickname: string, userEmailList: 
 }
 
 export async function sendVerificationCode(email: string) {
-  const { data } = await axios.post("/email/send_verification_code", null, { params: { email } });
+  const { data } = await axios.post("/email/send-verification-code", null, { params: { email } });
   return new TypedJSON(VerificationCodeEmailModel).parse(data)!;
 }
 
 export async function signIn(username: string, password: string): Promise<void> {
   await signOut();
-  const { data } = await axios.post(`/sign_in/one_time_password`, null, {
+  const { data } = await axios.post(`/sign-in/one-time-password`, null, {
     params: {
       username: username,
       password: await encryptByPublicKeyOfRSA(password, await getKeyOfRSAPublicKey()),
@@ -38,7 +38,7 @@ export async function signIn(username: string, password: string): Promise<void> 
 export async function signOut() {
   if (GlobalUserInfo.accessToken) {
     try {
-      await axios.post("/sign_out");
+      await axios.post("/sign-out");
     } catch {
       // do nothing
     }
@@ -51,7 +51,7 @@ export async function isSignIn() {
     return false;
   }
   try {
-    await axios.get("/get_user_info");
+    await axios.get("/get-user-info");
   } catch (e) {
     if (e && (e as any).status === 401) {
       removeGlobalUserInfo();

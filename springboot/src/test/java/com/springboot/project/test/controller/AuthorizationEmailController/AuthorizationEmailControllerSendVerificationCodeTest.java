@@ -21,7 +21,7 @@ public class AuthorizationEmailControllerSendVerificationCodeTest extends BaseTe
 
     @Test
     public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
-        var url = new URIBuilder("/email/send_verification_code").setParameter("email", email).build();
+        var url = new URIBuilder("/email/send-verification-code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 VerificationCodeEmailModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

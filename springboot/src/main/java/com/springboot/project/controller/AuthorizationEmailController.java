@@ -9,7 +9,7 @@ import com.springboot.project.common.baseController.BaseController;
 @RestController
 public class AuthorizationEmailController extends BaseController {
 
-    @PostMapping("/email/send_verification_code")
+    @PostMapping("/email/send-verification-code")
     public ResponseEntity<?> sendVerificationCode(@RequestParam String email) {
         this.userEmailService.checkCannotEmptyOfEmail(email);
         this.userEmailService.checkCorrectFormatOfEmail(email);

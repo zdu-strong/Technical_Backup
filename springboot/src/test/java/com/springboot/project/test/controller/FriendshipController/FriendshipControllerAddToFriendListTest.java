@@ -25,7 +25,7 @@ public class FriendshipControllerAddToFriendListTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        URI url = new URIBuilder("/friendship/add_to_friend_list")
+        URI url = new URIBuilder("/friendship/add-to-friend-list")
                 .setParameter("friendId", this.friend.getId())
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, FriendshipModel.class);

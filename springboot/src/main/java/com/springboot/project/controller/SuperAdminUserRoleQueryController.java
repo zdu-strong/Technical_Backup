@@ -10,7 +10,7 @@ import com.springboot.project.enums.SystemPermissionEnum;
 @RestController
 public class SuperAdminUserRoleQueryController extends BaseController {
 
-    @GetMapping("/super_admin/user_role/search/pagination")
+    @GetMapping("/super-admin/user-role/search/pagination")
     public ResponseEntity<?> searchByPagination(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
         this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);

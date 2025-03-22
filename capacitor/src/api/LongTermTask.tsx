@@ -7,7 +7,7 @@ export async function getLongTermTask(callback: () => Promise<AxiosResponse<stri
     map((response) => response.data),
     concatMap((id: string) => {
       return concat(of(null), interval(1000)).pipe(
-        concatMap(() => from(axios.get<boolean>(`/long_term_task/is_done`, { params: { id } }))),
+        concatMap(() => from(axios.get<boolean>(`/long-term-task/is-done`, { params: { id } }))),
         concatMap((response) => {
           if (response.data) {
             return of(id);
@@ -18,7 +18,7 @@ export async function getLongTermTask(callback: () => Promise<AxiosResponse<stri
         take(1)
       );
     }),
-    concatMap((id) => from(axios.get(`/long_term_task`, { params: { id } }))),
+    concatMap((id) => from(axios.get(`/long-term-task`, { params: { id } }))),
     map((response) => {
       return response.data!;
     }),

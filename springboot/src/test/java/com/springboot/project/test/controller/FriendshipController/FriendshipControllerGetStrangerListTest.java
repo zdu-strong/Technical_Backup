@@ -31,7 +31,7 @@ public class FriendshipControllerGetStrangerListTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        URI url = new URIBuilder("/friendship/get_stranger_list")
+        URI url = new URIBuilder("/friendship/get-stranger-list")
                 .setParameter("pageNum", String.valueOf(1))
                 .setParameter("pageSize", String.valueOf(50))
                 .build();

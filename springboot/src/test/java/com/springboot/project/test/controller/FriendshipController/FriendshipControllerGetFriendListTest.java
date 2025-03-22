@@ -30,7 +30,7 @@ public class FriendshipControllerGetFriendListTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        URI url = new URIBuilder("/friendship/get_friend_list")
+        URI url = new URIBuilder("/friendship/get-friend-list")
                 .setParameter("pageNum", String.valueOf(1))
                 .setParameter("pageSize", String.valueOf(20))
                 .build();
@@ -69,7 +69,7 @@ public class FriendshipControllerGetFriendListTest extends BaseTest {
         var friendEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.friend = this.createAccount(friendEmail);
         this.user = this.createAccount(userEmail);
-        URI url = new URIBuilder("/friendship/add_to_friend_list")
+        URI url = new URIBuilder("/friendship/add-to-friend-list")
                 .setParameter("friendId", this.friend.getId())
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, FriendshipModel.class);

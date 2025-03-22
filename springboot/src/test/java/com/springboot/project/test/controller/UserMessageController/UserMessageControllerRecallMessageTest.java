@@ -22,7 +22,7 @@ public class UserMessageControllerRecallMessageTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/user_message/recall").setParameter("id", id).build();
+        var url = new URIBuilder("/user-message/recall").setParameter("id", id).build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

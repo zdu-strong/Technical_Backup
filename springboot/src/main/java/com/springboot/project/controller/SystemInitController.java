@@ -13,7 +13,7 @@ public class SystemInitController extends BaseController {
     @Autowired
     private SystemInitScheduled systemInitScheduled;
 
-    @GetMapping("/system_init")
+    @GetMapping("/system-init")
     public ResponseEntity<?> getSystemHasInit() {
         var hasInit = this.systemInitScheduled.getHasInit();
         return ResponseEntity.ok(hasInit);

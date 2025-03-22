@@ -26,7 +26,7 @@ public class AuthorizationController extends BaseController {
      * @throws NoSuchAlgorithmException
      * @throws JsonProcessingException
      */
-    @PostMapping("/sign_in")
+    @PostMapping("/sign-in")
     @SneakyThrows
     public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password) {
         this.userService.checkExistAccount(username);
@@ -38,7 +38,7 @@ public class AuthorizationController extends BaseController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/sign_in/one_time_password")
+    @PostMapping("/sign-in/one-time-password")
     @SneakyThrows
     public ResponseEntity<?> signInOneTime(@RequestParam String username, @RequestParam String password) {
         this.userService.checkExistAccount(username);
@@ -49,7 +49,7 @@ public class AuthorizationController extends BaseController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/sign_out")
+    @PostMapping("/sign-out")
     public ResponseEntity<?> signOut() {
         if (this.permissionUtil.isSignIn(request)) {
             var id = this.tokenService.getDecodedJWTOfAccessToken(this.tokenService.getAccessToken(request)).getId();
@@ -60,7 +60,7 @@ public class AuthorizationController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/sign_up")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel) {
         this.userService.checkCannotEmptyOfUsername(userModel);
         this.userService.checkValidEmailForSignUp(userModel);

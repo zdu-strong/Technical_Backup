@@ -15,7 +15,7 @@ import lombok.SneakyThrows;
 @RestController
 public class AuthorizationAlipayController extends BaseController {
 
-    @GetMapping("/sign_in/alipay/generate_qr_code")
+    @GetMapping("/sign-in/alipay/generate-qr-code")
     @SneakyThrows
     public ResponseEntity<?> generateQrCode() {
         var url = new URIBuilder("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm")

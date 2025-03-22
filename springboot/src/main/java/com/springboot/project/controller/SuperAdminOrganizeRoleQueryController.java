@@ -10,7 +10,7 @@ import com.springboot.project.enums.SystemPermissionEnum;
 @RestController
 public class SuperAdminOrganizeRoleQueryController extends BaseController {
 
-    @GetMapping("/super_admin/organize_role/search/pagination")
+    @GetMapping("/super-admin/organize-role/search/pagination")
     public ResponseEntity<?> searchByPagination(@RequestParam Long pageNum, @RequestParam Long pageSize,
             @RequestParam String organizeId) {
         this.permissionUtil.checkIsSignIn(request);

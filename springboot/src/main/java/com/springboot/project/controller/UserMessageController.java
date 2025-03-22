@@ -12,7 +12,7 @@ import com.springboot.project.model.UserMessageModel;
 @RestController
 public class UserMessageController extends BaseController {
 
-    @PostMapping("/user_message/send")
+    @PostMapping("/user-message/send")
     public ResponseEntity<?> sendMessage(@RequestBody UserMessageModel userMessageModel) {
         this.permissionUtil.checkIsSignIn(request);
         this.userMessageService.checkCannotEmptyUserMessageContent(userMessageModel);
@@ -22,7 +22,7 @@ public class UserMessageController extends BaseController {
         return ResponseEntity.ok(userMessage);
     }
 
-    @PostMapping("/user_message/recall")
+    @PostMapping("/user-message/recall")
     public ResponseEntity<?> recallMessage(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
         this.userMessageService.checkExistsUserMessage(id);
@@ -32,7 +32,7 @@ public class UserMessageController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/user_message/delete")
+    @DeleteMapping("/user-message/delete")
     public ResponseEntity<?> deleteMessage(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
         this.userMessageService.checkExistsUserMessage(id);

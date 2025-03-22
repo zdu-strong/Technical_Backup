@@ -51,7 +51,7 @@ import static eu.ciechanowiec.sneakyfun.SneakyPredicate.sneaky;
  * @author zdu
  *
  */
-@ServerEndpoint("/web_socket/user_message")
+@ServerEndpoint("/web-socket/user-message")
 @Component
 @Slf4j
 public class UserMessageWebSocket {

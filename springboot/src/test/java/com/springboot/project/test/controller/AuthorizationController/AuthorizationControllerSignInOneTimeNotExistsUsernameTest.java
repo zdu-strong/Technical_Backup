@@ -20,7 +20,7 @@ public class AuthorizationControllerSignInOneTimeNotExistsUsernameTest extends B
     @Test
     public void test() throws JsonProcessingException, InvalidKeySpecException,
             NoSuchAlgorithmException, URISyntaxException {
-        var url = new URIBuilder("/sign_in/one_time_password")
+        var url = new URIBuilder("/sign-in/one-time-password")
                 .setParameter("username", username)
                 .setParameter("password", this.encryptDecryptService.encryptByPublicKeyOfRSA(password))
                 .build();

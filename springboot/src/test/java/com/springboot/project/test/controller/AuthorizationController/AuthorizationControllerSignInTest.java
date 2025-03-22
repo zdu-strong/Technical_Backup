@@ -23,7 +23,7 @@ public class AuthorizationControllerSignInTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/sign_in")
+        var url = new URIBuilder("/sign-in")
                 .setParameter("username", email)
                 .setParameter("password", password)
                 .build();

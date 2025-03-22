@@ -14,7 +14,7 @@ public class UserControllerGetUserInfoNotSignInTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
-        var url = new URIBuilder("/get_user_info").build();
+        var url = new URIBuilder("/get-user-info").build();
         var response = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Please login first and then visit", response.getBody().getMessage());

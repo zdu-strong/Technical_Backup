@@ -19,7 +19,7 @@ import lombok.SneakyThrows;
 @RestController
 public class LongTermTaskController extends BaseController {
 
-    @GetMapping("/long_term_task/is_done")
+    @GetMapping("/long-term-task/is-done")
     @SneakyThrows
     public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String encryptedId) {
         var id = this.encryptDecryptService.decryptByAES(encryptedId);
@@ -58,7 +58,7 @@ public class LongTermTaskController extends BaseController {
      * @return
      * @throws JsonProcessingException
      */
-    @GetMapping("/long_term_task")
+    @GetMapping("/long-term-task")
     @SneakyThrows
     public ResponseEntity<?> getLongTermTask(@RequestParam String encryptedId) {
 

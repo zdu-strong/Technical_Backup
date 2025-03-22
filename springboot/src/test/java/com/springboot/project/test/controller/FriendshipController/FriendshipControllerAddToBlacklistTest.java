@@ -25,7 +25,7 @@ public class FriendshipControllerAddToBlacklistTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        URI url = new URIBuilder("/friendship/add_to_blacklist")
+        URI url = new URIBuilder("/friendship/add-to-blacklist")
                 .setParameter("friendId", this.friend.getId())
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, FriendshipModel.class);
