@@ -16,5 +16,6 @@
   "EndTheGame": "结束游戏",
   "ExitTheProgram": "退出",
   "AreYouSure": "你确定吗?",
-  "NetworkError": "无网络连接"
+  "NetworkError": "无网络连接",
+  "PageNotFound": "没有发现"
 }

@@ -16,5 +16,6 @@
   "EndTheGame": "End Game",
   "ExitTheProgram": "Exit",
   "AreYouSure": "Are you sure?",
-  "NetworkError": "Network Error"
+  "NetworkError": "Network Error",
+  "PageNotFound": "Not Found"
 }
