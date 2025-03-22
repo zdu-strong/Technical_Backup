@@ -2,9 +2,9 @@
   "name": "my-app",
   "version": "0.0.1",
   "scripts": {
-    "start": "node bin/pre_load_configuration.js && node bin/start.js",
-    "pack": "node bin/pre_load_configuration.js && node bin/pack.js",
-    "make": "node bin/pre_load_configuration.js && node bin/make.js"
+    "start": "node bin/pre-load-configuration.js && node bin/start.js",
+    "pack": "node bin/pre-load-configuration.js && node bin/pack.js",
+    "make": "node bin/pre-load-configuration.js && node bin/make.js"
   },
   "private": true,
   "homepage": ".",

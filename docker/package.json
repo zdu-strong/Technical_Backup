@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node bin/pre_load_configuration.js && node src/docker_build.js"
+    "start": "node bin/pre-load-configuration.js && node src/docker_build.js"
   },
   "eslintConfig": {
     "extends": [

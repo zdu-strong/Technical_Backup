@@ -6,10 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node bin/pre_load_configuration.js && node bin/start.js",
-    "test": "node bin/pre_load_configuration.js && node bin/test.js",
-    "test:open": "node bin/pre_load_configuration.js && node bin/TestOpen.js",
-    "production:install": "node bin/pre_load_configuration.js",
+    "start": "node bin/pre-load-configuration.js && node bin/start.js",
+    "test": "node bin/pre-load-configuration.js && node bin/test.js",
+    "test:open": "node bin/pre-load-configuration.js && node bin/TestOpen.js",
+    "production:install": "node bin/pre-load-configuration.js",
     "production:run": "node bin/ProductionRun.js"
   },
   "devDependencies": {

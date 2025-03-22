@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node bin/pre_load_configuration.js && node bin/start.js",
-    "test": "node bin/pre_load_configuration.js && node bin/test.js"
+    "start": "node bin/pre-load-configuration.js && node bin/start.js",
+    "test": "node bin/pre-load-configuration.js && node bin/test.js"
   },
   "eslintConfig": {
     "extends": [

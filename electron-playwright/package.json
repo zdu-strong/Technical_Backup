@@ -6,8 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node bin/pre_load_configuration.js && node bin/start.js",
-    "test": "node bin/pre_load_configuration.js && node bin/test.js"
+    "start": "node bin/pre-load-configuration.js && node bin/start.js",
+    "test": "node bin/pre-load-configuration.js && node bin/test.js"
   },
   "devDependencies": {
     "@nestjs/cli": "11.0.5",
