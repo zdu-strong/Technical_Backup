@@ -37,8 +37,8 @@ export function useReactRouterAppProviderNavigation() {
       icon: <ShoppingCartIcon />,
     },
     {
-      segment: 'super_admin/user_role/manage',
-      title: formatMessage({ id: "UserRoleManage", defaultMessage: "User Role Manage" }),
+      segment: 'super_admin/role/manage',
+      title: formatMessage({ id: "RoleManage", defaultMessage: "Role Manage" }),
       icon: <ShoppingCartIcon />,
     },
     {
