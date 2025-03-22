@@ -52,7 +52,7 @@ async function startServer() {
     })
   ]);
   while (true) {
-    const { data: hasInit } = await axios.get(`http://127.0.0.1:${availableServerPort}/system_init`);
+    const { data: hasInit } = await axios.get(`http://127.0.0.1:${availableServerPort}/system-init`);
     if (hasInit) {
       break;
     }
