@@ -19,18 +19,24 @@ const css = stylesheet({
         flexDirection: "row",
         height: "unset",
         width: "unset",
+        overflow: "visible"
       },
       "& > div.MuiBox-root > div.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
         flexDirection: "column",
       },
-      "& > div.MuiBox-root > div.MuiBox-root > .MuiBox-root": {
+      "& > div.MuiBox-root > div.MuiBox-root > main.MuiBox-root": {
         display: "flex",
         flex: "1 1 auto",
         flexDirection: "column",
         overflow: "visible",
-      }
+      },
+      "& > div.MuiBox-root > header.MuiPaper-root > div.MuiToolbar-root": {
+        margin: "0px",
+        paddingLeft: "12px",
+        paddingRight: "12px",
+      },
     }
   }
 });
