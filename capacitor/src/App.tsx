@@ -23,10 +23,10 @@ export default observer(() => {
     i18nLocale: useI18nLocale(),
   })
 
-  return <div className="w-screen h-screen flex flex-row overflow-auto">
-    <div className='flex flex-col flex-auto'>
+  return <div className={`w-screen h-screen overflow-auto`}>
+    <div className="flex flex-col min-w-full min-h-full w-max">
       <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={I18nEnum[state.i18nLocale].DateLocale}  >
+      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={I18nEnum[state.i18nLocale].DateLocale}>
         <I18nComponent>
           <GlobalMessageComponent />
           {Router}
