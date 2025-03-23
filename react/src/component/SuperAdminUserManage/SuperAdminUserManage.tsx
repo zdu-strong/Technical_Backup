@@ -11,6 +11,7 @@ import { UserModel } from "@/model/UserModel";
 import SuperAdminUserDetailButton from "@/component/SuperAdminUserManage/SuperAdminUserDetailButton";
 import { FormattedMessage } from "react-intl";
 import { PaginationModel } from "@/model/PaginationModel";
+import { MessageService } from "@/common/MessageService";
 
 export default observer(() => {
 
@@ -67,6 +68,9 @@ export default observer(() => {
       state.ready = true;
     } catch (e) {
       state.error = e;
+      if (state.ready) {
+        MessageService.error(e);
+      }
     } finally {
       state.loading = false;
     }

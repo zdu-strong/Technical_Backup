@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FormattedMessage } from "react-intl";
 import { PaginationModel } from "@/model/PaginationModel";
+import { MessageService } from "@/common/MessageService";
 
 const columns: GridColDef<SystemRoleModel>[] = [
   {
@@ -59,6 +60,9 @@ export default observer(() => {
       state.ready = true;
     } catch (e) {
       state.error = e;
+      if(state.ready){
+        MessageService.error(e);
+      }
     } finally {
       state.loading = false;
     }
