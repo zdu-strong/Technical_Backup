@@ -1,28 +1,29 @@
 import { UserModel } from "@/model/UserModel"
 import { makeAutoObservable } from "mobx-react-use-autorun";
-import { Type } from 'class-transformer';
+import { jsonMember, jsonObject } from "typedjson";
 
+@jsonObject
 export class UserMessageModel {
 
-  @Type(() => String)
+  @jsonMember(String)
   id!: string;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   createDate!: Date;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   updateDate!: Date;
 
-  @Type(() => String)
+  @jsonMember(String)
   content!: string;
 
-  @Type(() => String)
+  @jsonMember(String)
   url!: string;
 
-  @Type(() => Number)
+  @jsonMember(Number)
   pageNum!: number;
 
-  @Type(() => UserModel)
+  @jsonMember(UserModel)
   user!: UserModel;
 
   constructor() {

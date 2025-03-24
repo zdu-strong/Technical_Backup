@@ -1,18 +1,19 @@
 import { makeAutoObservable } from "mobx-react-use-autorun";
-import { Type } from 'class-transformer';
+import { jsonMember, jsonObject } from "typedjson";
 
+@jsonObject
 export class SystemRoleModel {
   
-  @Type(() => String)
+  @jsonMember(String)
   id!: string;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   createDate!: Date;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   updateDate!: Date;
 
-  @Type(() => String)
+  @jsonMember(String)
   name!: string;
 
   constructor() {

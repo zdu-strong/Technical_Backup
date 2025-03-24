@@ -1,37 +1,38 @@
 import { makeAutoObservable } from 'mobx-react-use-autorun';
+import { jsonMember, jsonObject } from 'typedjson'
 import { UserModel } from '@/model/UserModel';
-import { Type } from 'class-transformer';
 
+@jsonObject
 export class FriendshipModel {
 
-  @Type(() => String)
+  @jsonMember(String)
   id!: string;
 
-  @Type(() => Boolean)
+  @jsonMember(Boolean)
   isFriend!: boolean;
 
-  @Type(() => Boolean)
+  @jsonMember(Boolean)
   isInBlacklist!: boolean;
 
-  @Type(() => Boolean)
+  @jsonMember(Boolean)
   isFriendOfFriend!: boolean;
 
-  @Type(() => Boolean)
+  @jsonMember(Boolean)
   isInBlacklistOfFriend!: boolean;
 
-  @Type(() => Boolean)
+  @jsonMember(Boolean)
   hasInitiative!: boolean;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   createDate!: Date;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   updateDate!: Date;
 
-  @Type(() => UserModel)
+  @jsonMember(UserModel)
   user!: UserModel;
 
-  @Type(() => UserModel)
+  @jsonMember(UserModel)
   friend!: UserModel;
 
   constructor() {

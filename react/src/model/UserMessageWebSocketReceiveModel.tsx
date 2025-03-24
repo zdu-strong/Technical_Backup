@@ -1,13 +1,14 @@
 import { makeAutoObservable } from 'mobx-react-use-autorun';
+import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson'
 import { UserMessageModel } from '@/model/UserMessageModel';
-import { Type } from 'class-transformer';
 
+@jsonObject
 export class UserMessageWebSocketReceiveModel {
 
-  @Type(() => Number)
+  @jsonMember(Number)
   totalPage!: number;
 
-  @Type(() => UserMessageModel)
+  @jsonArrayMember(UserMessageModel)
   list!: UserMessageModel[];
 
   constructor() {
