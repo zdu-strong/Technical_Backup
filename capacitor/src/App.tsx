@@ -1,6 +1,7 @@
 import 'tailwindcss/utilities.css';
 import '@/common/app-base-css/index.css';
 import '@fontsource/roboto';
+import 'reflect-metadata';
 import '@/common/Server';
 import '@/common/ScreenOrentation';
 import '@/common/StorageManage/StorageManageRun';
