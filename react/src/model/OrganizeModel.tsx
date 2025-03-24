@@ -1,4 +1,4 @@
-import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson'
+import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson'
 import { makeAutoObservable } from 'mobx-react-use-autorun'
 
 @jsonObject
@@ -25,13 +25,14 @@ export class OrganizeModel {
   @jsonMember(Number)
   descendantCount!: number;
 
-  @jsonMember(() => OrganizeModel)
+  @jsonMember(() => Object, { deserializer: (value: any) => new TypedJSON(OrganizeModel).parse(value) })
   parent!: OrganizeModel;
 
-  @jsonArrayMember(() => OrganizeModel)
+  @jsonArrayMember(() => Object, { deserializer: (value: any) => new TypedJSON(OrganizeModel).parse(value) })
   childList!: OrganizeModel[];
 
   constructor() {
     makeAutoObservable(this);
   }
+
 }
