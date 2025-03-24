@@ -25,10 +25,10 @@ export class OrganizeModel {
   @jsonMember(Number)
   descendantCount!: number;
 
-  @jsonMember(() => Object, { deserializer: (value: any) => new TypedJSON(OrganizeModel).parse(value) })
+  @jsonMember({ deserializer: (value: any) => new TypedJSON(OrganizeModel).parse(value) })
   parent!: OrganizeModel;
 
-  @jsonArrayMember(() => Object, { deserializer: (value: any) => new TypedJSON(OrganizeModel).parse(value) })
+  @jsonArrayMember(() => Object, { deserializer: (value: any) => new TypedJSON(OrganizeModel).parseAsArray(value) })
   childList!: OrganizeModel[];
 
   constructor() {
