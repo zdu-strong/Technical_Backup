@@ -1,7 +1,7 @@
 import path from "path";
 import { timer, lastValueFrom } from "rxjs";
 import fs from "fs";
-import { v1 } from "uuid";
+import { v6 } from "uuid";
 import linq from "linq";
 
 async function getBaseFolderPathOfInit() {
@@ -33,7 +33,7 @@ export async function getBaseFolderPath() {
 }
 
 export async function createTempFolder() {
-  const tempFolderPath = path.join(await promiseOfGetBaseFolderPath, v1());
+  const tempFolderPath = path.join(await promiseOfGetBaseFolderPath, v6());
   await fs.promises.mkdir(tempFolderPath, { recursive: true });
   return tempFolderPath;
 }

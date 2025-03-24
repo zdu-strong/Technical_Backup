@@ -1,5 +1,5 @@
 import registerWebworker from 'webworker-promise/lib/register'
-import { v1 } from 'uuid';
+import { v6 } from 'uuid';
 import { createHash, pbkdf2Sync } from 'crypto';
 
 registerWebworker(async ({
@@ -8,7 +8,7 @@ registerWebworker(async ({
   password?: string,
 }) => {
   if (!password) {
-    password = v1();
+    password = v6();
   }
   const salt = createHash("MD5").update(Buffer.from(password, "utf-8")).digest("base64");
   return pbkdf2Sync(Buffer.from(password, "utf-8"), Buffer.from(salt, "base64"), 65536, 256 / 8, "sha256").toString("base64");

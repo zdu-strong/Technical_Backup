@@ -9,7 +9,7 @@ import { observer, useMobxState } from "mobx-react-use-autorun";
 import { useRef } from "react";
 import { FormattedMessage } from "react-intl";
 import { concatMap, from, map, timer, toArray } from "rxjs";
-import { v1 } from 'uuid';
+import { v6 } from 'uuid';
 
 export default observer((props: {
   username: string,
@@ -20,8 +20,8 @@ export default observer((props: {
     messageContent: "",
     /* Is the message being sent */
     loadingOfSend: false,
-    inputFileId: v1(),
-    messageInputId: v1(),
+    inputFileId: v6(),
+    messageInputId: v6(),
     textareaRef: useRef<HTMLTextAreaElement>(null),
     moreActionDialog: {
       open: false,
@@ -68,7 +68,7 @@ export default observer((props: {
       return;
     }
 
-    state.inputFileId = v1();
+    state.inputFileId = v6();
     if (fileList.length > 0) {
       try {
         state.loadingOfSend = true;

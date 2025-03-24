@@ -2,7 +2,7 @@ import { Button, Divider, Fab, IconButton, TextField } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
 import { FormattedMessage } from "react-intl";
 import { stylesheet } from "typestyle";
-import { v1 } from "uuid";
+import { v6 } from "uuid";
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -34,19 +34,19 @@ export default observer(() => {
     emailList: [] as UserEmailModel[],
     steps: [
       {
-        id: v1(),
+        id: v6(),
         text: <FormattedMessage id="SetNickname" defaultMessage="Set nickname" />,
       },
       {
-        id: v1(),
+        id: v6(),
         text: <FormattedMessage id="SetPassword" defaultMessage="Set password" />,
       },
       {
-        id: v1(),
+        id: v6(),
         text: <FormattedMessage id="BindEmail" defaultMessage="Bind email" />,
       },
       {
-        id: v1(),
+        id: v6(),
         text: <FormattedMessage id="Complete" defaultMessage="Complete" />,
       }
     ],
@@ -336,7 +336,7 @@ export default observer(() => {
               size="small"
               onClick={() => {
                 state.emailList.push({
-                  id: v1(),
+                  id: v6(),
                   email: '',
                   verificationCodeEmail: {
                     id: '',

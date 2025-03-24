@@ -2,7 +2,7 @@ import api from "@/api";
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { observable, useMount } from "mobx-react-use-autorun";
 import { ReplaySubject, Subscription, catchError, concatMap, repeat, share, tap, timer } from "rxjs"
-import { v1 } from "uuid";
+import { v6 } from "uuid";
 
 export const GlobalChatMessage = observable({
   totalRecord: 0,
@@ -75,7 +75,7 @@ export function useGlobalSingleMessage(pageNum: number) {
   }
   if (!message.id) {
     message.pageNum = pageNum;
-    message.id = v1();
+    message.id = v6();
   }
   return { ready, message };
 }

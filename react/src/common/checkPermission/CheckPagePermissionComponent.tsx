@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReplaySubject, from } from "rxjs";
 import { exhaustMapWithTrailing } from "rxjs-exhaustmap-with-trailing";
-import { v1 } from "uuid";
+import { v6 } from "uuid";
 
 export default observer((props: {
   children: ReactNode,
@@ -70,7 +70,7 @@ export default observer((props: {
       throw new Error("Must check if sign in")
     }
     if (state.isAutoLogin && !state.hasInitAccessToken && !GlobalUserInfo.accessToken) {
-      await api.Authorization.signUp(v1(), "visitor", []);
+      await api.Authorization.signUp(v6(), "visitor", []);
     }
     if (!state.hasInitAccessToken && GlobalUserInfo.accessToken) {
       state.hasInitAccessToken = true;

@@ -1,4 +1,4 @@
-import { v1 } from 'uuid';
+import { v6 } from 'uuid';
 import { observable } from 'mobx-react-use-autorun'
 import { FormattedMessage } from 'react-intl';
 import { GlobalExactMessageMatch } from '@/common/MessageService/js/GlobalExactMessageMatch'
@@ -34,7 +34,7 @@ export function getMessageObject(type: "error" | "warning" | "info" | "success",
   const messageString = getMessageString(message);
   const messageOfI18n = getI18nMessageReactNode(messageString);
   return {
-    id: v1(),
+    id: v6(),
     message: messageOfI18n,
     type: type
   }

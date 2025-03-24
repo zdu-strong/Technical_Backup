@@ -1,5 +1,5 @@
 import page from '../../page'
-import { v1 } from 'uuid'
+import { v6 } from 'uuid'
 import * as action from '../../action'
 
 it('', () => {
@@ -12,6 +12,6 @@ before(() => {
   action.signUp(email, password)
 })
 
-const message = `Hello, World! ${v1()}`
-const email = `${v1()}zdu.strong@gmail.com`
+const message = `Hello, World! ${v6()}`
+const email = `${v6()}zdu.strong@gmail.com`
 const password = 'Hello, World!'

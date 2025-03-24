@@ -2,7 +2,7 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@mui/material";
 import { observer, useMobxState } from "mobx-react-use-autorun";
-import { v1 } from "uuid";
+import { v6 } from "uuid";
 import SuperAdminUserDetailDialog from "@/component/SuperAdminUserManage/SuperAdminUserDetailDialog";
 import { FormattedMessage } from "react-intl";
 
@@ -11,14 +11,14 @@ export default observer((props: { id: string, searchByPagination: () => void }) 
   const state = useMobxState({
     dialog: {
       open: false,
-      id: v1()
+      id: v6()
     }
   })
 
   function openDialog() {
     state.dialog = {
       open: true,
-      id: v1()
+      id: v6()
     }
   }
 
