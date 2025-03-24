@@ -1,31 +1,110 @@
-import { observer, useMobxEffect, useMobxState } from "mobx-react-use-autorun";
+import { observer, useMobxState, useMount } from "mobx-react-use-autorun";
+import { DataGrid, GridColDef, useGridApiRef } from '@mui/x-data-grid';
+import { Box, Button } from "@mui/material";
+import { format } from "date-fns";
+import { AutoSizer } from "react-virtualized";
+import api from "@/api";
 import LoadingOrErrorComponent from "@/common/MessageService/LoadingOrErrorComponent";
-import { useSearchParams } from "react-router-dom";
-import OrganizeManageMain from "@/component/SuperAdminOrganizeManage/OrganizeManageMain";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import SuperAdminOrganizeDetailButton from "@/component/SuperAdminOrganizeManage/SuperAdminOrganizeDetailButton";
+import { FormattedMessage } from "react-intl";
+import { PaginationModel } from "@/model/PaginationModel";
+import { MessageService } from "@/common/MessageService";
+import { OrganizeModel } from "@/model/OrganizeModel";
 
 export default observer(() => {
 
   const state = useMobxState({
-    companyId: "",
+    ready: false,
+    loading: true,
     error: null as any,
+    organizeModelPaginationModel: null as any as PaginationModel<OrganizeModel>,
+    columns: [
+      {
+        headerName: 'ID',
+        field: 'id',
+        width: 290
+      },
+      {
+        renderHeader: () => <FormattedMessage id="Name" defaultMessage="Name" />,
+        field: 'name',
+        width: 150,
+        flex: 1,
+      },
+      {
+        renderHeader: () => <FormattedMessage id="CreateDate" defaultMessage="Create Date" />,
+        field: 'createDate',
+        renderCell: (row) => {
+          return <div>
+            {format(row.row.createDate, "yyyy-MM-dd HH:mm:ss")}
+          </div>
+        },
+        width: 150,
+      },
+      {
+        renderHeader: () => <FormattedMessage id="Operation" defaultMessage="Operation" />,
+        field: '',
+        renderCell: (row) => <SuperAdminOrganizeDetailButton
+          id={row.row.id}
+          searchByPagination={searchByPagination}
+        />,
+        width: 150,
+      },
+    ] as GridColDef<OrganizeModel>[],
   }, {
-    ...((() => {
-      const [urlSearchParams, setURLSearchParams] = useSearchParams();
-      return { urlSearchParams, setURLSearchParams };
-    })()),
+    dataGridRef: useGridApiRef(),
   });
 
-  useMobxEffect(() => {
-    const companyId = state.urlSearchParams.get("companyId");
-    if (companyId) {
-      state.companyId = companyId;
-      state.error = null;
-    } else {
-      state.error = new Error("Company Id not exists");
-    }
-  }, [state.urlSearchParams])
+  useMount(async () => {
+    await searchByPagination();
+  })
 
-  return <LoadingOrErrorComponent ready={!!state.companyId} error={state.error}>
-    <OrganizeManageMain companyId={state.companyId} key={state.companyId} />
+  async function searchByPagination() {
+    try {
+      state.loading = true;
+      state.organizeModelPaginationModel = await api.SuperAdminOrganizeQuery.searchByPagination();
+      state.loading = false;
+      state.ready = true;
+    } catch (e) {
+      state.error = e;
+      if (state.ready) {
+        MessageService.error(e);
+      }
+    } finally {
+      state.loading = false;
+    }
+  }
+
+  return <LoadingOrErrorComponent ready={state.ready} error={!state.ready && state.error}>
+    <div className="flex flex-col flex-auto" style={{ paddingLeft: "50px", paddingRight: "50px" }}>
+      <div className="flex flex-row" style={{ marginTop: "10px", marginBottom: "10px" }}>
+        <Button
+          variant="contained"
+          onClick={searchByPagination}
+          startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faSearch} spin={state.loading} />}
+        >
+          <FormattedMessage id="Refresh" defaultMessage="Refresh" />
+        </Button>
+      </div>
+      <div className="flex flex-auto" style={{ paddingBottom: "1px" }}>
+        <AutoSizer>
+          {({ width, height }) => <Box width={Math.max(width, 100)} height={Math.max(height, 100)}>
+            <DataGrid
+              apiRef={state.dataGridRef}
+              sortingMode="server"
+              rows={state.organizeModelPaginationModel.list}
+              getRowId={(s) => s.id}
+              columns={state.columns}
+              autoPageSize
+              disableRowSelectionOnClick
+              disableColumnMenu
+              disableColumnResize
+              disableColumnSorting
+            />
+          </Box>}
+        </AutoSizer>
+      </div>
+    </div>
   </LoadingOrErrorComponent>
 })

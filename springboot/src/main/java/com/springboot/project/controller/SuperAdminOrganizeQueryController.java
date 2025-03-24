@@ -8,15 +8,14 @@ import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.enums.SystemPermissionEnum;
 
 @RestController
-public class SuperAdminOrganizeRoleQueryController extends BaseController {
+public class SuperAdminOrganizeQueryController extends BaseController {
 
-    @GetMapping("/super-admin/organize-role/search/pagination")
-    public ResponseEntity<?> searchByPagination(@RequestParam Long pageNum, @RequestParam Long pageSize,
-            @RequestParam String organizeId) {
+    @GetMapping("/super-admin/organize/search/pagination")
+    public ResponseEntity<?> searchByPagination(@RequestParam Long pageNum, @RequestParam Long pageSize) {
         this.permissionUtil.checkIsSignIn(request);
         this.permissionUtil.checkAnyPermission(request, SystemPermissionEnum.SUPER_ADMIN);
 
-        var paginationModel = this.roleOrganizeRelationService.searchOrganizeRoleForSuperAdminByPagination(pageNum, pageSize, organizeId, true);
+        var paginationModel = this.organizeService.searchOrganizeForSuperAdminByPagination(pageNum, pageSize);
 
         return ResponseEntity.ok(paginationModel);
     }
