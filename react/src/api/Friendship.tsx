@@ -1,7 +1,7 @@
 import { FriendshipModel } from "@/model/FriendshipModel";
 import { PaginationModel } from "@/model/PaginationModel";
 import axios from "axios";
-import { TypedJSON } from "typedjson";
+import { plainToInstance } from "class-transformer";
 
 export async function addToFriendList(friendId: string) {
   await axios.post("/friendship/add-to-friend-list", null, { params: { friendId } });
@@ -27,5 +27,5 @@ export async function getStrangerList() {
 
 export async function getFriendship(friendId: string) {
   const { data } = await axios.get("/friendship/get-friendship", { params: { friendId } });
-  return new TypedJSON(FriendshipModel).parse(data)!;
+  return plainToInstance(FriendshipModel, data);
 }

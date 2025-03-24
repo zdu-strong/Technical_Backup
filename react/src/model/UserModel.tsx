@@ -1,32 +1,31 @@
-import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson'
 import { UserEmailModel } from '@/model/UserEmailModel';
 import { makeAutoObservable } from 'mobx-react-use-autorun'
+import { Type } from 'class-transformer';
 
-@jsonObject
 export class UserModel {
 
-  @jsonMember(String)
+  @Type(() => String)
   id!: string;
 
-  @jsonMember(String)
+  @Type(() => String)
   username!: string;
 
-  @jsonMember(String)
+  @Type(() => String)
   password!: string;
 
-  @jsonArrayMember(UserEmailModel)
+  @Type(() => UserEmailModel)
   userEmailList!: UserEmailModel[];
 
-  @jsonMember(String)
+  @Type(() => String)
   accessToken!: string;
 
-  @jsonMember(Boolean)
+  @Type(() => Boolean)
   menuOpen!: boolean;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   createDate!: Date;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   updateDate!: Date;
 
   constructor() {

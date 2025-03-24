@@ -2,16 +2,16 @@ import { getDownloadResourceUrl, getWebSocketServerAddress, handleErrorWhenNotSi
 import { UserMessageModel } from "@/model/UserMessageModel";
 import { UserMessageWebSocketReceiveModel } from "@/model/UserMessageWebSocketReceiveModel";
 import axios from "axios";
+import { plainToInstance } from "class-transformer";
 import { Subject, catchError, map, switchMap, tap, of, concatMap, ReplaySubject } from "rxjs";
 import makeWebSocketObservable, { GetWebSocketResponses } from "rxjs-websockets";
-import { TypedJSON } from "typedjson";
 
 export async function sendMessage(body: {
   content?: string,
   url?: string,
 }) {
   const { data } = await axios.post("/user-message/send", { content: body.content, url: body.url });
-  return new TypedJSON(UserMessageModel).parse(data)!;
+  return plainToInstance(UserMessageModel, data);
 }
 
 export async function recallMessage(id: string) {
@@ -39,7 +39,7 @@ export function getUserMessageWebsocket(webSocketInput?: Subject<{
       switchMap((getResponses: GetWebSocketResponses) => {
         return getResponses(webSocketInput!.pipe(map(data => JSON.stringify(data))));
       }),
-      map((data) => new TypedJSON(UserMessageWebSocketReceiveModel).parse(data)!),
+      map((data) => plainToInstance(UserMessageWebSocketReceiveModel, JSON.parse(data as any))),
       tap((data) => {
         for (const message of data.list) {
           if (message.url) {

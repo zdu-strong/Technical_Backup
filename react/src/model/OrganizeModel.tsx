@@ -1,32 +1,33 @@
-import { jsonMember, jsonObject } from 'typedjson'
 import { makeAutoObservable } from 'mobx-react-use-autorun'
+import { Type } from 'class-transformer';
 
-@jsonObject
 export class OrganizeModel {
 
-  @jsonMember(String)
+  @Type(() => String)
   id!: string;
 
-  @jsonMember(String)
+  @Type(() => String)
   name!: string;
 
-  @jsonMember(Number)
+  @Type(() => Number)
   level!: number;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   createDate!: Date;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   updateDate!: Date;
 
-  @jsonMember(Number)
+  @Type(() => Number)
   childCount!: number;
 
-  @jsonMember(Number)
+  @Type(() => Number)
   descendantCount!: number;
 
+  @Type(() => OrganizeModel)
   parent!: OrganizeModel;
 
+  @Type(() => OrganizeModel)
   childList!: OrganizeModel[];
 
   constructor() {

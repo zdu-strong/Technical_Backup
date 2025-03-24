@@ -66,7 +66,7 @@ typescript (Dependency incompatibility)<br/>
 4. Material UI Components (https://material-ui.com)<br/>
 5. Icons (https://fontawesome.com/search?o=r&ic=free)<br/>
 6. axios (https://axios-http.com)
-7. typedjson (https://www.npmjs.com/package/typedjson)
+7. class-transformer (https://www.npmjs.com/package/class-transformer)
 8. linq (https://www.npmjs.com/package/linq)<br/>
 9. date-fns (https://date-fns.org)
 10. UUID (https://www.npmjs.com/package/uuid)<br/>

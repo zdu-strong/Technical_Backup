@@ -4,8 +4,8 @@ import { UserEmailModel } from "@/model/UserEmailModel";
 import { UserModel } from "@/model/UserModel";
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
 import axios from "axios";
-import { TypedJSON } from "typedjson";
 import { getKeyOfRSAPublicKey } from "@/api/EncryptDecrypt";
+import { plainToInstance } from "class-transformer";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
   await signOut();
@@ -14,13 +14,13 @@ export async function signUp(password: string, nickname: string, userEmailList: 
     password: password,
     userEmailList: userEmailList,
   });
-  const user = new TypedJSON(UserModel).parse(data)!;
+  const user = plainToInstance(UserModel, data);
   await setGlobalUserInfo(user);
 }
 
 export async function sendVerificationCode(email: string) {
   const { data } = await axios.post("/email/send-verification-code", null, { params: { email } });
-  return new TypedJSON(VerificationCodeEmailModel).parse(data)!;
+  return plainToInstance(VerificationCodeEmailModel, data);
 }
 
 export async function signIn(username: string, password: string): Promise<void> {
@@ -31,7 +31,7 @@ export async function signIn(username: string, password: string): Promise<void> 
       password: await encryptByPublicKeyOfRSA(password, await getKeyOfRSAPublicKey()),
     }
   });
-  const user = new TypedJSON(UserModel).parse(data)!;
+  const user = plainToInstance(UserModel, data);
   await setGlobalUserInfo(user);
 }
 
