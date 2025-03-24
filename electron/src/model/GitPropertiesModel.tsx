@@ -1,13 +1,12 @@
 import { makeAutoObservable } from "mobx-react-use-autorun";
-import { jsonMember, jsonObject } from "typedjson";
+import { Type } from 'class-transformer';
 
-@jsonObject
 export class GitPropertiesModel {
 
-  @jsonMember(String)
+  @Type(() => String)
   commitId!: string;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   commitDate!: Date;
 
   constructor() {

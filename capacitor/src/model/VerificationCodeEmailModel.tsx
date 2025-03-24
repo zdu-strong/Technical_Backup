@@ -1,28 +1,24 @@
 import { makeAutoObservable } from 'mobx-react-use-autorun';
-import { jsonMember, jsonObject } from 'typedjson'
+import { Type } from 'class-transformer';
 
-@jsonObject
 export class VerificationCodeEmailModel {
 
-  @jsonMember(String)
+  @Type(() => String)
   id?: string;
 
-  @jsonMember(String)
+  @Type(() => String)
   email?: string;
 
-  @jsonMember(String)
+  @Type(() => String)
   verificationCode!: string;
 
-  @jsonMember(Number)
+  @Type(() => Number)
   verificationCodeLength!: number;
 
-  @jsonMember(Boolean)
-  isDeleted?: boolean;
-
-  @jsonMember(Date)
+  @Type(() => Date)
   createDate?: Date;
 
-  @jsonMember(Date)
+  @Type(() => Date)
   updateDate?: Date;
 
   constructor() {

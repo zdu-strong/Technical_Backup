@@ -1,9 +1,9 @@
 import { UserModel } from '@/model/UserModel';
 import { observable } from 'mobx-react-use-autorun';
 import { from, fromEvent, retry, switchMap } from 'rxjs';
-import { TypedJSON } from 'typedjson';
 import { existsWindow } from '@/common/exists-window/exists-window';
 import { UserEmailModel } from '@/model/UserEmailModel';
+import { plainToInstance } from 'class-transformer';
 
 export const GlobalUserInfo = observable({
   id: '',
@@ -18,7 +18,7 @@ export async function setGlobalUserInfo(user?: UserModel): Promise<void> {
   if (!hasParam) {
     const jsonStringOfLocalStorage = window.localStorage.getItem(keyOfGlobalUserInfoOfLocalStorage);
     if (jsonStringOfLocalStorage) {
-      user = new TypedJSON(UserModel).parse(jsonStringOfLocalStorage)!;
+      user = plainToInstance(UserModel, JSON.parse(jsonStringOfLocalStorage));
     } else {
       removeGlobalUserInfo();
       return;

@@ -1,8 +1,8 @@
 import { GitPropertiesModel } from "@/model/GitPropertiesModel";
 import axios from "axios";
-import { TypedJSON } from "typedjson";
+import { plainToInstance } from "class-transformer";
 
 export async function getServerGitInfo() {
   const { data } = await axios.get("/git");
-  return new TypedJSON(GitPropertiesModel).parse(data)!;
+  return plainToInstance(GitPropertiesModel, data);
 }
