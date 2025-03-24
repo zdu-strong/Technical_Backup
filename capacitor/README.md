@@ -71,7 +71,7 @@ react-intl<br/>
 5. Icons (https://fontawesome.com/search?o=r&ic=free)<br/>
 6. Capacitor Plugins (https://capacitorjs.com/docs/apis)<br/>
 7. axios (https://axios-http.com)
-8. class-transformer (https://www.npmjs.com/package/class-transformer)
+8. typedjson (https://www.npmjs.com/package/typedjson)
 9. linq (https://www.npmjs.com/package/linq)<br/>
 10. UUID (https://www.npmjs.com/package/uuid)<br/>
 11. tailwindcss (https://tailwindcss.com)<br/>

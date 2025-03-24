@@ -1,18 +1,18 @@
 import { makeAutoObservable } from "mobx-react-use-autorun";
-import { Type } from 'class-transformer';
+import { jsonMember, jsonObject } from "typedjson";
 
+@jsonObject
 export class StorageSpaceModel {
-
-  @Type(() => String)
+  @jsonMember(String)
   id!: string;
 
-  @Type(() => String)
+  @jsonMember(String)
   folderName!: string;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   createDate!: Date;
 
-  @Type(() => Date)
+  @jsonMember(Date)
   updateDate!: Date;
 
   constructor() {

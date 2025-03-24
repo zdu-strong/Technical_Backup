@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx-react-use-autorun';
 import linq from "linq";
 import * as mathjs from 'mathjs';
-import { ClassConstructor, plainToInstance, Type } from 'class-transformer';
+import { jsonArrayMember, jsonMember, jsonObject, Serializable, TypedJSON } from 'typedjson';
 
 export class PaginationModel<T> {
 
@@ -21,9 +21,9 @@ export class PaginationModel<T> {
     stream: linq.IEnumerable<T>
   );
 
-  constructor(jsonString: string, rootConstructor: ClassConstructor<T>);
+  constructor(jsonString: string, rootConstructor: Serializable<T>);
 
-  constructor(jsonObject: object, rootConstructor: ClassConstructor<T>);
+  constructor(jsonObject: object, rootConstructor: Serializable<T>);
 
   constructor(
     arg1?: any,
@@ -71,28 +71,29 @@ export class PaginationModel<T> {
     this.list = list;
   }
 
-  private handleJsonString(jsonString: string, rootConstructor: ClassConstructor<T>) {
+  private handleJsonString(jsonString: string, rootConstructor: Serializable<T>) {
     if (!(["string", "object"].includes(typeof jsonString) && typeof rootConstructor === "function")) {
       return;
     }
 
+    @jsonObject
     class CustomerPaginationModel {
-      @Type(() => Number)
+      @jsonMember(Number)
       pageNum!: number;
 
-      @Type(() => Number)
+      @jsonMember(Number)
       pageSize!: number;
 
-      @Type(() => Number)
+      @jsonMember(Number)
       totalRecord!: number;
 
-      @Type(() => Number)
+      @jsonMember(Number)
       totalPage!: number;
 
-      @Type(() => rootConstructor)
+      @jsonArrayMember(rootConstructor)
       list!: T[];
     }
-    const customerPaginationModel = plainToInstance(CustomerPaginationModel, typeof jsonString === "string" ? JSON.parse(jsonString) : jsonString);
+    const customerPaginationModel = new TypedJSON(CustomerPaginationModel).parse(jsonString)!;
     this.pageNum = customerPaginationModel.pageNum;
     this.pageSize = customerPaginationModel.pageSize;
     this.totalPage = customerPaginationModel.totalPage;
