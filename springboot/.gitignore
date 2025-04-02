@@ -27,6 +27,9 @@
 /.nb-gradle
 /build
 
+### Visual Studio Code ###
+/.vscode
+
 ### default storage folder of project ###
 /.mvn/storage
 /.mvn/cockroachdb
