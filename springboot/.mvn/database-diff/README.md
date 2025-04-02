@@ -4,8 +4,7 @@ Projects created by start.spring.io contain Spring Boot, a framework that makes 
 
 ## Development environment setup
 1. From https://adoptium.net install java v21, and choose Entire feature.<br/>
-2. From https://code.visualstudio.com install Visual Studio Code.<br/>
-   Next, install extension "XML" and "Extension Pack for Java".<br/>
+2. From https://www.jetbrains.com/idea install IntelliJ IDEA.<br/>
 
 ## Available Scripts
 

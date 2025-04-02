@@ -4,8 +4,7 @@ Projects created by start.spring.io contain Spring Boot, a framework that makes 
 
 ## Development environment setup
 1. From https://adoptium.net install java v21, and choose Entire feature.<br/>
-2. From https://code.visualstudio.com install Visual Studio Code.<br/>
-   Next, install extension "XML" and "Extension Pack for Java".<br/>
+2. From https://www.jetbrains.com/idea install IntelliJ IDEA.<br/>
 3. From https://dev.mysql.com/downloads/installer install MySQL, the password of the root user is set to 123456.<br/>
 4. Optional.<br/>
    From https://dbeaver.io install DBeaver.<br/>
@@ -44,14 +43,6 @@ Delete all tables in the development database<br/>
 Check that a new version of the dependency is available<br/>
 
 The following dependencies are currently unable to continue to be upgraded:<br/>
-
-## Notes - How to use vscode
-
-1. Press "F5" to start.<br/>
-2. In debug mode, "F10" Step over, "F11" Step into, "Shipt+F11" Step out, "F5" Skip breakpoint.<br/>
-3. Rebuild the project:<br/>
-
-    Views - Commands Palette - Java: Clean Java Language Server Workspace
 
 ## Notes - jinq - Things to note
 
