@@ -5,6 +5,9 @@ Projects created by start.spring.io contain Spring Boot, a framework that makes 
 ## Development environment setup
 1. From https://adoptium.net install java v21, and choose Entire feature.<br/>
 2. From https://www.jetbrains.com/idea install IntelliJ IDEA.<br/>
+   Next, install lombok plugin(File - Settings - Plugins).<br/>
+   Next, choose Bundled Maven(File - Settings - Build - Build Tools - Maven).<br/>
+   Next, choose java 21(File - Project Structure - Project - SDK).<br/>
 3. From https://dev.mysql.com/downloads/installer install MySQL, the password of the root user is set to 123456.<br/>
 4. Optional.<br/>
    From https://dbeaver.io install DBeaver.<br/>
