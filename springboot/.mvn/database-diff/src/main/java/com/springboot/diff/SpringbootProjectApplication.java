@@ -2,38 +2,30 @@ package com.springboot.diff;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
 import java.util.regex.Pattern;
 
+import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
 import com.google.cloud.spanner.InstanceId;
 import com.google.cloud.spanner.InstanceInfo;
-import com.google.cloud.spanner.SpannerException;
 import com.google.cloud.spanner.SpannerOptions;
 
 @SpringBootApplication
@@ -41,10 +33,10 @@ public class SpringbootProjectApplication {
 
     /**
      * Entry point for the entire program
-     * 
+     *
      * @param args
      */
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
         if (isTestEnvironment()) {
             return;
         }
@@ -95,8 +87,7 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static boolean isOnlyResetDatabase(String[] args)
-            throws IOException, InterruptedException, SpannerException, ExecutionException {
+    public static boolean isOnlyResetDatabase(String[] args) {
         checkSupportDatabase();
         if (args != null && Arrays.asList(args).contains("--onlyResetDatabase")) {
             resetDatabase();
@@ -107,16 +98,15 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static void resetDatabase()
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException,
-            ExecutionException {
+    @SneakyThrows
+    private static void resetDatabase() {
         var databaseName = getDatabaseName();
         deleteDatabase(databaseName);
         createDatabase(databaseName);
     }
 
-    public static void buildNewDatabase(String newDatabaseName)
-            throws IOException, InterruptedException, URISyntaxException {
+    @SneakyThrows
+    public static void buildNewDatabase(String newDatabaseName) {
         var availableServerPort = getUnusedPort();
 
         var command = new ArrayList<String>();
@@ -164,16 +154,16 @@ public class SpringbootProjectApplication {
         destroy(process.toHandle());
     }
 
-    public static String getFilenameExtensionOfChangeLog()
-            throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    public static String getFilenameExtensionOfChangeLog() {
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             return ".xml";
         }
         return ".sql";
     }
 
-    public static boolean diffDatabase(String newDatabaseName, String oldDatabaseName)
-            throws IOException, InterruptedException {
+    @SneakyThrows
+    public static boolean diffDatabase(String newDatabaseName, String oldDatabaseName) {
         var today = FastDateFormat.getInstance("yyyy.MM.dd.HH.mm.ss", TimeZone.getTimeZone("UTC"))
                 .format(new Date());
         var filePathOfDiffChangeLogFile = Paths
@@ -196,8 +186,15 @@ public class SpringbootProjectApplication {
             command.add("-c");
         }
         command.add(
-                "mvn clean compile liquibase:update liquibase:diff --define database.name="
-                        + oldDatabaseName);
+                StringUtils.join(List.of(
+                        "mvn clean compile",
+                        "liquibase:update",
+                        "liquibase:diff",
+                        "--define database.name=\"" + oldDatabaseName + "\"",
+                        "--define database.liquibase.reference.database.name=\"" + newDatabaseName + "\"",
+                        "--define database.liquibase.diff.changelog.file=" + filePathOfDiffChangeLogFile
+                ), StringUtils.SPACE)
+        );
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -206,9 +203,7 @@ public class SpringbootProjectApplication {
         } else {
             processBuilder.environment().put("PATH", System.getenv("PATH") + ":" + getBaseFolderPath());
         }
-        processBuilder.environment().put("LIQUIBASE_DIFF_CHANGELOG_FILE", filePathOfDiffChangeLogFile);
         processBuilder.environment().put("PROPERTIES_STORAGE_ROOT_PATH", "target/diff-for-old-database");
-        processBuilder.environment().put("LIQUIBASE_REFERENCE_DATABASE_NAME", newDatabaseName);
         var process = processBuilder.start();
         var exitValue = process.waitFor();
         destroy(process.toHandle());
@@ -234,8 +229,8 @@ public class SpringbootProjectApplication {
         return isCreateChangeLogFile;
     }
 
-    private static boolean isEmptyOfDiffChangeLogFile(String filePathOfDiffChangeLogFile)
-            throws FileNotFoundException, IOException {
+    @SneakyThrows
+    private static boolean isEmptyOfDiffChangeLogFile(String filePathOfDiffChangeLogFile) {
         if (!new File(filePathOfDiffChangeLogFile).exists()) {
             return true;
         }
@@ -255,7 +250,8 @@ public class SpringbootProjectApplication {
         hanlde.destroy();
     }
 
-    public static void clean() throws IOException, InterruptedException {
+    @SneakyThrows
+    public static void clean() {
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -281,8 +277,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static void deleteDatabase(String databaseName)
-            throws IOException, InterruptedException, SpannerException, ExecutionException {
+    @SneakyThrows
+    public static void deleteDatabase(String databaseName) {
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             deleteDatabaseOfSpanner(databaseName);
             return;
@@ -312,9 +308,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static void deleteDatabaseOfSpanner(String databaseName)
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException, SpannerException,
-            ExecutionException {
+    @SneakyThrows
+    private static void deleteDatabaseOfSpanner(String databaseName) {
         createDatabase(databaseName);
         var project = getSpannerProject();
         var instance = getSpannerInstance();
@@ -326,8 +321,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static void createDatabaseOfSpanner(String databaseName) throws JsonMappingException,
-            JsonProcessingException, IOException, SpannerException, InterruptedException, ExecutionException {
+    @SneakyThrows
+    private static void createDatabaseOfSpanner(String databaseName) {
         createInstanceOfSpanner();
         var project = getSpannerProject();
         var instance = getSpannerInstance();
@@ -342,8 +337,7 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static void createInstanceOfSpanner() throws JsonMappingException, JsonProcessingException, IOException,
-            SpannerException, InterruptedException, ExecutionException {
+    private static void createInstanceOfSpanner() {
         var project = getSpannerProject();
         var instance = getSpannerInstance();
         var spannerOptions = SpannerOptions.newBuilder().setProjectId(project).setEmulatorHost("127.0.0.1:9010")
@@ -358,8 +352,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static void createDatabase(String databaseName)
-            throws IOException, InterruptedException, SpannerException, ExecutionException {
+    @SneakyThrows
+    public static void createDatabase(String databaseName) {
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             createDatabaseOfSpanner(databaseName);
             return;
@@ -414,20 +408,21 @@ public class SpringbootProjectApplication {
         return existFolder;
     }
 
-    public static String getANewDatabaseName()
-            throws JsonMappingException, JsonProcessingException, IOException, InterruptedException {
+    @SneakyThrows
+    public static String getANewDatabaseName() {
         var newDatabaseName = "database_"
                 + Generators.timeBasedReorderedGenerator().generate().toString().replaceAll(Pattern.quote("-"), "_");
         if (getDatabaseType() == SupportDatabaseTypeEnum.SPANNER) {
             Thread.sleep(2);
             newDatabaseName = "database_"
                     + FastDateFormat.getInstance("yyyyMMddHHmmssSSS", TimeZone.getTimeZone(ZoneId.of("UTC")))
-                            .format(new Date());
+                    .format(new Date());
         }
         return newDatabaseName;
     }
 
-    public static boolean isTestEnvironment() throws IOException {
+    @SneakyThrows
+    public static boolean isTestEnvironment() {
         try (var input = new ClassPathResource("application.yml").getInputStream()) {
             var isTestEnvironmentString = new YAMLMapper()
                     .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("properties")
@@ -437,7 +432,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static void replaceDatetimeColumnType(File file) throws IOException {
+    @SneakyThrows
+    private static void replaceDatetimeColumnType(File file) {
         if (getDatabaseType() != SupportDatabaseTypeEnum.MYSQL) {
             return;
         }
@@ -446,8 +442,8 @@ public class SpringbootProjectApplication {
         FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), textList);
     }
 
-    private static SupportDatabaseTypeEnum getDatabaseType()
-            throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static SupportDatabaseTypeEnum getDatabaseType() {
         var driver = getDatabaseDriver();
         var databasePlatform = getDatabasePlatform();
         var supportDatabase = JinqStream.from(Arrays.asList(SupportDatabaseTypeEnum.values()))
@@ -456,7 +452,8 @@ public class SpringbootProjectApplication {
         return supportDatabase;
     }
 
-    private static void checkSupportDatabase() throws IOException {
+    @SneakyThrows
+    private static void checkSupportDatabase() {
         var driver = getDatabaseDriver();
         var databasePlatform = getDatabasePlatform();
         var hasMatch = Arrays.stream(SupportDatabaseTypeEnum.values())
@@ -468,7 +465,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static String getDatabaseDriver() throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static String getDatabaseDriver() {
         var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
             var driver = new XmlMapper()
@@ -480,7 +478,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static String getDatabasePlatform() throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static String getDatabasePlatform() {
         var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
             var platform = new XmlMapper()
@@ -492,7 +491,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static String getDatabaseJdbcUrl() throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static String getDatabaseJdbcUrl() {
         var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
             var databaseJdbcUrl = new XmlMapper()
@@ -504,7 +504,8 @@ public class SpringbootProjectApplication {
         }
     }
 
-    private static String getSpannerProject() throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static String getSpannerProject() {
         var databaseJdbcUrl = getDatabaseJdbcUrl();
         var pattern = Pattern
                 .compile("(?<=" + Pattern.quote("/projects/") + ")[^/]+(?=" + Pattern.quote("/instances/") + ")");
@@ -515,7 +516,7 @@ public class SpringbootProjectApplication {
         throw new RuntimeException("Not found spanner project");
     }
 
-    private static String getSpannerInstance() throws JsonMappingException, JsonProcessingException, IOException {
+    private static String getSpannerInstance() {
         var databaseJdbcUrl = getDatabaseJdbcUrl();
         var pattern = Pattern.compile("(?<=" + Pattern.quote("/instances/") + ")[^/]+$");
         var matcher = pattern.matcher(databaseJdbcUrl);
@@ -525,7 +526,8 @@ public class SpringbootProjectApplication {
         throw new RuntimeException("Not found spanner instance");
     }
 
-    private static String getDatabaseName() throws JsonMappingException, JsonProcessingException, IOException {
+    @SneakyThrows
+    private static String getDatabaseName() {
         var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
             var databaseName = new XmlMapper()

@@ -23,6 +23,8 @@
         <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
         <storage.cloud.aliyun.accessKeyId></storage.cloud.aliyun.accessKeyId>
         <storage.cloud.aliyun.accessKeySecret></storage.cloud.aliyun.accessKeySecret>
+        <database.liquibase.diff.changelog.file></database.liquibase.diff.changelog.file>
+        <database.liquibase.reference.database.name></database.liquibase.reference.database.name>
         <database.spring.jpa.hibernate.ddl.auto>validate</database.spring.jpa.hibernate.ddl.auto>
         <database.spring.liquibase.enabled>true</database.spring.liquibase.enabled>
         <database.spring.datasource.url>
@@ -30,7 +32,7 @@
         </database.spring.datasource.url>
         <database.sql.maven.plugin.url>${database.spring.datasource.url}</database.sql.maven.plugin.url>
         <database.liquibase.maven.plugin.reference.url>
-            jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
+            jdbc:mysql://${database.jdbc.url}/${database.liquibase.reference.database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
         </database.liquibase.maven.plugin.reference.url>
         <is.development.mock.mode>true</is.development.mock.mode>
         <google-cloud-spanner-jdbc.version>2.28.0</google-cloud-spanner-jdbc.version>
@@ -250,7 +252,7 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <configuration>
-                    <diffChangeLogFile>${env.LIQUIBASE_DIFF_CHANGELOG_FILE}</diffChangeLogFile>
+                    <diffChangeLogFile>${database.liquibase.diff.changelog.file}</diffChangeLogFile>
                     <changeLogFile>liquibase/index.xml</changeLogFile>
                     <url>${database.spring.datasource.url}</url>
                     <username>${database.username}</username>
