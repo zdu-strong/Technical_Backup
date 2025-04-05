@@ -1,8 +1,9 @@
 package com.springboot.project.common.CloudStorage;
 
 import java.io.File;
+import java.util.List;
+import cn.hutool.extra.spring.SpringUtil;
 import org.jinq.orm.stream.JinqStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
@@ -10,9 +11,6 @@ import com.springboot.project.common.StorageResource.SequenceResource;
 
 @Component
 public class CloudStorageImplement implements CloudStorageInterface {
-
-    @Autowired
-    private AliyunCloudStorage aliyunCloudStorage;
 
     @Override
     public boolean enabled() {
@@ -44,12 +42,15 @@ public class CloudStorageImplement implements CloudStorageInterface {
         return this.getCloud().getResource(key, startIndex, rangeContentLength);
     }
 
-    private CloudStorageInterface[] getCloudList() {
-        return new CloudStorageInterface[] { aliyunCloudStorage };
+    private List<CloudStorageInterface> getCloudList() {
+        return SpringUtil.getBeansOfType(CloudStorageInterface.class)
+                .values()
+                .stream().filter(s -> !(s instanceof CloudStorageImplement))
+                .toList();
     }
 
     private CloudStorageInterface getCloud() {
-        return JinqStream.from(Lists.newArrayList(this.getCloudList())).where((s) -> s.enabled()).getOnlyValue();
+        return JinqStream.from(this.getCloudList()).where((s) -> s.enabled()).getOnlyValue();
     }
 
 }
