@@ -2,11 +2,11 @@ package com.springboot.project.common.CloudStorage;
 
 import java.io.File;
 import java.util.List;
+
 import cn.hutool.extra.spring.SpringUtil;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
 
 @Component
@@ -14,7 +14,7 @@ public class CloudStorageImplement implements CloudStorageInterface {
 
     @Override
     public boolean enabled() {
-        return JinqStream.from(Lists.newArrayList(this.getCloudList())).where(s -> s.enabled()).findOne().isPresent();
+        return !this.getCloudList().isEmpty();
     }
 
     @Override
@@ -45,12 +45,14 @@ public class CloudStorageImplement implements CloudStorageInterface {
     private List<CloudStorageInterface> getCloudList() {
         return SpringUtil.getBeansOfType(CloudStorageInterface.class)
                 .values()
-                .stream().filter(s -> !(s instanceof CloudStorageImplement))
+                .stream()
+                .filter(s -> !(s instanceof CloudStorageImplement))
+                .filter(s -> s.enabled())
                 .toList();
     }
 
     private CloudStorageInterface getCloud() {
-        return JinqStream.from(this.getCloudList()).where((s) -> s.enabled()).getOnlyValue();
+        return JinqStream.from(this.getCloudList()).getOnlyValue();
     }
 
 }
