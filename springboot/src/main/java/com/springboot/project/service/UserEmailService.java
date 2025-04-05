@@ -28,7 +28,7 @@ public class UserEmailService extends BaseService {
         userEmailEntity.setCreateDate(new Date());
         userEmailEntity.setUpdateDate(new Date());
         userEmailEntity.setIsActive(true);
-        userEmailEntity.setDeactiveKey(StringUtils.EMPTY);
+        userEmailEntity.setDeactivateKey(StringUtils.EMPTY);
 
         this.persist(userEmailEntity);
     }
@@ -40,7 +40,7 @@ public class UserEmailService extends BaseService {
                 .toList();
         for (var userEmailEntity : userEmailList) {
             userEmailEntity.setIsActive(false);
-            userEmailEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+            userEmailEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
             userEmailEntity.setUpdateDate(new Date());
             this.merge(userEmailEntity);
         }

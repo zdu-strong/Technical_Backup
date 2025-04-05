@@ -34,7 +34,7 @@ public class RoleService extends BaseService {
         roleEntity.setUpdateDate(new Date());
         roleEntity.setName(role);
         roleEntity.setIsActive(true);
-        roleEntity.setDeactiveKey(StringUtils.EMPTY);
+        roleEntity.setDeactivateKey(StringUtils.EMPTY);
         roleEntity.setIsOrganizeRole(!organizeIdList.isEmpty());
         this.persist(roleEntity);
 
@@ -88,7 +88,7 @@ public class RoleService extends BaseService {
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         roleEntity.setIsActive(false);
-        roleEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+        roleEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
         roleEntity.setUpdateDate(new Date());
         this.merge(roleEntity);
     }

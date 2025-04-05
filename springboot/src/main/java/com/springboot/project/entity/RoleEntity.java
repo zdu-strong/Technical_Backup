@@ -34,7 +34,7 @@ public class RoleEntity {
     private Boolean isActive;
 
     @Column(nullable = false)
-    private String deactiveKey;
+    private String deactivateKey;
 
     @Column(nullable = false)
     private Boolean isOrganizeRole;

@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "parentId", "name", "deactiveKey" })
+        @UniqueConstraint(columnNames = { "parentId", "name", "deactivateKey" })
 }, indexes = {
         @Index(columnList = "parentId, isActive"),
         @Index(columnList = "createDate, id"),
@@ -48,7 +48,7 @@ public class OrganizeEntity {
     private Boolean isCompany;
 
     @Column(nullable = false)
-    private String deactiveKey;
+    private String deactivateKey;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity parent;

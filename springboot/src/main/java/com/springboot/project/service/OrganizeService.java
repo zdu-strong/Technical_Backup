@@ -25,7 +25,7 @@ public class OrganizeService extends BaseService {
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setIsActive(true);
         organizeEntity
-                .setDeactiveKey(StringUtils.EMPTY);
+                .setDeactivateKey(StringUtils.EMPTY);
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
@@ -52,7 +52,7 @@ public class OrganizeService extends BaseService {
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsActive(false);
-        organizeEntity.setDeactiveKey(Generators.timeBasedReorderedGenerator().generate().toString());
+        organizeEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
         this.merge(organizeEntity);
     }
 
