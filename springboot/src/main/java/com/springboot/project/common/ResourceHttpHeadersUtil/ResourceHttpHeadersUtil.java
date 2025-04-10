@@ -1,11 +1,9 @@
 package com.springboot.project.common.ResourceHttpHeadersUtil;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.hc.core5.net.URIBuilder;
 import org.apache.tika.Tika;
 import org.jinq.orm.stream.JinqStream;
@@ -40,12 +38,11 @@ public class ResourceHttpHeadersUtil {
 
     public void setContentRangeIfNeed(HttpHeaders httpHeaders, long totalContentLength, HttpServletRequest request) {
         var rangeList = this.getRangeList(request);
-        if (rangeList.size() == 1) {
+        if (Objects.equals(rangeList.size(), 1)) {
             var range = JinqStream.from(rangeList).getOnlyValue();
             var start = range.getRangeStart(totalContentLength);
             var end = range.getRangeEnd(totalContentLength);
-            httpHeaders.set(HttpHeaders.CONTENT_RANGE, "bytes " + String.valueOf(start) + "-" + String.valueOf(end)
-                    + "/" + String.valueOf(totalContentLength));
+            httpHeaders.set(HttpHeaders.CONTENT_RANGE, getContentRange(start, end, totalContentLength));
         }
     }
 
@@ -86,7 +83,7 @@ public class ResourceHttpHeadersUtil {
         if (rangeList.size() > 1) {
             long contentLength = this.getResourceFromRequest(totalContentLength, request).contentLength();
             httpHeaders.setContentLength(contentLength);
-        } else if (rangeList.size() == 1) {
+        } else if (Objects.equals(rangeList.size(), 1)) {
             var range = JinqStream.from(rangeList).getOnlyValue();
             var start = range.getRangeStart(totalContentLength);
             var end = range.getRangeEnd(totalContentLength);
@@ -98,8 +95,8 @@ public class ResourceHttpHeadersUtil {
 
     @SneakyThrows
     public void setContentDisposition(HttpHeaders httpHeaders, Builder contentDispositionBuilder,
-            Resource resource,
-            HttpServletRequest request) {
+                                      Resource resource,
+                                      HttpServletRequest request) {
         var pathSegments = Lists.newArrayList(new URIBuilder(request.getRequestURI()).getPathSegments());
         Collections.reverse(pathSegments);
         String fileName = pathSegments.stream().findFirst().get();
@@ -137,12 +134,7 @@ public class ResourceHttpHeadersUtil {
                 textContentBuilder.append("\n");
                 textContentBuilder.append(HttpHeaders.CONTENT_RANGE);
                 textContentBuilder.append(": ");
-                textContentBuilder.append("bytes ");
-                textContentBuilder.append(String.valueOf(start));
-                textContentBuilder.append("-");
-                textContentBuilder.append(String.valueOf(end));
-                textContentBuilder.append("/");
-                textContentBuilder.append(String.valueOf(totalContentLength));
+                textContentBuilder.append(getContentRange(start, end, totalContentLength));
                 textContentBuilder.append("\n");
                 textContentBuilder.append("\n");
                 var resourceOne = new ByteArrayResource(
@@ -154,7 +146,7 @@ public class ResourceHttpHeadersUtil {
             var textContentOfEnd = "\n--" + this.boundary + "--\n";
             resourceListTwo.add(new ByteArrayResource(textContentOfEnd.getBytes(StandardCharsets.UTF_8)));
             return new SequenceResource(fileName, resourceListTwo);
-        } else if (rangeList.size() == 1) {
+        } else if (Objects.equals(rangeList.size(), 1)) {
             var range = JinqStream.from(rangeList).getOnlyValue();
             var start = range.getRangeStart(totalContentLength);
             var end = range.getRangeEnd(totalContentLength);
@@ -172,7 +164,7 @@ public class ResourceHttpHeadersUtil {
             throw new ResponseStatusException(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE, e.getMessage());
         }
 
-        if (rangeList.size() > 0) {
+        if (!rangeList.isEmpty()) {
             for (var range : rangeList) {
                 var start = range.getRangeStart(totalContentLength);
                 var end = range.getRangeEnd(totalContentLength);
@@ -180,8 +172,8 @@ public class ResourceHttpHeadersUtil {
                     throw new ResponseStatusException(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
                             HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE.getReasonPhrase());
                 }
-                if (totalContentLength == 0) {
-                    if (end != -1) {
+                if (Objects.equals(totalContentLength, 0)) {
+                    if (!Objects.equals(end, -1)) {
                         throw new ResponseStatusException(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE,
                                 HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE.getReasonPhrase());
                     }
@@ -193,5 +185,9 @@ public class ResourceHttpHeadersUtil {
                 }
             }
         }
+    }
+
+    private String getContentRange(long start, long end, long totalContentLength) {
+        return StrFormatter.format("bytes {}-{}/{}", start, Optional.of(end).filter(s -> s >= 0).map(String::valueOf).orElse("*"), totalContentLength);
     }
 }
