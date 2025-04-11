@@ -1,7 +1,10 @@
 package com.springboot.project.test.scheduled.SystemInitScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.springboot.project.model.SuperAdminUserRoleQueryPaginationModel;
 import org.jinq.orm.stream.JinqStream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.enums.SystemPermissionEnum;
 import com.springboot.project.enums.SystemRoleEnum;
@@ -9,10 +12,12 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class SystemInitScheduledInitUserRoleTest extends BaseTest {
 
+    private SuperAdminUserRoleQueryPaginationModel superAdminUserRoleQueryPaginationModel;
+
     @Test
     public void test() {
         this.systemInitScheduled.scheduled();
-        var paginationModel = this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length);
+        var paginationModel = this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(superAdminUserRoleQueryPaginationModel);
         var roleList = paginationModel.getItems();
         assertEquals(1, roleList.size());
         var roleModel = JinqStream.from(roleList).getOnlyValue();
@@ -24,6 +29,12 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
         assertEquals(1, roleModel.getPermissionList().size());
         var permission = JinqStream.from(roleModel.getPermissionList()).getOnlyValue();
         assertEquals(SystemPermissionEnum.SUPER_ADMIN.getValue(), permission);
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        superAdminUserRoleQueryPaginationModel.setPageNum(1L);
+        superAdminUserRoleQueryPaginationModel.setPageSize((long) SystemRoleEnum.values().length);
     }
 
 }

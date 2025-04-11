@@ -1,10 +1,13 @@
 package com.springboot.project.test.common.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.function.Supplier;
+
+import com.springboot.project.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ThreadUtils;
@@ -49,10 +52,6 @@ import com.springboot.project.properties.ServerAddressProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.enums.SystemRoleEnum;
-import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.model.UserEmailModel;
-import com.springboot.project.model.UserModel;
-import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.SystemInitScheduled;
 import com.springboot.project.service.DistributedExecutionMainService;
@@ -78,9 +77,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import lombok.SneakyThrows;
 
 /**
- * 
  * @author Me
- *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
@@ -246,8 +243,11 @@ public class BaseTest {
     protected UserModel createAccountOfSuperAdmin(String email) {
         var userModel = createAccount(email);
         {
+            var superAdminUserRoleQueryPaginationModel = new SuperAdminUserRoleQueryPaginationModel();
+            superAdminUserRoleQueryPaginationModel.setPageNum(1L);
+            superAdminUserRoleQueryPaginationModel.setPageSize((long) SystemRoleEnum.values().length);
             var roleList = this.userRoleRelationService
-                    .searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length)
+                    .searchUserRoleForSuperAdminByPagination(superAdminUserRoleQueryPaginationModel)
                     .getItems();
             userModel.getRoleList().addAll(roleList);
             this.userService.update(userModel);
@@ -328,7 +328,7 @@ public class BaseTest {
     }
 
     protected <T> ResponseEntity<T> fromLongTermTask(Supplier<ResponseEntity<String>> supplier,
-            ParameterizedTypeReference<T> responseType) {
+                                                     ParameterizedTypeReference<T> responseType) {
         return Flowable.fromSupplier(() -> supplier.get())
                 .map((response) -> {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
