@@ -33,6 +33,7 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
+        superAdminUserRoleQueryPaginationModel = new SuperAdminUserRoleQueryPaginationModel();
         superAdminUserRoleQueryPaginationModel.setPageNum(1L);
         superAdminUserRoleQueryPaginationModel.setPageSize((long) SystemRoleEnum.values().length);
     }
