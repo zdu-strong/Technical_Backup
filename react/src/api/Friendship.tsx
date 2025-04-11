@@ -17,12 +17,12 @@ export async function deleteFromBlacklist(friendId: string) {
 
 export async function getFriendList() {
   const { data } = await axios.get("/friendship/get-friend-list", { params: { pageNum: 1, pageSize: 100 } });
-  return new PaginationModel(data, FriendshipModel);
+  return PaginationModel.fromJson(data, FriendshipModel);
 }
 
 export async function getStrangerList() {
   const { data } = await axios.get("/friendship/get-stranger-list", { params: { pageNum: 1, pageSize: 100 } });
-  return new PaginationModel(data, FriendshipModel);
+  return PaginationModel.fromJson(data, FriendshipModel);
 }
 
 export async function getFriendship(friendId: string) {

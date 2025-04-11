@@ -15,31 +15,20 @@ export class PaginationModel<T> {
 
   items!: T[];
 
+  constructor();
+
   constructor(
     pageNum: number,
     pageSize: number,
     stream: linq.IEnumerable<T>
   );
 
-  constructor(jsonString: string, rootConstructor: Serializable<T>);
-
-  constructor(jsonObject: object, rootConstructor: Serializable<T>);
-
   constructor(
-    arg1?: any,
-    arg2?: any,
-    arg3?: any
+    pageNum?: number,
+    pageSize?: number,
+    stream?: linq.IEnumerable<T>
   ) {
     makeAutoObservable(this);
-    this.handleStream(arg1, arg2, arg3);
-    this.handleJsonString(arg1, arg2);
-  }
-
-  private handleStream(
-    pageNum: number,
-    pageSize: number,
-    stream: linq.IEnumerable<T>
-  ) {
     if (!(typeof pageNum === "number" && typeof pageSize === "number" && typeof stream === "object")) {
       return;
     }
@@ -71,13 +60,9 @@ export class PaginationModel<T> {
     this.items = items;
   }
 
-  private handleJsonString(jsonString: string, rootConstructor: Serializable<T>) {
-    if (!(["string", "object"].includes(typeof jsonString) && typeof rootConstructor === "function")) {
-      return;
-    }
-
+  static fromJson<U>(json: string | object, rootConstructor: Serializable<U>): PaginationModel<U> {
     @jsonObject
-    class CustomerPaginationModel {
+    class CustomPaginationModel {
       @jsonMember(Number)
       pageNum!: number;
 
@@ -91,14 +76,18 @@ export class PaginationModel<T> {
       totalPages!: number;
 
       @jsonArrayMember(rootConstructor)
-      items!: T[];
+      items!: U[];
     }
-    const customerPaginationModel = new TypedJSON(CustomerPaginationModel).parse(jsonString)!;
-    this.pageNum = customerPaginationModel.pageNum;
-    this.pageSize = customerPaginationModel.pageSize;
-    this.totalPages = customerPaginationModel.totalPages;
-    this.totalRecords = customerPaginationModel.totalRecords;
-    this.items = customerPaginationModel.items;
+
+    const customPaginationModel = new TypedJSON(CustomPaginationModel).parse(json)!;
+
+    const model = new PaginationModel<U>();
+    model.pageNum = customPaginationModel.pageNum;
+    model.pageSize = customPaginationModel.pageSize;
+    model.totalPages = customPaginationModel.totalPages;
+    model.totalRecords = customPaginationModel.totalRecords;
+    model.items = customPaginationModel.items;
+    return model;
   }
 
 }
