@@ -20,7 +20,7 @@ export default observer((props: Size) => {
       exhaustMapWithTrailing(() => {
         return interval(1).pipe(
           concatMap(() => {
-            if (GlobalChatMessage.totalRecord === 0) {
+            if (GlobalChatMessage.totalRecords === 0) {
               return of(null);
             }
             if (!state.listRef.current) {
@@ -28,11 +28,11 @@ export default observer((props: Size) => {
             }
             return of(null).pipe(
               tap(() => {
-                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
+                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecords - 1);
               }),
               delay(1),
               tap(() => {
-                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecord - 1);
+                state.listRef.current?.scrollToRow(GlobalChatMessage.totalRecords - 1);
               }),
             );
           }),
@@ -46,7 +46,7 @@ export default observer((props: Size) => {
     ref={state.listRef}
     width={props.width}
     height={props.height}
-    rowCount={GlobalChatMessage.totalRecord}
+    rowCount={GlobalChatMessage.totalRecords}
     rowHeight={150}
     rowRenderer={(s) => <div style={s.style} key={s.key}>
       <SingleMessage pageNum={s.index + 1} key={s.index + 1} />

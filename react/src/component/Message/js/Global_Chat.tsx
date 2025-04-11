@@ -5,7 +5,7 @@ import { ReplaySubject, Subscription, catchError, concatMap, repeat, share, tap,
 import { v6 } from "uuid";
 
 export const GlobalChatMessage = observable({
-  totalRecord: 0,
+  totalRecords: 0,
   lastMessageId: "",
   ready: false,
   error: null,
@@ -21,12 +21,12 @@ const GlobalShareMessageSubject = api.UserMessage.getUserMessageWebsocket(subjec
     tap((s) => {
       let hasNewMessage = false;
       if (typeof s.totalPages === "number") {
-        hasNewMessage = s.totalPages > GlobalChatMessage.totalRecord;
-        GlobalChatMessage.totalRecord = s.totalPages;
+        hasNewMessage = s.totalPages > GlobalChatMessage.totalRecords;
+        GlobalChatMessage.totalRecords = s.totalPages;
       }
       for (const message of s.items) {
         GlobalChatMessage.messageMap[message.pageNum] = message;
-        if (message.pageNum === GlobalChatMessage.totalRecord) {
+        if (message.pageNum === GlobalChatMessage.totalRecords) {
           if (message.id !== GlobalChatMessage.lastMessageId) {
             GlobalChatMessage.lastMessageId = message.id;
             hasNewMessage = true;
@@ -96,7 +96,7 @@ export async function scrollToLastItem() {
 }
 
 export function reinitializeOfGlobalChat() {
-  GlobalChatMessage.totalRecord = 0;
+  GlobalChatMessage.totalRecords = 0;
   GlobalChatMessage.lastMessageId = "";
   GlobalChatMessage.ready = false;
   GlobalChatMessage.messageMap = {
