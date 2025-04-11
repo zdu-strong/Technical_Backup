@@ -31,10 +31,10 @@ public class RoleEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isDeleted;
 
     @Column(nullable = false)
-    private String deactivateKey;
+    private String deletionCode;
 
     @Column(nullable = false)
     private Boolean isOrganizeRole;

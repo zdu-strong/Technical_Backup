@@ -34,7 +34,7 @@ public class OrganizeFormatter extends BaseService {
         if (this.isActive(organizeEntity)) {
             var childOrganizeCount = this.streamAll(OrganizeEntity.class)
                     .where(s -> s.getParent().getId().equals(id))
-                    .where(s -> s.getIsActive())
+                    .where(s -> !s.getIsDeleted())
                     .count();
             organizeModel.setChildCount(childOrganizeCount);
             var descendantCount = Math.max(this.streamAll(OrganizeRelationEntity.class)
@@ -48,7 +48,7 @@ public class OrganizeFormatter extends BaseService {
     public boolean isActive(OrganizeEntity organizeEntity) {
         var organizeIdList = new ArrayList<String>();
         while (true) {
-            if (!organizeEntity.getIsActive()) {
+            if (organizeEntity.getIsDeleted()) {
                 return false;
             }
             if (organizeIdList.contains(organizeEntity.getId())) {

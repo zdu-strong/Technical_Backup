@@ -44,7 +44,7 @@ public class UserService extends BaseService {
         userEntity.setId(id);
         userEntity.setUsername(userModel.getUsername());
         userEntity.setPassword(password);
-        userEntity.setIsActive(true);
+        userEntity.setIsDeleted(false);
         userEntity.setCreateDate(new Date());
         userEntity.setUpdateDate(new Date());
         this.persist(userEntity);
@@ -96,7 +96,7 @@ public class UserService extends BaseService {
     public UserModel getUserWithMoreInformation(String id) {
         var user = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(id))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         return this.userFormatter.formatWithMoreInformation(user);
     }
@@ -105,7 +105,7 @@ public class UserService extends BaseService {
     public UserModel getUser(String id) {
         var user = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(id))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
@@ -116,7 +116,7 @@ public class UserService extends BaseService {
             var userId = account;
             var userEntity = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(userId))
-                    .where(s -> s.getIsActive())
+                    .where(s -> !s.getIsDeleted())
                     .findOne()
                     .orElse(null);
             if (userEntity != null) {
@@ -127,8 +127,8 @@ public class UserService extends BaseService {
             var email = account;
             var userEntity = this.streamAll(UserEmailEntity.class)
                     .where(s -> s.getEmail().equals(email))
-                    .where(s -> s.getIsActive())
-                    .where(s -> s.getUser().getIsActive())
+                    .where(s -> !s.getIsDeleted())
+                    .where(s -> !s.getUser().getIsDeleted())
                     .select(s -> s.getUser())
                     .getOnlyValue();
             return userEntity.getId();
@@ -138,7 +138,7 @@ public class UserService extends BaseService {
     @Transactional(readOnly = true)
     public PaginationModel<UserModel> searchForSuperAdminByPagination(SuperAdminUserQueryPaginationModel superAdminUserQueryPaginationModel) {
         var stream = this.streamAll(UserEntity.class)
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .sortedDescendingBy(s -> s.getCreateDate());
         return new PaginationModel<>(superAdminUserQueryPaginationModel.getPageNum(), superAdminUserQueryPaginationModel.getPageSize(), stream, (s) -> this.userFormatter.format(s));
     }
@@ -210,7 +210,7 @@ public class UserService extends BaseService {
     private boolean hasExistsUserId(String userId) {
         var exists = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .exists();
         return exists;
     }
@@ -218,8 +218,8 @@ public class UserService extends BaseService {
     private boolean hasExistEmail(String email) {
         var exists = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getEmail().equals(email))
-                .where(s -> s.getIsActive())
-                .where(s -> s.getUser().getIsActive())
+                .where(s -> !s.getIsDeleted())
+                .where(s -> !s.getUser().getIsDeleted())
                 .exists();
         return exists;
     }

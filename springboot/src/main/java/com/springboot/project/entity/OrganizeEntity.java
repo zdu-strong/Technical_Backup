@@ -21,11 +21,11 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "parentId", "name", "deactivateKey" })
+        @UniqueConstraint(columnNames = { "parentId", "name", "deletionCode" })
 }, indexes = {
-        @Index(columnList = "parentId, isActive"),
+        @Index(columnList = "parentId, isDeleted"),
         @Index(columnList = "createDate, id"),
-        @Index(columnList = "isCompany, isActive")
+        @Index(columnList = "isCompany, isDeleted")
 })
 public class OrganizeEntity {
 
@@ -42,13 +42,13 @@ public class OrganizeEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isDeleted;
 
     @Column(nullable = false)
     private Boolean isCompany;
 
     @Column(nullable = false)
-    private String deactivateKey;
+    private String deletionCode;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity parent;

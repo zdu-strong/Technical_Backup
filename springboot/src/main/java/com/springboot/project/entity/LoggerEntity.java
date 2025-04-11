@@ -66,7 +66,4 @@ public class LoggerEntity {
     @Lob
     private String exceptionStackTrace;
 
-    @Column(nullable = false)
-    private Boolean isActive;
-
 }

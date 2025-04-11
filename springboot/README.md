@@ -196,7 +196,7 @@ All data can be obtained and set to the model, support any structure
         var userId = userEntity.getId();
         var email = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getUpdateDate())
                 .select(s -> s.getEmail())

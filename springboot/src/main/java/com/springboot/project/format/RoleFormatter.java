@@ -18,7 +18,7 @@ public class RoleFormatter extends BaseService {
                 .where(s -> s.getId().equals(id))
                 .selectAllList(s -> s.getRoleOrganizeRelationList())
                 .select(s -> s.getOrganize())
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .map(s -> this.organizeFormatter.format(s))
                 .toList();
         roleModel.setOrganizeList(organizeList);

@@ -47,7 +47,7 @@ public class UserRoleRelationService extends BaseService {
     public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(SuperAdminUserRoleQueryPaginationModel superAdminUserRoleQueryPaginationModel) {
         var stream = this.streamAll(RoleEntity.class)
                 .where(s -> Boolean.FALSE.equals(s.getIsOrganizeRole()))
-                .where(s -> s.getIsActive());
+                .where(s -> !s.getIsDeleted());
         return new PaginationModel<>(superAdminUserRoleQueryPaginationModel.getPageNum(), superAdminUserRoleQueryPaginationModel.getPageSize(), stream, this.roleFormatter::format);
     }
 

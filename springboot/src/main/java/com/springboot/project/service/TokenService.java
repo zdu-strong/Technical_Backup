@@ -31,7 +31,7 @@ public class TokenService extends BaseService {
         var tokenEntity = this.streamAll(TokenEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
-        tokenEntity.setIsActive(false);
+        tokenEntity.setIsDeleted(true);
         this.merge(tokenEntity);
     }
 
@@ -100,7 +100,7 @@ public class TokenService extends BaseService {
     public boolean hasExistTokenEntity(String id) {
         var exists = this.streamAll(TokenEntity.class)
                 .where(s -> s.getId().equals(id))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .exists();
         return exists;
     }
@@ -152,7 +152,7 @@ public class TokenService extends BaseService {
         tokenEntity.setId(newId());
         tokenEntity.setUniqueOneTimePasswordLogo(uniqueOneTimePasswordLogo);
         tokenEntity.setUser(user);
-        tokenEntity.setIsActive(true);
+        tokenEntity.setIsDeleted(false);
         tokenEntity.setCreateDate(new Date());
         tokenEntity.setUpdateDate(new Date());
         this.persist(tokenEntity);

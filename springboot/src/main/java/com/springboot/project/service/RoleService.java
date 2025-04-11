@@ -33,8 +33,8 @@ public class RoleService extends BaseService {
         roleEntity.setCreateDate(new Date());
         roleEntity.setUpdateDate(new Date());
         roleEntity.setName(role);
-        roleEntity.setIsActive(true);
-        roleEntity.setDeactivateKey(StringUtils.EMPTY);
+        roleEntity.setIsDeleted(false);
+        roleEntity.setDeletionCode(StringUtils.EMPTY);
         roleEntity.setIsOrganizeRole(!organizeIdList.isEmpty());
         this.persist(roleEntity);
 
@@ -87,8 +87,8 @@ public class RoleService extends BaseService {
         var roleEntity = this.streamAll(RoleEntity.class)
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
-        roleEntity.setIsActive(false);
-        roleEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
+        roleEntity.setIsDeleted(true);
+        roleEntity.setDeletionCode(Generators.timeBasedReorderedGenerator().generate().toString());
         roleEntity.setUpdateDate(new Date());
         this.merge(roleEntity);
     }

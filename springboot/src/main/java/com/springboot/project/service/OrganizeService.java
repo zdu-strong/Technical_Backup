@@ -25,9 +25,9 @@ public class OrganizeService extends BaseService {
         var organizeEntity = new OrganizeEntity();
         organizeEntity.setId(newId());
         organizeEntity.setName(organizeModel.getName());
-        organizeEntity.setIsActive(true);
+        organizeEntity.setIsDeleted(false);
         organizeEntity
-                .setDeactivateKey(StringUtils.EMPTY);
+                .setDeletionCode(StringUtils.EMPTY);
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
@@ -53,8 +53,8 @@ public class OrganizeService extends BaseService {
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
-        organizeEntity.setIsActive(false);
-        organizeEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
+        organizeEntity.setIsDeleted(true);
+        organizeEntity.setDeletionCode(Generators.timeBasedReorderedGenerator().generate().toString());
         this.merge(organizeEntity);
     }
 
@@ -122,7 +122,7 @@ public class OrganizeService extends BaseService {
     public List<String> getChildIdList(String id) {
         var childIdList = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getParent().getId().equals(id))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .select(s -> s.getId())
                 .toList();
         return childIdList;

@@ -18,8 +18,8 @@ public class FriendshipService extends BaseService {
         var friendshipEntity = this.streamAll(FriendshipEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
                 .where(s -> s.getFriend().getId().equals(friendId))
-                .where(s -> s.getUser().getIsActive())
-                .where(s -> s.getFriend().getIsActive())
+                .where(s -> !s.getUser().getIsDeleted())
+                .where(s -> !s.getFriend().getIsDeleted())
                 .getOnlyValue();
         friendshipEntity.setIsInBlacklist(false);
         friendshipEntity.setIsFriend(true);
@@ -35,8 +35,8 @@ public class FriendshipService extends BaseService {
         var friendshipEntity = this.streamAll(FriendshipEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
                 .where(s -> s.getFriend().getId().equals(friendId))
-                .where(s -> s.getUser().getIsActive())
-                .where(s -> s.getFriend().getIsActive())
+                .where(s -> !s.getUser().getIsDeleted())
+                .where(s -> !s.getFriend().getIsDeleted())
                 .getOnlyValue();
         friendshipEntity.setIsInBlacklist(true);
         friendshipEntity.setIsFriend(false);
@@ -50,8 +50,8 @@ public class FriendshipService extends BaseService {
         var friendshipEntity = this.streamAll(FriendshipEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
                 .where(s -> s.getFriend().getId().equals(friendId))
-                .where(s -> s.getUser().getIsActive())
-                .where(s -> s.getFriend().getIsActive())
+                .where(s -> !s.getUser().getIsDeleted())
+                .where(s -> !s.getFriend().getIsDeleted())
                 .getOnlyValue();
         friendshipEntity.setIsInBlacklist(false);
         friendshipEntity.setIsFriend(false);
@@ -72,8 +72,8 @@ public class FriendshipService extends BaseService {
     public PaginationModel<FriendshipModel> getFriendList(Long pageNum, Long pageSize, String userId) {
         var stream = this.streamAll(FriendshipEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
-                .where(s -> s.getUser().getIsActive())
-                .where(s -> s.getFriend().getIsActive())
+                .where(s -> !s.getUser().getIsDeleted())
+                .where(s -> !s.getFriend().getIsDeleted())
                 .where(s -> !s.getIsInBlacklist())
                 .where(s -> s.getIsFriend());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.friendshipFormatter.format(s));
@@ -83,10 +83,10 @@ public class FriendshipService extends BaseService {
     public PaginationModel<FriendshipModel> getStrangerList(Long pageNum, Long pageSize, String userId) {
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         var stream = this.streamAll(UserEntity.class)
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .where((s, t) -> !JinqStream.from(s.getReverseFridendList())
                         .where(m -> m.getUser().getId().equals(userId))
                         .where(m -> m.getIsInBlacklist() || m.getIsFriend())
@@ -101,8 +101,8 @@ public class FriendshipService extends BaseService {
     public PaginationModel<FriendshipModel> getBlackList(Long pageNum, Long pageSize, String userId) {
         var stream = this.streamAll(FriendshipEntity.class)
                 .where(s -> s.getUser().getId().equals(userId))
-                .where(s -> s.getUser().getIsActive())
-                .where(s -> s.getFriend().getIsActive())
+                .where(s -> !s.getUser().getIsDeleted())
+                .where(s -> !s.getFriend().getIsDeleted())
                 .where(s -> s.getIsInBlacklist());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.friendshipFormatter.format(s));
     }
@@ -128,11 +128,11 @@ public class FriendshipService extends BaseService {
         {
             var user = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(userId))
-                    .where(s -> s.getIsActive())
+                    .where(s -> !s.getIsDeleted())
                     .getOnlyValue();
             var friend = this.streamAll(UserEntity.class)
                     .where(s -> s.getId().equals(friendId))
-                    .where(s -> s.getIsActive())
+                    .where(s -> !s.getIsDeleted())
                     .getOnlyValue();
 
             var friendshipEntity = new FriendshipEntity();
@@ -151,11 +151,11 @@ public class FriendshipService extends BaseService {
             if (!userId.equals(friendId)) {
                 var user = this.streamAll(UserEntity.class)
                         .where(s -> s.getId().equals(userId))
-                        .where(s -> s.getIsActive())
+                        .where(s -> !s.getIsDeleted())
                         .getOnlyValue();
                 var friend = this.streamAll(UserEntity.class)
                         .where(s -> s.getId().equals(friendId))
-                        .where(s -> s.getIsActive())
+                        .where(s -> !s.getIsDeleted())
                         .getOnlyValue();
 
                 var friendshipEntity = new FriendshipEntity();

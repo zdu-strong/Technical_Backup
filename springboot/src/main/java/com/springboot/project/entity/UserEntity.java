@@ -34,7 +34,7 @@ public class UserEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isDeleted;
 
     @Column(nullable = false, length = 1024 * 1024 * 1024)
     @Lob

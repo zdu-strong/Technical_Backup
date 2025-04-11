@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "email", "deactivateKey" })
+        @UniqueConstraint(columnNames = { "email", "deletionCode" })
 })
 @Getter
 @Setter
@@ -35,10 +35,10 @@ public class UserEmailEntity {
     private Date updateDate;
 
     @Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isDeleted;
 
     @Column(nullable = false)
-    private String deactivateKey;
+    private String deletionCode;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;

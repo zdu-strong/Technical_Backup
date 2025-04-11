@@ -19,7 +19,7 @@ public class UserEmailService extends BaseService {
 
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
-                .where(s -> s.getIsActive())
+                .where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         UserEmailEntity userEmailEntity = new UserEmailEntity();
         userEmailEntity.setId(newId());
@@ -27,20 +27,20 @@ public class UserEmailService extends BaseService {
         userEmailEntity.setUser(userEntity);
         userEmailEntity.setCreateDate(new Date());
         userEmailEntity.setUpdateDate(new Date());
-        userEmailEntity.setIsActive(true);
-        userEmailEntity.setDeactivateKey(StringUtils.EMPTY);
+        userEmailEntity.setIsDeleted(false);
+        userEmailEntity.setDeletionCode(StringUtils.EMPTY);
 
         this.persist(userEmailEntity);
     }
 
     private void inactiveUserEmail(String email) {
         var userEmailList = this.streamAll(UserEmailEntity.class)
-                .where(s -> s.getIsActive())
-                .where(s -> !s.getUser().getIsActive())
+                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getUser().getIsDeleted())
                 .toList();
         for (var userEmailEntity : userEmailList) {
-            userEmailEntity.setIsActive(false);
-            userEmailEntity.setDeactivateKey(Generators.timeBasedReorderedGenerator().generate().toString());
+            userEmailEntity.setIsDeleted(true);
+            userEmailEntity.setDeletionCode(Generators.timeBasedReorderedGenerator().generate().toString());
             userEmailEntity.setUpdateDate(new Date());
             this.merge(userEmailEntity);
         }
@@ -64,8 +64,8 @@ public class UserEmailService extends BaseService {
     public void checkIsNotUsedOfEmail(String email) {
         var isPresent = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getEmail().equals(email))
-                .where(s -> s.getIsActive())
-                .where(s -> s.getUser().getIsActive())
+                .where(s -> !s.getIsDeleted())
+                .where(s -> !s.getUser().getIsDeleted())
                 .exists();
         if (isPresent) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail " + email + " has bound account");

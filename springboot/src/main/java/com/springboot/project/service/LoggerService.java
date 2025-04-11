@@ -1,6 +1,7 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LoggerEntity;
@@ -18,7 +19,6 @@ public class LoggerService extends BaseService {
         loggerEntity.setId(newId());
         loggerEntity.setCreateDate(new Date());
         loggerEntity.setUpdateDate(new Date());
-        loggerEntity.setIsActive(true);
         loggerEntity.setMessage(loggerModel.getMessage());
         loggerEntity.setLevel(loggerModel.getLevel());
         loggerEntity.setLoggerName(loggerModel.getLoggerName());
