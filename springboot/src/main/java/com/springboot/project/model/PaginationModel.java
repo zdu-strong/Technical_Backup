@@ -25,9 +25,9 @@ import lombok.experimental.Accessors;
 public class PaginationModel<T> {
     private Long pageNum;
     private Long pageSize;
-    private Long totalRecords;
-    private Long totalPages;
-    private List<T> items;
+    private Long totalRecords = 0L;
+    private Long totalPages = 0L;
+    private List<T> items = List.of();
 
     public PaginationModel(Long pageNum, Long pageSize, JinqStream<T> stream) {
         this(pageNum, pageSize, stream, s -> s);

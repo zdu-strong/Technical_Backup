@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import com.springboot.project.model.SuperAdminUserRoleQueryPaginationModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
@@ -94,8 +96,8 @@ public class SystemInitScheduled {
     private void initSuperAdminUser() {
         var email = "zdu.strong@gmail.com";
         var hasExists = !Flowable.fromCallable(() -> {
-            return this.userService.getUserId(email);
-        })
+                    return this.userService.getUserId(email);
+                })
                 .onErrorReturnItem(StringUtils.EMPTY)
                 .filter(s -> StringUtils.isNotBlank(s))
                 .firstElement()
@@ -112,8 +114,11 @@ public class SystemInitScheduled {
                 this.verificationCodeEmailService.getById(verificationCodeEmailModel.getId()).getVerificationCode());
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
+        var superAdminUserRoleQueryPaginationModel = new SuperAdminUserRoleQueryPaginationModel();
+        superAdminUserRoleQueryPaginationModel.setPageNum(1L);
+        superAdminUserRoleQueryPaginationModel.setPageSize((long) SystemRoleEnum.values().length);
         superAdminUser.setRoleList(
-                this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getItems());
+                this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(superAdminUserRoleQueryPaginationModel).getItems());
         this.userService.create(superAdminUser);
     }
 
@@ -140,7 +145,7 @@ public class SystemInitScheduled {
     private void initDistributedExecution() {
         for (var distributedExecutionEnum : DistributedExecutionEnum.values()) {
             Flowable.timer(distributedExecutionEnum.getTheIntervalBetweenTwoExecutions().toMillis(),
-                    TimeUnit.MILLISECONDS)
+                            TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.from(executor))
                     .observeOn(Schedulers.from(executor))
                     .doOnNext(s -> {

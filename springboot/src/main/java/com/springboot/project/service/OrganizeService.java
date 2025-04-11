@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import com.springboot.project.model.SuperAdminOrganizeQueryPaginationModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -75,12 +77,12 @@ public class OrganizeService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationModel<OrganizeModel> searchOrganizeForSuperAdminByPagination(long pageNum, long pageSize) {
+    public PaginationModel<OrganizeModel> searchOrganizeForSuperAdminByPagination(SuperAdminOrganizeQueryPaginationModel superAdminOrganizeQueryPaginationModel) {
         var stream = this.streamAll(OrganizeEntity.class)
                 .where(s -> s.getIsCompany())
                 .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
+        return new PaginationModel<>(superAdminOrganizeQueryPaginationModel.getPageNum(), superAdminOrganizeQueryPaginationModel.getPageSize(), stream, (s) -> this.organizeFormatter.format(s));
     }
 
     public void move(String id, String parentId) {

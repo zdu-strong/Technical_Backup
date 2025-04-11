@@ -2,6 +2,8 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import java.util.List;
+
+import com.springboot.project.model.SuperAdminUserRoleQueryPaginationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +44,11 @@ public class UserRoleRelationService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(long pageNum, long pageSize) {
+    public PaginationModel<RoleModel> searchUserRoleForSuperAdminByPagination(SuperAdminUserRoleQueryPaginationModel superAdminUserRoleQueryPaginationModel) {
         var stream = this.streamAll(RoleEntity.class)
                 .where(s -> Boolean.FALSE.equals(s.getIsOrganizeRole()))
                 .where(s -> s.getIsActive());
-        return new PaginationModel<>(pageNum, pageSize, stream, this.roleFormatter::format);
+        return new PaginationModel<>(superAdminUserRoleQueryPaginationModel.getPageNum(), superAdminUserRoleQueryPaginationModel.getPageSize(), stream, this.roleFormatter::format);
     }
 
     private boolean createDefaultUserRoleList() {
@@ -85,7 +87,7 @@ public class UserRoleRelationService extends BaseService {
                     .toList();
             if (systemRoleEnum.getPermissionList().size() == permissionList.size()
                     && systemRoleEnum.getPermissionList().stream().allMatch(m -> permissionList.stream()
-                            .anyMatch(n -> m.getValue().equals(n.getPermission().getName())))) {
+                    .anyMatch(n -> m.getValue().equals(n.getPermission().getName())))) {
                 continue;
             }
             for (var permissionEntity : permissionList) {

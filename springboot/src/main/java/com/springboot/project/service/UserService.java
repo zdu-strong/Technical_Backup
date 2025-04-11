@@ -3,6 +3,7 @@ package com.springboot.project.service;
 import java.util.Date;
 import java.util.List;
 
+import com.springboot.project.model.SuperAdminUserQueryPaginationModel;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,11 +136,11 @@ public class UserService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationModel<UserModel> searchForSuperAdminByPagination(long pageNum, long pageSize) {
+    public PaginationModel<UserModel> searchForSuperAdminByPagination(SuperAdminUserQueryPaginationModel superAdminUserQueryPaginationModel) {
         var stream = this.streamAll(UserEntity.class)
                 .where(s -> s.getIsActive())
                 .sortedDescendingBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.userFormatter.format(s));
+        return new PaginationModel<>(superAdminUserQueryPaginationModel.getPageNum(), superAdminUserQueryPaginationModel.getPageSize(), stream, (s) -> this.userFormatter.format(s));
     }
 
     @Transactional(readOnly = true)
