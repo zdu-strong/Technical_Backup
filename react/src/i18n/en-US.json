@@ -105,5 +105,6 @@
   "Name": "Name",
   "CreateDate": "Create Date",
   "Operation": "Operation",
-  "OrganizeDetail": "Organize Detail"
+  "OrganizeDetail": "Organize Detail",
+  "RoleDetail": "Role Detail"
 }

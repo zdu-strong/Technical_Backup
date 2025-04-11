@@ -105,5 +105,6 @@
   "Name": "名称",
   "CreateDate": "创建时间",
   "Operation": "操作",
-  "OrganizeDetail": "组织详情"
+  "OrganizeDetail": "组织详情",
+  "RoleDetail": "角色详情"
 }
