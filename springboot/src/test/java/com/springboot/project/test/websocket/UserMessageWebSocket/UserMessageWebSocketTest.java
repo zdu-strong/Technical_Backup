@@ -45,7 +45,7 @@ public class UserMessageWebSocketTest extends BaseTest {
                 }))))
                 .block(Duration.ofMinutes(1));
         assertEquals(1, userMessageResultList.size());
-        assertEquals(1, JinqStream.from(userMessageResultList).select(s -> s.getTotalPages()).getOnlyValue());
+        assertEquals(1, JinqStream.from(userMessageResultList).select(s -> s.getTotalRecords()).getOnlyValue());
         var userMessage = JinqStream.from(userMessageResultList).selectAllList(s -> s.getItems()).getOnlyValue();
         assertEquals("Hello, World!", userMessage.getContent());
         assertNull(userMessage.getUrl());

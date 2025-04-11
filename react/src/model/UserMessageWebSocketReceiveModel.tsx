@@ -6,7 +6,7 @@ import { UserMessageModel } from '@/model/UserMessageModel';
 export class UserMessageWebSocketReceiveModel {
 
   @jsonMember(Number)
-  totalPages!: number;
+  totalRecords!: number;
 
   @jsonArrayMember(UserMessageModel)
   items!: UserMessageModel[];

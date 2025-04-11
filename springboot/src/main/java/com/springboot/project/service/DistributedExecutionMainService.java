@@ -1,6 +1,8 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.springboot.project.common.baseService.BaseService;
@@ -49,7 +51,7 @@ public class DistributedExecutionMainService extends BaseService {
         distributedExecutionMainEntity.setCreateDate(new Date());
         distributedExecutionMainEntity.setUpdateDate(new Date());
         distributedExecutionMainEntity.setExecutionType(distributedExecutionEnum.getValue());
-        distributedExecutionMainEntity.setTotalPage(distributedExecutionEnum.getTotalPage());
+        distributedExecutionMainEntity.setTotalPage(Optional.of(distributedExecutionEnum.getPagination()).map(s -> Math.min(s.getTotalPages(), s.getTotalRecords())).get());
         distributedExecutionMainEntity.setTotalPartition(distributedExecutionEnum.getMaxNumberOfParallel());
         distributedExecutionMainEntity.setStatus(DistributedExecutionMainStatusEnum.IN_PROGRESS.getValue());
         if (distributedExecutionMainEntity.getTotalPage() <= 0) {

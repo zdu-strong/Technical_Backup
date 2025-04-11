@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.springboot.project.model.PaginationModel;
 import com.springboot.project.service.NonceService;
 import com.springboot.project.service.OrganizeRelationService;
 import com.springboot.project.service.OrganizeService;
@@ -25,9 +27,7 @@ public enum DistributedExecutionEnum {
             Duration.ofHours(12),
             1L,
             () -> {
-                var totalPage = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
-                        .getTotalPages();
-                return totalPage;
+                return SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L);
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(pageNum,
@@ -45,8 +45,7 @@ public enum DistributedExecutionEnum {
             Duration.ofHours(12),
             1L,
             () -> {
-                var totalPage = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalPages();
-                return totalPage;
+                return SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L);
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(NonceService.class).getNonceByPagination(pageNum,
@@ -64,9 +63,7 @@ public enum DistributedExecutionEnum {
             Duration.ofMinutes(1),
             1L,
             () -> {
-                var totalPage = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
-                        .getTotalPages();
-                return totalPage;
+                return SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L);
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(pageNum,
@@ -97,12 +94,12 @@ public enum DistributedExecutionEnum {
     @Getter
     private long maxNumberOfParallel;
 
-    private Supplier<Long> callbackOfGetTotalPage;
+    private Supplier<PaginationModel<?>> callbackOfGetPagination;
 
     private Consumer<Long> callbackOfExecuteTask;
 
-    public long getTotalPage() {
-        return this.callbackOfGetTotalPage.get();
+    public PaginationModel<?> getPagination() {
+        return this.callbackOfGetPagination.get();
     }
 
     public void executeTask(long pageNum) {

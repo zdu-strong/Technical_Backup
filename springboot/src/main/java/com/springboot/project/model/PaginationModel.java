@@ -57,16 +57,16 @@ public class PaginationModel<T> {
             } else {
                 this.totalRecords = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                         .orElse(0L);
-                this.setItems(list.stream().map(Pair::getTwo).map(formatCallback).toList());
+                this.setItems(List.of());
             }
         } else {
             var dataList = stream.select(s -> s).toList();
-            this.totalRecords = Long.valueOf(dataList.size());
+            this.totalRecords = (long) dataList.size();
             this.setItems(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
         }
-        this.totalPages = new BigDecimal(this.totalRecords).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
-                .longValue();
+        this.totalPages = Math.max(new BigDecimal(this.totalRecords).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
+                .longValue(), 1);
     }
 
 }
