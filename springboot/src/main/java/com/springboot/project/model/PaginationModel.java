@@ -23,8 +23,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 public class PaginationModel<T> {
-    private Long pageNum;
-    private Long pageSize;
+    private Long pageNum = 1L;
+    private Long pageSize = 1L;
     private Long totalRecords = 0L;
     private Long totalPages = 0L;
     private List<T> items = List.of();

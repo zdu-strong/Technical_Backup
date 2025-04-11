@@ -5,15 +5,15 @@ import { jsonArrayMember, jsonMember, jsonObject, Serializable, TypedJSON } from
 
 export class PaginationModel<T> {
 
-  pageNum!: number;
+  pageNum: number = 1;
 
-  pageSize!: number;
+  pageSize: number = 1;
 
-  totalRecords!: number;
+  totalRecords: number = 0;
 
-  totalPages!: number;
+  totalPages: number = 0;
 
-  items!: T[];
+  items: T[] = [];
 
   constructor();
 
@@ -64,19 +64,19 @@ export class PaginationModel<T> {
     @jsonObject
     class CustomPaginationModel {
       @jsonMember(Number)
-      pageNum!: number;
+      pageNum: number = 1;
 
       @jsonMember(Number)
-      pageSize!: number;
+      pageSize: number = 1;
 
       @jsonMember(Number)
-      totalRecords!: number;
+      totalRecords: number = 0;
 
       @jsonMember(Number)
-      totalPages!: number;
+      totalPages: number = 0;
 
       @jsonArrayMember(rootConstructor)
-      items!: U[];
+      items: U[] = [];
     }
 
     const customPaginationModel = new TypedJSON(CustomPaginationModel).parse(json)!;
