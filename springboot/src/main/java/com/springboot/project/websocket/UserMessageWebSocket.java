@@ -65,7 +65,7 @@ public class UserMessageWebSocket {
     private PermissionUtil permissionUtil;
     private UserMessageService userMessageService;
     private HttpServletRequest request;
-    private UserMessageWebSocketSendModel lastMessageCache = new UserMessageWebSocketSendModel().setTotalRecords(0L)
+    private UserMessageWebSocketSendModel lastMessageCache = new UserMessageWebSocketSendModel().setTotalPages(0L)
             .setItems(Lists.newArrayList());
     private boolean ready = false;
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
@@ -195,7 +195,7 @@ public class UserMessageWebSocket {
     @SneakyThrows
     private boolean hasNeedSendLastMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
         return lastUserMessageWebSocketSendModel.getItems().stream()
-                .filter(s -> s.getPageNum() == (long) lastUserMessageWebSocketSendModel.getTotalRecords())
+                .filter(s -> s.getPageNum() == (long) lastUserMessageWebSocketSendModel.getTotalPages())
                 .anyMatch(s -> hasChange(s));
     }
 
@@ -204,10 +204,10 @@ public class UserMessageWebSocket {
         if (!this.ready) {
             return true;
         }
-        if (lastUserMessageWebSocketSendModel.getTotalRecords() < this.lastMessageCache.getTotalRecords()) {
+        if (lastUserMessageWebSocketSendModel.getTotalPages() < this.lastMessageCache.getTotalPages()) {
             return true;
         }
-        if (lastUserMessageWebSocketSendModel.getTotalRecords() > this.lastMessageCache.getTotalRecords() + 1) {
+        if (lastUserMessageWebSocketSendModel.getTotalPages() > this.lastMessageCache.getTotalPages() + 1) {
             return true;
         }
         return this.onlineMessageMap.entrySet()
@@ -228,10 +228,10 @@ public class UserMessageWebSocket {
                 .blockingGet();
         var pageNumListTwo = JinqStream.from(Flowable.range(
                 Math.max(1,
-                        Math.max(this.lastMessageCache.getTotalRecords().intValue(),
-                                (int) (userMessageWebSocketSendModel.getTotalRecords() - 20))),
+                        Math.max(this.lastMessageCache.getTotalPages().intValue(),
+                                (int) (userMessageWebSocketSendModel.getTotalPages() - 20))),
                 Math.max(
-                        (int) (userMessageWebSocketSendModel.getTotalRecords() - this.lastMessageCache.getTotalRecords()),
+                        (int) (userMessageWebSocketSendModel.getTotalPages() - this.lastMessageCache.getTotalPages()),
                         0))
                 .map(s -> (long) s)
                 .toList()
@@ -244,7 +244,7 @@ public class UserMessageWebSocket {
                 pageNumListTwo))
                 .selectAllList(s -> s)
                 .where(s -> s > 0)
-                .where(s -> s < userMessageWebSocketSendModel.getTotalRecords())
+                .where(s -> s < userMessageWebSocketSendModel.getTotalPages())
                 .where(s -> !userMessageWebSocketSendModel.getItems().stream().anyMatch(m -> s == (long) m.getPageNum()))
                 .distinct()
                 .selectAllList(s -> this.userMessageService
@@ -257,7 +257,7 @@ public class UserMessageWebSocket {
                 .selectAllList(s -> s)
                 .toList();
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
-                .setTotalRecords(userMessageWebSocketSendModel.getTotalRecords())
+                .setTotalPages(userMessageWebSocketSendModel.getTotalPages())
                 .setItems(userMessageList);
         this.sendAndUpdateOnlineMessage(userMessageWebSocketSendNewModel);
     }
@@ -272,7 +272,7 @@ public class UserMessageWebSocket {
                 .getItems();
         this.sendAndUpdateOnlineMessage(new UserMessageWebSocketSendModel()
                 .setItems(userMessageList)
-                .setTotalRecords(null));
+                .setTotalPages(null));
     }
 
     private Long getPageNumForOnlineMessage() {
@@ -305,12 +305,12 @@ public class UserMessageWebSocket {
     @SneakyThrows
     private synchronized void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
-                .setTotalRecords(userMessageWebSocketSendModel.getTotalRecords())
+                .setTotalPages(userMessageWebSocketSendModel.getTotalPages())
                 .setItems(userMessageWebSocketSendModel.getItems()
                         .stream()
                         .filter(s -> hasChange(s))
                         .toList());
-        if (userMessageWebSocketSendNewModel.getTotalRecords() == null
+        if (userMessageWebSocketSendNewModel.getTotalPages() == null
                 && userMessageWebSocketSendNewModel.getItems().isEmpty()) {
             return;
         }
@@ -323,8 +323,8 @@ public class UserMessageWebSocket {
         var lastMessage = userMessageWebSocketSendModel
                 .getItems()
                 .stream()
-                .filter(s -> userMessageWebSocketSendModel.getTotalRecords() != null)
-                .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalRecords())
+                .filter(s -> userMessageWebSocketSendModel.getTotalPages() != null)
+                .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPages())
                 .findFirst()
                 .orElse(null);
         if (lastMessage != null) {
@@ -332,7 +332,7 @@ public class UserMessageWebSocket {
                 this.onlineMessageMap.replace(userMessage.getPageNum(), userMessage);
             }
             this.lastMessageCache = new UserMessageWebSocketSendModel()
-                    .setTotalRecords(lastMessage.getPageNum())
+                    .setTotalPages(lastMessage.getPageNum())
                     .setItems(List.of(lastMessage));
         }
     }

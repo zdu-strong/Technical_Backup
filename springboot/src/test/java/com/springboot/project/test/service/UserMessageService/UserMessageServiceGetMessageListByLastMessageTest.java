@@ -16,7 +16,7 @@ public class UserMessageServiceGetMessageListByLastMessageTest extends BaseTest 
     @Test
     public void test() throws URISyntaxException {
         var result = this.userMessageService.getMessageListByLastMessage(1L, request);
-        assertEquals(1, result.getTotalRecords());
+        assertEquals(1, result.getTotalPages());
         var message = JinqStream.from(result.getItems()).getOnlyValue();
         assertTrue(StringUtils.isNotBlank(message.getId()));
         assertTrue(StringUtils.isNotBlank(message.getContent()));

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.function.Function;
+
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
 import org.jinq.tuples.Pair;
@@ -65,8 +66,8 @@ public class PaginationModel<T> {
             this.setItems(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
         }
-        this.totalPages = Math.max(new BigDecimal(this.totalRecords).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
-                .longValue(), 1);
+        this.totalPages = new BigDecimal(this.totalRecords).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
+                .longValue();
     }
 
 }

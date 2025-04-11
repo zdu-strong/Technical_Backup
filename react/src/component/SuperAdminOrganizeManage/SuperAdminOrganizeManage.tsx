@@ -94,6 +94,8 @@ export default observer(() => {
               apiRef={state.dataGridRef}
               sortingMode="server"
               rows={state.organizeModelPaginationModel.items}
+              rowCount={state.organizeModelPaginationModel.totalRecords}
+              paginationMode="server"
               getRowId={(s) => s.id}
               columns={state.columns}
               autoPageSize

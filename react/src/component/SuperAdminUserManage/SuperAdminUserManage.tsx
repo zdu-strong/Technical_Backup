@@ -92,8 +92,10 @@ export default observer(() => {
           {({ width, height }) => <Box width={Math.max(width, 100)} height={Math.max(height, 100)}>
             <DataGrid
               apiRef={state.dataGridRef}
-              sortingMode="client"
+              sortingMode="server"
               rows={state.userPaginationModel.items}
+              rowCount={state.userPaginationModel.totalRecords}
+              paginationMode="server"
               getRowId={(s) => s.id}
               columns={state.columns}
               autoPageSize

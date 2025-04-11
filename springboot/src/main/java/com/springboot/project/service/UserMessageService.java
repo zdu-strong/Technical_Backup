@@ -104,7 +104,7 @@ public class UserMessageService extends BaseService {
         var pagination = new PaginationModel<>(1L, pageSize, stream,
                 (s) -> this.userMessageFormatter.formatForUserId(s, userId));
         var userMessageWebSocketSendModel = new UserMessageWebSocketSendModel()
-                .setTotalRecords(pagination.getTotalRecords())
+                .setTotalPages(pagination.getTotalPages())
                 .setItems(pagination.getItems());
         return userMessageWebSocketSendModel;
     }

@@ -20,9 +20,9 @@ const GlobalShareMessageSubject = api.UserMessage.getUserMessageWebsocket(subjec
   .pipe(
     tap((s) => {
       let hasNewMessage = false;
-      if (typeof s.totalRecords === "number") {
-        hasNewMessage = s.totalRecords > GlobalChatMessage.totalRecord;
-        GlobalChatMessage.totalRecord = s.totalRecords;
+      if (typeof s.totalPages === "number") {
+        hasNewMessage = s.totalPages > GlobalChatMessage.totalRecord;
+        GlobalChatMessage.totalRecord = s.totalPages;
       }
       for (const message of s.items) {
         GlobalChatMessage.messageMap[message.pageNum] = message;
