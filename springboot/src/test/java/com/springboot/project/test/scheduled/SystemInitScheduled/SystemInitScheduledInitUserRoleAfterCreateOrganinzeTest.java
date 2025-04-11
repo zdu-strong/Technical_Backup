@@ -19,7 +19,7 @@ public class SystemInitScheduledInitUserRoleAfterCreateOrganinzeTest extends Bas
     public void test() {
         var roleList = this.roleOrganizeRelationService
                 .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, organizeId, false)
-                .getList();
+                .getItems();
         assertEquals(2, roleList.size());
         assertTrue(JinqStream.from(roleList).map(s -> SystemRoleEnum.parse(s.getName()))
                 .toList()

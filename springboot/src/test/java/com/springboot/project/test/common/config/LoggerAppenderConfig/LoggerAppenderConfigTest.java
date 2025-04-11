@@ -24,9 +24,9 @@ public class LoggerAppenderConfigTest extends BaseTest {
         log.error("Hello, World!", new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Hello, World!"));
         var result = Flowable.interval(1, TimeUnit.MILLISECONDS)
                 .map(s -> this.loggerService.searchByPagination(1, 1, ""))
-                .filter(s -> !s.getList().isEmpty())
+                .filter(s -> !s.getItems().isEmpty())
                 .take(1)
-                .map(s -> s.getList().getFirst())
+                .map(s -> s.getItems().getFirst())
                 .blockingSingle();
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertNotNull(result.getCreateDate());

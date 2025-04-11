@@ -38,29 +38,29 @@ public class FriendshipControllerGetBlacklistTest extends BaseTest {
                 new ParameterizedTypeReference<PaginationModel<FriendshipModel>>() {
                 });
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().getTotalRecord());
-        assertEquals(1, response.getBody().getTotalPage());
+        assertEquals(1, response.getBody().getTotalRecords());
+        assertEquals(1, response.getBody().getTotalPages());
         assertEquals(1, response.getBody().getPageNum());
         assertEquals(20, response.getBody().getPageSize());
-        assertEquals(1, response.getBody().getList().size());
-        assertEquals(this.user.getId(), JinqStream.from(response.getBody().getList()).getOnlyValue().getUser().getId());
+        assertEquals(1, response.getBody().getItems().size());
+        assertEquals(this.user.getId(), JinqStream.from(response.getBody().getItems()).getOnlyValue().getUser().getId());
         assertEquals(this.friend.getId(),
-                JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getId());
-        assertNotNull(JinqStream.from(response.getBody().getList()).getOnlyValue().getCreateDate());
-        assertNotNull(JinqStream.from(response.getBody().getList()).getOnlyValue().getUpdateDate());
+                JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getId());
+        assertNotNull(JinqStream.from(response.getBody().getItems()).getOnlyValue().getCreateDate());
+        assertNotNull(JinqStream.from(response.getBody().getItems()).getOnlyValue().getUpdateDate());
         assertTrue(StringUtils
-                .isNotBlank(JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getId()));
+                .isNotBlank(JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getId()));
         assertTrue(StringUtils
-                .isNotBlank(JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getUsername()));
+                .isNotBlank(JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getUsername()));
         assertEquals(this.friend.getUsername(),
-                JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getUsername());
-        assertNotNull(JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getCreateDate());
-        assertNotNull(JinqStream.from(response.getBody().getList()).getOnlyValue().getFriend().getUpdateDate());
-        assertTrue(JinqStream.from(response.getBody().getList()).getOnlyValue().getHasInitiative());
-        assertFalse(JinqStream.from(response.getBody().getList()).getOnlyValue().getIsFriend());
-        assertFalse(JinqStream.from(response.getBody().getList()).getOnlyValue().getIsFriendOfFriend());
-        assertTrue(JinqStream.from(response.getBody().getList()).getOnlyValue().getIsInBlacklist());
-        assertFalse(JinqStream.from(response.getBody().getList()).getOnlyValue().getIsInBlacklistOfFriend());
+                JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getUsername());
+        assertNotNull(JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getCreateDate());
+        assertNotNull(JinqStream.from(response.getBody().getItems()).getOnlyValue().getFriend().getUpdateDate());
+        assertTrue(JinqStream.from(response.getBody().getItems()).getOnlyValue().getHasInitiative());
+        assertFalse(JinqStream.from(response.getBody().getItems()).getOnlyValue().getIsFriend());
+        assertFalse(JinqStream.from(response.getBody().getItems()).getOnlyValue().getIsFriendOfFriend());
+        assertTrue(JinqStream.from(response.getBody().getItems()).getOnlyValue().getIsInBlacklist());
+        assertFalse(JinqStream.from(response.getBody().getItems()).getOnlyValue().getIsInBlacklistOfFriend());
     }
 
     @BeforeEach

@@ -13,11 +13,11 @@ public class OrganizeServiceSearchByNameShouldZeroResultTest extends BaseTest {
     @Test
     public void test() {
         var result = this.organizeService.searchByName(1L, 20L, "super Saiyan Son Goku", organizeId);
-        assertEquals(0, result.getTotalRecord());
-        assertEquals(0, result.getTotalPage());
+        assertEquals(0, result.getTotalRecords());
+        assertEquals(0, result.getTotalPages());
         assertEquals(1, result.getPageNum());
         assertEquals(20, result.getPageSize());
-        assertEquals(0, result.getList().size());
+        assertEquals(0, result.getItems().size());
     }
 
     @BeforeEach

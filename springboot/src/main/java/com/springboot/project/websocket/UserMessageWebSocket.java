@@ -65,8 +65,8 @@ public class UserMessageWebSocket {
     private PermissionUtil permissionUtil;
     private UserMessageService userMessageService;
     private HttpServletRequest request;
-    private UserMessageWebSocketSendModel lastMessageCache = new UserMessageWebSocketSendModel().setTotalPage(0L)
-            .setList(Lists.newArrayList());
+    private UserMessageWebSocketSendModel lastMessageCache = new UserMessageWebSocketSendModel().setTotalPages(0L)
+            .setItems(Lists.newArrayList());
     private boolean ready = false;
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Long, UserMessageModel> onlineMessageReceiveDateMap = new ConcurrentHashMap<>();
@@ -74,10 +74,6 @@ public class UserMessageWebSocket {
     private Session webSocketSession;
     private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
-    /**
-     * @param session
-     * @param email
-     */
     @OnOpen
     public void onOpen(Session session) {
         this.objectMapper = SpringUtil.getBean(ObjectMapper.class);
@@ -91,7 +87,6 @@ public class UserMessageWebSocket {
 
     /**
      * @param userMessageWebSocketReceiveModelString UserMessageWebSocketReceiveModel
-     * @param session
      */
     @OnMessage
     public void OnMessage(String userMessageWebSocketReceiveModelString) {
@@ -199,8 +194,8 @@ public class UserMessageWebSocket {
 
     @SneakyThrows
     private boolean hasNeedSendLastMessage(UserMessageWebSocketSendModel lastUserMessageWebSocketSendModel) {
-        return lastUserMessageWebSocketSendModel.getList().stream()
-                .filter(s -> s.getPageNum() == (long) lastUserMessageWebSocketSendModel.getTotalPage())
+        return lastUserMessageWebSocketSendModel.getItems().stream()
+                .filter(s -> s.getPageNum() == (long) lastUserMessageWebSocketSendModel.getTotalPages())
                 .anyMatch(s -> hasChange(s));
     }
 
@@ -209,19 +204,19 @@ public class UserMessageWebSocket {
         if (!this.ready) {
             return true;
         }
-        if (lastUserMessageWebSocketSendModel.getTotalPage() < this.lastMessageCache.getTotalPage()) {
+        if (lastUserMessageWebSocketSendModel.getTotalPages() < this.lastMessageCache.getTotalPages()) {
             return true;
         }
-        if (lastUserMessageWebSocketSendModel.getTotalPage() > this.lastMessageCache.getTotalPage() + 1) {
+        if (lastUserMessageWebSocketSendModel.getTotalPages() > this.lastMessageCache.getTotalPages() + 1) {
             return true;
         }
         return this.onlineMessageMap.entrySet()
                 .stream()
                 .filter(s -> StringUtils.isBlank(s.getValue().getId()))
                 .map(s -> (long) s.getKey())
-                .filter(s -> !this.lastMessageCache.getList().stream()
+                .filter(s -> !this.lastMessageCache.getItems().stream()
                         .anyMatch(m -> m.getPageNum() == (long) s))
-                .filter(s -> !lastUserMessageWebSocketSendModel.getList().stream()
+                .filter(s -> !lastUserMessageWebSocketSendModel.getItems().stream()
                         .anyMatch(m -> m.getPageNum() == (long) s))
                 .findFirst()
                 .isPresent();
@@ -233,10 +228,10 @@ public class UserMessageWebSocket {
                 .blockingGet();
         var pageNumListTwo = JinqStream.from(Flowable.range(
                 Math.max(1,
-                        Math.max(this.lastMessageCache.getTotalPage().intValue(),
-                                (int) (userMessageWebSocketSendModel.getTotalPage() - 20))),
+                        Math.max(this.lastMessageCache.getTotalPages().intValue(),
+                                (int) (userMessageWebSocketSendModel.getTotalPages() - 20))),
                 Math.max(
-                        (int) (userMessageWebSocketSendModel.getTotalPage() - this.lastMessageCache.getTotalPage()),
+                        (int) (userMessageWebSocketSendModel.getTotalPages() - this.lastMessageCache.getTotalPages()),
                         0))
                 .map(s -> (long) s)
                 .toList()
@@ -249,21 +244,21 @@ public class UserMessageWebSocket {
                 pageNumListTwo))
                 .selectAllList(s -> s)
                 .where(s -> s > 0)
-                .where(s -> s < userMessageWebSocketSendModel.getTotalPage())
-                .where(s -> !userMessageWebSocketSendModel.getList().stream().anyMatch(m -> s == (long) m.getPageNum()))
+                .where(s -> s < userMessageWebSocketSendModel.getTotalPages())
+                .where(s -> !userMessageWebSocketSendModel.getItems().stream().anyMatch(m -> s == (long) m.getPageNum()))
                 .distinct()
                 .selectAllList(s -> this.userMessageService
                         .getUserMessageByPagination(s, 1L, request)
-                        .getList())
+                        .getItems())
                 .toList();
         var userMessageList = JinqStream.from(List.of(
-                userMessageWebSocketSendModel.getList(),
+                userMessageWebSocketSendModel.getItems(),
                 userMessageListOne))
                 .selectAllList(s -> s)
                 .toList();
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
-                .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
-                .setList(userMessageList);
+                .setTotalPages(userMessageWebSocketSendModel.getTotalPages())
+                .setItems(userMessageList);
         this.sendAndUpdateOnlineMessage(userMessageWebSocketSendNewModel);
     }
 
@@ -274,10 +269,10 @@ public class UserMessageWebSocket {
         }
 
         var userMessageList = this.userMessageService.getUserMessageByPagination(pageNum, 1L, request)
-                .getList();
+                .getItems();
         this.sendAndUpdateOnlineMessage(new UserMessageWebSocketSendModel()
-                .setList(userMessageList)
-                .setTotalPage(null));
+                .setItems(userMessageList)
+                .setTotalPages(null));
     }
 
     private Long getPageNumForOnlineMessage() {
@@ -310,35 +305,35 @@ public class UserMessageWebSocket {
     @SneakyThrows
     private synchronized void sendAndUpdateOnlineMessage(UserMessageWebSocketSendModel userMessageWebSocketSendModel) {
         var userMessageWebSocketSendNewModel = new UserMessageWebSocketSendModel()
-                .setTotalPage(userMessageWebSocketSendModel.getTotalPage())
-                .setList(userMessageWebSocketSendModel.getList()
+                .setTotalPages(userMessageWebSocketSendModel.getTotalPages())
+                .setItems(userMessageWebSocketSendModel.getItems()
                         .stream()
                         .filter(s -> hasChange(s))
                         .toList());
-        if (userMessageWebSocketSendNewModel.getTotalPage() == null
-                && userMessageWebSocketSendNewModel.getList().isEmpty()) {
+        if (userMessageWebSocketSendNewModel.getTotalPages() == null
+                && userMessageWebSocketSendNewModel.getItems().isEmpty()) {
             return;
         }
         this.webSocketSession.getBasicRemote()
                 .sendText(this.objectMapper
                         .writeValueAsString(userMessageWebSocketSendNewModel));
-        for (var userMessage : userMessageWebSocketSendNewModel.getList()) {
+        for (var userMessage : userMessageWebSocketSendNewModel.getItems()) {
             this.onlineMessageMap.replace(userMessage.getPageNum(), userMessage);
         }
         var lastMessage = userMessageWebSocketSendModel
-                .getList()
+                .getItems()
                 .stream()
-                .filter(s -> userMessageWebSocketSendModel.getTotalPage() != null)
-                .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPage())
+                .filter(s -> userMessageWebSocketSendModel.getTotalPages() != null)
+                .filter(s -> s.getPageNum() == (long) userMessageWebSocketSendModel.getTotalPages())
                 .findFirst()
                 .orElse(null);
         if (lastMessage != null) {
-            for (var userMessage : this.lastMessageCache.getList()) {
+            for (var userMessage : this.lastMessageCache.getItems()) {
                 this.onlineMessageMap.replace(userMessage.getPageNum(), userMessage);
             }
             this.lastMessageCache = new UserMessageWebSocketSendModel()
-                    .setTotalPage(lastMessage.getPageNum())
-                    .setList(List.of(lastMessage));
+                    .setTotalPages(lastMessage.getPageNum())
+                    .setItems(List.of(lastMessage));
         }
     }
 
@@ -349,7 +344,7 @@ public class UserMessageWebSocket {
         var hasChange = !this.objectMapper.writeValueAsString(oldUserMessage)
                 .equals(this.objectMapper.writeValueAsString(userMessage));
         if (hasChange) {
-            if (this.lastMessageCache.getList()
+            if (this.lastMessageCache.getItems()
                     .stream()
                     .filter(s -> s.getPageNum() == (long) userMessage.getPageNum())
                     .anyMatch(sneaky(s -> this.objectMapper.writeValueAsString(s)

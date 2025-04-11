@@ -15,19 +15,19 @@ public class OrganizeServiceSearchByNameTest extends BaseTest {
     @Test
     public void test() {
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", organizeId);
-        assertEquals(1, result.getTotalRecord());
-        assertEquals(1, result.getTotalPage());
+        assertEquals(1, result.getTotalRecords());
+        assertEquals(1, result.getTotalPages());
         assertEquals(1, result.getPageNum());
         assertEquals(20, result.getPageSize());
-        assertEquals("Son Gohan", JinqStream.from(result.getList()).select(s -> s.getName()).getOnlyValue());
-        assertNotNull(JinqStream.from(result.getList()).select(s -> s.getId()).getOnlyValue());
-        assertEquals(36, JinqStream.from(result.getList()).select(s -> s.getId().length()).getOnlyValue());
-        assertEquals(0, JinqStream.from(result.getList()).select(s -> s.getChildList().size()).getOnlyValue());
-        assertEquals(1, JinqStream.from(result.getList()).select(s -> s.getLevel()).getOnlyValue());
-        assertNotNull(JinqStream.from(result.getList()).select(s -> s.getCreateDate()).getOnlyValue());
-        assertNotNull(JinqStream.from(result.getList()).select(s -> s.getUpdateDate()).getOnlyValue());
-        assertEquals(0, JinqStream.from(result.getList()).select(s -> s.getDescendantCount()).getOnlyValue());
-        assertEquals(0, JinqStream.from(result.getList()).select(s -> s.getChildCount()).getOnlyValue());
+        assertEquals("Son Gohan", JinqStream.from(result.getItems()).select(s -> s.getName()).getOnlyValue());
+        assertNotNull(JinqStream.from(result.getItems()).select(s -> s.getId()).getOnlyValue());
+        assertEquals(36, JinqStream.from(result.getItems()).select(s -> s.getId().length()).getOnlyValue());
+        assertEquals(0, JinqStream.from(result.getItems()).select(s -> s.getChildList().size()).getOnlyValue());
+        assertEquals(1, JinqStream.from(result.getItems()).select(s -> s.getLevel()).getOnlyValue());
+        assertNotNull(JinqStream.from(result.getItems()).select(s -> s.getCreateDate()).getOnlyValue());
+        assertNotNull(JinqStream.from(result.getItems()).select(s -> s.getUpdateDate()).getOnlyValue());
+        assertEquals(0, JinqStream.from(result.getItems()).select(s -> s.getDescendantCount()).getOnlyValue());
+        assertEquals(0, JinqStream.from(result.getItems()).select(s -> s.getChildCount()).getOnlyValue());
     }
 
     @BeforeEach

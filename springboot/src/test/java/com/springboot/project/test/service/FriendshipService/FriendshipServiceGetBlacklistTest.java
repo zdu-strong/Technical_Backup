@@ -19,12 +19,12 @@ public class FriendshipServiceGetBlacklistTest extends BaseTest {
     @Test
     public void test() throws NoSuchAlgorithmException, InvalidKeySpecException {
         var result = this.friendshipService.getBlackList(1L, 10L, this.user.getId());
-        assertEquals(1, result.getTotalRecord());
-        assertEquals(1, result.getList().size());
-        assertTrue(JinqStream.from(result.getList()).select(s -> s.getIsInBlacklist()).getOnlyValue());
-        assertFalse(JinqStream.from(result.getList()).select(s -> s.getIsFriend()).getOnlyValue());
+        assertEquals(1, result.getTotalRecords());
+        assertEquals(1, result.getItems().size());
+        assertTrue(JinqStream.from(result.getItems()).select(s -> s.getIsInBlacklist()).getOnlyValue());
+        assertFalse(JinqStream.from(result.getItems()).select(s -> s.getIsFriend()).getOnlyValue());
         assertEquals(this.friend.getId(),
-                JinqStream.from(result.getList()).select(s -> s.getFriend().getId()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getFriend().getId()).getOnlyValue());
     }
 
     @BeforeEach

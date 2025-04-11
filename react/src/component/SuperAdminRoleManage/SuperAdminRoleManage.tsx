@@ -85,7 +85,7 @@ export default observer(() => {
             <DataGrid
               apiRef={state.dataGridRef}
               sortingMode="client"
-              rows={state.systemRolePaginationModel.list}
+              rows={state.systemRolePaginationModel.items}
               getRowId={(s) => s.id}
               columns={columns}
               autoPageSize

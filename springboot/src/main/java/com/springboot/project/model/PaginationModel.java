@@ -24,9 +24,9 @@ import lombok.experimental.Accessors;
 public class PaginationModel<T> {
     private Long pageNum;
     private Long pageSize;
-    private Long totalRecord;
-    private Long totalPage;
-    private List<T> list;
+    private Long totalRecords;
+    private Long totalPages;
+    private List<T> items;
 
     public PaginationModel(Long pageNum, Long pageSize, JinqStream<T> stream) {
         this(pageNum, pageSize, stream, s -> s);
@@ -52,20 +52,20 @@ public class PaginationModel<T> {
                     .limit(pageSize)
                     .toList();
             if (!list.isEmpty() || pageNum == 1) {
-                this.totalRecord = JinqStream.from(list).select(Pair::getOne).findFirst().orElse(0L);
-                this.setList(list.stream().map(Pair::getTwo).map(formatCallback).toList());
+                this.totalRecords = JinqStream.from(list).select(Pair::getOne).findFirst().orElse(0L);
+                this.setItems(list.stream().map(Pair::getTwo).map(formatCallback).toList());
             } else {
-                this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
+                this.totalRecords = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                         .orElse(0L);
-                this.setList(list.stream().map(Pair::getTwo).map(formatCallback).toList());
+                this.setItems(list.stream().map(Pair::getTwo).map(formatCallback).toList());
             }
         } else {
             var dataList = stream.select(s -> s).toList();
-            this.totalRecord = Long.valueOf(dataList.size());
-            this.setList(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
+            this.totalRecords = Long.valueOf(dataList.size());
+            this.setItems(JinqStream.from(dataList).skip((pageNum - 1) * pageSize).limit(pageSize).map(formatCallback)
                     .toList());
         }
-        this.totalPage = new BigDecimal(this.totalRecord).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
+        this.totalPages = new BigDecimal(this.totalRecords).divide(new BigDecimal(pageSize), 0, RoundingMode.CEILING)
                 .longValue();
     }
 

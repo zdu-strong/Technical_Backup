@@ -3,11 +3,11 @@ import { concatMap, lastValueFrom, retry, repeat, timer, of, from } from "rxjs";
 import remote from "@/remote";
 
 async function runManageStorageSpace() {
-  const { totalPage } = await StorageSpaceService.getStorageSpaceListByPagination(1, 1);
-  for (let i = totalPage; i > 0; i--) {
+  const { totalPages } = await StorageSpaceService.getStorageSpaceListByPagination(1, 1);
+  for (let i = totalPages; i > 0; i--) {
     try {
       const result = await StorageSpaceService.getStorageSpaceListByPagination(i, 1);
-      for (const storageSpaceModel of result.list) {
+      for (const storageSpaceModel of result.items) {
         if (!(await StorageSpaceService.isUsed(storageSpaceModel.folderName))) {
           await StorageSpaceService.deleteFolder(storageSpaceModel.folderName);
         }

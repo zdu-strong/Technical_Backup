@@ -21,19 +21,19 @@ public class FriendshipServiceGetFriendListTest extends BaseTest {
     @Test
     public void test() throws NoSuchAlgorithmException, InvalidKeySpecException {
         var result = this.friendshipService.getFriendList(1L, 10L, this.user.getId());
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalRecords());
         assertEquals(this.user.getId(),
-                JinqStream.from(result.getList()).select(s -> s.getUser().getId()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getUser().getId()).getOnlyValue());
         assertEquals(this.friend.getId(),
-                JinqStream.from(result.getList()).select(s -> s.getFriend().getId()).getOnlyValue());
-        assertTrue(JinqStream.from(result.getList()).select(s -> s.getIsFriend()).getOnlyValue());
-        assertFalse(JinqStream.from(result.getList()).select(s -> s.getIsInBlacklist()).getOnlyValue());
-        assertNotNull(JinqStream.from(result.getList()).select(s -> s.getCreateDate()).getOnlyValue());
-        assertNotNull(JinqStream.from(result.getList()).select(s -> s.getUpdateDate()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getFriend().getId()).getOnlyValue());
+        assertTrue(JinqStream.from(result.getItems()).select(s -> s.getIsFriend()).getOnlyValue());
+        assertFalse(JinqStream.from(result.getItems()).select(s -> s.getIsInBlacklist()).getOnlyValue());
+        assertNotNull(JinqStream.from(result.getItems()).select(s -> s.getCreateDate()).getOnlyValue());
+        assertNotNull(JinqStream.from(result.getItems()).select(s -> s.getUpdateDate()).getOnlyValue());
         assertTrue(StringUtils
-                .isNotBlank(JinqStream.from(result.getList()).select(s -> s.getFriend().getUsername()).getOnlyValue()));
-        assertTrue(JinqStream.from(result.getList()).select(s -> s.getIsFriend()).getOnlyValue());
-        assertFalse(JinqStream.from(result.getList()).select(s -> s.getIsInBlacklist()).getOnlyValue());
+                .isNotBlank(JinqStream.from(result.getItems()).select(s -> s.getFriend().getUsername()).getOnlyValue()));
+        assertTrue(JinqStream.from(result.getItems()).select(s -> s.getIsFriend()).getOnlyValue());
+        assertFalse(JinqStream.from(result.getItems()).select(s -> s.getIsInBlacklist()).getOnlyValue());
     }
 
     @BeforeEach

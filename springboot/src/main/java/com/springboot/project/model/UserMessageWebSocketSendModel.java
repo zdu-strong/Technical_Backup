@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UserMessageWebSocketSendModel {
 
-    private Long totalPage;
+    private Long totalPages;
 
-    private List<UserMessageModel> list;
+    private List<UserMessageModel> items;
 }

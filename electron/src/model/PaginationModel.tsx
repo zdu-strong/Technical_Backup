@@ -9,11 +9,11 @@ export class PaginationModel<T> {
 
   pageSize!: number;
 
-  totalRecord!: number;
+  totalRecords!: number;
 
-  totalPage!: number;
+  totalPages!: number;
 
-  list!: T[];
+  items!: T[];
 
   constructor(
     pageNum: number,
@@ -58,17 +58,17 @@ export class PaginationModel<T> {
       throw new Error("The page size must be an integer");
     }
 
-    const totalRecord = (stream as linq.IEnumerable<T>).count();
-    const totalPage = Math.floor(mathjs.divide(totalRecord, pageSize)) + (mathjs.mod(totalRecord, pageSize) > 0 ? 1 : 0);
-    const list = (stream as linq.IEnumerable<T>)
+    const totalRecords = (stream as linq.IEnumerable<T>).count();
+    const totalPages = Math.floor(mathjs.divide(totalRecords, pageSize)) + (mathjs.mod(totalRecords, pageSize) > 0 ? 1 : 0);
+    const items = (stream as linq.IEnumerable<T>)
       .skip(mathjs.multiply(pageNum - 1, pageSize))
       .take(pageSize)
       .toArray();
     this.pageNum = pageNum;
     this.pageSize = pageSize;
-    this.totalPage = totalPage;
-    this.totalRecord = totalRecord;
-    this.list = list;
+    this.totalPages = totalPages;
+    this.totalRecords = totalRecords;
+    this.items = items;
   }
 
   private handleJsonString(jsonString: string, rootConstructor: Serializable<T>) {
@@ -85,20 +85,20 @@ export class PaginationModel<T> {
       pageSize!: number;
 
       @jsonMember(Number)
-      totalRecord!: number;
+      totalRecords!: number;
 
       @jsonMember(Number)
-      totalPage!: number;
+      totalPages!: number;
 
       @jsonArrayMember(rootConstructor)
-      list!: T[];
+      items!: T[];
     }
     const customerPaginationModel = new TypedJSON(CustomerPaginationModel).parse(jsonString)!;
     this.pageNum = customerPaginationModel.pageNum;
     this.pageSize = customerPaginationModel.pageSize;
-    this.totalPage = customerPaginationModel.totalPage;
-    this.totalRecord = customerPaginationModel.totalRecord;
-    this.list = customerPaginationModel.list;
+    this.totalPages = customerPaginationModel.totalPages;
+    this.totalRecords = customerPaginationModel.totalRecords;
+    this.items = customerPaginationModel.items;
   }
 
 }

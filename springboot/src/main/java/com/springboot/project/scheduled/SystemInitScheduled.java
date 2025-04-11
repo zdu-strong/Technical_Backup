@@ -113,7 +113,7 @@ public class SystemInitScheduled {
         superAdminUser.setUserEmailList(
                 List.of(new UserEmailModel().setEmail(email).setVerificationCodeEmail(verificationCodeEmailModel)));
         superAdminUser.setRoleList(
-                this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getList());
+                this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length).getItems());
         this.userService.create(superAdminUser);
     }
 

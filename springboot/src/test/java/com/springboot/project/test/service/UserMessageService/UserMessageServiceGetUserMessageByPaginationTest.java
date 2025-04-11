@@ -16,8 +16,8 @@ public class UserMessageServiceGetUserMessageByPaginationTest extends BaseTest {
     @Test
     public void test() throws URISyntaxException {
         var userMessagePagination = this.userMessageService.getUserMessageByPagination(1L, 1L, request);
-        var message = JinqStream.from(userMessagePagination.getList()).getOnlyValue();
-        assertEquals(1, userMessagePagination.getList().size());
+        var message = JinqStream.from(userMessagePagination.getItems()).getOnlyValue();
+        assertEquals(1, userMessagePagination.getItems().size());
         assertTrue(StringUtils.isNotBlank(message.getId()));
         assertNotNull(message.getCreateDate());
         assertEquals(1, message.getPageNum());

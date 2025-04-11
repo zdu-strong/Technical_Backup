@@ -6,10 +6,10 @@ import { UserMessageModel } from '@/model/UserMessageModel';
 export class UserMessageWebSocketReceiveModel {
 
   @jsonMember(Number)
-  totalPage!: number;
+  totalPages!: number;
 
   @jsonArrayMember(UserMessageModel)
-  list!: UserMessageModel[];
+  items!: UserMessageModel[];
 
   constructor() {
     makeAutoObservable(this);

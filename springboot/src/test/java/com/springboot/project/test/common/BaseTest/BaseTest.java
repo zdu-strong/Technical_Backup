@@ -235,7 +235,7 @@ public class BaseTest {
             var roleList = this.roleOrganizeRelationService
                     .searchOrganizeRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length, company.getId(),
                             false)
-                    .getList();
+                    .getItems();
             userModel.getRoleList().addAll(roleList);
             this.userService.update(userModel);
         }
@@ -248,7 +248,7 @@ public class BaseTest {
         {
             var roleList = this.userRoleRelationService
                     .searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length)
-                    .getList();
+                    .getItems();
             userModel.getRoleList().addAll(roleList);
             this.userService.update(userModel);
         }

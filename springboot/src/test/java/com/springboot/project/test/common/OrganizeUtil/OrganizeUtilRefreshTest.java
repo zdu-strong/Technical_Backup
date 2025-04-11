@@ -14,7 +14,7 @@ public class OrganizeUtilRefreshTest extends BaseTest {
     public void test() {
         this.organizeUtil.refresh(organizeId);
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalRecords());
     }
 
     @BeforeEach
@@ -24,6 +24,6 @@ public class OrganizeUtilRefreshTest extends BaseTest {
         this.organizeService.create(
                 new OrganizeModel().setName("Son Gohan").setParent(new OrganizeModel().setId(organizeId)));
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
-        assertEquals(0, result.getTotalRecord());
+        assertEquals(0, result.getTotalRecords());
     }
 }

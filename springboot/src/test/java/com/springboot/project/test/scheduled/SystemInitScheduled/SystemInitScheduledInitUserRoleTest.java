@@ -13,7 +13,7 @@ public class SystemInitScheduledInitUserRoleTest extends BaseTest {
     public void test() {
         this.systemInitScheduled.scheduled();
         var paginationModel = this.userRoleRelationService.searchUserRoleForSuperAdminByPagination(1, SystemRoleEnum.values().length);
-        var roleList = paginationModel.getList();
+        var roleList = paginationModel.getItems();
         assertEquals(1, roleList.size());
         var roleModel = JinqStream.from(roleList).getOnlyValue();
         assertEquals(36, roleModel.getId().length());

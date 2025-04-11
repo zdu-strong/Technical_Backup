@@ -16,8 +16,8 @@ public class OrganizeUtilMoveTest extends BaseTest {
     public void test() {
         this.organizeUtil.move(organizeId, parentOrganizeId);
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.parentOrganizeId);
-        assertEquals(1, result.getTotalRecord());
-        assertEquals(organizeId, JinqStream.from(result.getList()).select(s -> s.getId()).getOnlyValue());
+        assertEquals(1, result.getTotalRecords());
+        assertEquals(organizeId, JinqStream.from(result.getItems()).select(s -> s.getId()).getOnlyValue());
     }
 
     @BeforeEach
@@ -30,13 +30,13 @@ public class OrganizeUtilMoveTest extends BaseTest {
             this.organizeId = childOrganize.getId();
             this.organizeUtil.refresh(parentOrganize.getId());
             var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
-            assertEquals(1, result.getTotalRecord());
+            assertEquals(1, result.getTotalRecords());
         }
         {
             var parentOrganizeModel = new OrganizeModel().setName("Piccolo");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);
             var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
-            assertEquals(0, result.getTotalRecord());
+            assertEquals(0, result.getTotalRecords());
             this.parentOrganizeId = parentOrganize.getId();
         }
     }

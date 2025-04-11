@@ -41,7 +41,7 @@ export function getUserMessageWebsocket(webSocketInput?: Subject<{
       }),
       map((data) => new TypedJSON(UserMessageWebSocketReceiveModel).parse(data)!),
       tap((data) => {
-        for (const message of data.list) {
+        for (const message of data.items) {
           if (message.url) {
             message.url = getDownloadResourceUrl(message.url);
           }

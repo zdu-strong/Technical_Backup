@@ -16,7 +16,7 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
     public void test() {
         this.distributedExecutionUtil.refreshData(DistributedExecutionEnum.ORGANIZE_CLOSURE_REFRESH);
         var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.organizeId);
-        assertEquals(1, result.getTotalRecord());
+        assertEquals(1, result.getTotalRecords());
     }
 
     @BeforeEach
@@ -29,16 +29,16 @@ public class OrganizeRelationRefreshScheduledTest extends BaseTest {
             this.organizeId = childOrganize.getId();
             this.organizeUtil.refresh(parentOrganize.getId());
             var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
-            assertEquals(1, result.getTotalRecord());
+            assertEquals(1, result.getTotalRecords());
         }
         {
             var parentOrganizeModel = new OrganizeModel().setName("Piccolo");
             var parentOrganize = this.organizeService.create(parentOrganizeModel);
             var result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
-            assertEquals(0, result.getTotalRecord());
+            assertEquals(0, result.getTotalRecords());
             this.organizeService.move(organizeId, parentOrganize.getId());
             result = this.organizeService.searchByName(1L, 20L, "Son Gohan", parentOrganize.getId());
-            assertEquals(0, result.getTotalRecord());
+            assertEquals(0, result.getTotalRecords());
             this.organizeId = parentOrganize.getId();
         }
         {

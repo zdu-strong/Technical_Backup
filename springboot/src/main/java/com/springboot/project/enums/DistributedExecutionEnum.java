@@ -26,13 +26,13 @@ public enum DistributedExecutionEnum {
             1L,
             () -> {
                 var totalPage = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L)
-                        .getTotalPage();
+                        .getTotalPages();
                 return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(pageNum,
                         1L);
-                for (var storageSpaceModel : paginationModel.getList()) {
+                for (var storageSpaceModel : paginationModel.getItems()) {
                     SpringUtil.getBean(StorageSpaceService.class).refresh(storageSpaceModel.getFolderName());
                 }
             }),
@@ -45,13 +45,13 @@ public enum DistributedExecutionEnum {
             Duration.ofHours(12),
             1L,
             () -> {
-                var totalPage = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalPage();
+                var totalPage = SpringUtil.getBean(NonceService.class).getNonceByPagination(1L, 1L).getTotalPages();
                 return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(NonceService.class).getNonceByPagination(pageNum,
                         1L);
-                for (var nonceModel : paginationModel.getList()) {
+                for (var nonceModel : paginationModel.getItems()) {
                     SpringUtil.getBean(NonceService.class).delete(nonceModel.getId());
                 }
             }),
@@ -65,13 +65,13 @@ public enum DistributedExecutionEnum {
             1L,
             () -> {
                 var totalPage = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(1L, 1L)
-                        .getTotalPage();
+                        .getTotalPages();
                 return totalPage;
             },
             (pageNum) -> {
                 var paginationModel = SpringUtil.getBean(OrganizeService.class).getOrganizeByPagination(pageNum,
                         1L);
-                for (var organizeModel : paginationModel.getList()) {
+                for (var organizeModel : paginationModel.getItems()) {
                     while (true) {
                         var hasNext = SpringUtil.getBean(RoleOrganizeRelationService.class)
                                 .refresh(organizeModel.getId());

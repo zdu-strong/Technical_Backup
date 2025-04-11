@@ -22,24 +22,24 @@ public class OrganizeRelationServiceRefreshTest extends BaseTest {
             }
         }
         var result = this.organizeService.searchByName(1L, 20L, "Gohan", this.parentOrganizeId);
-        assertEquals(1, result.getTotalRecord());
-        assertEquals(this.childOrganizeId, JinqStream.from(result.getList()).select(s -> s.getId()).getOnlyValue());
+        assertEquals(1, result.getTotalRecords());
+        assertEquals(this.childOrganizeId, JinqStream.from(result.getItems()).select(s -> s.getId()).getOnlyValue());
         assertEquals(this.parentOrganizeId,
-                JinqStream.from(result.getList()).select(s -> s.getParent().getId()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getParent().getId()).getOnlyValue());
         assertEquals("Son Gohan",
-                JinqStream.from(result.getList()).select(s -> s.getName()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getName()).getOnlyValue());
         assertEquals(1,
-                JinqStream.from(result.getList()).select(s -> s.getLevel()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getLevel()).getOnlyValue());
         assertEquals(0,
-                JinqStream.from(result.getList()).select(s -> s.getChildCount()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getChildCount()).getOnlyValue());
         assertEquals(0,
-                JinqStream.from(result.getList()).select(s -> s.getDescendantCount()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getDescendantCount()).getOnlyValue());
         assertEquals(0,
-                JinqStream.from(result.getList()).select(s -> s.getChildList().size()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getChildList().size()).getOnlyValue());
         assertNotNull(
-                JinqStream.from(result.getList()).select(s -> s.getCreateDate()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getCreateDate()).getOnlyValue());
         assertNotNull(
-                JinqStream.from(result.getList()).select(s -> s.getUpdateDate()).getOnlyValue());
+                JinqStream.from(result.getItems()).select(s -> s.getUpdateDate()).getOnlyValue());
     }
 
     @BeforeEach
@@ -58,7 +58,7 @@ public class OrganizeRelationServiceRefreshTest extends BaseTest {
         }
         this.organizeService.move(this.childOrganizeId, this.parentOrganizeId);
         var pagination = this.organizeService.searchByName(1L, 20L, "Son Gohan", this.parentOrganizeId);
-        assertEquals(0, pagination.getTotalRecord());
+        assertEquals(0, pagination.getTotalRecords());
     }
 
 }
