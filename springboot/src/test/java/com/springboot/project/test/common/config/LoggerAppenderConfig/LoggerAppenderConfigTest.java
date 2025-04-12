@@ -41,7 +41,7 @@ public class LoggerAppenderConfigTest extends BaseTest {
         assertEquals("500 INTERNAL_SERVER_ERROR \"Hello, World!\"", result.getExceptionMessage());
         assertTrue(result.getExceptionStackTrace().size() >= 70);
         assertEquals("test", result.getCallerMethodName());
-        assertEquals(24, result.getCallerLineNumber());
+        assertEquals(26, result.getCallerLineNumber());
         assertEquals(Level.ERROR.levelStr, result.getLevel());
         assertEquals("com.springboot.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
                 result.getLoggerName());
