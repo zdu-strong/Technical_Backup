@@ -36,6 +36,7 @@ public class UserController extends BaseController {
         this.permissionUtil.checkIsSignIn(request);
         this.validationFieldUtil.checkNotBlankOfUsername(user.getUsername());
         this.validationFieldUtil.checkNotEdgesSpaceOfUsername(user.getUsername());
+        this.validationFieldUtil.checkNotBlankOfPassword(user.getPassword());
         this.userService.checkRoleRelation(user, request);
         this.userService.checkValidEmailForSignUp(user);
 
@@ -46,10 +47,10 @@ public class UserController extends BaseController {
     @PutMapping("/user/update")
     public ResponseEntity<?> update(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userService.checkExistUserById(user.getId());
-        this.userService.checkRoleRelation(user, request);
         this.validationFieldUtil.checkNotBlankOfUsername(user.getUsername());
         this.validationFieldUtil.checkNotEdgesSpaceOfUsername(user.getUsername());
+        this.userService.checkExistUserById(user.getId());
+        this.userService.checkRoleRelation(user, request);
         this.userService.checkValidEmailForSignUp(user);
 
         this.userService.update(user);

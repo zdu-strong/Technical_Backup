@@ -27,7 +27,7 @@ public class OrganizeController extends BaseController {
     @PutMapping("/organize/update")
     public ResponseEntity<?> update(@RequestBody OrganizeModel organizeModel) {
         this.permissionUtil.checkIsSignIn(request);
-        this.organizeService.checkCannotBeEmptyById(organizeModel.getId());
+        this.validationFieldUtil.checkNotBlankOfId(organizeModel.getId());
         this.organizeService.checkHasExistById(organizeModel.getId());
 
         this.organizeService.update(organizeModel);
@@ -37,7 +37,7 @@ public class OrganizeController extends BaseController {
     @DeleteMapping("/organize/delete")
     public ResponseEntity<?> delete(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
-        this.organizeService.checkCannotBeEmptyById(id);
+        this.validationFieldUtil.checkNotBlankOfId(id);
         this.organizeService.checkHasExistById(id);
 
         this.organizeService.delete(id);
@@ -48,7 +48,7 @@ public class OrganizeController extends BaseController {
     @PostMapping("/organize/move")
     public ResponseEntity<?> move(@RequestParam String id, @RequestParam(required = false) String parentId) {
         this.permissionUtil.checkIsSignIn(request);
-        this.organizeService.checkCannotBeEmptyById(id);
+        this.validationFieldUtil.checkNotBlankOfId(id);
         this.organizeService.checkHasExistById(id);
         this.organizeService.checkHasExistById(parentId);
         this.organizeService.checkCanBeMoveOfOrganize(id, parentId);
@@ -61,7 +61,7 @@ public class OrganizeController extends BaseController {
     @GetMapping("/organize")
     public ResponseEntity<?> getOrganizeById(@RequestParam String id) {
         this.permissionUtil.checkIsSignIn(request);
-        this.organizeService.checkCannotBeEmptyById(id);
+        this.validationFieldUtil.checkNotBlankOfId(id);
         this.organizeService.checkHasExistById(id);
 
         var organizeModel = this.organizeService.getById(id);

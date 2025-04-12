@@ -111,13 +111,6 @@ public class UserMessageService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public void checkCannotEmptyUserMessageContent(UserMessageModel userMessageModel) {
-        if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
-        }
-    }
-
-    @Transactional(readOnly = true)
     public void checkExistsUserMessage(String id) {
         var exists = this.streamAll(UserMessageEntity.class).where(s -> s.getId().equals(id)).exists();
         if (!exists) {

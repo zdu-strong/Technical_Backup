@@ -96,26 +96,6 @@ public class RoleService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public void checkCannotBeEmptyOfName(RoleModel roleModel) {
-        if (StringUtils.isBlank(roleModel.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "System role name cannot be empty");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public void checkCannotBeEmptyOfPermissionList(RoleModel roleModel) {
-        if (CollectionUtils.isEmpty(roleModel.getPermissionList())) {
-            roleModel.setPermissionList(List.of());
-        }
-        if (CollectionUtils.isEmpty(roleModel.getOrganizeList())) {
-            roleModel.setOrganizeList(List.of());
-        }
-        if (roleModel.getPermissionList().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Permission list cannot be empty");
-        }
-    }
-
-    @Transactional(readOnly = true)
     public void checkCanCreateUserRole(RoleModel roleModel, HttpServletRequest request) {
         if (!roleModel.getPermissionList().stream().anyMatch(s -> Arrays.stream(SystemPermissionEnum.values())
                 .filter(m -> !m.getIsOrganizeRole()).map(m -> m.getValue()).toList().contains(s))) {

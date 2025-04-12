@@ -49,20 +49,6 @@ public class UserEmailService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public void checkCorrectFormatOfEmail(String email) {
-        if (!Validator.isEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public void checkCannotEmptyOfEmail(String email) {
-        if (StringUtils.isBlank(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
-        }
-    }
-
-    @Transactional(readOnly = true)
     public void checkIsNotUsedOfEmail(String email) {
         var isPresent = this.streamAll(UserEmailEntity.class)
                 .where(s -> s.getEmail().equals(email))

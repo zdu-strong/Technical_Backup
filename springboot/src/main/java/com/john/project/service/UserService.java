@@ -186,17 +186,6 @@ public class UserService extends BaseService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public void checkCannotEmptyOfPassword(UserModel userModel) {
-        if (StringUtils.isBlank(userModel.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in password");
-        }
-
-        if (userModel.getPassword().trim().length() != userModel.getPassword().length()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password cannot start or end with a space");
-        }
-    }
-
     private boolean hasExistsUserId(String userId) {
         var exists = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))

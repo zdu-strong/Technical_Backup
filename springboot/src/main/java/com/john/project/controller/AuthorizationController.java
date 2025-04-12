@@ -53,9 +53,9 @@ public class AuthorizationController extends BaseController {
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel) {
         this.validationFieldUtil.checkNotBlankOfUsername(userModel.getUsername());
         this.validationFieldUtil.checkNotEdgesSpaceOfUsername(userModel.getUsername());
+        this.validationFieldUtil.checkNotBlankOfPassword(userModel.getPassword());
         this.userService.checkValidEmailForSignUp(userModel);
         this.userService.checkUserRoleRelationListMustBeEmpty(userModel);
-        this.userService.checkCannotEmptyOfPassword(userModel);
 
         var user = this.userService.create(userModel);
         var accessToken = this.tokenService.generateAccessToken(user.getId());

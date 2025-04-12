@@ -15,7 +15,7 @@ public class UserMessageController extends BaseController {
     @PostMapping("/user-message/send")
     public ResponseEntity<?> sendMessage(@RequestBody UserMessageModel userMessageModel) {
         this.permissionUtil.checkIsSignIn(request);
-        this.userMessageService.checkCannotEmptyUserMessageContent(userMessageModel);
+        this.validationFieldUtil.checkNotBlankOfUserMessageContent(userMessageModel);
 
         var userMessage = this.userMessageService.sendMessage(userMessageModel, request);
         return ResponseEntity.ok(userMessage);

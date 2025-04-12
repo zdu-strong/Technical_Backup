@@ -14,8 +14,8 @@ public class RoleController extends BaseController {
     @PostMapping("/role/create")
     public ResponseEntity<?> create(@RequestBody RoleModel roleModel) {
         this.permissionUtil.checkIsSignIn(request);
-        this.roleService.checkCannotBeEmptyOfName(roleModel);
-        this.roleService.checkCannotBeEmptyOfPermissionList(roleModel);
+        this.validationFieldUtil.checkNotBlankOfRoleName(roleModel.getName());
+        this.validationFieldUtil.checkNotEmptyOfPermissionList(roleModel);
         this.roleService.checkCanCreateUserRole(roleModel, request);
         this.roleService.checkCanCreateOrganizeRole(roleModel, request);
 

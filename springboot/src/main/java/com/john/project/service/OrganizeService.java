@@ -203,13 +203,6 @@ public class OrganizeService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public void checkCannotBeEmptyById(String id) {
-        if (StringUtils.isBlank(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrganizeId cannot be empty");
-        }
-    }
-
-    @Transactional(readOnly = true)
     public void checkCannotHasParentOrganizeById(String id) {
         if (StringUtils.isBlank(id)) {
             return;
