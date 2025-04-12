@@ -7,7 +7,6 @@ import com.john.project.entity.RoleEntity;
 import com.john.project.entity.RolePermissionRelationEntity;
 import org.springframework.stereotype.Service;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import com.john.project.enums.SystemPermissionEnum;
 
 @Service

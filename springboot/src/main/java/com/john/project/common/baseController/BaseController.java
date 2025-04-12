@@ -1,5 +1,6 @@
 package com.john.project.common.baseController;
 
+import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,6 +68,9 @@ public class BaseController {
 
     @Autowired
     protected OrganizeUtil organizeUtil;
+
+    @Autowired
+    protected ValidationFieldUtil validationFieldUtil;
 
     @Autowired
     protected GitProperties gitProperties;

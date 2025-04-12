@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import com.john.project.model.DistributedExecutionDetailModel;
 import com.john.project.model.DistributedExecutionMainModel;
 

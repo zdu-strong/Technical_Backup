@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.uuid.Generators;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import cn.hutool.core.lang.Validator;
 
 @Service

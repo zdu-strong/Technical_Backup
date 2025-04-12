@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import com.john.project.enums.SystemPermissionEnum;
 import com.john.project.model.PaginationModel;
 import com.john.project.model.UserModel;
@@ -170,17 +169,6 @@ public class UserService extends BaseService {
                     .checkVerificationCodeEmailIsPassed(userEmail.getVerificationCodeEmail());
 
             this.userEmailService.checkIsNotUsedOfEmail(userEmail.getEmail());
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public void checkCannotEmptyOfUsername(UserModel userModel) {
-        if (StringUtils.isBlank(userModel.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in nickname");
-        }
-
-        if (userModel.getUsername().trim().length() != userModel.getUsername().length()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot start or end with a space");
         }
     }
 

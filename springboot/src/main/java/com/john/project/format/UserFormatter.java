@@ -7,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import com.john.project.model.UserModel;
 
 @Service

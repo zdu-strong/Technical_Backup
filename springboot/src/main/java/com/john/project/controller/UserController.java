@@ -34,8 +34,9 @@ public class UserController extends BaseController {
     @PostMapping("/user/create")
     public ResponseEntity<?> create(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
+        this.validationFieldUtil.checkNotBlankOfUsername(user.getUsername());
+        this.validationFieldUtil.checkNotEdgesSpaceOfUsername(user.getUsername());
         this.userService.checkRoleRelation(user, request);
-        this.userService.checkCannotEmptyOfUsername(user);
         this.userService.checkValidEmailForSignUp(user);
 
         var userOne = this.userService.create(user);
@@ -47,7 +48,8 @@ public class UserController extends BaseController {
         this.permissionUtil.checkIsSignIn(request);
         this.userService.checkExistUserById(user.getId());
         this.userService.checkRoleRelation(user, request);
-        this.userService.checkCannotEmptyOfUsername(user);
+        this.validationFieldUtil.checkNotBlankOfUsername(user.getUsername());
+        this.validationFieldUtil.checkNotEdgesSpaceOfUsername(user.getUsername());
         this.userService.checkValidEmailForSignUp(user);
 
         this.userService.update(user);

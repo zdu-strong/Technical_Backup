@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 
 @Service
 public class OrganizeRelationService extends BaseService {

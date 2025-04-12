@@ -7,7 +7,6 @@ import com.john.project.entity.UserMessageDeactivateEntity;
 import com.john.project.entity.UserMessageEntity;
 import org.springframework.stereotype.Service;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 
 @Service
 public class UserMessageDeactivateService extends BaseService {

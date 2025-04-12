@@ -12,11 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.john.project.common.baseService.BaseService;
-import com.john.project.entity.*;
 import com.john.project.model.PaginationModel;
 import com.john.project.model.UserMessageModel;
 import com.john.project.model.UserMessageWebSocketSendModel;
-import com.john.project.model.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
