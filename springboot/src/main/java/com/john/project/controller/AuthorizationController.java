@@ -51,7 +51,7 @@ public class AuthorizationController extends BaseController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel) {
-        this.validationFieldUtil.checkNotBlankOfUsername(userModel.getUsername());
+        this.validationFieldUtil.checkNotBlankOfNickname(userModel.getUsername());
         this.validationFieldUtil.checkNotEdgesSpaceOfUsername(userModel.getUsername());
         this.validationFieldUtil.checkNotBlankOfPassword(userModel.getPassword());
         this.userService.checkValidEmailForSignUp(userModel);

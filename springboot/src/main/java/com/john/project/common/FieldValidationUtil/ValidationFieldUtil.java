@@ -18,6 +18,12 @@ public class ValidationFieldUtil {
         }
     }
 
+    public void checkNotBlankOfNickname(String nickname) {
+        if (StringUtils.isBlank(nickname)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "nickname cannot be blank");
+        }
+    }
+
     public void checkNotEdgesSpaceOfUsername(String username) {
         if (StringUtils.isEmpty(username)) {
             return;
@@ -64,7 +70,7 @@ public class ValidationFieldUtil {
     }
 
     public void checkCorrectFormatOfEmail(String email) {
-        if(StringUtils.isEmpty(email)){
+        if (StringUtils.isEmpty(email)) {
             return;
         }
         if (!Validator.isEmail(email)) {
