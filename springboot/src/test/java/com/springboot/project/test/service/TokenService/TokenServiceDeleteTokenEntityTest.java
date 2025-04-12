@@ -1,6 +1,5 @@
 package com.springboot.project.test.service.TokenService;
 
-import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.auth0.jwt.JWT;
@@ -13,7 +12,7 @@ public class TokenServiceDeleteTokenEntityTest extends BaseTest {
     private String jwtId;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         this.tokenService.deleteTokenEntity(jwtId);
     }
 

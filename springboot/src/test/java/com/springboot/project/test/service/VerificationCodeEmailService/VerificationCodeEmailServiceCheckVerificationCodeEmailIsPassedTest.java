@@ -1,14 +1,10 @@
 package com.springboot.project.test.service.VerificationCodeEmailService;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -17,7 +13,7 @@ public class VerificationCodeEmailServiceCheckVerificationCodeEmailIsPassedTest 
     private VerificationCodeEmailModel verificationCodeEmailModel;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         this.verificationCodeEmailService
                 .checkVerificationCodeEmailIsPassed(this.verificationCodeEmailModel);
     }

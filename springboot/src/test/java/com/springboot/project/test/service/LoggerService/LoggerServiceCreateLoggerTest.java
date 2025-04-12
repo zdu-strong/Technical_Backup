@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
 import com.springboot.project.model.LoggerModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
@@ -20,7 +19,7 @@ public class LoggerServiceCreateLoggerTest extends BaseTest {
     private LoggerModel loggerModel;
 
     @Test
-    public void test() throws JsonProcessingException {
+    public void test() {
         var result = this.loggerService.create(loggerModel);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertTrue(result.getHasException());

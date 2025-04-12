@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ public class VerificationCodeEmailServiceIsFirstOnTheDurationOfVerificationCodeE
     private VerificationCodeEmailModel verificationCodeEmailModel;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.verificationCodeEmailService
                 .isFirstOnTheDurationOfVerificationCodeEmail(this.verificationCodeEmailModel.getId());
         assertTrue(result);

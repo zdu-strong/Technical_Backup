@@ -1,16 +1,12 @@
 package com.springboot.project.controller;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
-
 import lombok.SneakyThrows;
 
 @RestController
@@ -18,13 +14,6 @@ public class AuthorizationController extends BaseController {
 
     /**
      * username: email, userId
-     * 
-     * @param username
-     * @param password
-     * @return
-     * @throws InvalidKeySpecException
-     * @throws NoSuchAlgorithmException
-     * @throws JsonProcessingException
      */
     @PostMapping("/sign-in")
     @SneakyThrows

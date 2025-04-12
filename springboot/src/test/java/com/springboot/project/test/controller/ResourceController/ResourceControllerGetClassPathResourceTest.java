@@ -2,9 +2,8 @@ package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
@@ -20,7 +19,7 @@ public class ResourceControllerGetClassPathResourceTest extends BaseTest {
     private URI url;
 
     @Test
-    public void test() throws IOException {
+    public void test()  {
         var response = this.testRestTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(Lists.newArrayList(57L, 59L).contains(response.getHeaders().getContentLength()));
@@ -30,7 +29,8 @@ public class ResourceControllerGetClassPathResourceTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         this.url = new URIBuilder(
                 this.storage.storageResource(new ClassPathResource("email/email.xml")).getRelativeUrl()).build();
     }

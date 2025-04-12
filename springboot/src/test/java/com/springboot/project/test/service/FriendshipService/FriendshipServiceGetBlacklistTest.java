@@ -3,8 +3,6 @@ package com.springboot.project.test.service.FriendshipService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,7 @@ public class FriendshipServiceGetBlacklistTest extends BaseTest {
     private UserModel friend;
 
     @Test
-    public void test() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public void test() {
         var result = this.friendshipService.getBlackList(1L, 10L, this.user.getId());
         assertEquals(1, result.getTotalRecords());
         assertEquals(1, result.getItems().size());
@@ -28,7 +26,7 @@ public class FriendshipServiceGetBlacklistTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public void beforeEach() {
         var userEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         var friendEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.user = this.createAccount(userEmail);

@@ -1,9 +1,7 @@
 package com.springboot.project.test.controller.OrganizeController;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
-
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,8 @@ public class OrganizeControllerMoveOrganizeTest extends BaseTest {
     private String parentOrganizeId;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/organize/move").setParameter("id", organizeId)
                 .setParameter("parentId", parentOrganizeId)
                 .build();

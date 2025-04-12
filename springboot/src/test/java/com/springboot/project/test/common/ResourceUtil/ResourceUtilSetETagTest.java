@@ -1,7 +1,6 @@
 package com.springboot.project.test.common.ResourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ public class ResourceUtilSetETagTest extends BaseTest {
     private HttpHeaders httpHeaders;
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         this.resourceHttpHeadersUtil.setETag(httpHeaders, request);
         assertTrue(StringUtils.isNotBlank(httpHeaders.getETag()));
     }

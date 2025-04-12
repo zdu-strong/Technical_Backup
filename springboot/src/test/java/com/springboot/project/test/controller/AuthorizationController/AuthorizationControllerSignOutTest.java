@@ -1,10 +1,7 @@
 package com.springboot.project.test.controller.AuthorizationController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +12,8 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class AuthorizationControllerSignOutTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         this.signOut();
         var url = new URIBuilder("/get-user-info").build();
         var response = this.testRestTemplate.getForEntity(url, Throwable.class);
@@ -24,7 +22,7 @@ public class AuthorizationControllerSignOutTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws InvalidKeySpecException, NoSuchAlgorithmException, URISyntaxException {
+    public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.createAccount(email);
     }

@@ -2,7 +2,7 @@ package com.springboot.project.test.controller.OrganizeController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +17,8 @@ public class OrganizeControllerGetOrganizeByIdTest extends BaseTest {
     private String organizeId;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/organize").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.getForEntity(url, OrganizeModel.class);

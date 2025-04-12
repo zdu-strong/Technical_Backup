@@ -1,6 +1,5 @@
 package com.springboot.project.test.common.ResourceUtil;
 
-import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ public class ResourceUtilSetContentTypeByMultipartRangeTest extends BaseTest {
     private HttpHeaders httpHeaders;
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         this.resourceHttpHeadersUtil.setContentType(httpHeaders, this.storage.getResourceFromRequest(request), request);
         Assertions
                 .assertTrue(this.httpHeaders.getContentType().toString().startsWith("multipart/byteranges;boundary="));

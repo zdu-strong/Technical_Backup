@@ -2,17 +2,14 @@ package com.springboot.project.test.websocket.UserMessageWebSocket;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketReceiveModel;
@@ -28,8 +25,8 @@ public class UserMessageWebSocketTest extends BaseTest {
     private ReplayProcessor<UserMessageWebSocketReceiveModel> webSocketSendProcessor = ReplayProcessor.create(100);
 
     @Test
-    public void test() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
-            JsonProcessingException {
+    @SneakyThrows
+    public void test() {
         URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
                 .setPath("/web-socket/user-message")
                 .setParameter("accessToken", this.user.getAccessToken())
@@ -56,7 +53,7 @@ public class UserMessageWebSocketTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.user = this.createAccount(email);
         var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");

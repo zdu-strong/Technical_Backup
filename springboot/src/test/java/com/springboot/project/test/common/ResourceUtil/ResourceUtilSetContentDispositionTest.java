@@ -2,7 +2,6 @@ package com.springboot.project.test.common.ResourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ public class ResourceUtilSetContentDispositionTest extends BaseTest {
     private HttpHeaders httpHeaders;
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         this.resourceHttpHeadersUtil.setContentDisposition(httpHeaders, ContentDisposition.inline(),
                 this.storage.getResourceFromRequest(request), request);
         assertEquals("inline; filename=\"=?UTF-8?Q?default.jpg?=\"; filename*=UTF-8''default.jpg",

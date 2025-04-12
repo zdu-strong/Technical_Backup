@@ -1,8 +1,8 @@
 package com.springboot.project.test.controller.UserRoleController;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.net.URISyntaxException;
 import java.util.List;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,8 @@ public class UserRoleControllerCreateTest extends BaseTest {
     private UserModel user;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var body = new RoleModel();
         body.setName("Manager");
         body.setOrganizeList(JinqStream.from(user.getRoleList())
@@ -35,7 +36,7 @@ public class UserRoleControllerCreateTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.user = this.createAccountOfCompanyAdmin(email);
     }

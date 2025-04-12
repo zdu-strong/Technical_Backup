@@ -2,18 +2,18 @@ package com.springboot.project.test.common.Storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.io.IOException;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class StorageGetResoureUrlFromResourcePathTest extends BaseTest {
     private String resoucePath;
 
     @Test
-    public void test() throws IOException {
+    @SneakyThrows
+    public void test() {
         String resourceUrl = this.storage.getResoureUrlFromResourcePath(resoucePath);
         assertNotNull(resourceUrl);
         this.request.setRequestURI(resourceUrl);

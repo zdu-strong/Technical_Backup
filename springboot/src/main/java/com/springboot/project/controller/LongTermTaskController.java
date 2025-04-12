@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.LongTermTaskModel;
@@ -54,9 +53,6 @@ public class LongTermTaskController extends BaseController {
      * this.longTermTaskUtil.run(()->{});). And then call this api for polling to
      * obtain the execution results.
      * 
-     * @param id
-     * @return
-     * @throws JsonProcessingException
      */
     @GetMapping("/long-term-task")
     @SneakyThrows

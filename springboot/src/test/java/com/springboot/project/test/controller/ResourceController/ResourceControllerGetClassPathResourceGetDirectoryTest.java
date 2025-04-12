@@ -1,9 +1,8 @@
 package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,7 @@ public class ResourceControllerGetClassPathResourceGetDirectoryTest extends Base
     private String pathName;
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         var response = this.testRestTemplate.getForEntity(url, String[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(13, response.getHeaders().getContentLength());
@@ -30,7 +29,8 @@ public class ResourceControllerGetClassPathResourceGetDirectoryTest extends Base
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         var relativeUrl = this.storage.storageResource(new ClassPathResource("email/email.xml")).getRelativeUrl();
         this.pathName = JinqStream.from(new URIBuilder(relativeUrl).getPathSegments())
                 .skip(1)

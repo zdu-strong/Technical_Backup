@@ -1,12 +1,11 @@
 package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,8 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
     private List<String> urlList;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var urlOfResource = this.fromLongTermTask(sneaky(() -> {
             var urlOfMerge = new URIBuilder("/upload/merge").build();
             return testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
@@ -46,7 +46,8 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    @SneakyThrows
+    public void beforeEach() {
         var imageResource = new ClassPathResource("image/default.jpg");
         var everySize = 100;
         this.urlList = Flowable

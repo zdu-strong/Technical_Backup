@@ -1,11 +1,9 @@
 package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
-
 import com.google.common.collect.Lists;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
@@ -25,7 +22,8 @@ public class ResourceControllerDownloadResourceCorrectETagTest extends BaseTest 
     private String etag;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         URI url = new URIBuilder(resourceUrl).build();
         var httpHeaders = new HttpHeaders();
         httpHeaders.setRange(Lists.newArrayList(new HttpRange() {
@@ -65,7 +63,8 @@ public class ResourceControllerDownloadResourceCorrectETagTest extends BaseTest 
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         var storageFileModel = this.storage
                 .storageResource(new ClassPathResource("image/default.jpg"));
         this.resourceUrl = storageFileModel.getRelativeDownloadUrl();

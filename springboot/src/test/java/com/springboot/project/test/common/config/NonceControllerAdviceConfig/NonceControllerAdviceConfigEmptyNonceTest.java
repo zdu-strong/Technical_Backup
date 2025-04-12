@@ -2,9 +2,10 @@ package com.springboot.project.test.common.config.NonceControllerAdviceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
+
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
@@ -23,7 +24,8 @@ public class NonceControllerAdviceConfigEmptyNonceTest extends BaseTest {
     private String timestamp;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         URI url = new URIBuilder("/").build();
         var httpHeaders = new HttpHeaders();
         httpHeaders.set("X-Nonce", nonce);
@@ -36,7 +38,8 @@ public class NonceControllerAdviceConfigEmptyNonceTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         this.nonce = UUID.randomUUID().toString();
         this.timestamp = FastDateFormat.getInstance(this.dateFormatProperties.getUTC()).format(new Date());
         URI url = new URIBuilder("/").build();

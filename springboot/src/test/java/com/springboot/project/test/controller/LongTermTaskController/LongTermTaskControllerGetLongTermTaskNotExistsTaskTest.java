@@ -1,7 +1,7 @@
 package com.springboot.project.test.controller.LongTermTaskController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,8 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class LongTermTaskControllerGetLongTermTaskNotExistsTaskTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/long-term-task")
                 .setParameter("encryptedId", this.encryptDecryptService
                         .encryptByAES(Generators.timeBasedReorderedGenerator().generate().toString()))

@@ -1,21 +1,17 @@
 package com.springboot.project.test.controller.AuthorizationAlipayController;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class AuthorizationAlipayControllerGenerateQrCodeTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/sign-in/alipay/generate-qr-code").build();
         var response = this.testRestTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

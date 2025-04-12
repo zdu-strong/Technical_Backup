@@ -1,7 +1,6 @@
 package com.springboot.project.test.service.UserMessageService;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,7 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class UserMessageServiceGetUserMessageByPaginationTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var userMessagePagination = this.userMessageService.getUserMessageByPagination(1L, 1L, request);
         var message = JinqStream.from(userMessagePagination.getItems()).getOnlyValue();
         assertEquals(1, userMessagePagination.getItems().size());

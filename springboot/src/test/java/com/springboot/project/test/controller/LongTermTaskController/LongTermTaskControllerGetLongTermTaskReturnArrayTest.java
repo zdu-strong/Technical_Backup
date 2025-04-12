@@ -1,7 +1,7 @@
 package com.springboot.project.test.controller.LongTermTaskController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +13,8 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class LongTermTaskControllerGetLongTermTaskReturnArrayTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var result = this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
             var httpHeaders = new HttpHeaders();
             httpHeaders.addAll("MyCustomHeader", Lists.newArrayList("Hello, World!"));

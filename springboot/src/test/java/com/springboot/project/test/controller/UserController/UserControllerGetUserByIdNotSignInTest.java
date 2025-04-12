@@ -1,7 +1,7 @@
 package com.springboot.project.test.controller.UserController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,8 @@ public class UserControllerGetUserByIdNotSignInTest extends BaseTest {
     private String userId;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/user").setParameter("id", userId).build();
         var response = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -22,7 +23,7 @@ public class UserControllerGetUserByIdNotSignInTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         this.userId = Generators.timeBasedReorderedGenerator().generate().toString();
     }
 

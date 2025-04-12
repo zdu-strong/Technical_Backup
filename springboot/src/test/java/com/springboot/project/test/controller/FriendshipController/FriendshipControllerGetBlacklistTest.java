@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
@@ -29,7 +27,8 @@ public class FriendshipControllerGetBlacklistTest extends BaseTest {
     private UserModel friend;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         URI url = new URIBuilder("/friendship/get-blacklist")
                 .setParameter("pageNum", String.valueOf(1))
                 .setParameter("pageSize", String.valueOf(20))
@@ -64,7 +63,8 @@ public class FriendshipControllerGetBlacklistTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws NoSuchAlgorithmException, InvalidKeySpecException, URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         var userEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         var friendEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.friend = this.createAccount(friendEmail);

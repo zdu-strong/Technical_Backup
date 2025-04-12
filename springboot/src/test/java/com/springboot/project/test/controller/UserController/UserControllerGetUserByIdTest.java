@@ -3,7 +3,7 @@ package com.springboot.project.test.controller.UserController;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,8 @@ public class UserControllerGetUserByIdTest extends BaseTest {
     private String userId;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/user").setParameter("id", userId).build();
         var response = this.testRestTemplate.getForEntity(url, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -33,7 +34,7 @@ public class UserControllerGetUserByIdTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.userId = this.createAccount(email).getId();
     }

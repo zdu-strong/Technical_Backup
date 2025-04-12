@@ -1,8 +1,11 @@
 package com.springboot.project.test.common.Game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -12,7 +15,8 @@ import com.badlogic.gdx.math.Matrix4;
 public class GameRotateBoxOfGdxTest extends BaseTest {
 
     @Test
-    public void test() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    @SneakyThrows
+    public void test() {
         var box = new BoundingBox(new Vector3(0, 0, 0), new Vector3(2, 2, 2));
         {
             /* Move the center of the BoundingBox to the midpoint of the coordinate system, then rotate, and move the BoudingBox to its original position after the rotation */

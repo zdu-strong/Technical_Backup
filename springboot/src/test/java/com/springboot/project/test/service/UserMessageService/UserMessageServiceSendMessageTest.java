@@ -1,12 +1,8 @@
 package com.springboot.project.test.service.UserMessageService;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
@@ -16,7 +12,7 @@ public class UserMessageServiceSendMessageTest extends BaseTest {
     private UserMessageModel userMessage;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.userMessageService.sendMessage(userMessage);
         assertEquals(36, result.getId().length());
         assertEquals("Hello, World!", result.getContent());

@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
@@ -23,7 +21,8 @@ public class UserControllerGetUserInfoTest extends BaseTest {
     private String email;
 
     @Test
-    public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/get-user-info").build();
         var response = this.testRestTemplate.getForEntity(url, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -45,7 +44,8 @@ public class UserControllerGetUserInfoTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws InvalidKeySpecException, NoSuchAlgorithmException, URISyntaxException {
+    @SneakyThrows
+    public void beforeEach() {
         this.email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.user = this.createAccount(email);
     }

@@ -3,9 +3,10 @@ package com.springboot.project.test.common.config.LoggerAppenderConfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 public class LoggerAppenderConfigTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         log.error("Hello, World!", new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Hello, World!"));
         var result = Flowable.interval(1, TimeUnit.MILLISECONDS)
                 .map(s -> this.loggerService.searchByPagination(1, 1, ""))

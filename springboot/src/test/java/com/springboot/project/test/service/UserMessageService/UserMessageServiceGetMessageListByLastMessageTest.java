@@ -1,7 +1,6 @@
 package com.springboot.project.test.service.UserMessageService;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,7 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class UserMessageServiceGetMessageListByLastMessageTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.userMessageService.getMessageListByLastMessage(1L, request);
         assertEquals(1, result.getTotalPages());
         var message = JinqStream.from(result.getItems()).getOnlyValue();

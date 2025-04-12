@@ -1,10 +1,7 @@
 package com.springboot.project.test.controller.AuthorizationEmailController;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,8 @@ public class AuthorizationEmailControllerSendVerificationCodeIncorrectFormatOfEm
     private String email;
 
     @Test
-    public void test() throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/email/send-verification-code").setParameter("email", email).build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 Throwable.class);

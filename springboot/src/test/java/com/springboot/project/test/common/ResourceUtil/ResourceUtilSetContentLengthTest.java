@@ -1,7 +1,7 @@
 package com.springboot.project.test.common.ResourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.io.IOException;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -15,7 +15,8 @@ public class ResourceUtilSetContentLengthTest extends BaseTest {
     private Resource resource;
 
     @Test
-    public void test() throws IOException {
+    @SneakyThrows
+    public void test() {
         this.resourceHttpHeadersUtil.setContentLength(httpHeaders, resource.contentLength(), request);
         assertEquals(9287, this.httpHeaders.getContentLength());
     }

@@ -1,6 +1,5 @@
 package com.springboot.project.test.service.UserEmailService;
 
-import java.net.URISyntaxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
@@ -12,7 +11,7 @@ public class UserEmailServiceCreateUserEmailTest extends BaseTest {
     private String email;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         this.userEmailService.createUserEmail(this.email, this.user.getId());
     }
 

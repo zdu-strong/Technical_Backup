@@ -7,12 +7,11 @@ import org.springframework.http.ResponseEntity;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import java.net.URISyntaxException;
 
 public class LongTermTaskUtilTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
             return ResponseEntity.ok().build();
         }), new ParameterizedTypeReference<Void>() {

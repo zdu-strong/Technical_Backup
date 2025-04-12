@@ -1,7 +1,7 @@
 package com.springboot.project.test.controller.UserMessageController;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.net.URISyntaxException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,8 @@ public class UserMessageControllerSendMessageTest extends BaseTest {
     private String username;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/user-message/send").build();
         var body = new UserMessageModel();
         body.setUser(new UserModel().setId(userId));
@@ -33,7 +34,7 @@ public class UserMessageControllerSendMessageTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.username = email;
         this.userId = this.createAccount(email).getId();

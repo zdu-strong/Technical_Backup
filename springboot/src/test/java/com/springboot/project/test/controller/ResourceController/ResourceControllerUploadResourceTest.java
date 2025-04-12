@@ -1,23 +1,21 @@
 package com.springboot.project.test.controller.ResourceController;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
-
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceControllerUploadResourceTest extends BaseTest {
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         var url = new URIBuilder("/upload/resource").build();
         var body = new LinkedMultiValueMap<Object, Object>();
         body.add("file", new ClassPathResource("image/default.jpg"));

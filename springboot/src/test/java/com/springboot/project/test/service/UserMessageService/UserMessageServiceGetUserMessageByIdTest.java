@@ -1,13 +1,9 @@
 package com.springboot.project.test.service.UserMessageService;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.net.URISyntaxException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
@@ -17,7 +13,7 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
     private UserMessageModel userMessage;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.userMessageService.getUserMessageById(this.userMessage.getId(),
                 this.userMessage.getUser().getId());
         assertEquals(this.userMessage.getId(), result.getId());

@@ -2,8 +2,9 @@ package com.springboot.project.test.common.config.NonceControllerAdviceConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
+
+import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,8 @@ public class NonceControllerAdviceConfigInvalidTimestampTest extends BaseTest {
     private String timestamp;
 
     @Test
-    public void test() throws URISyntaxException {
+    @SneakyThrows
+    public void test() {
         URI url = new URIBuilder("/").build();
         var httpHeaders = new HttpHeaders();
         httpHeaders.set("X-Nonce", nonce);
@@ -31,7 +33,7 @@ public class NonceControllerAdviceConfigInvalidTimestampTest extends BaseTest {
     }
 
     @BeforeEach
-    public void beforeEach() throws URISyntaxException {
+    public void beforeEach() {
         this.nonce = UUID.randomUUID().toString();
         this.timestamp = "Invalid Timestamp";
     }

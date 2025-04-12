@@ -2,7 +2,6 @@ package com.springboot.project.test.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ public class UserServiceGetUserByIdTest extends BaseTest {
     private UserModel user;
 
     @Test
-    public void test() throws URISyntaxException {
+    public void test() {
         var result = this.userService.getUser(user.getId());
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertTrue(StringUtils.isNotBlank(result.getUsername()));
