@@ -26,6 +26,7 @@ public class ResourceControllerGetRangeClassPathResourceGetDirectoryTest extends
     private String pathName;
 
     @Test
+    @SneakyThrows
     public void test() {
         var httpHeaders = new HttpHeaders();
         httpHeaders.setRange(Lists.newArrayList(HttpRange.createByteRange(0, 10)));
