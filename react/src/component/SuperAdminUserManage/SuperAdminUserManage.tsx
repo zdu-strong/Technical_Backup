@@ -13,6 +13,8 @@ import { FormattedMessage } from "react-intl";
 import { PaginationModel } from "@/model/PaginationModel";
 import { MessageService } from "@/common/MessageService";
 import { SuperAdminUserQueryPaginationModel } from "@/model/SuperAdminUserQueryPaginationModel";
+import { from, ReplaySubject } from "rxjs";
+import { exhaustMapWithTrailing } from "rxjs-exhaustmap-with-trailing";
 
 export default observer(() => {
 
@@ -21,6 +23,7 @@ export default observer(() => {
     loading: true,
     error: null as any,
     query: new SuperAdminUserQueryPaginationModel(),
+    querySubject: new ReplaySubject<String>(1),
     userPaginationModel: new PaginationModel<UserModel>(),
     columns: [
       {
@@ -58,24 +61,29 @@ export default observer(() => {
     dataGridRef: useGridApiRef(),
   });
 
-  useMount(async () => {
+  useMount(async (subscription) => {
+    subscription.add(state.querySubject.pipe(
+      exhaustMapWithTrailing(() => from((async () => {
+        try {
+          state.loading = true;
+          state.userPaginationModel = await api.SuperAdminUserQuery.searchByPagination(state.query);
+          state.loading = false;
+          state.ready = true;
+        } catch (e) {
+          state.error = e;
+          if (state.ready) {
+            MessageService.error(e);
+          }
+        } finally {
+          state.loading = false;
+        }
+      })()))
+    ).subscribe());
     await searchByPagination();
   })
 
   async function searchByPagination() {
-    try {
-      state.loading = true;
-      state.userPaginationModel = await api.SuperAdminUserQuery.searchByPagination(state.query);
-      state.loading = false;
-      state.ready = true;
-    } catch (e) {
-      state.error = e;
-      if (state.ready) {
-        MessageService.error(e);
-      }
-    } finally {
-      state.loading = false;
-    }
+    state.querySubject.next("")
   }
 
   return <LoadingOrErrorComponent ready={state.ready} error={!state.ready && state.error}>
