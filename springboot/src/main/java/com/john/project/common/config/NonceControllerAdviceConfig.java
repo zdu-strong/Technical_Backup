@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.john.project.constant.NonceConstant;
@@ -24,7 +24,7 @@ import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ControllerAdvice
+@RestControllerAdvice
 public class NonceControllerAdviceConfig {
 
     @Autowired
