@@ -147,13 +147,8 @@ public class UserService extends BaseService {
     @Transactional(readOnly = true)
     public void checkValidEmailForSignUp(UserModel userModel) {
         for (var userEmail : userModel.getUserEmailList()) {
-            if (StringUtils.isBlank(userEmail.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
-            }
-
-            if (!Validator.isEmail(userEmail.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
-            }
+            this.validationFieldUtil.checkNotBlankOfEmail(userEmail.getEmail());
+            this.validationFieldUtil.checkCorrectFormatOfEmail(userEmail.getEmail());
 
             if (StringUtils.isBlank(userEmail.getVerificationCodeEmail().getVerificationCode())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

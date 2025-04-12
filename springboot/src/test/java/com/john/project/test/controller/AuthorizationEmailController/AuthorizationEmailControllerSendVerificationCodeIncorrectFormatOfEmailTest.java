@@ -20,7 +20,7 @@ public class AuthorizationEmailControllerSendVerificationCodeIncorrectFormatOfEm
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(null),
                 Throwable.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Email is invalid", response.getBody().getMessage());
+        assertEquals("Invalid email format", response.getBody().getMessage());
     }
 
     @BeforeEach
