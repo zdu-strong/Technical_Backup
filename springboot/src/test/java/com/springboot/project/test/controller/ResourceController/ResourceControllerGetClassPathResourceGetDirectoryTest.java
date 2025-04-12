@@ -18,6 +18,7 @@ public class ResourceControllerGetClassPathResourceGetDirectoryTest extends Base
     private String pathName;
 
     @Test
+    @SneakyThrows
     public void test() {
         var response = this.testRestTemplate.getForEntity(url, String[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
