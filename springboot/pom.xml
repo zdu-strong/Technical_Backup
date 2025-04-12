@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <groupId>com.springboot</groupId>
+    <groupId>com.john</groupId>
     <artifactId>project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>project</name>
@@ -17,7 +17,7 @@
         <database.username>root</database.username>
         <database.password>123456</database.password>
         <database.driver>com.mysql.cj.jdbc.Driver</database.driver>
-        <database.platform>com.springboot.project.common.database.CustomMySQLDialect</database.platform>
+        <database.platform>com.john.project.common.database.CustomMySQLDialect</database.platform>
         <storage.cloud.aliyun.enabled>false</storage.cloud.aliyun.enabled>
         <storage.cloud.aliyun.endpoint></storage.cloud.aliyun.endpoint>
         <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
