@@ -12,6 +12,7 @@ import SuperAdminUserDetailButton from "@/component/SuperAdminUserManage/SuperAd
 import { FormattedMessage } from "react-intl";
 import { PaginationModel } from "@/model/PaginationModel";
 import { MessageService } from "@/common/MessageService";
+import { SuperAdminUserQueryPaginationModel } from "@/model/SuperAdminUserQueryPaginationModel";
 
 export default observer(() => {
 
@@ -19,7 +20,8 @@ export default observer(() => {
     ready: false,
     loading: true,
     error: null as any,
-    userPaginationModel: null as any as PaginationModel<UserModel>,
+    query: new SuperAdminUserQueryPaginationModel(),
+    userPaginationModel: new PaginationModel<UserModel>(),
     columns: [
       {
         headerName: 'ID',
@@ -63,7 +65,7 @@ export default observer(() => {
   async function searchByPagination() {
     try {
       state.loading = true;
-      state.userPaginationModel = await api.SuperAdminUserQuery.searchByPagination();
+      state.userPaginationModel = await api.SuperAdminUserQuery.searchByPagination(state.query);
       state.loading = false;
       state.ready = true;
     } catch (e) {
@@ -91,10 +93,15 @@ export default observer(() => {
         <AutoSizer>
           {({ width, height }) => <Box width={Math.max(width, 100)} height={Math.max(height, 100)}>
             <DataGrid
-              apiRef={state.dataGridRef}
-              sortingMode="server"
               rows={state.userPaginationModel.items}
               rowCount={state.userPaginationModel.totalRecords}
+              onPaginationModelChange={(s) => {
+                state.query.pageNum = Math.max(s.page, 1);
+                state.query.pageSize = Math.max(s.pageSize, 1);
+                searchByPagination();
+              }}
+              apiRef={state.dataGridRef}
+              sortingMode="server"
               paginationMode="server"
               getRowId={(s) => s.id}
               columns={state.columns}
