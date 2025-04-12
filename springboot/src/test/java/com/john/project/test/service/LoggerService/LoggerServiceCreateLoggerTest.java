@@ -27,11 +27,11 @@ public class LoggerServiceCreateLoggerTest extends BaseTest {
         assertEquals("java.lang.RuntimeException", result.getExceptionClassName());
         assertEquals("Bug", result.getExceptionMessage());
         assertTrue(List.of(73,74).contains(result.getExceptionStackTrace().size()));
-        assertEquals("com.springboot.project.controller.HelloWorldController", result.getLoggerName());
+        assertEquals("com.john.project.controller.HelloWorldController", result.getLoggerName());
         assertEquals(this.gitProperties.getCommitId(), result.getGitCommitId());
         assertEquals(Date.from(this.gitProperties.getCommitTime()), result.getGitCommitDate());
         assertNotNull(result.getCreateDate());
-        assertEquals("com.springboot.project.controller.HelloWorldController", result.getCallerClassName());
+        assertEquals("com.john.project.controller.HelloWorldController", result.getCallerClassName());
         assertEquals("helloWorld", result.getCallerMethodName());
         assertEquals(15, result.getCallerLineNumber());
     }
@@ -46,10 +46,10 @@ public class LoggerServiceCreateLoggerTest extends BaseTest {
                         .select(s -> s.toString())
                         .select(s -> "at " + s)
                         .toList())
-                .setLoggerName("com.springboot.project.controller.HelloWorldController")
+                .setLoggerName("com.john.project.controller.HelloWorldController")
                 .setGitCommitId(this.gitProperties.getCommitId())
                 .setGitCommitDate(Date.from(this.gitProperties.getCommitTime()))
-                .setCallerClassName("com.springboot.project.controller.HelloWorldController")
+                .setCallerClassName("com.john.project.controller.HelloWorldController")
                 .setCallerMethodName("helloWorld")
                 .setCallerLineNumber(15L);
     }

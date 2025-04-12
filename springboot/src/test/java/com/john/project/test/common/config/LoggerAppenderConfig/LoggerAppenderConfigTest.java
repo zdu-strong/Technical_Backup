@@ -43,9 +43,9 @@ public class LoggerAppenderConfigTest extends BaseTest {
         assertEquals("test", result.getCallerMethodName());
         assertEquals(26, result.getCallerLineNumber());
         assertEquals(Level.ERROR.levelStr, result.getLevel());
-        assertEquals("com.springboot.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
+        assertEquals("com.john.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
                 result.getLoggerName());
-        assertEquals("com.springboot.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
+        assertEquals("com.john.project.test.common.config.LoggerAppenderConfig.LoggerAppenderConfigTest",
                 result.getCallerClassName());
     }
 
