@@ -18,6 +18,7 @@ public class RoleController extends BaseController {
         this.validationFieldUtil.checkNotEmptyOfPermissionList(roleModel);
         this.roleService.checkCanCreateUserRole(roleModel, request);
         this.roleService.checkCanCreateOrganizeRole(roleModel, request);
+        this.roleService.fillOfOrganizeList(roleModel);
 
         var roleOneModel = this.roleService.create(
                 roleModel.getName(),

@@ -129,4 +129,11 @@ public class RoleService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public void fillOfOrganizeList(RoleModel roleModel) {
+        if (CollectionUtils.isEmpty(roleModel.getOrganizeList())) {
+            roleModel.setOrganizeList(List.of());
+        }
+    }
+
 }

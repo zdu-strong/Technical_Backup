@@ -8,20 +8,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.List;
-import java.util.Objects;
 
 @Component
 public class ValidationFieldUtil {
 
     public void checkNotBlankOfUsername(String username) {
         if (StringUtils.isBlank(username)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in nickname");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "username cannot be blank");
         }
     }
 
     public void checkNotEdgesSpaceOfUsername(String username) {
-        if (Objects.isNull(username)) {
+        if (StringUtils.isEmpty(username)) {
             return;
         }
         if (username.trim().length() != username.length()) {
@@ -31,43 +29,37 @@ public class ValidationFieldUtil {
 
     public void checkNotBlankOfUserMessageContent(UserMessageModel userMessageModel) {
         if (StringUtils.isBlank(userMessageModel.getUrl()) && StringUtils.isBlank(userMessageModel.getContent())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the message content");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "message cannot be blank");
         }
     }
 
     public void checkNotBlankOfPassword(String password) {
         if (StringUtils.isBlank(password)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in password");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password cannot be blank");
         }
     }
 
     public void checkNotBlankOfRoleName(String roleName) {
         if (StringUtils.isBlank(roleName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in roleName");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "roleName cannot be blank");
         }
     }
 
     public void checkNotEmptyOfPermissionList(RoleModel roleModel) {
         if (CollectionUtils.isEmpty(roleModel.getPermissionList())) {
-            roleModel.setPermissionList(List.of());
-        }
-        if (CollectionUtils.isEmpty(roleModel.getOrganizeList())) {
-            roleModel.setOrganizeList(List.of());
-        }
-        if (roleModel.getPermissionList().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Permission list cannot be empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "permissionList cannot be empty");
         }
     }
 
     public void checkNotBlankOfId(String id) {
         if (StringUtils.isBlank(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id cannot be null");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id cannot be blank");
         }
     }
 
     public void checkNotBlankOfEmail(String email) {
         if (StringUtils.isBlank(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email cannot be blank");
         }
     }
 
@@ -76,7 +68,7 @@ public class ValidationFieldUtil {
             return;
         }
         if (!Validator.isEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is invalid");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email format");
         }
     }
 

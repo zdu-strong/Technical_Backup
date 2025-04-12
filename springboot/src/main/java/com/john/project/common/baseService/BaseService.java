@@ -1,6 +1,7 @@
 package com.john.project.common.baseService;
 
 import com.google.cloud.spanner.AbortedDueToConcurrentModificationException;
+import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import io.grpc.StatusRuntimeException;
 import org.hibernate.exception.GenericJDBCException;
 import org.jinq.jpa.JPAJinqStream;
@@ -69,6 +70,9 @@ public abstract class BaseService {
 
     @Autowired
     protected TimeZoneUtil timeZoneUtil;
+
+    @Autowired
+    protected ValidationFieldUtil validationFieldUtil;
 
     @Autowired
     protected DateFormatProperties dateFormatProperties;

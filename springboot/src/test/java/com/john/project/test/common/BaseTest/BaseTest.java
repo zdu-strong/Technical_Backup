@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import com.john.project.model.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -114,6 +115,9 @@ public class BaseTest {
 
     @MockitoSpyBean
     protected DistributedExecutionUtil distributedExecutionUtil;
+
+    @Autowired
+    protected ValidationFieldUtil validationFieldUtil;
 
     @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
