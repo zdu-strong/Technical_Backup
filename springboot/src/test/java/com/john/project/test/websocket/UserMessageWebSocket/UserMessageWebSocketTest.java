@@ -56,8 +56,8 @@ public class UserMessageWebSocketTest extends BaseTest {
     public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
         this.user = this.createAccount(email);
-        var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
-        this.userMessageService.sendMessage(userMessage);
+        var userMessage = new UserMessageModel().setContent("Hello, World!");
+        this.userMessageService.sendMessage(userMessage, request);
     }
 
 }

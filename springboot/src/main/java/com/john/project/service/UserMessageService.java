@@ -25,8 +25,8 @@ public class UserMessageService extends BaseService {
     @Autowired
     private UserMessageDeactivateService userMessageDeactivateService;
 
-    public UserMessageModel sendMessage(UserMessageModel userMessageModel) {
-        var userId = userMessageModel.getUser().getId();
+    public UserMessageModel sendMessage(UserMessageModel userMessageModel, HttpServletRequest request) {
+        var userId = this.permissionUtil.getUserId(request);
         var userEntity = this.streamAll(UserEntity.class)
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
@@ -110,11 +110,6 @@ public class UserMessageService extends BaseService {
                 .setTotalPages(pagination.getTotalPages())
                 .setItems(pagination.getItems());
         return userMessageWebSocketSendModel;
-    }
-
-    @Transactional(readOnly = true)
-    public void checkNotNullOfUserOfUserMessage(UserMessageModel userMessageModel, HttpServletRequest request) {
-        userMessageModel.setUser(new UserModel().setId(this.permissionUtil.getUserId(request)));
     }
 
     @Transactional(readOnly = true)

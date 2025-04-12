@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
 import com.john.project.model.UserMessageModel;
-import com.john.project.model.UserModel;
 import com.john.project.test.common.BaseTest.BaseTest;
 
 public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
@@ -30,8 +29,8 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         var userId = this
                 .createAccount(Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com")
                 .getId();
-        var userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
-        var message = this.userMessageService.sendMessage(userMessage);
+        var userMessage = new UserMessageModel().setContent("Hello, World!");
+        var message = this.userMessageService.sendMessage(userMessage, request);
         assertEquals(36, message.getId().length());
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());

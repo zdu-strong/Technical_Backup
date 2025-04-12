@@ -16,9 +16,8 @@ public class UserMessageController extends BaseController {
     public ResponseEntity<?> sendMessage(@RequestBody UserMessageModel userMessageModel) {
         this.permissionUtil.checkIsSignIn(request);
         this.userMessageService.checkCannotEmptyUserMessageContent(userMessageModel);
-        this.userMessageService.checkNotNullOfUserOfUserMessage(userMessageModel, request);
 
-        var userMessage = this.userMessageService.sendMessage(userMessageModel);
+        var userMessage = this.userMessageService.sendMessage(userMessageModel, request);
         return ResponseEntity.ok(userMessage);
     }
 

@@ -1,9 +1,11 @@
 package com.john.project.test.scheduled.MessageScheduled;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
+
 import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
@@ -15,6 +17,7 @@ import com.john.project.model.UserMessageModel;
 import com.john.project.model.UserMessageWebSocketSendModel;
 import com.john.project.model.UserModel;
 import com.john.project.test.common.BaseTest.BaseTest;
+
 import static eu.ciechanowiec.sneakyfun.SneakyFunction.sneaky;
 
 public class MessageScheduledTest extends BaseTest {
@@ -39,8 +42,8 @@ public class MessageScheduledTest extends BaseTest {
         {
             var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
             this.user = this.createAccount(email);
-            var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
-            this.userMessageService.sendMessage(userMessage);
+            var userMessage = new UserMessageModel().setContent("Hello, World!");
+            this.userMessageService.sendMessage(userMessage, request);
         }
         {
             URI url = new URIBuilder(this.serverAddressProperties.getWebSocketServerAddress())
@@ -49,14 +52,14 @@ public class MessageScheduledTest extends BaseTest {
                     .build();
             var userMessageResultList = new ArrayList<UserMessageWebSocketSendModel>();
             new StandardWebSocketClient().execute(url, (session) -> session
-                    .receive()
-                    .map(sneaky((s) -> {
-                        userMessageResultList
-                                .add(this.objectMapper.readValue(s.getPayloadAsText(),
-                                        UserMessageWebSocketSendModel.class));
-                        return session.close();
-                    }))
-                    .then())
+                            .receive()
+                            .map(sneaky((s) -> {
+                                userMessageResultList
+                                        .add(this.objectMapper.readValue(s.getPayloadAsText(),
+                                                UserMessageWebSocketSendModel.class));
+                                return session.close();
+                            }))
+                            .then())
                     .block(Duration.ofMinutes(1));
             assertEquals(1, userMessageResultList.size());
             assertEquals(1, JinqStream.from(userMessageResultList).select(s -> s.getTotalPages()).getOnlyValue());

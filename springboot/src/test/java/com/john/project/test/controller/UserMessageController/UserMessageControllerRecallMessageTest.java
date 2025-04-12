@@ -10,12 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.uuid.Generators;
 import com.john.project.model.UserMessageModel;
-import com.john.project.model.UserModel;
 import com.john.project.test.common.BaseTest.BaseTest;
 
 public class UserMessageControllerRecallMessageTest extends BaseTest {
     private String id;
-    private String userId;
 
     @Test
     @SneakyThrows
@@ -28,9 +26,9 @@ public class UserMessageControllerRecallMessageTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var email = Generators.timeBasedReorderedGenerator().generate().toString() + "@gmail.com";
-        this.userId = this.createAccount(email).getId();
-        var userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
-        this.id = this.userMessageService.sendMessage(userMessage).getId();
+        this.createAccount(email);
+        var userMessage = new UserMessageModel().setContent("Hello, World!");
+        this.id = this.userMessageService.sendMessage(userMessage, request).getId();
     }
 
 }
