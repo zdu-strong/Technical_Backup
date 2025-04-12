@@ -71,7 +71,7 @@ public class ValidationFieldUtil {
         }
     }
 
-    public void checkNotCorrectFormatOfEmail(String email) {
+    public void checkCorrectFormatOfEmail(String email) {
         if(StringUtils.isEmpty(email)){
             return;
         }
