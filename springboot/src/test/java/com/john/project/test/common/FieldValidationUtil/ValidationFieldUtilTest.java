@@ -21,7 +21,7 @@ public class ValidationFieldUtilTest extends BaseTest {
             validationFieldUtil.checkNotBlankOfId(id);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exceptException.getStatusCode());
-        assertEquals("400 BAD_REQUEST \"id cannot be blank\"", exceptException.getMessage());
+        assertEquals("id cannot be blank", exceptException.getReason());
     }
 
     @BeforeEach
