@@ -20,8 +20,8 @@ export default observer(() => {
     try {
       await loadServerGitInfo();
       state.ready = true;
-    } catch {
-      state.error = new Error("Network Error");
+    } catch (e){
+      state.error = e;
     }
   })
 
