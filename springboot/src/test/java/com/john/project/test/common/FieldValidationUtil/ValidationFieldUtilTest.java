@@ -5,7 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ValidationFieldUtilTest extends BaseTest {
@@ -14,9 +17,11 @@ public class ValidationFieldUtilTest extends BaseTest {
 
     @Test
     public void test() {
-        Assertions.assertThrowsExactly(ResponseStatusException.class, () -> {
+        var exceptException = Assertions.assertThrowsExactly(ResponseStatusException.class, () -> {
             validationFieldUtil.checkNotBlankOfId(id);
         });
+        assertEquals(HttpStatus.BAD_REQUEST, exceptException.getStatusCode());
+        assertEquals("400 BAD_REQUEST \"id cannot be blank\"", exceptException.getMessage());
     }
 
     @BeforeEach
