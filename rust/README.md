@@ -3,7 +3,7 @@
 Rust is a programming language focusing on performance and safety. It emerged to tackle C/C++ problems, such as memory errors and difficulties with developing concurrent programs. Rust worked so well that leading software companies like Microsoft, Google, Facebook, Discord, and many others nowadays use Rust for operation systems, browser engines, web services, and other system programming tasks. If you have any questions, please contact zdu.strong@gmail.com.
 
 ## Development environment setup
-1. From https://code.visualstudio.com install Visual Studio Code. Next, install extension "rust-analyzer".<br/>
+1. From https://www.jetbrains.com/rust install RustRover.<br/>
 2. From https://www.rust-lang.org/learn/get-started install Rust.<br/>
 
 ## Available Scripts
