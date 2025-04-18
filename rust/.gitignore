@@ -30,3 +30,4 @@
 ### Visual Studio code ###
 /Cargo.lock
 /target
+/.vscode/
