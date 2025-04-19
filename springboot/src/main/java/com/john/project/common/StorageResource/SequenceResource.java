@@ -19,7 +19,7 @@ public class SequenceResource extends AbstractResource {
      * The resources to be concatenated.
      */
     private final Iterable<Resource> resources;
-    private String fileName;
+    private final String fileName;
 
     /**
      * Creates a new SequenceResource as the logical concatenation of the given
