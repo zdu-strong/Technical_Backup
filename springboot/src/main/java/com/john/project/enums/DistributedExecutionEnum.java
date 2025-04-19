@@ -114,17 +114,17 @@ public enum DistributedExecutionEnum {
             });
 
     @Getter
-    private String value;
+    private final String value;
 
     @Getter
-    private Duration theIntervalBetweenTwoExecutions;
+    private final Duration theIntervalBetweenTwoExecutions;
 
     @Getter
-    private long maxNumberOfParallel;
+    private final long maxNumberOfParallel;
 
-    private Supplier<PaginationModel<?>> callbackOfGetPagination;
+    private final Supplier<PaginationModel<?>> callbackOfGetPagination;
 
-    private Consumer<Long> callbackOfExecuteTask;
+    private final Consumer<Long> callbackOfExecuteTask;
 
     public PaginationModel<?> getPagination() {
         return this.callbackOfGetPagination.get();
