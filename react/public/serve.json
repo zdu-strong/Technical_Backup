@@ -1,3 +1,14 @@
 {
-  "cleanUrls": false
+  "cleanUrls": false,
+  "headers": [
+    {
+      "source": "**",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, must-revalidate, no-transform, private"
+        }
+      ]
+    }
+  ]
 }
