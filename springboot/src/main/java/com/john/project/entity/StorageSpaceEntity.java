@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(indexes = {
-        @Index(columnList = "createDate, id")
+        @Index(columnList = "createDate, id", unique = true)
 })
 public class StorageSpaceEntity {
 
@@ -31,8 +31,5 @@ public class StorageSpaceEntity {
 
     @Column(nullable = false)
     private Date updateDate;
-
-    @Column(nullable = false)
-    private Boolean isDeleted;
 
 }

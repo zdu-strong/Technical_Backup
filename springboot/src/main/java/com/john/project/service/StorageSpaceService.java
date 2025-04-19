@@ -59,14 +59,12 @@ public class StorageSpaceService extends BaseService {
     public boolean hasValid(String folderName) {
         return this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
-                .where(s -> !s.getIsDeleted())
                 .exists();
     }
 
     public void update(String folderName) {
         var storageSpaceOptional = this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
-                .where(s -> !s.getIsDeleted())
                 .findOne();
         if (storageSpaceOptional.isEmpty()) {
             return;
@@ -86,11 +84,8 @@ public class StorageSpaceService extends BaseService {
         }
         for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
-                .where(s -> !s.getIsDeleted())
                 .toList()) {
-            storageSpaceEntity.setIsDeleted(true);
-            storageSpaceEntity.setUpdateDate(new Date());
-            this.merge(storageSpaceEntity);
+            this.remove(storageSpaceEntity);
         }
     }
 
@@ -113,7 +108,6 @@ public class StorageSpaceService extends BaseService {
         storageSpaceEntity.setFolderName(folderName);
         storageSpaceEntity.setCreateDate(new Date());
         storageSpaceEntity.setUpdateDate(new Date());
-        storageSpaceEntity.setIsDeleted(false);
         this.persist(storageSpaceEntity);
     }
 
@@ -127,7 +121,6 @@ public class StorageSpaceService extends BaseService {
         var isUsed = !this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
                 .where(s -> s.getUpdateDate().before(expireDate))
-                .where(s -> !s.getIsDeleted())
                 .exists();
         return isUsed;
     }
