@@ -29,7 +29,7 @@ public class ValidationFieldUtilValidUrl extends ValidationFieldUtilCorrectForma
                 .get();
         checkHasValidOfFolderName(folderName);
         this.storageSpaceService.update(folderName);
-        if (this.storageSpaceService.hasValid(folderName) && this.storageSpaceService.isUsedByProgramData(folderName)) {
+        if (this.storageSpaceService.isUsedByTempFile(folderName) && this.storageSpaceService.isUsedByProgramData(folderName)) {
             return;
         }
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
@@ -37,7 +37,7 @@ public class ValidationFieldUtilValidUrl extends ValidationFieldUtilCorrectForma
                 .setUniqueKey(folderName);
         var hasValid = new AtomicBoolean(false);
         this.longTermTaskUtil.runRetryWhenExists(() -> {
-            hasValid.set(this.storageSpaceService.hasValid(folderName));
+            hasValid.set(this.storageSpaceService.isUsedByTempFile(folderName));
         }, null, longTermTaskUniqueKeyModel);
 
         if (!hasValid.get()) {

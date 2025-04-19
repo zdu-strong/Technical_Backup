@@ -24,7 +24,6 @@ public class StorageSpaceService extends BaseService {
         return false;
     }
 
-
     public StorageSpaceModel create(String folderName) {
         var storageSpaceEntity = new StorageSpaceEntity();
         storageSpaceEntity.setId(newId());
@@ -64,18 +63,12 @@ public class StorageSpaceService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public boolean hasValid(String folderName) {
-        return this.streamAll(StorageSpaceEntity.class)
-                .where(s -> s.getFolderName().equals(folderName))
-                .exists();
-    }
-
-    @Transactional(readOnly = true)
     public boolean isUsed(String folderName) {
         return isUsedByProgramData(folderName) || isUsedByTempFile(folderName);
     }
 
-    private boolean isUsedByTempFile(String folderName) {
+    @Transactional(readOnly = true)
+    public boolean isUsedByTempFile(String folderName) {
         var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(0 - StorageSpaceConstant.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
         var isUsed = !this.streamAll(StorageSpaceEntity.class)
