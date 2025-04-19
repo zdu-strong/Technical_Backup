@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.john.project.common.longtermtask.LongTermTaskUtil;
+import com.john.project.model.LongTermTaskUniqueKeyModel;
 import com.john.project.model.PaginationModel;
 import com.john.project.service.NonceService;
 import com.john.project.service.OrganizeRelationService;
@@ -30,10 +32,16 @@ public enum DistributedExecutionEnum {
                 return SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L);
             },
             (pageNum) -> {
+
                 var paginationModel = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(pageNum,
                         1L);
                 for (var storageSpaceModel : paginationModel.getItems()) {
-                    SpringUtil.getBean(StorageSpaceService.class).refresh(storageSpaceModel.getFolderName());
+                    var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
+                            .setType(LongTermTaskTypeEnum.REFRESH_STORAGE_SPACE.getValue())
+                            .setUniqueKey(storageSpaceModel.getFolderName());
+                    SpringUtil.getBean(LongTermTaskUtil.class).runSkipWhenExists(() -> {
+                        SpringUtil.getBean(StorageSpaceService.class).refresh(storageSpaceModel.getFolderName());
+                    }, longTermTaskUniqueKeyModel);
                 }
             }),
 

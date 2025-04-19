@@ -1,6 +1,7 @@
 package com.john.project.enums;
 
 import java.util.Optional;
+
 import cn.hutool.core.util.EnumUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,8 @@ public enum LongTermTaskTypeEnum {
     MOVE_ORGANIZE("MOVE_ORGANIZE"),
     INIT_SYSTEM_DATABASE_DATA("INIT_SYSTEM_DATABASE_DATA"),
     DISTRIBUTED_EXECUTION("DISTRIBUTED_EXECUTION"),
-    CREATE_DISTRIBUTED_EXECUTION_MAIN("CREATE_DISTRIBUTED_EXECUTION_MAIN");
+    CREATE_DISTRIBUTED_EXECUTION_MAIN("CREATE_DISTRIBUTED_EXECUTION_MAIN"),
+    REFRESH_STORAGE_SPACE("REFRESH_STORAGE_SPACE");
 
     private String value;
 
