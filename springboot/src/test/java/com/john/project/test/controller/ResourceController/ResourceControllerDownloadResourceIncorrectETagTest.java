@@ -56,7 +56,7 @@ public class ResourceControllerDownloadResourceIncorrectETagTest extends BaseTes
         assertNotNull(response.getHeaders().getETag());
         assertTrue(response.getHeaders().getETag().startsWith("\""));
         assertTrue(response.getHeaders().getETag().endsWith("\""));
-        assertEquals("max-age=86400, no-transform, public", response.getHeaders().getCacheControl());
+        assertEquals("max-age=604800, no-transform, public, immutable", response.getHeaders().getCacheControl());
         assertEquals(1, response.getHeaders().getContentLength());
         assertEquals("bytes 0-0/9287", response.getHeaders().get("Content-Range").stream().findFirst().get());
     }
