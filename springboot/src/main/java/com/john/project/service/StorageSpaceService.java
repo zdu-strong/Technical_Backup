@@ -22,6 +22,20 @@ import cn.hutool.core.text.StrFormatter;
 @Service
 public class StorageSpaceService extends BaseService {
 
+    private boolean isUsedByProgramData(String folderName) {
+        if (isUsedByUserMessageEntity(folderName)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isUsedByUserMessageEntity(String folderName) {
+        var isUsed = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .exists();
+        return isUsed;
+    }
+
     public void refresh(String folderName) {
         this.checkHasValidOfFolderName(folderName);
         this.refreshStorageSpaceEntity(folderName);
@@ -41,18 +55,25 @@ public class StorageSpaceService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
     }
 
-    private boolean isUsedByProgramData(String folderName) {
-        if (isUsedByUserMessageEntity(folderName)) {
-            return true;
-        }
-        return false;
+    @Transactional(readOnly = true)
+    public boolean hasValid(String folderName) {
+        return this.streamAll(StorageSpaceEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .where(s -> !s.getIsDeleted())
+                .exists();
     }
 
-    private boolean isUsedByUserMessageEntity(String folderName) {
-        var isUsed = this.streamAll(UserMessageEntity.class)
+    public void update(String folderName) {
+        var storageSpaceOptional = this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
-                .exists();
-        return isUsed;
+                .where(s -> !s.getIsDeleted())
+                .findOne();
+        if (storageSpaceOptional.isEmpty()) {
+            return;
+        }
+        var storageSpaceEntity = storageSpaceOptional.get();
+        storageSpaceEntity.setUpdateDate(new Date());
+        this.merge(storageSpaceEntity);
     }
 
     private void delete(String folderName) {
@@ -65,8 +86,11 @@ public class StorageSpaceService extends BaseService {
         }
         for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
+                .where(s -> !s.getIsDeleted())
                 .toList()) {
-            this.remove(storageSpaceEntity);
+            storageSpaceEntity.setIsDeleted(true);
+            storageSpaceEntity.setUpdateDate(new Date());
+            this.merge(storageSpaceEntity);
         }
     }
 
@@ -75,20 +99,21 @@ public class StorageSpaceService extends BaseService {
                 .where(s -> s.getFolderName().equals(folderName))
                 .exists()) {
             if (this.isUsedByProgramData(folderName)) {
-                var storageSpaceEntity = this.streamAll(StorageSpaceEntity.class)
-                        .where(s -> s.getFolderName().equals(folderName))
-                        .getOnlyValue();
-                storageSpaceEntity.setUpdateDate(new Date());
-                this.merge(storageSpaceEntity);
+                this.update(folderName);
             }
             return;
         }
 
+        this.create(folderName);
+    }
+
+    private void create(String folderName) {
         var storageSpaceEntity = new StorageSpaceEntity();
         storageSpaceEntity.setId(newId());
         storageSpaceEntity.setFolderName(folderName);
         storageSpaceEntity.setCreateDate(new Date());
         storageSpaceEntity.setUpdateDate(new Date());
+        storageSpaceEntity.setIsDeleted(false);
         this.persist(storageSpaceEntity);
     }
 
@@ -102,6 +127,7 @@ public class StorageSpaceService extends BaseService {
         var isUsed = !this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
                 .where(s -> s.getUpdateDate().before(expireDate))
+                .where(s -> !s.getIsDeleted())
                 .exists();
         return isUsed;
     }

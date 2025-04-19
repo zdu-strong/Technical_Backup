@@ -1,7 +1,7 @@
 package com.john.project.test.common.FieldValidationUtil;
 
+import com.fasterxml.uuid.Generators;
 import com.john.project.test.common.BaseTest.BaseTest;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,23 +10,23 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+public class ValidationFieldUtilCheckValidOfUrlNotExistsTest extends BaseTest {
 
-public class ValidationFieldUtilTest extends BaseTest {
-
-    private String id;
+    private String url;
 
     @Test
     public void test() {
         var exceptException = Assertions.assertThrowsExactly(ResponseStatusException.class, () -> {
-            this.validationFieldUtil.checkNotBlankOfId(id);
+            this.validationFieldUtil.checkValidOfUrl(url);
         });
         assertEquals(HttpStatus.BAD_REQUEST, exceptException.getStatusCode());
-        assertEquals("id cannot be blank", exceptException.getReason());
+        assertEquals("The file is invalid", exceptException.getReason());
+
     }
 
     @BeforeEach
     public void beforeEach() {
-        this.id = StringUtils.SPACE;
+        this.url = this.storage.getResoureUrlFromResourcePath(Generators.timeBasedReorderedGenerator().generate().toString());
     }
 
 }

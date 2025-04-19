@@ -1,6 +1,7 @@
 package com.john.project.entity;
 
 import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -30,5 +31,8 @@ public class StorageSpaceEntity {
 
     @Column(nullable = false)
     private Date updateDate;
+
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
 }
