@@ -3,11 +3,14 @@ package com.john.project.common.longtermtask;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import jakarta.annotation.PostConstruct;
+import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -26,6 +29,8 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 
+import static eu.ciechanowiec.sneakyfun.SneakyRunnable.sneaky;
+
 @Component
 @Slf4j
 public class LongTermTaskUtil {
@@ -36,16 +41,14 @@ public class LongTermTaskUtil {
     @Autowired
     private EncryptDecryptService encryptDecryptService;
 
-    private ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+    private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+    private final ExecutorService gracefulExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
     /**
      * The return value of the executed method will be stored in the database as a
      * json string, and will be converted into a json object or json object array
      * and returned after success. This method will return a relative url, can call
      * a get request to get the result.
-     * 
-     * @param runnable
-     * @return
      */
     public ResponseEntity<String> run(Supplier<ResponseEntity<?>> supplier) {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
@@ -85,8 +88,8 @@ public class LongTermTaskUtil {
     }
 
     public void runRetryWhenExists(Runnable runnable,
-            ResponseStatusException expectException,
-            LongTermTaskUniqueKeyModel... uniqueKey) {
+                                   ResponseStatusException expectException,
+                                   LongTermTaskUniqueKeyModel... uniqueKey) {
         this.run(runnable, true, expectException, uniqueKey);
     }
 
@@ -95,10 +98,11 @@ public class LongTermTaskUtil {
      * json string, and will be converted into a json object or json object array
      * and returned after success. This method will return a relative url, can call
      * a get request to get the result.
-     * 
+     *
      * @param runnable
      * @return
      */
+    @SneakyThrows
     private void run(
             Runnable runnable,
             boolean isRetry,
@@ -141,7 +145,7 @@ public class LongTermTaskUtil {
                 .retry()
                 .subscribe();
         try {
-            runnable.run();
+            CompletableFuture.runAsync(runnable, gracefulExecutor).get();
         } finally {
             subscription.dispose();
             if (!CollectionUtils.isEmpty(idListOfLongTermTask)) {
@@ -152,5 +156,13 @@ public class LongTermTaskUtil {
                 }
             }
         }
+    }
+
+    @PostConstruct
+    public void init() {
+        Runtime.getRuntime().addShutdownHook(new Thread(sneaky(() -> {
+            gracefulExecutor.shutdown();
+            gracefulExecutor.awaitTermination(1, TimeUnit.MINUTES);
+        })));
     }
 }
