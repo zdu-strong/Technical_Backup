@@ -31,4 +31,4 @@ ENV SERVER_SHUTDOWN="GRACEFUL"
 EXPOSE 8080
 
 # start server
-ENTRYPOINT ["java", "-jar", "server.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=100", "-jar", "server.jar"]
