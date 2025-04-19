@@ -29,7 +29,7 @@ public class ValidationFieldUtilValidUrl extends ValidationFieldUtilCorrectForma
                 .get();
         checkHasValidOfFolderName(folderName);
         this.storageSpaceService.update(folderName);
-        if (this.storageSpaceService.isUsedByTempFile(folderName) && this.storageSpaceService.isUsedByProgramData(folderName)) {
+        if (this.storageSpaceService.isUsedByProgramData(folderName) && this.storageSpaceService.isUsedByTempFile(folderName)) {
             return;
         }
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
