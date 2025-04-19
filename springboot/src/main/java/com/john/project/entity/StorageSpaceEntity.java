@@ -2,11 +2,7 @@ package com.john.project.entity;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,8 +11,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@Table(indexes = {
-        @Index(columnList = "createDate, id", unique = true)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"createDate", "id"})
 })
 public class StorageSpaceEntity {
 
