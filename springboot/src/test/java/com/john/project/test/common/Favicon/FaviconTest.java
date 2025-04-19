@@ -1,7 +1,9 @@
 package com.john.project.test.common.Favicon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.net.URI;
+
 import lombok.SneakyThrows;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ public class FaviconTest extends BaseTest {
         var response = this.testRestTemplate.getForEntity(url, byte[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(85886, response.getBody().length);
+        assertEquals("no-store", response.getHeaders().getCacheControl());
     }
 
 }
