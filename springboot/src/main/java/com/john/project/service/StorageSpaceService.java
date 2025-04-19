@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.john.project.entity.StorageSpaceEntity;
 import com.john.project.entity.UserMessageEntity;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ import com.john.project.model.StorageSpaceModel;
 @Service
 public class StorageSpaceService extends BaseService {
 
-    @Transactional(readOnly = true)
+    @SneakyThrows
     public boolean isUsedByProgramData(String folderName) {
         if (isUsedByUserMessageEntity(folderName)) {
             return true;
@@ -23,19 +24,15 @@ public class StorageSpaceService extends BaseService {
         return false;
     }
 
-    @Transactional(readOnly = true)
-    public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
-        var stream = this.streamAll(StorageSpaceEntity.class)
-                .sortedBy(s -> s.getId())
-                .sortedBy(s -> s.getCreateDate());
-        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
-    }
 
-    @Transactional(readOnly = true)
-    public boolean hasValid(String folderName) {
-        return this.streamAll(StorageSpaceEntity.class)
-                .where(s -> s.getFolderName().equals(folderName))
-                .exists();
+    public StorageSpaceModel create(String folderName) {
+        var storageSpaceEntity = new StorageSpaceEntity();
+        storageSpaceEntity.setId(newId());
+        storageSpaceEntity.setFolderName(folderName);
+        storageSpaceEntity.setCreateDate(new Date());
+        storageSpaceEntity.setUpdateDate(new Date());
+        this.persist(storageSpaceEntity);
+        return this.storageSpaceFormatter.format(storageSpaceEntity);
     }
 
     public void update(String folderName) {
@@ -58,14 +55,19 @@ public class StorageSpaceService extends BaseService {
         }
     }
 
-    public StorageSpaceModel create(String folderName) {
-        var storageSpaceEntity = new StorageSpaceEntity();
-        storageSpaceEntity.setId(newId());
-        storageSpaceEntity.setFolderName(folderName);
-        storageSpaceEntity.setCreateDate(new Date());
-        storageSpaceEntity.setUpdateDate(new Date());
-        this.persist(storageSpaceEntity);
-        return this.storageSpaceFormatter.format(storageSpaceEntity);
+    @Transactional(readOnly = true)
+    public PaginationModel<StorageSpaceModel> getStorageSpaceByPagination(Long pageNum, Long pageSize) {
+        var stream = this.streamAll(StorageSpaceEntity.class)
+                .sortedBy(s -> s.getId())
+                .sortedBy(s -> s.getCreateDate());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.storageSpaceFormatter.format(s));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasValid(String folderName) {
+        return this.streamAll(StorageSpaceEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .exists();
     }
 
     @Transactional(readOnly = true)

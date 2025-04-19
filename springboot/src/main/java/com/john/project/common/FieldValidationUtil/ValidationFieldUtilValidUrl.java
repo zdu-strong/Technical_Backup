@@ -28,12 +28,15 @@ public class ValidationFieldUtilValidUrl extends ValidationFieldUtilCorrectForma
                 .filter(StringUtils::isNotBlank)
                 .get();
         checkHasValidOfFolderName(folderName);
+        this.storageSpaceService.update(folderName);
+        if (this.storageSpaceService.hasValid(folderName) && this.storageSpaceService.isUsedByProgramData(folderName)) {
+            return;
+        }
         var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
                 .setType(LongTermTaskTypeEnum.REFRESH_STORAGE_SPACE.getValue())
                 .setUniqueKey(folderName);
         var hasValid = new AtomicBoolean(false);
         this.longTermTaskUtil.runRetryWhenExists(() -> {
-            this.storageSpaceService.update(folderName);
             hasValid.set(this.storageSpaceService.hasValid(folderName));
         }, null, longTermTaskUniqueKeyModel);
 

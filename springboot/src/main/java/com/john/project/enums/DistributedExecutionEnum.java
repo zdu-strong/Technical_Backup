@@ -48,9 +48,7 @@ public enum DistributedExecutionEnum {
                     var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
                             .setType(LongTermTaskTypeEnum.REFRESH_STORAGE_SPACE.getValue())
                             .setUniqueKey(folderName);
-                    if (storageSpaceService.isUsedByProgramData(folderName)) {
-                        storageSpaceService.update(folderName);
-                    } else {
+                    if (!storageSpaceService.isUsed(folderName)) {
                         longTermTaskUtil.runSkipWhenExists(() -> {
                             if (!storageSpaceService.isUsed(folderName)) {
                                 var request = new MockHttpServletRequest();
