@@ -17,6 +17,7 @@ import com.john.project.model.StorageSpaceModel;
 public class StorageSpaceService extends BaseService {
 
     @SneakyThrows
+    @Transactional(readOnly = true)
     public boolean isUsedByProgramData(String folderName) {
         if (isUsedByUserMessageEntity(folderName)) {
             return true;
