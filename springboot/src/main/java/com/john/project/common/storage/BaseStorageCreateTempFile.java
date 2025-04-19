@@ -100,7 +100,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
     public File createTempFolder() {
         var folderName = Generators.timeBasedReorderedGenerator().generate().toString();
         Optional.of(CompletableFuture.runAsync(() -> {
-            this.storageSpaceService.refresh(folderName);
+            this.storageSpaceService.create(folderName);
         }))
                 .filter(s -> this.databaseJdbcProperties.getIsSupportParallelWrite())
                 .ifPresent(sneaky(s -> {

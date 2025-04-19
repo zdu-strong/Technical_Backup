@@ -1,50 +1,26 @@
 package com.john.project.service;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Date;
 
 import com.john.project.entity.StorageSpaceEntity;
 import com.john.project.entity.UserMessageEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import com.john.project.common.baseService.BaseService;
 import com.john.project.constant.StorageSpaceConstant;
 import com.john.project.model.PaginationModel;
 import com.john.project.model.StorageSpaceModel;
-import cn.hutool.core.text.StrFormatter;
 
 @Service
 public class StorageSpaceService extends BaseService {
 
-    private boolean isUsedByProgramData(String folderName) {
+    @Transactional(readOnly = true)
+    public boolean isUsedByProgramData(String folderName) {
         if (isUsedByUserMessageEntity(folderName)) {
             return true;
         }
         return false;
-    }
-
-    private boolean isUsedByUserMessageEntity(String folderName) {
-        var isUsed = this.streamAll(UserMessageEntity.class)
-                .where(s -> s.getFolderName().equals(folderName))
-                .exists();
-        return isUsed;
-    }
-
-    public void refresh(String folderName) {
-        this.checkHasValidOfFolderName(folderName);
-        this.refreshStorageSpaceEntity(folderName);
-
-        if (isUsed(folderName)) {
-            return;
-        }
-
-        this.delete(folderName);
     }
 
     @Transactional(readOnly = true)
@@ -74,14 +50,7 @@ public class StorageSpaceService extends BaseService {
         this.merge(storageSpaceEntity);
     }
 
-    private void delete(String folderName) {
-        var request = new MockHttpServletRequest();
-        request.setRequestURI(this.storage.getResoureUrlFromResourcePath(folderName));
-        this.storage.delete(request);
-        if (new File(this.storage.getRootPath(), folderName).exists()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    StrFormatter.format("Folder deletion failed. FolderName:{}", folderName));
-        }
+    public void delete(String folderName) {
         for (var storageSpaceEntity : this.streamAll(StorageSpaceEntity.class)
                 .where(s -> s.getFolderName().equals(folderName))
                 .toList()) {
@@ -89,29 +58,18 @@ public class StorageSpaceService extends BaseService {
         }
     }
 
-    private void refreshStorageSpaceEntity(String folderName) {
-        if (this.streamAll(StorageSpaceEntity.class)
-                .where(s -> s.getFolderName().equals(folderName))
-                .exists()) {
-            if (this.isUsedByProgramData(folderName)) {
-                this.update(folderName);
-            }
-            return;
-        }
-
-        this.create(folderName);
-    }
-
-    private void create(String folderName) {
+    public StorageSpaceModel create(String folderName) {
         var storageSpaceEntity = new StorageSpaceEntity();
         storageSpaceEntity.setId(newId());
         storageSpaceEntity.setFolderName(folderName);
         storageSpaceEntity.setCreateDate(new Date());
         storageSpaceEntity.setUpdateDate(new Date());
         this.persist(storageSpaceEntity);
+        return this.storageSpaceFormatter.format(storageSpaceEntity);
     }
 
-    private boolean isUsed(String folderName) {
+    @Transactional(readOnly = true)
+    public boolean isUsed(String folderName) {
         return isUsedByProgramData(folderName) || isUsedByTempFile(folderName);
     }
 
@@ -125,16 +83,11 @@ public class StorageSpaceService extends BaseService {
         return isUsed;
     }
 
-    private void checkHasValidOfFolderName(String folderName) {
-        if (StringUtils.isBlank(folderName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name cannot be empty");
-        }
-        if (folderName.contains("/") || folderName.contains("\\")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name is invalid");
-        }
-        if (Paths.get(folderName).isAbsolute()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Folder name is invalid");
-        }
+    private boolean isUsedByUserMessageEntity(String folderName) {
+        var isUsed = this.streamAll(UserMessageEntity.class)
+                .where(s -> s.getFolderName().equals(folderName))
+                .exists();
+        return isUsed;
     }
 
 }

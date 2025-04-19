@@ -1,11 +1,14 @@
 package com.john.project.enums;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import cn.hutool.core.text.StrFormatter;
 import com.john.project.common.longtermtask.LongTermTaskUtil;
+import com.john.project.common.storage.Storage;
 import com.john.project.model.LongTermTaskUniqueKeyModel;
 import com.john.project.model.PaginationModel;
 import com.john.project.service.NonceService;
@@ -17,6 +20,9 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 @AllArgsConstructor
 public enum DistributedExecutionEnum {
@@ -32,16 +38,32 @@ public enum DistributedExecutionEnum {
                 return SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(1L, 1L);
             },
             (pageNum) -> {
-
-                var paginationModel = SpringUtil.getBean(StorageSpaceService.class).getStorageSpaceByPagination(pageNum,
+                var storageSpaceService = SpringUtil.getBean(StorageSpaceService.class);
+                var storage = SpringUtil.getBean(Storage.class);
+                var longTermTaskUtil = SpringUtil.getBean(LongTermTaskUtil.class);
+                var paginationModel = storageSpaceService.getStorageSpaceByPagination(pageNum,
                         1L);
                 for (var storageSpaceModel : paginationModel.getItems()) {
+                    var folderName = storageSpaceModel.getFolderName();
                     var longTermTaskUniqueKeyModel = new LongTermTaskUniqueKeyModel()
                             .setType(LongTermTaskTypeEnum.REFRESH_STORAGE_SPACE.getValue())
-                            .setUniqueKey(storageSpaceModel.getFolderName());
-                    SpringUtil.getBean(LongTermTaskUtil.class).runSkipWhenExists(() -> {
-                        SpringUtil.getBean(StorageSpaceService.class).refresh(storageSpaceModel.getFolderName());
-                    }, longTermTaskUniqueKeyModel);
+                            .setUniqueKey(folderName);
+                    if (storageSpaceService.isUsedByProgramData(folderName)) {
+                        storageSpaceService.update(folderName);
+                    } else {
+                        longTermTaskUtil.runSkipWhenExists(() -> {
+                            if (!storageSpaceService.isUsed(folderName)) {
+                                var request = new MockHttpServletRequest();
+                                request.setRequestURI(storage.getResoureUrlFromResourcePath(folderName));
+                                storage.delete(request);
+                                if (new File(storage.getRootPath(), folderName).exists()) {
+                                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                            StrFormatter.format("Folder deletion failed. FolderName:{}", folderName));
+                                }
+                                storageSpaceService.delete(folderName);
+                            }
+                        }, longTermTaskUniqueKeyModel);
+                    }
                 }
             }),
 
