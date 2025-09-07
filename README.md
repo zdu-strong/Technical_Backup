@@ -17,8 +17,8 @@ This repository uses git as its version management tool.
 
 ### `springboot`
 
-Use java, springboot and mysql to build back-end projects.<br/>
-For implementation examples utilizing CockroachDB and Google Spanner, please refer to the alternative branches.<br/>
+Use java, springboot and CockroachDB to build back-end projects.<br/>
+For implementation examples utilizing mysql and Google Spanner, please refer to the alternative branches.<br/>
 
 ### `react`
 
