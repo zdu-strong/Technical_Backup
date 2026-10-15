@@ -6,7 +6,6 @@ import { keyframes, style } from 'typestyle';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { useRandomNumber } from '@component/HomePageComponent/js/useRandomNumber';
 import { useReadyForApplication } from '@component/HomePageComponent/js/useReadyForApplication';
-import CircularProgress from '@mui/material/CircularProgress';
 import GameDialog from '@component/Game/GameDialog';
 import remote from '@/remote';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -89,18 +88,12 @@ export default observer(() => {
                 <div
                     className={batteryContainer}
                 >
-                    {
-                        state.randomNumber !== null ? (<div className="flex flex-col">
-                            <div className="text-center">
-                                <FormattedMessage id="RandomNumber" defaultMessage="Random number" />
-                                {`:  ${state.randomNumber}`}
-                            </div>
-                        </div>) : (
-                            <div className="flex flex-row justify-center">
-                                <CircularProgress />
-                            </div>
-                        )
-                    }
+                    <div className="flex flex-col">
+                        <div className="text-center">
+                            <FormattedMessage id="RandomNumber" defaultMessage="Random number" />
+                            {`:  ${state.randomNumber}`}
+                        </div>
+                    </div>
                     <div>
                         <Link to="/not_found">
                             <Button

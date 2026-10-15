@@ -1,12 +1,12 @@
 import logo from '@component/Home/image/logo.svg';
 import { FormattedMessage } from "react-intl";
-import { Button, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
 import { keyframes, style } from 'typestyle';
-import { useMobxState, observer, useMount } from 'mobx-react-use-autorun';
-import { concatMap, from, of, repeat, timer } from 'rxjs';
+import { useMobxState, observer } from 'mobx-react-use-autorun';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWater } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useRandomNumber } from '@component/Home/js/useRandomNumber';
 
 const container = style({
     textAlign: "center",
@@ -51,27 +51,11 @@ const batteryContainer = style({
 export default observer(() => {
 
     const state = useMobxState({
-        randomNumber: null as number | null,
         people: {
             name: "",
         },
-    })
-
-    useMount((subscription) => {
-        /* Generate random number */
-        subscription.add(of(null).pipe(
-            concatMap(() => from((async () => {
-                while (true) {
-                    const numberOne = Math.floor(Math.random() * 100 + 1);
-                    if (state.randomNumber !== numberOne) {
-                        state.randomNumber = numberOne;
-                        break;
-                    }
-                    await timer(0).toPromise();
-                }
-            })())),
-            repeat({ delay: 1000 }),
-        ).subscribe());
+    }, {
+        randomNumber: useRandomNumber(),
     })
 
     return (
@@ -91,16 +75,12 @@ export default observer(() => {
                 <div
                     className={batteryContainer}
                 >
-                    {
-                        state.randomNumber !== null ? (<div>
-                            <div>
-                                <FormattedMessage id="RandomNumber" defaultMessage="Random number" />
-                                {": " + (state.randomNumber!) + "%"}
-                            </div>
-                        </div>) : (
-                            <CircularProgress />
-                        )
-                    }
+                    <div>
+                        <div>
+                            <FormattedMessage id="RandomNumber" defaultMessage="Random number" />
+                            {`:  ${state.randomNumber}`}
+                        </div>
+                    </div>
                     <div>
                         <Link to="/not_found">
                             <Button
