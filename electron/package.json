@@ -95,7 +95,7 @@
         "bigdecimal.js": "1.7.2",
         "date-fns": "4.4.0",
         "dexie": "4.4.6",
-        "electron": "35.2.1",
+        "electron": "35.7.5",
         "electron-builder": "26.15.3",
         "eslint": "10.12.0",
         "eslint-plugin-react-hooks": "7.1.1",
