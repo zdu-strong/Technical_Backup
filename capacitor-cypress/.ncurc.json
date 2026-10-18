@@ -5,6 +5,7 @@
     "execa",
     "get-port",
     "@types/node",
-    "typescript"
+    "typescript",
+    "cypress"
   ]
 }
