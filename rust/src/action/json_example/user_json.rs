@@ -10,7 +10,7 @@ pub async fn json_to_string() -> String {
         create_date: Local::now(),
         update_date: Local::now(),
         access_token: String::default(),
-        passowrd: String::default(),
+        password: String::default(),
     }];
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
     println!("{}", json_string);
@@ -24,7 +24,7 @@ pub async fn string_to_json() {
         create_date: Local::now(),
         update_date: Local::now(),
         access_token: String::default(),
-        passowrd: String::default(),
+        password: String::default(),
     }];
     let ref mut json_string = serde_json::to_string(user_list).unwrap();
     let ref mut user_list = serde_json::from_str::<Vec<UserModel>>(json_string).unwrap();
