@@ -1,4 +1,0 @@
-[alias]
-dev = "run --quiet --bin dev"
-make = "run --quiet --bin make"
-up = "run --quiet --bin up"

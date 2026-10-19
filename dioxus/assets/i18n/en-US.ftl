@@ -1,2 +1,0 @@
-Previous = Previous
-Next = Next

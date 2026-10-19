@@ -1,6 +1,0 @@
-unstable_features = true
-imports_granularity = "Item"
-group_imports = "One"
-reorder_imports = true
-tab_spaces = 4
-format_macro_bodies = true
