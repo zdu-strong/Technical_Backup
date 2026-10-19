@@ -53,11 +53,6 @@ export default defineConfig({
     },
     dev: {
         lazyCompilation: false,
-        performance: {
-            chunkSplit: {
-                strategy: "single-vendor",
-            },
-        },
         client: {
             logLevel: "silent",
             overlay: false
