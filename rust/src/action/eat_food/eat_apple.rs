@@ -5,9 +5,9 @@ pub async fn eat_apple(
     surplus_apple_count: &mut i128,
     max_apple_count: &mut i128,
 ) {
-    let ref mut vec_deque = VecDeque::from([(username, surplus_apple_count, max_apple_count)]);
-    while !vec_deque.is_empty() {
-        let (username, surplus_apple_count, max_apple_count) = vec_deque.pop_front().unwrap();
+    let ref mut apple_deque = VecDeque::from([(username, surplus_apple_count, max_apple_count)]);
+    while !apple_deque.is_empty() {
+        let (username, surplus_apple_count, max_apple_count) = apple_deque.pop_front().unwrap();
         if *max_apple_count < 0 {
             panic!("illegal max apple count");
         }
@@ -33,6 +33,6 @@ pub async fn eat_apple(
             },
             "apple"
         );
-        vec_deque.push_back((username, surplus_apple_count, max_apple_count));
+        apple_deque.push_back((username, surplus_apple_count, max_apple_count));
     }
 }
