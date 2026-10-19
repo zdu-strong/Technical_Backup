@@ -28,7 +28,3 @@ jobs:
     - uses: actions/checkout@main
     - name: Build the rust
       run: docker build . --file docker/src/rust/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
-
-    - uses: actions/checkout@main
-    - name: Build the dioxus
-      run: docker build . --file docker/src/dioxus/Dockerfile --tag my-image-name:$(date +%s) && docker system prune --all --force
