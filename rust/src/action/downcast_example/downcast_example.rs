@@ -1,5 +1,5 @@
+use crate::common::traits::buy::Buy;
 use crate::model::pixel_model::PixelModel;
-use crate::traits::buy::Buy;
 use bigdecimal::BigDecimal;
 use std::any::Any;
 use std::str::FromStr;

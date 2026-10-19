@@ -1,4 +1,4 @@
-use crate::traits::buy::Buy;
+use crate::common::traits::buy::Buy;
 use async_trait::async_trait;
 use bigdecimal::BigDecimal;
 use derive_more::Display;

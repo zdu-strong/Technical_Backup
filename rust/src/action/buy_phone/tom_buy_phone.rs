@@ -1,5 +1,5 @@
+use crate::common::traits::buy::Buy;
 use crate::model::pixel_model::PixelModel;
-use crate::traits::buy::Buy;
 use bigdecimal::BigDecimal;
 use serde_json::to_string_pretty;
 use std::str::FromStr;
