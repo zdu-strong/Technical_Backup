@@ -16,7 +16,7 @@ pub struct UserModel {
 
     #[serde[default]]
     #[serde(deserialize_with = "deserialize_default_from_null")]
-    pub name: String,
+    pub username: String,
 
     #[serde[default]]
     #[serde(deserialize_with = "deserialize_default_from_null")]

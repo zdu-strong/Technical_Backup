@@ -6,7 +6,7 @@ use uuid::Uuid;
 pub async fn json_to_string() -> String {
     let ref mut user_list = vec![UserModel {
         id: Uuid::new_v4().to_string(),
-        name: "Tom".to_string(),
+        username: "Tom".to_string(),
         create_date: Local::now(),
         update_date: Local::now(),
         access_token: String::default(),
@@ -20,7 +20,7 @@ pub async fn json_to_string() -> String {
 pub async fn string_to_json() {
     let ref mut user_list = vec![UserModel {
         id: Uuid::new_v4().to_string(),
-        name: "Jerry".to_string(),
+        username: "Jerry".to_string(),
         create_date: Local::now(),
         update_date: Local::now(),
         access_token: String::default(),
