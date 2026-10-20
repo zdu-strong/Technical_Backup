@@ -2,8 +2,8 @@ use crate::constant::server_constant::*;
 use crate::model::user_model::UserModel;
 use serde_json::json;
 
-pub async fn sign_in(username: &mut String, password: &mut String) {
-    let ref mut user = post("/sign-in")
+pub async fn sign_in(username: &String, password: &String) {
+    let user = post("/sign-in")
         .await
         .query(&json!({
             "username": username,
