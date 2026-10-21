@@ -1,13 +1,7 @@
 package com.john.project.service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
 import java.util.Date;
 import javax.crypto.Cipher;
@@ -18,6 +12,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.ObjectUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ThreadUtils;
@@ -38,13 +33,7 @@ import lombok.SneakyThrows;
 @Service
 public class EncryptDecryptService extends BaseService {
 
-    private RSAPublicKey keyOfRSAPublicKey;
-    private RSAPrivateKey keyOfRSAPrivateKey;
-    private MLKEMPublicKeyParameters keyOfMLKEMPublicKey;
-    private MLKEMPrivateKeyParameters keyOfMLKEMPrivateKey;
-    private SecretKeySpec keyOfAESSecretKey;
     private EncryptDecryptModel encryptDecryptModel;
-    private Boolean ready = false;
 
     @Transactional(readOnly = true)
     public String encryptByAES(String text) {
@@ -97,7 +86,8 @@ public class EncryptDecryptService extends BaseService {
     public String encryptWithFixedSaltByAES(String text) {
         var salt = DigestUtils.md5(text);
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.ENCRYPT_MODE, this.getKeyOfSecretKeyOfAES(), new GCMParameterSpec(16 * 8, salt));
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
+                HexUtil.decodeHex(getKeyOfSecretKeyOfAES()), "AES"), new GCMParameterSpec(16 * 8, salt));
         return HexUtil.encodeHexStr(ArrayUtils.addAll(salt, cipher.doFinal(text.getBytes(StandardCharsets.UTF_8))));
     }
 
@@ -144,18 +134,6 @@ public class EncryptDecryptService extends BaseService {
         return HexUtil.encodeHexStr(secret.getEncoded());
     }
 
-    @SneakyThrows
-    @Transactional(readOnly = true)
-    public EncryptDecryptModel generateKeyPairOfRSA() {
-        var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(4096);
-        var keyPair = keyPairGenerator.generateKeyPair();
-        return new EncryptDecryptModel()
-                .setPublicKeyOfRSA(HexUtil.encodeHexStr(keyPair.getPublic().getEncoded()))
-                .setPrivateKeyOfRSA(
-                        HexUtil.encodeHexStr(keyPair.getPrivate().getEncoded()));
-    }
-
     @Transactional(readOnly = true)
     @SneakyThrows
     public EncryptDecryptModel generateKeyPairOfMLKEM() {
@@ -170,38 +148,26 @@ public class EncryptDecryptService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public RSAPrivateKey getKeyOfPrivateKeyOfRSA() {
+    public String getKeyOfPublicKeyOfMLKEM() {
         this.initKey();
-        return this.keyOfRSAPrivateKey;
+        return this.encryptDecryptModel.getPublicKeyOfMLKEM();
     }
 
     @Transactional(readOnly = true)
-    public RSAPublicKey getKeyOfPublicKeyOfRSA() {
+    public String getKeyOfPrivateKeyOfMLKEM() {
         this.initKey();
-        return this.keyOfRSAPublicKey;
+        return this.encryptDecryptModel.getPrivateKeyOfMLKEM();
     }
 
     @Transactional(readOnly = true)
-    public MLKEMPublicKeyParameters getKeyOfPublicKeyOfMLKEM() {
+    public String getKeyOfSecretKeyOfAES() {
         this.initKey();
-        return this.keyOfMLKEMPublicKey;
-    }
-
-    @Transactional(readOnly = true)
-    public MLKEMPrivateKeyParameters getKeyOfPrivateKeyOfMLKEM() {
-        this.initKey();
-        return this.keyOfMLKEMPrivateKey;
-    }
-
-    @Transactional(readOnly = true)
-    public SecretKeySpec getKeyOfSecretKeyOfAES() {
-        this.initKey();
-        return this.keyOfAESSecretKey;
+        return this.encryptDecryptModel.getSecretKeyOfAES();
     }
 
     @SneakyThrows
     private void initKey() {
-        while (!this.ready) {
+        while (ObjectUtil.isNull(this.encryptDecryptModel)) {
             ThreadUtils.sleepQuietly(Duration.ofMillis(100));
         }
     }
@@ -210,25 +176,14 @@ public class EncryptDecryptService extends BaseService {
     public boolean init() {
         var name = getClass().getSimpleName();
 
-        if (!this.ready) {
+        if (ObjectUtil.isNull(this.encryptDecryptModel)) {
             if (this.streamAll(EncryptDecryptEntity.class)
                     .where(s -> s.getName().equals(name))
                     .exists()) {
                 var encryptDecryptEntity = this.streamAll(EncryptDecryptEntity.class)
                         .where(s -> s.getName().equals(name))
                         .getOnlyValue();
-                this.keyOfRSAPublicKey = (RSAPublicKey) KeyFactory.getInstance("RSA")
-                        .generatePublic(new X509EncodedKeySpec(
-                                HexUtil.decodeHex(encryptDecryptEntity.getPublicKeyOfRSA())));
-                this.keyOfRSAPrivateKey = (RSAPrivateKey) KeyFactory.getInstance("RSA")
-                        .generatePrivate(new PKCS8EncodedKeySpec(
-                                HexUtil.decodeHex(encryptDecryptEntity.getPrivateKeyOfRSA())));
-                this.keyOfMLKEMPublicKey = new MLKEMPublicKeyParameters(MLKEMParameters.ml_kem_1024, HexUtil.decodeHex(encryptDecryptEntity.getPublicKeyOfMLKEM()));
-                this.keyOfMLKEMPrivateKey = new MLKEMPrivateKeyParameters(MLKEMParameters.ml_kem_1024, HexUtil.decodeHex(encryptDecryptEntity.getPrivateKeyOfMLKEM()));
-                this.keyOfAESSecretKey = new SecretKeySpec(
-                        HexUtil.decodeHex(encryptDecryptEntity.getSecretKeyOfAES()), "AES");
                 this.encryptDecryptModel = this.encryptDecryptFormatter.format(encryptDecryptEntity);
-                this.ready = true;
             } else {
                 var encryptDecryptEntity = new EncryptDecryptEntity();
                 encryptDecryptEntity.setId(
@@ -244,13 +199,6 @@ public class EncryptDecryptService extends BaseService {
                 encryptDecryptEntity.setSecretKeyOfAES(this.generateSecretKeyOfAES());
 
                 /*
-                 * rsa for common uses
-                 */
-                var keyPairOfRSA = this.generateKeyPairOfRSA();
-                encryptDecryptEntity.setPublicKeyOfRSA(keyPairOfRSA.getPublicKeyOfRSA());
-                encryptDecryptEntity.setPrivateKeyOfRSA(keyPairOfRSA.getPrivateKeyOfRSA());
-
-                /*
                  * ml-kem for common uses
                  */
                 var keyPairOfMLKEM = this.generateKeyPairOfMLKEM();
@@ -261,7 +209,7 @@ public class EncryptDecryptService extends BaseService {
             }
         }
 
-        return this.ready;
+        return ObjectUtil.isNotNull(this.encryptDecryptModel);
     }
 
 }

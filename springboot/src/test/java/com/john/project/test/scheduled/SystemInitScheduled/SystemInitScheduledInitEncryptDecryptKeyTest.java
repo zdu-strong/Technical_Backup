@@ -10,8 +10,8 @@ public class SystemInitScheduledInitEncryptDecryptKeyTest extends BaseTest {
     public void test() {
         this.systemInitScheduled.scheduled();
         assertNotNull(this.encryptDecryptService.getKeyOfSecretKeyOfAES());
-        assertNotNull(this.encryptDecryptService.getKeyOfPrivateKeyOfRSA());
-        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfRSA());
+        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM());
+        assertNotNull(this.encryptDecryptService.getKeyOfPrivateKeyOfMLKEM());
     }
 
 }

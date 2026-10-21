@@ -13,8 +13,6 @@ public class EncryptDecryptModel {
 
     private String id;
     private String name;
-    private String publicKeyOfRSA;
-    private String privateKeyOfRSA;
     private String publicKeyOfMLKEM;
     private String privateKeyOfMLKEM;
     private String secretKeyOfAES;

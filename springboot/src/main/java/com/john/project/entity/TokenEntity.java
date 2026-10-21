@@ -1,14 +1,8 @@
 package com.john.project.entity;
 
 import java.util.Date;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -24,6 +18,9 @@ public class TokenEntity {
 
     @Id
     private String id;
+
+    @Column(nullable = false)
+    private String secretKeyOfHash;
 
     @Column(nullable = false)
     private String uniqueOneTimePasswordLogo;

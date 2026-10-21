@@ -1,5 +1,6 @@
 package com.john.project.format;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.john.project.common.baseService.BaseService;
@@ -13,6 +14,8 @@ public class TokenFormatter extends BaseService {
     public TokenModel format(TokenEntity tokenEntity) {
         var tokenModel = new TokenModel();
         BeanUtils.copyProperties(tokenEntity, tokenModel);
+        tokenModel.setSecretKeyOfHash(StringUtils.EMPTY);
+        tokenModel.setUniqueOneTimePasswordLogo(StringUtils.EMPTY);
         tokenModel.setUser(new UserModel().setId(tokenEntity.getUser().getId()));
         return tokenModel;
     }

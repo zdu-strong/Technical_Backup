@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import com.john.project.test.common.BaseTest.BaseTest;
 
-public class EncryptDecryptServiceGetKeyOfRSAPublicKeyTest extends BaseTest {
+public class EncryptDecryptServiceGetKeyOfPublicKeyOfMLKEMTest extends BaseTest {
 
     @Test
     public void test() {
-        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfRSA());
+        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM());
     }
 
 }

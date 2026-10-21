@@ -1,0 +1,61 @@
+{ "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "1792620204348-1",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addColumn": {
+            "columns": [
+              {
+                "column": {
+                  "constraints": {
+                    "nullable": false
+                  },
+                  "name": "secret_key_of_hash",
+                  "type": "VARCHAR(255)"
+                }
+              }
+            ]
+            ,
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792620204348-2",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "dropColumn": {
+            "columnName": "private_key_ofrsa",
+            "tableName": "encrypt_decrypt_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792620204348-3",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "dropColumn": {
+            "columnName": "public_key_ofrsa",
+            "tableName": "encrypt_decrypt_entity"
+          }
+        }
+      ]
+      
+    }
+  }
+  
+]}
