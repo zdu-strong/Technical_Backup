@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
+import { PieChart, pieArcLabelClasses, type PieSeries } from '@mui/x-charts/PieChart';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useDrawingArea } from '@mui/x-charts/hooks';
@@ -84,6 +84,9 @@ const StyledText = styled('text')(({ theme }: { theme: Theme }) => ({
     fontSize: 20,
 }));
 
+const innerRadius = 50;
+const middleRadius = 120;
+
 interface PieCenterLabelProps {
     children: React.ReactNode;
 }
@@ -97,10 +100,41 @@ function PieCenterLabel({ children }: PieCenterLabelProps): React.ReactElement {
     );
 }
 
-export default function TitanicPie(): React.ReactElement {
+const pieChartSeriesDataList: PieSeries[] = [
+    {
+        innerRadius,
+        outerRadius: middleRadius,
+        data: classData,
+        arcLabel: (item) =>
+            `${item.id} (${(item as any).percentage.toFixed(0)}%)`,
+        valueFormatter: ({ value }) =>
+            `${value} out of ${totalCount} (${((value / totalCount) * 100).toFixed(0)}%)`,
+        highlightScope: { fade: 'global', highlight: 'item' },
+        highlighted: { additionalRadius: 2 },
+        cornerRadius: 3,
+    },
+    {
+        innerRadius: middleRadius,
+        outerRadius: middleRadius + 20,
+        data: classSurvivalData,
+        arcLabel: (item) =>
+            `${item.label} (${(item as any).percentage.toFixed(0)}%)`,
+        valueFormatter: ({ value }) =>
+            `${value} out of ${totalCount} (${((value / totalCount) * 100).toFixed(0)}%)`,
+        arcLabelRadius: 160,
+        highlightScope: { fade: 'global', highlight: 'item' },
+        highlighted: { additionalRadius: 2 },
+        cornerRadius: 3,
+    },
+];
 
-    const innerRadius = 50;
-    const middleRadius = 120;
+const pieChartSx = {
+    [`& .${pieArcLabelClasses.root}`]: {
+        fontSize: '12px',
+    },
+};
+
+export default function TitanicPie(): React.ReactElement {
 
     return (
         <Box sx={{ width: '100%', textAlign: 'center' }}>
@@ -110,43 +144,12 @@ export default function TitanicPie(): React.ReactElement {
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', height: 400 }}>
                 <PieChart
-                    series={[
-                        {
-                            innerRadius,
-                            outerRadius: middleRadius,
-                            data: classData,
-                            arcLabel: (item) =>
-                                `${item.id} (${(item as any).percentage.toFixed(0)}%)`,
-                            valueFormatter: ({ value }) =>
-                                `${value} out of ${totalCount} (${((value / totalCount) * 100).toFixed(0)}%)`,
-                            highlightScope: { fade: 'global', highlight: 'item' },
-                            highlighted: { additionalRadius: 2 },
-                            cornerRadius: 3,
-                        },
-                        {
-                            innerRadius: middleRadius,
-                            outerRadius: middleRadius + 20,
-                            data: classSurvivalData,
-                            arcLabel: (item) =>
-                                `${item.label} (${(item as any).percentage.toFixed(0)}%)`,
-                            valueFormatter: ({ value }) =>
-                                `${value} out of ${totalCount} (${((value / totalCount) * 100).toFixed(0)}%)`,
-                            arcLabelRadius: 160,
-                            highlightScope: { fade: 'global', highlight: 'item' },
-                            highlighted: { additionalRadius: 2 },
-                            cornerRadius: 3,
-                        },
-                    ]}
-                    sx={{
-                        [`& .${pieArcLabelClasses.root}`]: {
-                            fontSize: '12px',
-                        },
-                    }}
+                    series={pieChartSeriesDataList}
+                    sx={pieChartSx}
                     hideLegend
                 >
                     <PieCenterLabel>{"Income"}</PieCenterLabel>
                 </PieChart>
-
             </Box>
         </Box>
     );

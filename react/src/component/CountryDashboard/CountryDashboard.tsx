@@ -6,6 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faCircleDollarToSlot, faHouseChimney } from '@fortawesome/free-solid-svg-icons'
 import { LineChart } from "@mui/x-charts";
 
+const lineChartAxisDataList = [{ data: [1, 2, 3, 5, 8, 10] }];
+const lineChartSeriesDataList = [
+    {
+        data: [2, 5.5, 2, 8.5, 1.5, 5],
+        area: true,
+    },
+];
+
 export default observer(() => {
 
     return <div className="flex flex-col">
@@ -24,13 +32,8 @@ export default observer(() => {
                     {"National Reserves"}
                 </Typography>
                 <LineChart
-                    xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-                    series={[
-                        {
-                            data: [2, 5.5, 2, 8.5, 1.5, 5],
-                            area: true,
-                        },
-                    ]}
+                    xAxis={lineChartAxisDataList}
+                    series={lineChartSeriesDataList}
                     height={300}
                 />
             </Box>
