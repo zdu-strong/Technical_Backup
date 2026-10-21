@@ -15,7 +15,7 @@ public class SystemInitControllerTest extends BaseTest {
     @Test
     @SneakyThrows
     public void test() {
-        var url = new URIBuilder("/system-init").setParameter("id", userId).build();
+        var url = new URIBuilder("/system-init").build();
         var response = this.testRestTemplate.getForEntity(url, Boolean.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody());
