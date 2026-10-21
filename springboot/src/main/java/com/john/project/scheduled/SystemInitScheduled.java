@@ -126,9 +126,9 @@ public class SystemInitScheduled {
                 })
                 .timeout(1, TimeUnit.DAYS)
                 .blockingSubscribe();
-        this.encryptDecryptService.getKeyOfAESSecretKey();
-        this.encryptDecryptService.getKeyOfRSAPrivateKey();
-        this.encryptDecryptService.getKeyOfRSAPublicKey();
+        this.encryptDecryptService.getKeyOfSecretKeyOfAES();
+        this.encryptDecryptService.getKeyOfPrivateKeyOfRSA();
+        this.encryptDecryptService.getKeyOfPublicKeyOfRSA();
     }
 
     private void initUserRole() {

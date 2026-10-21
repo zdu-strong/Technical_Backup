@@ -8,7 +8,7 @@ public class EncryptDecryptServiceGetKeyOfAESSecretKeyTest extends BaseTest {
 
     @Test
     public void test() {
-        assertNotNull(this.encryptDecryptService.getKeyOfAESSecretKey());
+        assertNotNull(this.encryptDecryptService.getKeyOfSecretKeyOfAES());
     }
 
 }

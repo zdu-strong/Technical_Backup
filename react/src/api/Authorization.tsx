@@ -1,12 +1,12 @@
-import { encryptByPublicKeyOfRSA } from "@common/RSAUtils";
 import { GlobalUserInfo, removeGlobalUserInfo, setGlobalUserInfo } from "@common/Server";
 import { UserEmailModel } from "@model/UserEmailModel";
 import { UserModel } from "@model/UserModel";
 import { VerificationCodeEmailModel } from "@model/VerificationCodeEmailModel";
 import axios from "axios";
 import { TypedJSON } from "typedjson";
-import { getKeyOfRSAPublicKey } from "@api/EncryptDecrypt";
+import { getPublicKeyOfMLKEM } from "@api/EncryptDecrypt";
 import { sha3_512 } from 'js-sha3';
+import { encryptByPublicKeyOfMLKEM } from "@/common/MLKEMUtils";
 
 export async function signUp(password: string, username: string, userEmailList: UserEmailModel[]): Promise<void> {
     await signOut();
@@ -63,5 +63,5 @@ export async function isSignIn() {
 }
 
 export async function getEncryptedPassword(password: string) {
-    return await encryptByPublicKeyOfRSA(JSON.stringify([sha3_512(password), new Date()]), await getKeyOfRSAPublicKey());
+    return await encryptByPublicKeyOfMLKEM(JSON.stringify([sha3_512(password), new Date()]), await getPublicKeyOfMLKEM());
 }

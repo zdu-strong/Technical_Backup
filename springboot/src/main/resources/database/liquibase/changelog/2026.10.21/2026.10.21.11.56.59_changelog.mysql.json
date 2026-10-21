@@ -1,0 +1,56 @@
+{ "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "1792583858001-1",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addColumn": {
+            "columns": [
+              {
+                "column": {
+                  "constraints": {
+                    "nullable": false
+                  },
+                  "name": "private_key_ofmlkem",
+                  "type": "LONGTEXT"
+                }
+              }
+            ]
+            ,
+            "tableName": "encrypt_decrypt_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792583858001-2",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addColumn": {
+            "columns": [
+              {
+                "column": {
+                  "constraints": {
+                    "nullable": false
+                  },
+                  "name": "public_key_ofmlkem",
+                  "type": "LONGTEXT"
+                }
+              }
+            ]
+            ,
+            "tableName": "encrypt_decrypt_entity"
+          }
+        }
+      ]
+      
+    }
+  }
+  
+]}

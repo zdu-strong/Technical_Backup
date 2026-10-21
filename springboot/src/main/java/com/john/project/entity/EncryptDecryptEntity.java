@@ -32,6 +32,14 @@ public class EncryptDecryptEntity {
 
     @Column(nullable = false, length = 1024 * 1024 * 1024)
     @Lob
+    private String publicKeyOfMLKEM;
+
+    @Column(nullable = false, length = 1024 * 1024 * 1024)
+    @Lob
+    private String privateKeyOfMLKEM;
+
+    @Column(nullable = false, length = 1024 * 1024 * 1024)
+    @Lob
     private String secretKeyOfAES;
 
     @Column(nullable = false)

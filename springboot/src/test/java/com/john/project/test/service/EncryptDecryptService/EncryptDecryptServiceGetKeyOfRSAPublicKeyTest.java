@@ -8,7 +8,7 @@ public class EncryptDecryptServiceGetKeyOfRSAPublicKeyTest extends BaseTest {
 
     @Test
     public void test() {
-        assertNotNull(this.encryptDecryptService.getKeyOfRSAPublicKey());
+        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfRSA());
     }
 
 }

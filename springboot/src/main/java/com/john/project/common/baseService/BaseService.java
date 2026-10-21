@@ -139,6 +139,10 @@ public abstract class BaseService {
     @Lazy
     protected IdentityCardFormatter identityCardFormatter;
 
+    @Autowired
+    @Lazy
+    protected EncryptDecryptFormatter encryptDecryptFormatter;
+
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
     }

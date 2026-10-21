@@ -56,6 +56,8 @@
         <sneakyfun.version>1.0.0</sneakyfun.version>
         <commons-exec.version>1.6.0</commons-exec.version>
         <chicory.version>1.7.5</chicory.version>
+        <bouncycastle-bcprov.version>1.86</bouncycastle-bcprov.version>
+        <bouncycastle-bcpkix.version>1.86</bouncycastle-bcpkix.version>
     </properties>
 
     <dependencies>
@@ -223,6 +225,17 @@
             <groupId>com.dylibso.chicory</groupId>
             <artifactId>runtime</artifactId>
             <version>${chicory.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncycastle-bcprov.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncycastle-bcpkix.version}</version>
         </dependency>
     </dependencies>
 

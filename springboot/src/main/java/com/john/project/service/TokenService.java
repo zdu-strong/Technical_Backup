@@ -39,8 +39,8 @@ public class TokenService extends BaseService {
         var accessToken = JWT.create().withSubject(userId)
                 .withIssuedAt(new Date())
                 .withJWTId(tokenModel.getId())
-                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
-                        this.encryptDecryptService.getKeyOfRSAPrivateKey()));
+                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfPublicKeyOfRSA(),
+                        this.encryptDecryptService.getKeyOfPrivateKeyOfRSA()));
         return accessToken;
     }
 
@@ -51,8 +51,8 @@ public class TokenService extends BaseService {
         var accessToken = JWT.create().withSubject(userId)
                 .withIssuedAt(new Date())
                 .withJWTId(tokenModel.getId())
-                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
-                        this.encryptDecryptService.getKeyOfRSAPrivateKey()));
+                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfPublicKeyOfRSA(),
+                        this.encryptDecryptService.getKeyOfPrivateKeyOfRSA()));
         return accessToken;
     }
 
@@ -60,8 +60,8 @@ public class TokenService extends BaseService {
     public DecodedJWT getDecodedJWTOfAccessToken(HttpServletRequest request) {
         var accessToken = this.getAccessToken(request);
         var decodedJWT = JWT
-                .require(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
-                        this.encryptDecryptService.getKeyOfRSAPrivateKey()))
+                .require(Algorithm.RSA512(this.encryptDecryptService.getKeyOfPublicKeyOfRSA(),
+                        this.encryptDecryptService.getKeyOfPrivateKeyOfRSA()))
                 .build()
                 .verify(accessToken);
         var id = decodedJWT.getId();
@@ -80,7 +80,7 @@ public class TokenService extends BaseService {
     @Transactional(readOnly = true)
     @SneakyThrows
     public String getEncryptedPassword(String password) {
-        var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfRSA(objectMapper.writeValueAsString(new Object[]{DigestUtils.sha3_512Hex(password), new Date()}));
+        var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfMLKEM(objectMapper.writeValueAsString(new Object[]{DigestUtils.sha3_512Hex(password), new Date()}));
         return encryptedPassword;
     }
 
@@ -171,14 +171,14 @@ public class TokenService extends BaseService {
 
     @SneakyThrows
     private String getDecryptedPassword(String encryptedPassword) {
-        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(encryptedPassword);
+        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
         var password = this.objectMapper.readTree(passwordJsonString).get(0).asText();
         return password;
     }
 
     @SneakyThrows
     private Date getCreateDateOfEncryptedPassword(String encryptedPassword) {
-        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfRSA(encryptedPassword);
+        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
         var createDate = this.objectMapper.treeToValue(this.objectMapper.readTree(passwordJsonString).get(1), Date.class);
         return createDate;
     }

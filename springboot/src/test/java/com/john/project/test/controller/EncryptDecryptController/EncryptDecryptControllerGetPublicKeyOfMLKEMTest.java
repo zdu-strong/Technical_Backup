@@ -11,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.john.project.test.common.BaseTest.BaseTest;
 
-public class EncryptDecryptControllerGetPublicKeyOfRSATest extends BaseTest {
+public class EncryptDecryptControllerGetPublicKeyOfMLKEMTest extends BaseTest {
 
     @Test
     @SneakyThrows
     public void test() {
-        URI url = new URIBuilder("/encrypt-decrypt/rsa/public-key").build();
+        URI url = new URIBuilder("/encrypt-decrypt/ml-kem/public-key").build();
         ResponseEntity<String> response = this.testRestTemplate.getForEntity(url, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(StringUtils.isNotBlank(response.getBody()));

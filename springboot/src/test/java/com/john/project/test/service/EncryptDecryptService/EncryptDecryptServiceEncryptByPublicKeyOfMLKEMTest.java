@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import com.john.project.test.common.BaseTest.BaseTest;
 
-public class EncryptDecryptServiceEncryptByPublicKeyOfRSATest extends BaseTest {
+public class EncryptDecryptServiceEncryptByPublicKeyOfMLKEMTest extends BaseTest {
 
     @Test
     public void test() {
-        var result = this.encryptDecryptService.encryptByPublicKeyOfRSA(HELLO_WORLD);
+        var result = this.encryptDecryptService.encryptByPublicKeyOfMLKEM(HELLO_WORLD);
         assertEquals(HELLO_WORLD,
-                this.encryptDecryptService.decryptByByPrivateKeyOfRSA(result));
+                this.encryptDecryptService.decryptByByPrivateKeyOfMLKEM(result));
     }
 
 }

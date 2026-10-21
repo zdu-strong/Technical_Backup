@@ -9,11 +9,11 @@ import com.john.project.common.baseController.BaseController;
 @RestController
 public class EncryptDecryptController extends BaseController {
 
-    @GetMapping("/encrypt-decrypt/rsa/public-key")
-    public ResponseEntity<?> getPublicKeyOfRSA() {
-        var keyOfRSAPublicKey = this.encryptDecryptService.getKeyOfRSAPublicKey();
-        var publicKey = HexUtil.encodeHexStr(keyOfRSAPublicKey.getEncoded());
-        return ResponseEntity.ok(publicKey);
+    @GetMapping("/encrypt-decrypt/ml-kem/public-key")
+    public ResponseEntity<?> getPublicKeyOfMLKEM() {
+        var keyOfPublicKeyOfMLKEM = this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM();
+        var publicKeyOfMLKEM = HexUtil.encodeHexStr(keyOfPublicKeyOfMLKEM.getEncoded());
+        return ResponseEntity.ok(publicKeyOfMLKEM);
     }
 
 }
