@@ -11,6 +11,6 @@ registerWebworker(async ({
 }) => {
     const mlKemUtil = await createMlKem1024();
     const [encapsulateCiphertext, sharedSecretKeyOfAES] = mlKemUtil.encap(Buffer.from(publicKeyOfMLKEM, "hex"));
-    const result = await encryptByAES(data, sharedSecretKeyOfAES.toHex());
+    const result = await encryptByAES(data, Buffer.from(sharedSecretKeyOfAES).toString("hex"));
     return Buffer.concat([encapsulateCiphertext, Buffer.from(result, "hex")]).toString("hex");
 });

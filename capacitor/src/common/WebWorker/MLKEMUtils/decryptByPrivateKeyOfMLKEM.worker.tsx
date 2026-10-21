@@ -14,6 +14,6 @@ registerWebworker(async ({
     const encrypted = Buffer.from(dataByteList.buffer.slice(1568)).toString("hex");
     const mlKemUtil = await createMlKem1024();
     const sharedSecretKeyOfAES = mlKemUtil.decap(encapsulateCiphertext, Buffer.from(privateKeyOfMLKEM, "hex"));
-    const result = await decryptByAES(encrypted, sharedSecretKeyOfAES.toHex());
+    const result = await decryptByAES(encrypted, Buffer.from(sharedSecretKeyOfAES).toString("hex"));
     return result;
 });

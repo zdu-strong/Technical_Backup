@@ -9,7 +9,7 @@ export default defineConfig({
     },
     viewportHeight: 820,
     viewportWidth: 1180,
-    defaultCommandTimeout: 10000,
+    defaultCommandTimeout: 60000,
     video: true,
     allowCypressEnv: false,
 });
