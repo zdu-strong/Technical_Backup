@@ -98,9 +98,9 @@ public class EncryptDecryptService extends BaseService {
         var keyOfPublicKeyOfMLKEM = new MLKEMPublicKeyParameters(MLKEMParameters.ml_kem_1024, HexUtil.decodeHex(publicKeyOfMLKEM));
         var encapsulatedOfMLKEM = generatorOfMLKEM.generateEncapsulated(keyOfPublicKeyOfMLKEM);
         var sharedSecretKeyOfAES = HexUtil.encodeHexStr(encapsulatedOfMLKEM.getSecret());
-        var encapsulateCiphertext = encapsulatedOfMLKEM.getEncapsulation();
+        var encapsulateCiphertextByteList = encapsulatedOfMLKEM.getEncapsulation();
         var resultOfEncryptByAES = this.encryptByAES(text, sharedSecretKeyOfAES);
-        return HexUtil.encodeHexStr(ArrayUtils.addAll(encapsulateCiphertext, HexUtil.decodeHex(resultOfEncryptByAES)));
+        return HexUtil.encodeHexStr(ArrayUtils.addAll(encapsulateCiphertextByteList, HexUtil.decodeHex(resultOfEncryptByAES)));
     }
 
     @SneakyThrows
@@ -186,9 +186,7 @@ public class EncryptDecryptService extends BaseService {
                 this.encryptDecryptModel = this.encryptDecryptFormatter.format(encryptDecryptEntity);
             } else {
                 var encryptDecryptEntity = new EncryptDecryptEntity();
-                encryptDecryptEntity.setId(
-
-                        newId());
+                encryptDecryptEntity.setId(newId());
                 encryptDecryptEntity.setName(name);
                 encryptDecryptEntity.setCreateDate(new Date());
                 encryptDecryptEntity.setUpdateDate(new Date());
