@@ -46,9 +46,6 @@ public class PermissionUtil {
             var id = decodedJWT.getId();
             var userId = decodedJWT.getSubject();
             var secretKeyOfHash = this.tokenService.getSecretKeyOfHashOfAccessToken(id, userId);
-            if (StringUtils.isBlank(secretKeyOfHash)) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
-            }
             JWT.require(Algorithm.HMAC512(HexUtil.decodeHex(secretKeyOfHash)))
                     .build()
                     .verify(accessToken);

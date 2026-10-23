@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.model.SuperAdminRoleQueryPaginationModel;
 import com.john.project.properties.DevelopmentMockModeProperties;
 import com.john.project.service.*;
@@ -50,6 +51,9 @@ public class SystemInitScheduled {
 
     @Autowired
     private DistributedExecutionUtil distributedExecutionUtil;
+
+    @Autowired
+    private EncryptDecryptUtil encryptDecryptUtil;
 
     @Autowired
     private UserRoleRelationService userRoleRelationService;
@@ -126,6 +130,9 @@ public class SystemInitScheduled {
                 })
                 .timeout(1, TimeUnit.DAYS)
                 .blockingSubscribe();
+        this.encryptDecryptUtil.getKeyOfSecretKeyOfAES();
+        this.encryptDecryptUtil.getKeyOfPublicKeyOfMLKEM();
+        this.encryptDecryptUtil.getKeyOfPrivateKeyOfMLKEM();
     }
 
     private void initUserRole() {

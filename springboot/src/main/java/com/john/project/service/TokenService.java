@@ -58,7 +58,8 @@ public class TokenService extends BaseService {
                 .where(s -> s.getIsDeleted().equals(false))
                 .select(s -> s.getSecretKeyOfHash())
                 .findOne()
-                .orElse(StringUtils.EMPTY);
+                .filter(StringUtils::isNotBlank)
+                .get();
         return secretKeyOfHash;
     }
 
