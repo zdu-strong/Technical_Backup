@@ -7,6 +7,6 @@ export default defineConfig({
       // implement node event listeners here
     },
   },
-  defaultCommandTimeout: 60000,
+  defaultCommandTimeout: 10000,
   allowCypressEnv: false,
 });
