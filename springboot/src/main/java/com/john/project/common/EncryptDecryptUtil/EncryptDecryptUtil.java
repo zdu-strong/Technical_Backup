@@ -17,7 +17,6 @@ import org.bouncycastle.crypto.params.MLKEMPublicKeyParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -77,7 +76,6 @@ public class EncryptDecryptUtil {
         return new String(cipher.doFinal(encryptedTextByteList), StandardCharsets.UTF_8);
     }
 
-    @Transactional(readOnly = true)
     @SneakyThrows
     public String encryptWithFixedSaltByAES(String text) {
         var salt = DigestUtils.md5(text);
