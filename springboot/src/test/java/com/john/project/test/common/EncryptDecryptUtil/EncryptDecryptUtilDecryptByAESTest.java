@@ -1,4 +1,4 @@
-package com.john.project.test.service.EncryptDecryptService;
+package com.john.project.test.common.EncryptDecryptUtil;
 
 import static com.john.project.constant.HelloWorldConstant.HELLO_WORLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,19 +8,19 @@ import org.junit.jupiter.api.Test;
 
 import com.john.project.test.common.BaseTest.BaseTest;
 
-public class EncryptDecryptServiceDecryptByAESTest extends BaseTest {
+public class EncryptDecryptUtilDecryptByAESTest extends BaseTest {
 
     private String textOfEncryptOfAES;
 
     @Test
     public void test() {
         assertEquals(HELLO_WORLD,
-                this.encryptDecryptService.decryptByAES(this.textOfEncryptOfAES));
+                this.encryptDecryptUtil.decryptByAES(this.textOfEncryptOfAES));
     }
 
     @BeforeEach
     public void beforeEach() {
-        this.textOfEncryptOfAES = this.encryptDecryptService.encryptByAES(HELLO_WORLD);
+        this.textOfEncryptOfAES = this.encryptDecryptUtil.encryptByAES(HELLO_WORLD);
     }
 
 }

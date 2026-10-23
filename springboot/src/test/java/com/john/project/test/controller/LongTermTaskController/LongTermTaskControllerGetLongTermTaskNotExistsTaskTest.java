@@ -13,7 +13,7 @@ public class LongTermTaskControllerGetLongTermTaskNotExistsTaskTest extends Base
     @SneakyThrows
     public void test() {
         var url = new URIBuilder("/long-term-task")
-                .setParameter("encryptedId", this.encryptDecryptService
+                .setParameter("encryptedId", this.encryptDecryptUtil
                         .encryptByAES(uuidUtil.v4()))
                 .build();
         var result = this.testRestTemplate.getForEntity(url, Throwable.class);

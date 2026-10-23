@@ -10,7 +10,7 @@ public class EncryptDecryptController extends BaseController {
 
     @GetMapping("/encrypt-decrypt/ml-kem/public-key")
     public ResponseEntity<?> getPublicKeyOfMLKEM() {
-        var publicKeyOfMLKEM = this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM();
+        var publicKeyOfMLKEM = this.encryptDecryptUtil.getKeyOfPublicKeyOfMLKEM();
         return ResponseEntity.ok(publicKeyOfMLKEM);
     }
 

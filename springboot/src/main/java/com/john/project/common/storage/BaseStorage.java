@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import com.john.project.common.CloudStorage.CloudStorageInterface;
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.common.uuid.UUIDUtil;
 import com.john.project.properties.DevelopmentMockModeProperties;
 import io.reactivex.rxjava3.core.Flowable;
@@ -30,14 +31,13 @@ import com.google.common.collect.Lists;
 import com.john.project.properties.DatabaseJdbcProperties;
 import com.john.project.properties.StorageRootPathProperties;
 import com.john.project.model.ResourceAccessLegalModel;
-import com.john.project.service.EncryptDecryptService;
 import com.john.project.service.StorageSpaceService;
 
 @Component
 public abstract class BaseStorage {
 
     @Autowired
-    protected EncryptDecryptService encryptDecryptService;
+    protected EncryptDecryptUtil encryptDecryptUtil;
 
     @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
@@ -119,7 +119,7 @@ public abstract class BaseStorage {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported resource path");
         }
         var encryptJsonString = JinqStream.from(pathSegmentList).findFirst().get();
-        var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
+        var jsonString = this.encryptDecryptUtil.decryptByAES(encryptJsonString);
         ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
                 ResourceAccessLegalModel.class);
         return this.getRelativePathFromResourcePath(
@@ -137,7 +137,7 @@ public abstract class BaseStorage {
         var pathSegmentList = new ArrayList<String>();
         pathSegmentList.add("resource");
         var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
-        var encryptJsonString = this.encryptDecryptService.encryptWithFixedSaltByAES(jsonString);
+        var encryptJsonString = this.encryptDecryptUtil.encryptWithFixedSaltByAES(jsonString);
         pathSegmentList.add(encryptJsonString);
         var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
         if (pathList.size() > 1) {

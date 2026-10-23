@@ -126,9 +126,6 @@ public class SystemInitScheduled {
                 })
                 .timeout(1, TimeUnit.DAYS)
                 .blockingSubscribe();
-        this.encryptDecryptService.getKeyOfSecretKeyOfAES();
-        this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM();
-        this.encryptDecryptService.getKeyOfPrivateKeyOfMLKEM();
     }
 
     private void initUserRole() {

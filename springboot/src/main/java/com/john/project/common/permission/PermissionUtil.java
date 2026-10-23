@@ -1,6 +1,8 @@
 package com.john.project.common.permission;
 
+import cn.hutool.core.util.HexUtil;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -39,7 +41,17 @@ public class PermissionUtil {
 
     public boolean isSignIn(HttpServletRequest request) {
         try {
-            this.tokenService.getDecodedJWTOfAccessToken(request);
+            var accessToken = this.getAccessToken(request);
+            var decodedJWT = JWT.decode(accessToken);
+            var id = decodedJWT.getId();
+            var userId = decodedJWT.getSubject();
+            var secretKeyOfHash = this.tokenService.getSecretKeyOfHashOfAccessToken(id, userId);
+            if (StringUtils.isBlank(secretKeyOfHash)) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
+            }
+            JWT.require(Algorithm.HMAC512(HexUtil.decodeHex(secretKeyOfHash)))
+                    .build()
+                    .verify(accessToken);
             return true;
         } catch (Throwable e) {
             return false;
@@ -52,7 +64,7 @@ public class PermissionUtil {
         return userId;
     }
 
-    public String getIdOfAccessToken(HttpServletRequest request){
+    public String getIdOfAccessToken(HttpServletRequest request) {
         var accessToken = this.getAccessToken(request);
         var idOfAccessToken = JWT.decode(accessToken).getId();
         return idOfAccessToken;

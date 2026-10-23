@@ -1,6 +1,7 @@
 package com.john.project.common.baseService;
 
 import com.google.cloud.spanner.AbortedDueToConcurrentModificationException;
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import com.john.project.common.uuid.UUIDUtil;
 import com.john.project.format.*;
@@ -68,6 +69,10 @@ public abstract class BaseService {
     @Autowired
     @Lazy
     protected ValidationFieldUtil validationFieldUtil;
+
+    @Autowired
+    @Lazy
+    protected EncryptDecryptUtil encryptDecryptUtil;
 
     @Autowired
     private DatabaseJdbcProperties databaseJdbcProperties;

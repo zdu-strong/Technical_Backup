@@ -13,8 +13,6 @@ import lombok.SneakyThrows;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.john.project.common.baseService.BaseService;
 import com.john.project.model.TokenModel;
 import cn.hutool.crypto.CryptoException;
@@ -30,10 +27,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class TokenService extends BaseService {
-
-    @Autowired
-    @Lazy
-    private EncryptDecryptService encryptDecryptService;
 
     public String generateAccessToken(String userId) {
         var encryptedPassword = this.uuidUtil.v4();
@@ -58,41 +51,29 @@ public class TokenService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public DecodedJWT getDecodedJWTOfAccessToken(HttpServletRequest request) {
-        var accessToken = this.getAccessToken(request);
-
-        var decodedJWT = JWT.decode(accessToken);
-        var id = decodedJWT.getId();
-        var userId = decodedJWT.getSubject();
+    public String getSecretKeyOfHashOfAccessToken(String jwtId, String userId) {
         var secretKeyOfHash = this.streamAll(TokenEntity.class)
-                .where(s -> s.getId().equals(id))
+                .where(s -> s.getId().equals(jwtId))
                 .where(s -> s.getUser().getId().equals(userId))
                 .where(s -> s.getIsDeleted().equals(false))
                 .select(s -> s.getSecretKeyOfHash())
                 .findOne()
                 .orElse(StringUtils.EMPTY);
-        if (StringUtils.isBlank(secretKeyOfHash)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
-        }
-        var decodedJWTOfAccessToken = JWT
-                .require(Algorithm.HMAC512(HexUtil.decodeHex(secretKeyOfHash)))
-                .build()
-                .verify(accessToken);
-        return decodedJWTOfAccessToken;
+        return secretKeyOfHash;
     }
 
     @Transactional(readOnly = true)
     @SneakyThrows
     public String getEncryptedPassword(String password) {
-        var encryptedPassword = this.encryptDecryptService.encryptByPublicKeyOfMLKEM(objectMapper.writeValueAsString(new Object[]{DigestUtils.sha3_512Hex(password), new Date()}));
+        var encryptedPassword = this.encryptDecryptUtil.encryptByPublicKeyOfMLKEM(objectMapper.writeValueAsString(new Object[]{DigestUtils.sha3_512Hex(password), new Date()}));
         return encryptedPassword;
     }
 
     @SneakyThrows
     public String getPasswordInDatabaseOfEncryptedPassword(String encryptedPassword, String userId) {
         var password = this.getDecryptedPassword(encryptedPassword);
-        var secretKeyOfAES = this.encryptDecryptService.generateSecretKeyOfAES(DigestUtils.sha3_512Hex(userId + password));
-        var passwordAfterEncrypted = this.encryptDecryptService.encryptByAES(this.uuidUtil.v4(), secretKeyOfAES);
+        var secretKeyOfAES = this.encryptDecryptUtil.generateSecretKeyOfAES(DigestUtils.sha3_512Hex(userId + password));
+        var passwordAfterEncrypted = this.encryptDecryptUtil.encryptByAES(this.uuidUtil.v4(), secretKeyOfAES);
         return passwordAfterEncrypted;
     }
 
@@ -151,8 +132,8 @@ public class TokenService extends BaseService {
                         "Incorrect username or password");
             }
             var password = this.getDecryptedPassword(encryptedPassword);
-            var secretKeyOfAES = this.encryptDecryptService.generateSecretKeyOfAES(DigestUtils.sha3_512Hex(userId + password));
-            var passwordJsonString = this.encryptDecryptService.decryptByAES(userEntity.getPassword(), secretKeyOfAES);
+            var secretKeyOfAES = this.encryptDecryptUtil.generateSecretKeyOfAES(DigestUtils.sha3_512Hex(userId + password));
+            var passwordJsonString = this.encryptDecryptUtil.decryptByAES(userEntity.getPassword(), secretKeyOfAES);
             if (!Validator.isUUID(passwordJsonString)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
@@ -175,14 +156,14 @@ public class TokenService extends BaseService {
 
     @SneakyThrows
     private String getDecryptedPassword(String encryptedPassword) {
-        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
+        var passwordJsonString = this.encryptDecryptUtil.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
         var password = this.objectMapper.readTree(passwordJsonString).get(0).asText();
         return password;
     }
 
     @SneakyThrows
     private Date getCreateDateOfEncryptedPassword(String encryptedPassword) {
-        var passwordJsonString = this.encryptDecryptService.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
+        var passwordJsonString = this.encryptDecryptUtil.decryptByByPrivateKeyOfMLKEM(encryptedPassword);
         var createDate = this.objectMapper.treeToValue(this.objectMapper.readTree(passwordJsonString).get(1), Date.class);
         return createDate;
     }

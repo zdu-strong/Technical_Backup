@@ -1,5 +1,6 @@
 package com.john.project.common.baseController;
 
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import com.john.project.common.uuid.UUIDUtil;
 import com.john.project.service.*;
@@ -76,7 +77,7 @@ public abstract class BaseController {
     protected LongTermTaskService longTermTaskService;
 
     @Autowired
-    protected EncryptDecryptService encryptDecryptService;
+    protected EncryptDecryptUtil encryptDecryptUtil;
 
     @Autowired
     protected OrganizeService organizeService;

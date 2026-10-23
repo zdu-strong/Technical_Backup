@@ -21,7 +21,7 @@ public class LongTermTaskController extends BaseController {
     @GetMapping("/long-term-task/is-done")
     @SneakyThrows
     public ResponseEntity<?> getLongTermTaskIsDone(@RequestParam String encryptedId) {
-        var id = this.encryptDecryptService.decryptByAES(encryptedId);
+        var id = this.encryptDecryptUtil.decryptByAES(encryptedId);
 
         this.longTermTaskService
                 .checkHasExistById(id);
@@ -58,7 +58,7 @@ public class LongTermTaskController extends BaseController {
     @SneakyThrows
     public ResponseEntity<?> getLongTermTask(@RequestParam String encryptedId) {
 
-        var id = this.encryptDecryptService.decryptByAES(encryptedId);
+        var id = this.encryptDecryptUtil.decryptByAES(encryptedId);
 
         this.longTermTaskService
                 .checkHasExistById(id);

@@ -9,9 +9,9 @@ public class SystemInitScheduledInitEncryptDecryptKeyTest extends BaseTest {
     @Test
     public void test() {
         this.systemInitScheduled.scheduled();
-        assertNotNull(this.encryptDecryptService.getKeyOfSecretKeyOfAES());
-        assertNotNull(this.encryptDecryptService.getKeyOfPublicKeyOfMLKEM());
-        assertNotNull(this.encryptDecryptService.getKeyOfPrivateKeyOfMLKEM());
+        assertNotNull(this.encryptDecryptUtil.getKeyOfSecretKeyOfAES());
+        assertNotNull(this.encryptDecryptUtil.getKeyOfPublicKeyOfMLKEM());
+        assertNotNull(this.encryptDecryptUtil.getKeyOfPrivateKeyOfMLKEM());
     }
 
 }

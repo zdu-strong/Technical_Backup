@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import com.john.project.common.DistributedExecution.NonceCleanDistributedExecution;
 import com.john.project.common.DistributedExecution.OrganizeClosureRefreshDistributedExecution;
 import com.john.project.common.DistributedExecution.StorageSpaceCleanDistributedExecution;
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.common.FieldValidationUtil.ValidationFieldUtil;
 import com.john.project.common.uuid.UUIDUtil;
 import com.john.project.enums.OrganizeTypeEnum;
@@ -56,7 +57,6 @@ import com.john.project.scheduled.MessageScheduled;
 import com.john.project.scheduled.SystemInitScheduled;
 import com.john.project.service.DistributedExecutionMainService;
 import com.john.project.service.DistributedExecutionDetailService;
-import com.john.project.service.EncryptDecryptService;
 import com.john.project.service.FriendshipService;
 import com.john.project.service.LoggerService;
 import com.john.project.service.LongTermTaskService;
@@ -138,6 +138,9 @@ public abstract class BaseTest {
     protected ValidationFieldUtil validationFieldUtil;
 
     @Autowired
+    protected EncryptDecryptUtil encryptDecryptUtil;
+
+    @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
 
     @Autowired
@@ -160,9 +163,6 @@ public abstract class BaseTest {
 
     @Autowired
     protected StorageSpaceService storageSpaceService;
-
-    @Autowired
-    protected EncryptDecryptService encryptDecryptService;
 
     @Autowired
     protected UserService userService;

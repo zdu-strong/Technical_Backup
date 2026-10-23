@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.john.project.common.EncryptDecryptUtil.EncryptDecryptUtil;
 import com.john.project.common.uuid.UUIDUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ThreadUtils;
@@ -19,7 +20,6 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import com.john.project.model.LongTermTaskUniqueKeyModel;
-import com.john.project.service.EncryptDecryptService;
 import com.john.project.service.LongTermTaskService;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -35,7 +35,7 @@ public class LongTermTaskUtil {
     private LongTermTaskService longTermTaskService;
 
     @Autowired
-    private EncryptDecryptService encryptDecryptService;
+    private EncryptDecryptUtil encryptDecryptUtil;
 
     @Autowired
     private Executor applicationTaskExecutor;
@@ -76,7 +76,7 @@ public class LongTermTaskUtil {
                 log.error(e.getMessage(), e);
             }
         });
-        return ResponseEntity.ok(this.encryptDecryptService.encryptByAES(idOfLongTermTask));
+        return ResponseEntity.ok(this.encryptDecryptUtil.encryptByAES(idOfLongTermTask));
     }
 
     public void runSkipWhenExists(Runnable runnable, LongTermTaskUniqueKeyModel... uniqueKey) {
