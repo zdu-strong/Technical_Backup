@@ -1,0 +1,45 @@
+{ "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "1792785544870-1",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addColumn": {
+            "columns": [
+              {
+                "column": {
+                  "constraints": {
+                    "nullable": false
+                  },
+                  "name": "hash_of_access_token",
+                  "type": "VARCHAR(255)"
+                }
+              }
+            ]
+            ,
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792785544870-2",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "dropColumn": {
+            "columnName": "secret_key_of_hash",
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  }
+  
+]}

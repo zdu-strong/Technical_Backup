@@ -20,7 +20,7 @@ public class TokenEntity {
     private String id;
 
     @Column(nullable = false)
-    private String secretKeyOfHash;
+    private String hashOfAccessToken;
 
     @Column(nullable = false)
     private String uniqueOneTimePasswordLogo;

@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 public class TokenModel {
 
     private String id;
-    private String secretKeyOfHash;
+    private String hashOfAccessToken;
     private String uniqueOneTimePasswordLogo;
     private Date createDate;
     private Date updateDate;

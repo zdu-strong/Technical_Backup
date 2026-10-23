@@ -1,8 +1,6 @@
 package com.john.project.common.permission;
 
-import cn.hutool.core.util.HexUtil;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
@@ -42,14 +40,7 @@ public class PermissionUtil {
     public boolean isSignIn(HttpServletRequest request) {
         try {
             var accessToken = this.getAccessToken(request);
-            var decodedJWT = JWT.decode(accessToken);
-            var id = decodedJWT.getId();
-            var userId = decodedJWT.getSubject();
-            var secretKeyOfHash = this.tokenService.getSecretKeyOfHashOfAccessToken(id, userId);
-            JWT.require(Algorithm.HMAC512(HexUtil.decodeHex(secretKeyOfHash)))
-                    .build()
-                    .verify(accessToken);
-            return true;
+            return this.tokenService.getIsValidOfAccessToken(accessToken);
         } catch (Throwable e) {
             return false;
         }
