@@ -12,7 +12,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import cn.hutool.core.util.HexUtil;
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ThreadUtils;
@@ -37,32 +37,32 @@ public class EncryptDecryptService extends BaseService {
 
     @Transactional(readOnly = true)
     public String encryptByAES(String text) {
-        var secretKeyOfAES = this.encryptDecryptModel.getSecretKeyOfAES();
+        var secretKeyOfAES = this.getKeyOfSecretKeyOfAES();
         return this.encryptByAES(text, secretKeyOfAES);
     }
 
     @Transactional(readOnly = true)
     public String decryptByAES(String text) {
-        var secretKeyOfAES = this.encryptDecryptModel.getSecretKeyOfAES();
+        var secretKeyOfAES = this.getKeyOfSecretKeyOfAES();
         return this.decryptByAES(text, secretKeyOfAES);
     }
 
     @Transactional(readOnly = true)
     public String encryptByPublicKeyOfMLKEM(String text) {
-        var publicKeyOfMLKEM = this.encryptDecryptModel.getPublicKeyOfMLKEM();
+        var publicKeyOfMLKEM = this.getKeyOfPublicKeyOfMLKEM();
         return this.encryptByPublicKeyOfMLKEM(text, publicKeyOfMLKEM);
     }
 
     @Transactional(readOnly = true)
     public String decryptByByPrivateKeyOfMLKEM(String text) {
-        var privateKeyOfMLKEM = this.encryptDecryptModel.getPrivateKeyOfMLKEM();
+        var privateKeyOfMLKEM = this.getKeyOfPrivateKeyOfMLKEM();
         return this.decryptByByPrivateKeyOfMLKEM(text, privateKeyOfMLKEM);
     }
 
     @Transactional(readOnly = true)
     @SneakyThrows
     public String encryptByAES(String text, String secretKeyOfAES) {
-        var salt = DigestUtils.md5(uuidUtil.v4());
+        var salt = RandomUtil.randomBytes(16);
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
                 HexUtil.decodeHex(secretKeyOfAES), "AES"), new GCMParameterSpec(16 * 8, salt));
@@ -87,7 +87,7 @@ public class EncryptDecryptService extends BaseService {
         var salt = DigestUtils.md5(text);
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
-                HexUtil.decodeHex(getKeyOfSecretKeyOfAES()), "AES"), new GCMParameterSpec(16 * 8, salt));
+                HexUtil.decodeHex(this.getKeyOfSecretKeyOfAES()), "AES"), new GCMParameterSpec(16 * 8, salt));
         return HexUtil.encodeHexStr(ArrayUtils.addAll(salt, cipher.doFinal(text.getBytes(StandardCharsets.UTF_8))));
     }
 
@@ -167,7 +167,7 @@ public class EncryptDecryptService extends BaseService {
 
     @SneakyThrows
     private void initKey() {
-        while (ObjectUtil.isNull(this.encryptDecryptModel)) {
+        while (this.encryptDecryptModel == null) {
             ThreadUtils.sleepQuietly(Duration.ofMillis(100));
         }
     }
@@ -176,7 +176,7 @@ public class EncryptDecryptService extends BaseService {
     public boolean init() {
         var name = getClass().getSimpleName();
 
-        if (ObjectUtil.isNull(this.encryptDecryptModel)) {
+        if (this.encryptDecryptModel == null) {
             if (this.streamAll(EncryptDecryptEntity.class)
                     .where(s -> s.getName().equals(name))
                     .exists()) {
@@ -207,7 +207,7 @@ public class EncryptDecryptService extends BaseService {
             }
         }
 
-        return ObjectUtil.isNotNull(this.encryptDecryptModel);
+        return this.encryptDecryptModel != null;
     }
 
 }
