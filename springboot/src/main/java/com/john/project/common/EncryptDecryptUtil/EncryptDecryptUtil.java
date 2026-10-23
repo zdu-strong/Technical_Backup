@@ -78,10 +78,10 @@ public class EncryptDecryptUtil {
 
     @SneakyThrows
     public String encryptWithFixedSaltByAES(String text) {
+        var secretKeyOfAES = new SecretKeySpec(HexUtil.decodeHex(this.getKeyOfSecretKeyOfAES()), "AES");
         var salt = DigestUtils.md5(text);
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(
-                HexUtil.decodeHex(this.getKeyOfSecretKeyOfAES()), "AES"), new GCMParameterSpec(16 * 8, salt));
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeyOfAES, new GCMParameterSpec(16 * 8, salt));
         return HexUtil.encodeHexStr(ArrayUtils.addAll(salt, cipher.doFinal(text.getBytes(StandardCharsets.UTF_8))));
     }
 
