@@ -21,6 +21,8 @@ import com.john.project.common.baseService.BaseService;
 import com.john.project.model.TokenModel;
 import cn.hutool.crypto.CryptoException;
 
+import static com.john.project.constant.OneTimePasswordConstant.ONE_TIME_PASSWORD_SURVIVAL_DURATION;
+
 @Service
 public class TokenService extends BaseService {
 
@@ -65,6 +67,13 @@ public class TokenService extends BaseService {
         return passwordAfterEncrypted;
     }
 
+    public void deleteTokenEntityWithHardDelete(String id) {
+        var tokenEntity = this.streamAll(TokenEntity.class)
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
+        this.remove(tokenEntity);
+    }
+
     public void deleteTokenEntity(String id) {
         var tokenEntity = this.streamAll(TokenEntity.class)
                 .where(s -> s.getId().equals(id))
@@ -91,9 +100,10 @@ public class TokenService extends BaseService {
 
     @Transactional(readOnly = true)
     public PaginationModel<TokenModel> searchForInvalidTokenByPagination(long pageNum, long pageSize) {
+        var createDate = DateUtils.addMilliseconds(new Date(), -(int) ONE_TIME_PASSWORD_SURVIVAL_DURATION.toMillis());
         var stream = this.streamAll(TokenEntity.class)
-                .where(s -> s.getIsDeleted().equals(false))
-                .where(s -> s.getUser().getIsDeleted())
+                .where(s -> s.getCreateDate().before(createDate))
+                .where(s -> s.getUser().getIsDeleted() || s.getIsDeleted())
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, this.tokenFormatter::format);
@@ -106,11 +116,11 @@ public class TokenService extends BaseService {
                     .where(s -> s.getId().equals(userId))
                     .getOnlyValue();
             var createDate = this.getCreateDateOfEncryptedPassword(encryptedPassword);
-            if (createDate.before(DateUtils.addMinutes(new Date(), -5))) {
+            if (createDate.before(DateUtils.addMilliseconds(new Date(), -(int) ONE_TIME_PASSWORD_SURVIVAL_DURATION.toMillis()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
             }
-            if (createDate.after(DateUtils.addMinutes(new Date(), 5))) {
+            if (createDate.after(DateUtils.addMilliseconds(new Date(), (int) ONE_TIME_PASSWORD_SURVIVAL_DURATION.toMillis()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Incorrect username or password");
             }

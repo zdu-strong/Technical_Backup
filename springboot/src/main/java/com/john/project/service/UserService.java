@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.auth0.jwt.JWT;
 import com.john.project.entity.UserEmailEntity;
 import com.john.project.entity.UserEntity;
 import com.john.project.model.SuperAdminUserQueryPaginationModel;
@@ -62,6 +63,9 @@ public class UserService extends BaseService {
             this.userRoleRelationService.create(userEntity.getId(), roleModel.getId());
         }
 
+        var accessToken = this.tokenService.generateAccessToken(userEntity.getId(), userModel.getPassword());
+        this.tokenService.deleteTokenEntity(JWT.decode(accessToken).getId());
+
         return this.userFormatter.formatWithMoreInformation(userEntity);
     }
 
@@ -71,6 +75,14 @@ public class UserService extends BaseService {
                 .where(s -> s.getId().equals(userId))
                 .getOnlyValue();
         userEntity.setUsername(userModel.getUsername());
+        userEntity.setUsernameLowerCase(userModel.getUsername().toLowerCase());
+
+        if (StringUtils.isNotBlank(userModel.getPassword())) {
+            userEntity.setPassword(this.tokenService.getPasswordInDatabaseOfEncryptedPassword(userModel.getPassword(), userEntity.getId()));
+            var accessToken = this.tokenService.generateAccessToken(userEntity.getId(), userModel.getPassword());
+            this.tokenService.deleteTokenEntity(JWT.decode(accessToken).getId());
+        }
+
         this.merge(userEntity);
 
         var userRoleRelationList = this.streamAll(UserEntity.class)

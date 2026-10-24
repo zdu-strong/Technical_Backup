@@ -17,7 +17,7 @@ public class TokenCleanDistributedExecution extends BaseDistributedExecution {
         var paginationModel = this.tokenService.searchForInvalidTokenByPagination(pageNum,
                 1L);
         for (var tokenModel : paginationModel.getItems()) {
-            this.tokenService.deleteTokenEntity(tokenModel.getId());
+            this.tokenService.deleteTokenEntityWithHardDelete(tokenModel.getId());
         }
     }
 

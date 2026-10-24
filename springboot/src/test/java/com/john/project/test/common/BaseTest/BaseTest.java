@@ -313,7 +313,7 @@ public abstract class BaseTest {
                         new UserEmailModel()
                                 .setEmail(email)
                                 .setVerificationCodeEmail(verificationCodeEmail)));
-        var url = new URIBuilder("/sign-up/rsa/one-time").build();
+        var url = new URIBuilder("/sign-up/ml-kem/one-time").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
                 Object.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -330,7 +330,7 @@ public abstract class BaseTest {
 
     @SneakyThrows
     private UserModel signIn(String email, String password) {
-        var url = new URIBuilder("/sign-in/rsa/one-time")
+        var url = new URIBuilder("/sign-in/ml-kem/one-time")
                 .setParameter("username", email)
                 .setParameter("password", this.tokenService.getEncryptedPassword(password))
                 .build();

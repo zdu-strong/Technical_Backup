@@ -27,7 +27,7 @@ public class UserControllerCreateTest extends BaseTest {
     @Test
     @SneakyThrows
     public void test() {
-        var url = new URIBuilder("/user/create").build();
+        var url = new URIBuilder("/user/create/ml-kem/one-time").build();
         var response = this.testRestTemplate.postForEntity(url, user, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody().getId());

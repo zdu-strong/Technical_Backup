@@ -10,7 +10,7 @@ import { encryptByPublicKeyOfMLKEM } from "@/common/MLKEMUtils";
 
 export async function signUp(password: string, username: string, userEmailList: UserEmailModel[]): Promise<void> {
     await signOut();
-    const { data } = await axios.post(`/sign-up/rsa/one-time`, {
+    const { data } = await axios.post(`/sign-up/ml-kem/one-time`, {
         username: username,
         password: await getEncryptedPassword(password),
         userEmailList: userEmailList,
@@ -26,7 +26,7 @@ export async function sendVerificationCode(email: string) {
 
 export async function signIn(username: string, password: string): Promise<void> {
     await signOut();
-    const { data } = await axios.post(`/sign-in/rsa/one-time`, null, {
+    const { data } = await axios.post(`/sign-in/ml-kem/one-time`, null, {
         params: {
             username: username,
             password: await getEncryptedPassword(password),

@@ -30,7 +30,7 @@ public class UserController extends BaseController {
         return ResponseEntity.ok(userModel);
     }
 
-    @PostMapping("/user/create")
+    @PostMapping("/user/create/ml-kem/one-time")
     public ResponseEntity<?> create(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
         this.validationFieldUtil.checkMustBeNullOfId(user.getId());
@@ -45,7 +45,7 @@ public class UserController extends BaseController {
         return ResponseEntity.ok(userOne);
     }
 
-    @PostMapping("/user/update")
+    @PostMapping("/user/update/ml-kem/one-time")
     public ResponseEntity<?> update(@RequestBody UserModel user) {
         this.permissionUtil.checkIsSignIn(request);
         this.validationFieldUtil.checkNotBlankOfUsername(user.getUsername());

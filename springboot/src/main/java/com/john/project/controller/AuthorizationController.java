@@ -23,9 +23,9 @@ public class AuthorizationController extends BaseController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/sign-in/rsa/one-time")
+    @PostMapping("/sign-in/ml-kem/one-time")
     @SneakyThrows
-    public ResponseEntity<?> signInByRsaOneTime(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> signInByMLKEMOneTime(@RequestParam String username, @RequestParam String password) {
         this.userService.checkExistAccount(username);
         var userId = this.userService.getUserId(username);
         var accessToken = this.tokenService.generateAccessToken(userId, password);
@@ -43,8 +43,8 @@ public class AuthorizationController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/sign-up/rsa/one-time")
-    public ResponseEntity<?> signUpByRsaOneTime(@RequestBody UserModel userModel) {
+    @PostMapping("/sign-up/ml-kem/one-time")
+    public ResponseEntity<?> signUpByMLKEMOneTime(@RequestBody UserModel userModel) {
         this.validationFieldUtil.checkNotBlankOfNickname(userModel.getUsername());
         this.validationFieldUtil.checkNotEdgesSpaceOfUsername(userModel.getUsername());
         this.validationFieldUtil.checkNotBlankOfPassword(userModel.getPassword());

@@ -17,7 +17,7 @@ public class AuthorizationControllerSignInNotExistsUsernameTest extends BaseTest
     @Test
     @SneakyThrows
     public void test() {
-        var url = new URIBuilder("/sign-in/rsa/one-time")
+        var url = new URIBuilder("/sign-in/ml-kem/one-time")
                 .setParameter("username", username)
                 .setParameter("password", this.tokenService.getEncryptedPassword(password))
                 .build();

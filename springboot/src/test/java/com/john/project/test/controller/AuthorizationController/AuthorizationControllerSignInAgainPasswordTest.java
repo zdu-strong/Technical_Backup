@@ -18,7 +18,7 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
     @Test
     @SneakyThrows
     public void test() {
-        var url = new URIBuilder("/sign-in/rsa/one-time")
+        var url = new URIBuilder("/sign-in/ml-kem/one-time")
                 .setParameter("username", username)
                 .setParameter("password", passwordOneTime)
                 .build();
@@ -35,7 +35,7 @@ public class AuthorizationControllerSignInAgainPasswordTest extends BaseTest {
         this.username = this.uuidUtil.v4() + "zdu.strong@gmail.com";
         this.passwordOneTime = this.tokenService.getEncryptedPassword(username);
         this.createAccount(username);
-        var url = new URIBuilder("/sign-in/rsa/one-time")
+        var url = new URIBuilder("/sign-in/ml-kem/one-time")
                 .setParameter("username", username)
                 .setParameter("password", passwordOneTime)
                 .build();

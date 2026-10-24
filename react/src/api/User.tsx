@@ -7,7 +7,7 @@ import { getEncryptedPassword } from "@api/Authorization";
 export async function createUser(user: UserModel) {
     const body = new TypedJSON(UserModel).parse(JSON.stringify(user))!;
     body.password = await getEncryptedPassword(body.password);
-    const { data } = await axios.post("/user/create", body);
+    const { data } = await axios.post("/user/create/ml-kem/one-time", body);
     return new TypedJSON(UserModel).parse(data)!;
 }
 
@@ -16,7 +16,7 @@ export async function updateUser(user: UserModel) {
     if (body.password) {
         body.password = await getEncryptedPassword(body.password);
     }
-    await axios.post("/user/update", body);
+    await axios.post("/user/update/ml-kem/one-time", body);
 }
 
 export async function getUserById(userId: string) {

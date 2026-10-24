@@ -24,7 +24,7 @@ public class UserControllerUpdateTest extends BaseTest {
     @SneakyThrows
     public void test() {
         {
-            var url = new URIBuilder("/user/update").build();
+            var url = new URIBuilder("/user/update/ml-kem/one-time").build();
             var response = this.testRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(user), Void.class);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
