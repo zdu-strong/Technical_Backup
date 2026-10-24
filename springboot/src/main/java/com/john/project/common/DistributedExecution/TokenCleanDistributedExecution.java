@@ -9,15 +9,16 @@ public class TokenCleanDistributedExecution extends BaseDistributedExecution {
 
     @Override
     public PaginationModel<?> searchByPagination() {
-        return this.tokenService.searchForInvalidTokenByPagination(1L, 1L);
+        return this.tokenService.searchByPagination(1L, 1L);
     }
 
     @Override
     public void executeTask(long pageNum) {
-        var paginationModel = this.tokenService.searchForInvalidTokenByPagination(pageNum,
-                1L);
+        var paginationModel = this.tokenService.searchByPagination(pageNum, 1L);
         for (var tokenModel : paginationModel.getItems()) {
-            this.tokenService.deleteTokenEntityWithHardDelete(tokenModel.getId());
+            if (this.tokenService.getIsInvalidOfTokenEntity(tokenModel.getId())) {
+                this.tokenService.deleteTokenEntityWithHardDelete(tokenModel.getId());
+            }
         }
     }
 

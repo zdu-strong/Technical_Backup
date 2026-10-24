@@ -1,0 +1,32 @@
+{ "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "1792824158690-1",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "createIndex": {
+            "associatedWith": "",
+            "columns": [
+              {
+                "column": {
+                  "name": "create_date"
+                }
+              },
+              {
+                "column": {
+                  "name": "id"
+                }
+              }
+            ]
+            ,
+            "indexName": "IDXr2x0fxokwh70bm86mo8to4kjt",
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  }
+  
+]}

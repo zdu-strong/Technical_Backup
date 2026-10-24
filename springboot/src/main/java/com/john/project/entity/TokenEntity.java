@@ -12,8 +12,8 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "userId", "hashOfOneTimePassword" })
-})
+        @UniqueConstraint(columnNames = {"userId", "hashOfOneTimePassword"})
+}, indexes = @Index(columnList = "createDate, id"))
 public class TokenEntity {
 
     @Id

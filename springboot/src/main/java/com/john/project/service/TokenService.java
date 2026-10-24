@@ -52,6 +52,17 @@ public class TokenService extends BaseService {
     }
 
     @Transactional(readOnly = true)
+    public boolean getIsInvalidOfTokenEntity(String id) {
+        var createDate = DateUtils.addMilliseconds(new Date(), -(int) ONE_TIME_PASSWORD_SURVIVAL_DURATION.plusHours(1).toMillis());
+        var isInvalid = this.streamAll(TokenEntity.class)
+                .where(s -> s.getId().equals(id))
+                .where(s -> s.getCreateDate().before(createDate))
+                .where(s -> s.getUser().getIsDeleted() || s.getIsDeleted())
+                .exists();
+        return isInvalid;
+    }
+
+    @Transactional(readOnly = true)
     @SneakyThrows
     public String getEncryptedPassword(String password) {
         var encryptedPassword = this.encryptDecryptUtil.encryptByPublicKeyOfMLKEM(objectMapper.writeValueAsString(new Object[]{DigestUtils.sha3_512Hex(password), new Date()}));
@@ -99,11 +110,8 @@ public class TokenService extends BaseService {
     }
 
     @Transactional(readOnly = true)
-    public PaginationModel<TokenModel> searchForInvalidTokenByPagination(long pageNum, long pageSize) {
-        var createDate = DateUtils.addMilliseconds(new Date(), -(int) ONE_TIME_PASSWORD_SURVIVAL_DURATION.toMillis());
+    public PaginationModel<TokenModel> searchByPagination(long pageNum, long pageSize) {
         var stream = this.streamAll(TokenEntity.class)
-                .where(s -> s.getCreateDate().before(createDate))
-                .where(s -> s.getUser().getIsDeleted() || s.getIsDeleted())
                 .sortedBy(s -> s.getId())
                 .sortedBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, this.tokenFormatter::format);
