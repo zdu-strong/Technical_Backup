@@ -15,7 +15,7 @@ public class TokenFormatter extends BaseService {
         var tokenModel = new TokenModel();
         BeanUtils.copyProperties(tokenEntity, tokenModel);
         tokenModel.setHashOfAccessToken(StringUtils.EMPTY);
-        tokenModel.setUniqueOneTimePasswordLogo(StringUtils.EMPTY);
+        tokenModel.setHashOfOneTimePassword(StringUtils.EMPTY);
         tokenModel.setUser(new UserModel().setId(tokenEntity.getUser().getId()));
         return tokenModel;
     }

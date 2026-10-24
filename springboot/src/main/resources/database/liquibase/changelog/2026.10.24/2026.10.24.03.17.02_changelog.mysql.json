@@ -1,0 +1,78 @@
+{ "databaseChangeLog": [
+  {
+    "changeSet": {
+      "id": "1792811841318-1",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addColumn": {
+            "columns": [
+              {
+                "column": {
+                  "constraints": {
+                    "nullable": false
+                  },
+                  "name": "hash_of_one_time_password",
+                  "type": "VARCHAR(255)"
+                }
+              }
+            ]
+            ,
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792811841318-2",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "addUniqueConstraint": {
+            "columnNames": "user_id, hash_of_one_time_password",
+            "constraintName": "UK4lqorgjick89bp55736a3dcb2",
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792811841318-3",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "dropUniqueConstraint": {
+            "constraintName": "UK5c8cpmrkalc5g4mty2t75lbdx",
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  },
+  
+  {
+    "changeSet": {
+      "id": "1792811841318-4",
+      "author": "john (generated)",
+      "changes": [
+        {
+          "dropColumn": {
+            "columnName": "unique_one_time_password_logo",
+            "tableName": "token_entity"
+          }
+        }
+      ]
+      
+    }
+  }
+  
+]}

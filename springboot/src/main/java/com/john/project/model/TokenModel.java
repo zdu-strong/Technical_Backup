@@ -13,7 +13,7 @@ public class TokenModel {
 
     private String id;
     private String hashOfAccessToken;
-    private String uniqueOneTimePasswordLogo;
+    private String hashOfOneTimePassword;
     private Date createDate;
     private Date updateDate;
     private UserModel user;

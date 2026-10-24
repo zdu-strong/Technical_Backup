@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "userId", "uniqueOneTimePasswordLogo" })
+        @UniqueConstraint(columnNames = { "userId", "hashOfOneTimePassword" })
 })
 public class TokenEntity {
 
@@ -23,7 +23,7 @@ public class TokenEntity {
     private String hashOfAccessToken;
 
     @Column(nullable = false)
-    private String uniqueOneTimePasswordLogo;
+    private String hashOfOneTimePassword;
 
     @Column(nullable = false)
     private Date createDate;

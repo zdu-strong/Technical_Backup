@@ -4,7 +4,6 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.john.project.entity.TokenEntity;
 import com.john.project.entity.UserEntity;
@@ -26,30 +25,14 @@ import cn.hutool.crypto.CryptoException;
 public class TokenService extends BaseService {
 
     public String generateAccessToken(String userId) {
-        var jwtId = newId();
-        var encryptedPassword = this.uuidUtil.v4();
-        var secretKeyOfHash = RandomUtil.randomBytes(64);
-        var accessToken = JWT.create()
-                .withSubject(userId)
-                .withJWTId(jwtId)
-                .withIssuedAt(new Date())
-                .sign(Algorithm.HMAC512(secretKeyOfHash));
-        var hashOfAccessToken = DigestUtils.sha3_512Hex(accessToken);
-        this.createTokenEntity(jwtId, userId, encryptedPassword, hashOfAccessToken);
+        var encryptedPassword = this.getEncryptedPassword(this.uuidUtil.v4());
+        var accessToken = this.createTokenEntity(userId, encryptedPassword);
         return accessToken;
     }
 
     public String generateAccessToken(String userId, String encryptedPassword) {
         this.checkCorrectPassword(userId, encryptedPassword);
-        var jwtId = newId();
-        var secretKeyOfHash = RandomUtil.randomBytes(64);
-        var accessToken = JWT.create()
-                .withSubject(userId)
-                .withJWTId(jwtId)
-                .withIssuedAt(new Date())
-                .sign(Algorithm.HMAC512(secretKeyOfHash));
-        var hashOfAccessToken = DigestUtils.sha3_512Hex(accessToken);
-        this.createTokenEntity(jwtId, userId, encryptedPassword, hashOfAccessToken);
+        var accessToken = this.createTokenEntity(userId, encryptedPassword);
         return accessToken;
     }
 
@@ -73,6 +56,7 @@ public class TokenService extends BaseService {
         return encryptedPassword;
     }
 
+    @Transactional(readOnly = true)
     @SneakyThrows
     public String getPasswordInDatabaseOfEncryptedPassword(String encryptedPassword, String userId) {
         var password = this.getDecryptedPassword(encryptedPassword);
@@ -115,11 +99,6 @@ public class TokenService extends BaseService {
         return new PaginationModel<>(pageNum, pageSize, stream, this.tokenFormatter::format);
     }
 
-    private String getUniqueOneTimePasswordLogo(String encryptedPassword) {
-        var logo = HexUtil.encodeHexStr(DigestUtils.sha3_512(encryptedPassword));
-        return logo;
-    }
-
     @SneakyThrows
     private void checkCorrectPassword(String userId, String encryptedPassword) {
         try {
@@ -143,10 +122,10 @@ public class TokenService extends BaseService {
                         "Incorrect username or password");
             }
 
-            var uniqueOneTimePasswordLogo = this.getUniqueOneTimePasswordLogo(encryptedPassword);
+            var hashOfOneTimePassword = DigestUtils.sha3_512Hex(encryptedPassword);
             var exists = this.streamAll(TokenEntity.class)
                     .where(s -> s.getUser().getId().equals(userId))
-                    .where(s -> s.getUniqueOneTimePasswordLogo().equals(uniqueOneTimePasswordLogo))
+                    .where(s -> s.getHashOfOneTimePassword().equals(hashOfOneTimePassword))
                     .exists();
             if (exists) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -172,19 +151,29 @@ public class TokenService extends BaseService {
         return createDate;
     }
 
-    private void createTokenEntity(String id, String userId, String encryptedPassword, String hashOfAccessToken) {
-        var uniqueOneTimePasswordLogo = this.getUniqueOneTimePasswordLogo(encryptedPassword);
+    private String createTokenEntity(String userId, String encryptedPassword) {
+        var hashOfOneTimePassword = DigestUtils.sha3_512Hex(encryptedPassword);
+        var id = newId();
+        var secretKeyOfHash = RandomUtil.randomBytes(64);
+        var accessToken = JWT.create()
+                .withSubject(userId)
+                .withJWTId(id)
+                .withIssuedAt(new Date())
+                .sign(Algorithm.HMAC512(secretKeyOfHash));
+        var hashOfAccessToken = DigestUtils.sha3_512Hex(accessToken);
         var user = this.streamAll(UserEntity.class).where(s -> s.getId().equals(userId)).getOnlyValue();
 
         var tokenEntity = new TokenEntity();
         tokenEntity.setId(id);
         tokenEntity.setHashOfAccessToken(hashOfAccessToken);
-        tokenEntity.setUniqueOneTimePasswordLogo(uniqueOneTimePasswordLogo);
+        tokenEntity.setHashOfOneTimePassword(hashOfOneTimePassword);
         tokenEntity.setUser(user);
         tokenEntity.setIsDeleted(false);
         tokenEntity.setCreateDate(new Date());
         tokenEntity.setUpdateDate(new Date());
         this.persist(tokenEntity);
+
+        return accessToken;
     }
 
 }
